@@ -148,6 +148,7 @@ class NodeWriter {
       padNameTo.foreach { v => append(" " * (v - (namesLength + ((field.names.length - 1) * 2)))) }
       append(" ")
     }
+    appendExpression(field.typ)
     field.tag.foreach { append(' ').appendBasicLiteral(_) }
     this
   }
@@ -163,17 +164,22 @@ class NodeWriter {
   def appendFunctionDeclaration(decl: FunctionDeclaration): this.type = {
     append("func ").appendParameters(decl.receivers)
     if (decl.receivers.nonEmpty) append(' ')
-    appendIdentifier(decl.name).appendParameters(decl.typ.parameters, "()")
-    if (decl.typ.results.nonEmpty) append(' ')
-    if (decl.typ.results.length == 1) appendField(decl.typ.results.head)
-    else appendParameters(decl.typ.results)
+    appendIdentifier(decl.name).appendFunctionType(decl.typ)
     decl.body.foreach { append(' ').appendBlockStatement(_) }
     this
   }
 
-  def appendFunctionLiteral(expr: FunctionLiteral): this.type = __TODO__
+  def appendFunctionLiteral(expr: FunctionLiteral): this.type = {
+    append("func").appendFunctionType(expr.typ).append(' ').appendBlockStatement(expr.body)
+  }
 
-  def appendFunctionType(expr: FunctionType): this.type = __TODO__
+  def appendFunctionType(typ: FunctionType): this.type = {
+    appendParameters(typ.parameters, "()")
+    if (typ.results.nonEmpty) append(' ')
+    if (typ.results.length == 1) appendField(typ.results.head)
+    else appendParameters(typ.results)
+    this
+  }
 
   def appendGenericDeclaration(decl: GenericDeclaration): this.type = {
     require(decl.specifications.nonEmpty)
@@ -186,9 +192,9 @@ class NodeWriter {
     }
     val multiSpec = decl.specifications.length > 1
     if (multiSpec) append('(').indent()
-    decl.specifications.foreach {
+    decl.specifications.foreach { spec =>
       if (multiSpec) newline()
-      appendSpecification
+      appendSpecification(spec)
     }
     if (multiSpec) dedent().newline().append(')')
     this
@@ -222,7 +228,9 @@ class NodeWriter {
 
   def appendLabeledStatement(stmt: LabeledStatement): this.type = {
     // Remove all characters back to last newline
-    builder.delete(builder.lastIndexOf("\n") + 1, builder.length)
+    // builder.delete(builder.lastIndexOf("\n") + 1, builder.length)
+    // Actually, We need to remove one level of indention which is really just the last \t char
+    builder.deleteCharAt(builder.length - 1)
     appendIdentifier(stmt.label).append(':')
     stmt.statement.foreach { newline().appendStatement(_) }
     this

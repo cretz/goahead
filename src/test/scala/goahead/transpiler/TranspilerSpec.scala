@@ -1,48 +1,53 @@
-package goahead.compiler
+package goahead.transpiler
 
 import java.io._
 import java.lang.reflect.Method
 import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Path}
+import java.nio.file.{Files, Path, Paths}
 import java.util.concurrent.TimeUnit
 
 import com.google.common.io.{ByteStreams, CharStreams}
 import goahead.ast.{Node, NodeWriter}
 import goahead.{BaseSpec, ExpectedOutput}
-import goahead.testclasses.HelloWorld
+import goahead.testclasses.{HelloWorld, StaticFields}
 
 import scala.util.Try
 import org.scalatest.Assertions._
 
-class CompilerSpec extends BaseSpec {
+class TranspilerSpec extends BaseSpec {
+
+  val defaultClassDirs = Map(
+    "java/lang/NullPointerException" -> "rt",
+    "java/lang/String" -> "rt",
+    "java/lang/System" -> "rt"
+  )
 
   // Run each test case as its own setup
-  CompilerSpec.testCases.foreach{t => t.subject should behave like expected(t)}
+  TranspilerSpec.testCases.foreach{t => t.subject should behave like expected(t)}
 
-  def expected(t: CompilerSpec.TestCase) = it should t.provideExpectedOutput in withTemporaryFolder { tempFolder =>
-    // Instantiate the compiler
-    val compiler = new Compiler(ClassPath(Nil))
+  def expected(t: TranspilerSpec.TestCase) = it should t.provideExpectedOutput in withTemporaryFolder { tempFolder =>
+    // Instantiate the compiler w/ classpath having the local classes
+    val transpiler = new Transpiler(
+      ClassPath(
+        defaultClassDirs ++ t.classes.map(c => c.getName.replace('.', '/') -> ""),
+        Seq.empty
+      )
+    )
 
-    // Compile each one
-    val compiled = t.classes.map { cls =>
-      compiler.classFileToOutFile {
-        val inStream = cls.getResourceAsStream(cls.getSimpleName + ".class")
-        try { ByteStreams.toByteArray(inStream) } finally { inStream.close() }
-      }
-    }
+    // Compile to one big file
+    val transpiled = transpiler.classesToFile(t.classes.map { cls =>
+      val inStream = cls.getResourceAsStream(cls.getSimpleName + ".class")
+      try { ByteStreams.toByteArray(inStream) } finally { inStream.close() }
+    }).copy(packageName = Node.Identifier("spectest"))
 
-    // Write them in the temp folder
-    compiled.foreach { outFile =>
+    // Write the regular code in the spectest folder
+    val codeFile = Files.createDirectories(tempFolder.resolve("spectest")).resolve("code.go")
+    writeGoCode(codeFile, transpiled)
 
-      // Let's first make sure the formatting is good
-      outFile.bootstrapMain.foreach(assertValidCode)
-      val code = assertValidCode(outFile.file)
-
-      // Now write it
-      // TODO: what does bootstrap main do?
-      val dir = Files.createDirectories(tempFolder.resolve(outFile.dir))
-      Files.write(dir.resolve(outFile.filename), code.getBytes(StandardCharsets.UTF_8))
-    }
+    // Write the main call
+    val className = t.classes.find(c => Try(c.getMethod("main", classOf[Array[String]])).isSuccess).get.getName
+    val mainCode = transpiler.buildMainFile("./spectest", className.replace('.', '/'))
+    writeGoCode(tempFolder.resolve("main.go"), mainCode)
 
     // Compile go code
     val compiledExe = compileDir(tempFolder)
@@ -51,8 +56,14 @@ class CompilerSpec extends BaseSpec {
     assertExpectedOutput(compiledExe, t.expectedOutput.get)
   }
 
-  def assertValidCode(file: Node.File): String = {
-    val code = NodeWriter.fromNode(file)
+  def writeGoCode(file: Path, code: Node.File): Unit = {
+    val codeStr = NodeWriter.fromNode(code)
+    logger.debug(s"Asserting and writing the following to $file:\n$codeStr")
+    assertValidCode(codeStr)
+    Files.write(file, codeStr.getBytes(StandardCharsets.UTF_8))
+  }
+
+  def assertValidCode(code: String): Unit = {
     val process = new ProcessBuilder("gofmt").start()
     val outReader = new BufferedReader(new InputStreamReader(process.getInputStream))
     val errReader = new BufferedReader(new InputStreamReader(process.getErrorStream))
@@ -61,25 +72,36 @@ class CompilerSpec extends BaseSpec {
     assert(process.waitFor(5, TimeUnit.SECONDS))
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
     val err = try { CharStreams.toString(errReader) } finally { errReader.close() }
-    assert(err == "")
-    assert(out == code)
-    assert(process.exitValue == 0)
-    code
+    Try({
+      assert(err == "")
+      assert(out == code)
+      assert(process.exitValue == 0)
+    }).recover({ case e =>
+      logger.error(s"Formatting error ($err):\n$out")
+      throw e
+    }).get
   }
 
   def compileDir(dir: Path): Path = {
     val builder = new ProcessBuilder("go", "build", "-o", "test").directory(dir.toFile)
     // TODO: add the test workspace
-    //builder.environment().put("GOPATH", File(".", "etc/testworkspace").absolutePath +
-    //  File.pathSeparatorChar + tempFolderFile.absolutePath
+    val goPaths = Seq(Paths.get("etc/testworkspace"), dir)
+    val goPath = goPaths.map(_.toAbsolutePath.toString).mkString(File.pathSeparator)
+    logger.debug(s"Setting GOPATH to $goPath")
+    builder.environment().put("GOPATH", goPath)
     val process = builder.start()
     val outReader = new BufferedReader(
       new InputStreamReader(new SequenceInputStream(process.getInputStream, process.getErrorStream))
     )
     assert(process.waitFor(5, TimeUnit.SECONDS))
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
-    assert(out == "")
-    assert(process.exitValue == 0)
+    Try({
+      assert(out == "")
+      assert(process.exitValue == 0)
+    }).recover({ case e =>
+      logger.error(s"Compilation error:\n$out")
+      throw e
+    }).get
     dir.resolve("test")
   }
 
@@ -94,9 +116,10 @@ class CompilerSpec extends BaseSpec {
   }
 }
 
-object CompilerSpec {
+object TranspilerSpec {
   val testCases = Seq(
-    TestCase(classOf[HelloWorld])
+//    TestCase(classOf[HelloWorld])
+    TestCase(classOf[StaticFields])
   )
 
   case class TestCase(
