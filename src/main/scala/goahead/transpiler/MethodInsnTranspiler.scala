@@ -16,7 +16,9 @@ trait MethodInsnTranspiler {
         val subject = ctx.stack.pop()
 
         // Null pointer check for the subject
-        val nullCheckStmt = ctx.nullPointerAssertion(subject.expr)
+        // TODO: actually, none of this, we'll let go panic
+        // since we can't easily inline nil check
+        // val nullCheckStmt = ctx.nullPointerAssertion(subject.expr)
 
         // Create the call
         val callExpr = Node.CallExpression(
@@ -28,21 +30,28 @@ trait MethodInsnTranspiler {
           params.map(_.expr)
         )
 
+        // Just put on the stack if it's not void
+        if (callDesc.getReturnType == Type.VOID_TYPE) Seq(Node.ExpressionStatement(callExpr))
+        else {
+          ctx.stack.push(callExpr, callDesc.getReturnType)
+          Nil
+        }
+          /*
         // Put the result on the stack if not void, otherwise just run
         val execStmt =
           if (callDesc.getReturnType != Type.VOID_TYPE) {
-            val tempVar = ctx.stack.newTempVarName.toIdent
-            ctx.stack.push(tempVar, callDesc.getReturnType)
-            Node.AssignStatement(
-              left = Seq(tempVar),
-              token = Node.Token.Define,
+            /*Node.AssignStatement(
+              left = Seq(ctx.stack.useTempVar(callDesc.getReturnType)),
+              token = Node.Token.Assign,
               right = Seq(callExpr)
-            )
+            )*/
+            ctx.stack.push(callExpr, callDesc.getReturnType)
           } else {
             Node.ExpressionStatement(callExpr)
           }
 
         Seq(nullCheckStmt, execStmt)
+        */
       case code =>
         sys.error(s"Unrecognized opcode: $code")
     }

@@ -43,8 +43,9 @@ trait MethodTranspiler extends
   }
 
   def transpileInsns(ctx: Context): Seq[Node.Statement] = {
-    val stmts = ctx.methodNode.instructionIter.toSeq.flatMap { insn =>
-      var stmts = insn match {
+    var stmts: Seq[Node.Statement] = ctx.instructions.flatMap { insn =>
+      ctx.instructionIndex += 1
+      val stmts = insn match {
         case i: FieldInsnNode => transpile(ctx, i)
         case i: FrameNode => transpile(ctx, i)
         case i: InsnNode => transpile(ctx, i)
@@ -56,14 +57,16 @@ trait MethodTranspiler extends
         case i: MethodInsnNode => transpile(ctx, i)
         case i => sys.error(s"Unknown instruction: $i")
       }
-      stmts.headOption.zip(ctx.wrapNextStatement).headOption.foreach { case (headStmt, fn) =>
-        stmts = fn(headStmt) +: stmts.tail
-        ctx.wrapNextStatement = None
+      // Run through the last statement handler if there is one
+      ctx.peekStatementHandler match {
+        case None => stmts
+        case Some(handler) => handler(stmts)
       }
-      stmts
     }
 
-    removeUnusedLabelsFromStmts(ctx, stmts)
+    stmts = removeUnusedLabelsFromStmts(ctx, stmts)
+    stmts = addTempVars(ctx, stmts)
+    stmts
   }
 
   private[this] def removeUnusedLabelsFromStmts(ctx: Context, stmts: Seq[Node.Statement]): Seq[Node.Statement] = {
@@ -77,19 +80,54 @@ trait MethodTranspiler extends
         other
     }
   }
+
+  private[this] def addTempVars(ctx: Context, stmts: Seq[Node.Statement]): Seq[Node.Statement] = {
+    if (ctx.stack.tempVars.isEmpty) stmts
+    else Node.DeclarationStatement(
+      Node.GenericDeclaration(
+        token = Node.Token.Var,
+        specifications = ctx.stack.tempVars.toSeq.map { case (typ, tempVars) =>
+          Node.ValueSpecification(
+            names = tempVars.map(_.expr),
+            typ = Some(ctx.classCtx.typeToGoType(typ)),
+            values = Nil
+          )
+        }
+      )
+    ) +: stmts
+  }
 }
 
 object MethodTranspiler extends MethodTranspiler {
+  type StatementHandler = Seq[Node.Statement] => Seq[Node.Statement]
+
   case class Context(
     classCtx: ClassTranspiler.Context,
     methodNode: MethodNode,
     stack: MutableMethodStack = new MutableMethodStack()
   ) {
     // TODO: move this mutable stuff out
-    var wrapNextStatement = Option.empty[Node.Statement => Node.Statement]
     var usedLabels = Set.empty[String]
-
+    private[this] var statementHandlerStack = Seq.empty[StatementHandler]
     lazy val methodType = Type.getMethodType(methodNode.desc)
+    lazy val instructions = methodNode.instructionIter.toList
+
+    var instructionIndex = -1;
+
+    def previousInstructions = instructions.slice(0, instructionIndex + 1)
+
+    def pushStatementHandler(handler: StatementHandler): Unit =
+      statementHandlerStack.synchronized(statementHandlerStack :+= handler)
+
+    def peekStatementHandler(): Option[StatementHandler] =
+      statementHandlerStack.synchronized(statementHandlerStack.lastOption)
+
+    def popStatementHandler(): Option[StatementHandler] =
+      statementHandlerStack.synchronized {
+        val ret = statementHandlerStack.lastOption
+        if (ret.isDefined) statementHandlerStack = statementHandlerStack.dropRight(1)
+        ret
+      }
 
     def nullPointerAssertion(expr: Node.Expression): Node.Statement = {
       Node.IfStatement(
@@ -125,6 +163,14 @@ object MethodTranspiler extends MethodTranspiler {
         case _ =>
           sys.error(s"Unable to convert from type $oldType to $typ")
       }
+    }
+
+    def staticClassRefExpr(internalName: String): Node.Expression = {
+      // As a special case, if they want this class's static ref and we're inside the static init
+      // of ourselves, only give the var
+      if (methodNode.name == "<clinit>" && internalName == classCtx.classNode.name) {
+        goStaticVarName(internalName).toIdent
+      } else classCtx.staticClassRefExpr(internalName)
     }
   }
 }

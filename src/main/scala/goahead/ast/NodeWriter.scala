@@ -107,7 +107,9 @@ class NodeWriter {
     case g: GenericDeclaration => appendGenericDeclaration(g)
   }
 
-  def appendDeclarationStatement(stmt: DeclarationStatement): this.type = __TODO__
+  def appendDeclarationStatement(stmt: DeclarationStatement): this.type = {
+    appendDeclaration(stmt.declaration)
+  }
 
   def appendDeferStatement(stmt: DeferStatement): this.type = __TODO__
 

@@ -12,7 +12,7 @@ trait FieldInsnTranspiler {
       case Opcodes.GETSTATIC =>
         ctx.stack.push(
           expr = Node.SelectorExpression(
-            ctx.classCtx.staticClassRefExpr(insn.owner),
+            ctx.staticClassRefExpr(insn.owner),
             goFieldName(insn.owner, insn.name).toIdent
           ),
           typ = Type.getType(insn.desc)
@@ -23,7 +23,7 @@ trait FieldInsnTranspiler {
           Node.AssignStatement(
             left = Seq(
               Node.SelectorExpression(
-                ctx.classCtx.staticClassRefExpr(insn.owner),
+                ctx.staticClassRefExpr(insn.owner),
                 goFieldName(insn.owner, insn.name).toIdent
               )
             ),

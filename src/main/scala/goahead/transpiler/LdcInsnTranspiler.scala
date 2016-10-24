@@ -20,7 +20,7 @@ trait LdcInsnTranspiler {
           ),
           typ = StringType
         )
-        Seq.empty
+        Nil
       case cst =>
         sys.error(s"Unrecognized LDC type: $cst")
     }
