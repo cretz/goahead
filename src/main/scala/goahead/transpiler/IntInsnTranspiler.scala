@@ -10,7 +10,7 @@ trait IntInsnTranspiler {
   def transpile(ctx: MethodTranspiler.Context, insn: IntInsnNode): Seq[Node.Statement] = {
     insn.getOpcode match {
       case Opcodes.BIPUSH =>
-        ctx.stack.push(insn.operand.toLit, Type.INT_TYPE)
+        ctx.stack.push(insn.operand.toLit, Type.INT_TYPE, cheapRef = true)
       case code =>
         sys.error(s"Unrecognized opcode: $code")
     }

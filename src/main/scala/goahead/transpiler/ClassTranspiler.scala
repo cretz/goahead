@@ -18,8 +18,43 @@ trait ClassTranspiler {
   }
 
   def instance(ctx: Context): Seq[Node.Declaration] = {
-    // TODO
-    Nil
+
+    val instanceStruct = Node.GenericDeclaration(
+      token = Node.Token.Type,
+      specifications = Seq(
+        Node.TypeSpecification(
+          name = ctx.instanceObjectName.toIdent,
+          typ = Node.StructType(instanceFields(ctx))
+        )
+      )
+    )
+
+    Seq(instanceStruct) ++ instanceMethods(ctx)
+  }
+
+  def instanceFields(ctx: Context): Seq[Node.Field] = {
+    val fields = ctx.classNode.fieldNodes.collect {
+      case node if !node.access.isAccessStatic =>
+        Node.Field(
+          names = Seq(goFieldName(ctx.classNode.name, node.name).toIdent),
+          typ = ctx.typeToGoType(Type.getType(node.desc))
+        )
+    }
+    // If there is a super class, it is embedded
+    if (!ctx.classNode.access.isAccessSuper) fields
+    else {
+      Node.Field(
+        names = Nil,
+        typ = ctx.typeToGoType(Type.getObjectType(ctx.classNode.superName))
+      ) +: fields
+    }
+  }
+
+  def instanceMethods(ctx: Context): Seq[Node.FunctionDeclaration] = {
+    ctx.classNode.methodNodes.collect {
+      case node if !node.access.isAccessStatic =>
+        ctx.transpileCtx.methodTranspiler.transpile(ctx, node)
+    }
   }
 
   def static(ctx: Context): Seq[Node.Declaration] = {
@@ -57,7 +92,29 @@ trait ClassTranspiler {
       )))
     )
 
-    Seq(staticStruct, staticVar, staticAccessor) ++ staticMethods(ctx)
+    val staticNew = Node.FunctionDeclaration(
+      receivers = Seq(ctx.staticThisField),
+      name = "New".toIdent,
+      typ = Node.FunctionType(Nil, Seq(Node.Field(Nil, ctx.instancePointerExpr))),
+      body = Some(Node.BlockStatement(Seq(
+        Node.ReturnStatement(Seq(
+          Node.UnaryExpression(
+            operator = Node.Token.And,
+            operand = Node.CompositeLiteral(
+              typ = Some(ctx.classRefExpr(ctx.classNode.name, false)),
+              elements = if (!ctx.classNode.access.isAccessSuper) Nil else Seq(
+                Node.KeyValueExpression(
+                  key = goInstanceObjectName(ctx.classNode.superName).toIdent,
+                  value = ctx.staticNewExpr(ctx.classNode.superName)
+                )
+              )
+            )
+          )
+        ))
+      )))
+    )
+
+    Seq(staticStruct, staticVar, staticAccessor, staticNew) ++ staticMethods(ctx)
   }
 
   def staticFields(ctx: Context, includeSyncOnce: Boolean): Seq[Node.Field] = {
@@ -119,8 +176,13 @@ object ClassTranspiler extends ClassTranspiler {
     transpileCtx: Transpiler.Context,
     classNode: ClassNode
   ) {
+    lazy val instanceObjectName = goInstanceObjectName(classNode.name)
+    lazy val instancePointerExpr = typeToGoType(Type.getObjectType(classNode.name))
+    lazy val instanceThisField = Node.Field(Seq("this".toIdent), instancePointerExpr)
     lazy val staticObjectName = goStaticObjectName(classNode.name)
     lazy val staticVarName = goStaticVarName(classNode.name)
+    lazy val staticPointerExpr = Node.StarExpression(classRefExpr(classNode.name, true))
+    lazy val staticThisField = Node.Field(Seq("this".toIdent), staticPointerExpr)
 
     def importQualifiedIdent(internalClassName: String, ident: Node.Identifier): Node.Expression = {
       transpileCtx.classPath.findClassDir(internalClassName) match {
@@ -140,14 +202,6 @@ object ClassTranspiler extends ClassTranspiler {
       importQualifiedIdent(
         internalClassName = internalName,
         ident = (if (static) goStaticObjectName(internalName) else goInstanceObjectName(internalName)).toIdent
-      )
-    }
-
-    def constructorRefExpr(internalClassName: String, desc: Type): Node.Expression = {
-      // Constructors are on the static var
-      Node.SelectorExpression(
-        staticClassRefExpr(internalClassName),
-        goMethodName("<init>", desc).toIdent
       )
     }
 
@@ -185,8 +239,12 @@ object ClassTranspiler extends ClassTranspiler {
       )
     }
 
-    def staticClassRefExpr(internalName: String): Node.Expression = {
+    def staticClassRefExpr(internalName: String): Node.CallExpression = {
       Node.CallExpression(importQualifiedIdent(internalName, goStaticAccessorName(internalName).toIdent))
+    }
+
+    def staticNewExpr(internalName: String): Node.CallExpression = {
+      Node.CallExpression(Node.SelectorExpression(staticClassRefExpr(internalName), "New".toIdent))
     }
   }
 }

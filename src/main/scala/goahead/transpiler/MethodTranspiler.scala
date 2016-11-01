@@ -1,13 +1,9 @@
 package goahead.transpiler
 
 import goahead.ast.Node
-import org.objectweb.asm.tree._
-
-import scala.collection.JavaConversions._
 import goahead.transpiler.Helpers._
-import org.objectweb.asm.Type
-
-import scala.annotation.tailrec
+import org.objectweb.asm.{Label, Type}
+import org.objectweb.asm.tree.{AbstractInsnNode, _}
 
 trait MethodTranspiler extends
   FieldInsnTranspiler
@@ -18,6 +14,8 @@ trait MethodTranspiler extends
   with LdcInsnTranspiler
   with LineNumberTranspiler
   with MethodInsnTranspiler
+  with TypeInsnTranspiler
+  with VarInsnTranspiler
   with ZeroOpInsnTranspiler
 {
 
@@ -27,14 +25,10 @@ trait MethodTranspiler extends
     transpile(Context(classCtx, methodNode))
 
   def transpile(ctx: Context): Node.FunctionDeclaration = {
+    ctx.pushBuilder(baseStatementBuilder)
     Node.FunctionDeclaration(
       receivers = Seq(
-        Node.Field(
-          names = Seq("this".toIdent),
-          typ = Node.StarExpression(
-            ctx.classCtx.classRefExpr(ctx.classCtx.classNode.name, ctx.methodNode.access.isAccessStatic)
-          )
-        )
+        if (ctx.methodNode.access.isAccessStatic) ctx.classCtx.staticThisField else ctx.classCtx.instanceThisField
       ),
       name = goMethodName(ctx.methodNode.name, ctx.methodType).toIdent,
       typ = ctx.classCtx.methodToFunctionType(ctx.methodType.getReturnType, ctx.methodType.getArgumentTypes),
@@ -45,28 +39,93 @@ trait MethodTranspiler extends
   def transpileInsns(ctx: Context): Seq[Node.Statement] = {
     var stmts: Seq[Node.Statement] = ctx.instructions.flatMap { insn =>
       ctx.instructionIndex += 1
-      val stmts = insn match {
-        case i: FieldInsnNode => transpile(ctx, i)
-        case i: FrameNode => transpile(ctx, i)
-        case i: InsnNode => transpile(ctx, i)
-        case i: IntInsnNode => transpile(ctx, i)
-        case i: JumpInsnNode => transpile(ctx, i)
-        case i: LabelNode => transpile(ctx, i)
-        case i: LdcInsnNode => transpile(ctx, i)
-        case i: LineNumberNode => transpile(ctx, i)
-        case i: MethodInsnNode => transpile(ctx, i)
-        case i => sys.error(s"Unknown instruction: $i")
-      }
-      // Run through the last statement handler if there is one
-      ctx.peekStatementHandler match {
-        case None => stmts
-        case Some(handler) => handler(stmts)
+      val currentBuilder = ctx.currentBuilder.get
+      currentBuilder.fn(ctx, insn, currentBuilder.parent)
+    }
+
+    stmts = addTryCatchBlocks(ctx, stmts)
+    stmts = removeUnusedLabelsFromStmts(ctx, stmts)
+    stmts = addTempVars(ctx, stmts)
+    // TODO: add local vars
+    stmts
+  }
+
+  def baseStatementBuilder(
+    ctx: Context,
+    insn: AbstractInsnNode,
+    parent: Option[StatementBuilder]
+  ): Seq[Node.Statement] = {
+    val stmts = insn match {
+      case i: FieldInsnNode => transpile(ctx, i)
+      case i: FrameNode => transpile(ctx, i)
+      case i: InsnNode => transpile(ctx, i)
+      case i: IntInsnNode => transpile(ctx, i)
+      case i: JumpInsnNode => transpile(ctx, i)
+      case i: LabelNode => transpile(ctx, i)
+      case i: LdcInsnNode => transpile(ctx, i)
+      case i: LineNumberNode => transpile(ctx, i)
+      case i: MethodInsnNode => transpile(ctx, i)
+      case i: TypeInsnNode => transpile(ctx, i)
+      case i: VarInsnNode => transpile(ctx, i)
+      case i => sys.error(s"Unknown instruction: $i")
+    }
+    // Run through the last statement handler if there is one
+    ctx.peekStatementHandler match {
+      case None => stmts
+      case Some(handler) => handler(stmts)
+    }
+  }
+
+  private[this] def addTryCatchBlocks(ctx: Context, stmts: Seq[Node.Statement]): Seq[Node.Statement] = {
+    case class Scope(start: Label, end: Label)
+    case class Handler(label: Label, exType: Option[String])
+
+    val blocks = ctx.methodNode.tryCatchBlockNodes.map { node =>
+      ctx.usedLabels += node.start.getLabel.toString
+      ctx.usedLabels += node.end.getLabel.toString
+      ctx.usedLabels += node.handler.getLabel.toString
+      Scope(node.start.getLabel, node.end.getLabel) -> Handler(node.handler.getLabel, Option(node.`type`))
+    }
+
+    val groupedBlocks = blocks.foldLeft(Seq.empty[(Scope, Seq[Handler])]) { case (grouped, (scope, handler)) =>
+      grouped.indexWhere(_._1 == scope) match {
+        case -1 => grouped :+ (scope -> Seq(handler))
+        case index =>
+          val existingScope = grouped(index)
+          grouped.updated(index, existingScope.copy(_2 = existingScope._2 :+ handler))
       }
     }
 
-    stmts = removeUnusedLabelsFromStmts(ctx, stmts)
-    stmts = addTempVars(ctx, stmts)
-    stmts
+    // Now that we have them grouped by common blocks in order, we'll wrap them in inner functions w/ defers
+    groupedBlocks.foldRight(stmts) { case ((scope, handlers), stmts) =>
+      // Wrap the statements from begin-to-end with labels on the outside
+      val withIndex = stmts.zipWithIndex
+      val Some((startStmt, startLabelIndex)) = withIndex.collectFirst {
+        case (Node.LabeledStatement(Node.Identifier(name), Some(stmt)), index) if name == scope.start.toString =>
+          stmt -> index
+      }
+      val Some(endIndex) = withIndex.collectFirst {
+        case (Node.LabeledStatement(Node.Identifier(name), _), index) if name == scope.end.toString =>
+          index
+      }
+
+      // Now that we have the range, extract it to an anonymous func in the label
+      val newLabel = Node.LabeledStatement(
+        label = scope.start.toString.toIdent,
+        statement = Some(Node.ExpressionStatement(
+          Node.CallExpression(
+            function = Node.FunctionLiteral(
+              typ = Node.FunctionType(Nil, Nil),
+              // TODO: add defer in here
+              body = Node.BlockStatement(startStmt +: stmts.slice(startLabelIndex + 1, endIndex))
+            )
+          )
+        ))
+      )
+
+      // Patch the existing statement set
+      stmts.patch(startLabelIndex, Seq(newLabel), endIndex - startLabelIndex)
+    }
   }
 
   private[this] def removeUnusedLabelsFromStmts(ctx: Context, stmts: Seq[Node.Statement]): Seq[Node.Statement] = {
@@ -100,6 +159,12 @@ trait MethodTranspiler extends
 
 object MethodTranspiler extends MethodTranspiler {
   type StatementHandler = Seq[Node.Statement] => Seq[Node.Statement]
+  type StatementBuilderFn = (Context, AbstractInsnNode, Option[StatementBuilder]) => Seq[Node.Statement]
+
+  case class StatementBuilder(
+    parent: Option[StatementBuilder],
+    fn: StatementBuilderFn
+  )
 
   case class Context(
     classCtx: ClassTranspiler.Context,
@@ -111,8 +176,18 @@ object MethodTranspiler extends MethodTranspiler {
     private[this] var statementHandlerStack = Seq.empty[StatementHandler]
     lazy val methodType = Type.getMethodType(methodNode.desc)
     lazy val instructions = methodNode.instructionIter.toList
+    var instructionIndex = -1
+    private[this] var localVariables = methodNode.debugLocalVariableNodes.map(v => v.index -> v).toMap
+    private[this] lazy val localThis = {
+      if (methodNode.access.isAccessStatic) None
+      else Some(localVariables.getOrElse(0, {
+        val thisVar = new LocalVariableNode("this", Type.getObjectType(classCtx.classNode.name).getDescriptor, null, null, null, 0)
+        localVariables += 0 -> thisVar
+        thisVar
+      }))
+    }
 
-    var instructionIndex = -1;
+    private[this] var labelExpectedStackVars = Map[String, ]
 
     def previousInstructions = instructions.slice(0, instructionIndex + 1)
 
@@ -129,6 +204,21 @@ object MethodTranspiler extends MethodTranspiler {
         ret
       }
 
+    var currentBuilder = Option.empty[StatementBuilder]
+
+    def pushBuilder(fn: StatementBuilderFn): Unit = {
+      currentBuilder = Some(StatementBuilder(
+        parent = currentBuilder,
+        fn = fn
+      ))
+    }
+
+    def popBuilder(): Unit = {
+      currentBuilder = currentBuilder.flatMap(_.parent)
+    }
+
+    /*
+    TODO: we'll handle this stuff as a panic
     def nullPointerAssertion(expr: Node.Expression): Node.Statement = {
       Node.IfStatement(
         condition = Node.BinaryExpression(
@@ -144,6 +234,7 @@ object MethodTranspiler extends MethodTranspiler {
         )))
       )
     }
+    */
 
     def throwError(expr: Node.Expression): Node.Statement = {
       Node.ExpressionStatement(Node.CallExpression("panic".toIdent, Seq(expr)))
@@ -171,6 +262,15 @@ object MethodTranspiler extends MethodTranspiler {
       if (methodNode.name == "<clinit>" && internalName == classCtx.classNode.name) {
         goStaticVarName(internalName).toIdent
       } else classCtx.staticClassRefExpr(internalName)
+    }
+
+    def localVariable(index: Int, lazilyCreateWithDesc: String): LocalVariableNode = {
+      if (index == 0 && !methodNode.access.isAccessStatic) localThis.get
+      else localVariables.getOrElse(index, {
+        val localVariable = new LocalVariableNode(s"arg$index", lazilyCreateWithDesc, null, null, null, index)
+        localVariables += index -> localVariable
+        localVariable
+      })
     }
   }
 }

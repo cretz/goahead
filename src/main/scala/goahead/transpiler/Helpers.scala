@@ -2,7 +2,7 @@ package goahead.transpiler
 
 import goahead.ast.Node
 import org.objectweb.asm.{Opcodes, Type}
-import org.objectweb.asm.tree.{AbstractInsnNode, ClassNode, FieldNode, MethodNode}
+import org.objectweb.asm.tree._
 
 object Helpers {
 
@@ -30,6 +30,8 @@ object Helpers {
     if (pieces.isEmpty) "__ROOT" else pieces.mkString("__").capitalize
 
   def goClassSuffix(simpleName: String): String = s"__$simpleName"
+
+  def goVarName(name: String): String = name
 
   def goFieldName(owner: String, name: String): String = name.capitalize
 
@@ -80,6 +82,7 @@ object Helpers {
   implicit class RichInt(val int: Int) extends AnyVal {
     @inline
     def isAccess(access: Int) = (int & access) == access
+    def isAccessSuper = isAccess(Opcodes.ACC_SUPER)
     def isAccessInterface = isAccess(Opcodes.ACC_INTERFACE)
     def isAccessStatic = isAccess(Opcodes.ACC_STATIC)
 
@@ -102,6 +105,16 @@ object Helpers {
     def instructionIter = {
       import scala.collection.JavaConverters._
       methodNode.instructions.iterator.asScala.asInstanceOf[Iterator[AbstractInsnNode]]
+    }
+
+    def debugLocalVariableNodes = {
+      import scala.collection.JavaConverters._
+      methodNode.localVariables.asScala.asInstanceOf[Seq[LocalVariableNode]]
+    }
+
+    def tryCatchBlockNodes = {
+      import scala.collection.JavaConverters._
+      methodNode.tryCatchBlocks.asScala.asInstanceOf[Seq[TryCatchBlockNode]]
     }
   }
 }

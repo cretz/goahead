@@ -1,8 +1,6 @@
 package goahead.ast
 
-import java.lang
-
-import Node._
+import goahead.ast.Node._
 
 object NodeWriter {
   def fromNode(node: Node): String = new NodeWriter().appendNode(node).toString()
@@ -45,6 +43,45 @@ class NodeWriter {
       f(node)
     }
     this
+  }
+
+  case class PaddedNodeSection[N <: Node](leftMax: Option[Int], nodes: Seq[N])
+
+  def paddedLeftLength(node: Node): Option[Int] = node match {
+    case Node.Field(names, _, _) =>
+      // Add 2 for each comma+space in between
+      Some(names.map(_.name.length).sum + ((names.size - 1) * 2))
+    case Node.KeyValueExpression(Node.Identifier(ident), _) =>
+      // Add 1 for the colon
+      Some(ident.length + 1)
+    case _ =>
+      None
+  }
+
+  def paddedSections[N <: Node](nodes: Seq[N]): Seq[PaddedNodeSection[N]] = {
+    nodes.foldLeft(Seq.empty[PaddedNodeSection[N]]) { case (sections, node) =>
+      paddedLeftLength(node) match {
+        case Some(leftLength) => sections.lastOption match {
+          case Some(PaddedNodeSection(Some(leftMax), nodes)) =>
+            sections.dropRight(1) :+ PaddedNodeSection(Some(leftLength.max(leftMax)), nodes :+ node)
+          case _ =>
+            sections :+ PaddedNodeSection(Some(leftLength), nodes = Seq(node))
+        }
+        case None => sections.lastOption match {
+          case Some(PaddedNodeSection(None, nodes)) =>
+            sections.dropRight(1) :+ PaddedNodeSection(None, nodes :+ node)
+          case _ =>
+            sections :+ PaddedNodeSection(None, nodes = Seq(node))
+        }
+      }
+    }
+  }
+
+  def appendPaddingFromFirstNonWhitespace(max: Int): this.type = {
+    // First non-whitespace character is the start
+    val latestNewline = builder.lastIndexOf("\n")
+    val start = builder.indexWhere(!_.isWhitespace, latestNewline + 1)
+    append(" " * (max - ((builder.length - 1) - start)))
   }
 
   def appendArrayType(expr: ArrayType): this.type = {
@@ -100,7 +137,19 @@ class NodeWriter {
 
   def appendComment(node: Comment): this.type = __TODO__
 
-  def appendCompositeLiteral(expr: CompositeLiteral): this.type = __TODO__
+  def appendCompositeLiteral(expr: CompositeLiteral): this.type = {
+    expr.typ.foreach(appendExpression)
+    append('{').indent()
+    paddedSections(expr.elements).foreach { section =>
+      section.nodes.foreach {
+        case kv: Node.KeyValueExpression => newline().appendKeyValueExpression(kv, section.leftMax).append(',')
+        case n => newline().appendExpression(n).append(',')
+      }
+    }
+    dedent()
+    if (expr.elements.nonEmpty) newline()
+    append('}')
+  }
 
   def appendDeclaration(decl: Declaration): this.type = decl match {
     case f: FunctionDeclaration => appendFunctionDeclaration(f)
@@ -130,7 +179,7 @@ class NodeWriter {
     case i: Identifier => appendIdentifier(i)
     case i: IndexExpression => appendIndexExpression(i)
     case i: InterfaceType => appendInterfaceType(i)
-    case k: KeyValueExpression => appendKeyValueExpression(k)
+    case k: KeyValueExpression => appendKeyValueExpression(k, None)
     case m: MapType => appendMapType(m)
     case p: ParenthesizedExpression => appendParenthesizedExpression(p)
     case s: SelectorExpression => appendSelectorExpression(s)
@@ -144,12 +193,8 @@ class NodeWriter {
   def appendExpressionStatement(stmt: ExpressionStatement): this.type = appendExpression(stmt.expression)
 
   def appendField(field: Field, padNameTo: Option[Int] = None): this.type = {
-    val namesLength = field.names.map(_.name.length).sum
-    commaSeparated(field.names, appendIdentifier)
-    if (field.names.nonEmpty) {
-      padNameTo.foreach { v => append(" " * (v - (namesLength + ((field.names.length - 1) * 2)))) }
-      append(" ")
-    }
+    if (field.names.nonEmpty) commaSeparated(field.names, appendIdentifier).append(" ")
+    padNameTo.foreach(appendPaddingFromFirstNonWhitespace)
     appendExpression(field.typ)
     field.tag.foreach { append(' ').appendBasicLiteral(_) }
     this
@@ -226,7 +271,11 @@ class NodeWriter {
 
   def appendInterfaceType(expr: InterfaceType): this.type = __TODO__
 
-  def appendKeyValueExpression(expr: KeyValueExpression): this.type = __TODO__
+  def appendKeyValueExpression(expr: KeyValueExpression, padLeftTo: Option[Int]): this.type = {
+    appendExpression(expr.key).append(':')
+    padLeftTo.foreach(appendPaddingFromFirstNonWhitespace)
+    appendExpression(expr.value)
+  }
 
   def appendLabeledStatement(stmt: LabeledStatement): this.type = {
     // Remove all characters back to last newline
@@ -314,14 +363,10 @@ class NodeWriter {
     if (expr.fields.isEmpty) append("struct{}")
     else {
       append("struct {").indent()
-      val padTo = expr.fields.map({ f =>
-        if (f.names.isEmpty) 0
-        else f.names.map(_.name.length).sum + (2 * (f.names.length - 1))
-      }).max
-      expr.fields.foreach { f => newline().appendField(f, Some(padTo)) }
-      dedent()
-      if (expr.fields.isEmpty) append(' ') else newline()
-      append('}')
+      paddedSections(expr.fields).foreach { section =>
+        section.nodes.foreach { f => newline().appendField(f, section.leftMax) }
+      }
+      dedent().newline().append('}')
     }
   }
 

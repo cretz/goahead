@@ -11,11 +11,15 @@ class MutableMethodStack {
 
   private[this] var tempVariables = Map.empty[Type, Seq[MutableMethodStack.Entry.TempVarAssignEntry]]
 
-  def push(expr: Node.Expression, typ: Type): Unit =
-    push(MutableMethodStack.Entry.SimpleExprEntry(expr, typ))
+  def push(expr: Node.Expression, typ: Type, cheapRef: Boolean): Unit =
+    push(MutableMethodStack.Entry(expr, typ, cheapRef))
 
-  def push(entry: MutableMethodStack.Entry): Unit =
+  def push(entry: MutableMethodStack.Entry): Unit = {
+    if (entry.isInstanceOf[MutableMethodStack.Entry.TempVarAssignEntry]) {
+      entry.asInstanceOf[MutableMethodStack.Entry.TempVarAssignEntry].inUseCount += 1
+    }
     stack :+= entry
+  }
 
   def pop(): MutableMethodStack.Entry =
     pop(1).head
@@ -26,12 +30,12 @@ class MutableMethodStack {
     stack = leftover
     // If there are any temp variables, we have to mark them unused again
     popped.collect {
-      case t: MutableMethodStack.Entry.TempVarAssignEntry => t.inUse = false
+      case t: MutableMethodStack.Entry.TempVarAssignEntry => t.inUseCount -= 1
     }
     popped
   }
 
-  def useTempVar(typ: Type): Node.Identifier = {
+  def newTempVar(typ: Type): MutableMethodStack.Entry.TempVarAssignEntry = {
     // Try to find an unused one of the type, otherwise create anew
     val possibles = tempVariables.getOrElse(typ, Nil)
     val ret = possibles.find(!_.inUse).getOrElse {
@@ -40,9 +44,13 @@ class MutableMethodStack {
       tempVariables += typ -> (possibles :+ tmpVar)
       tmpVar
     }
-    ret.inUse = true
-    push(ret)
-    ret.expr
+    ret
+  }
+
+  def pushTempVar(typ: Type): Node.Identifier = {
+    val tempVar = newTempVar(typ)
+    push(tempVar)
+    tempVar.expr
   }
 
   def tempVars = tempVariables
@@ -52,12 +60,18 @@ object MutableMethodStack {
   trait Entry {
     def expr: Node.Expression
     def typ: Type
+    def cheapRef: Boolean
   }
 
   object Entry {
+
+    def apply(expr: Node.Expression, typ: Type, cheapRef: Boolean): Entry =
+      SimpleExprEntry(expr, typ, cheapRef)
+
     case class SimpleExprEntry(
       expr: Node.Expression,
-      typ: Type
+      typ: Type,
+      cheapRef: Boolean
     ) extends Entry
 
     class TempVarAssignEntry(
@@ -65,7 +79,11 @@ object MutableMethodStack {
       val typ: Type
     ) extends Entry {
       @volatile
-      var inUse = false
+      var inUseCount = 0
+
+      def inUse = inUseCount > 0
+
+      override def cheapRef = true
     }
   }
 }

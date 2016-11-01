@@ -10,7 +10,8 @@ trait TypeInsnTranspiler {
   def transpile(ctx: MethodTranspiler.Context, insn: TypeInsnNode): Seq[Node.Statement] = {
     insn.getOpcode match {
       case Opcodes.NEW =>
-        // No-op, we let the <init> do this
+        // Just create the struct and put the entire instantiation on the stack
+        ctx.stack.push(ctx.classCtx.staticNewExpr(insn.desc), Type.getObjectType(insn.desc), cheapRef = false)
         Nil
       case code =>
         sys.error(s"Unrecognized opcode: $code")

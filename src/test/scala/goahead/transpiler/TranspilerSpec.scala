@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 import com.google.common.io.{ByteStreams, CharStreams}
 import goahead.ast.{Node, NodeWriter}
 import goahead.{BaseSpec, ExpectedOutput}
-import goahead.testclasses.{HelloWorld, StaticFields}
+import goahead.testclasses._
 
 import scala.util.Try
 import org.scalatest.Assertions._
@@ -18,7 +18,9 @@ class TranspilerSpec extends BaseSpec {
 
   val defaultClassDirs = Map(
     "java/lang/NullPointerException" -> "rt",
+    "java/lang/Object" -> "rt",
     "java/lang/String" -> "rt",
+    "java/lang/StringBuilder" -> "rt",
     "java/lang/System" -> "rt"
   )
 
@@ -118,8 +120,10 @@ class TranspilerSpec extends BaseSpec {
 
 object TranspilerSpec {
   val testCases = Seq(
-//    TestCase(classOf[HelloWorld])
-    TestCase(classOf[StaticFields])
+//    TestCase(classOf[HelloWorld]),
+//    TestCase(classOf[StaticFields]),
+//    TestCase(classOf[SimpleInstance]),
+    TestCase(classOf[TryCatch])
   )
 
   case class TestCase(

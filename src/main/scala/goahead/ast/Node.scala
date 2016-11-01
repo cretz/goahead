@@ -37,7 +37,7 @@ object Node {
     body: BlockStatement
   ) extends Expression
 
-  class CompositeLiteral(
+  case class CompositeLiteral(
     typ: Option[Expression],
     elements: Seq[Expression]
   ) extends Expression
@@ -128,8 +128,7 @@ object Node {
 
   case class LabeledStatement(
     label: Identifier,
-    // We know we differ from golang here
-    statement: Option[Statement] = None
+    statement: Statement
   ) extends Statement
 
   case class ExpressionStatement(expression: Expression) extends Statement

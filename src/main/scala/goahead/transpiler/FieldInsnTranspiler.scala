@@ -9,15 +9,42 @@ trait FieldInsnTranspiler {
 
   def transpile(ctx: MethodTranspiler.Context, insn: FieldInsnNode): Seq[Node.Statement] = {
     insn.getOpcode match {
+      case Opcodes.GETFIELD =>
+        ctx.stack.push(
+          expr = Node.SelectorExpression(
+            ctx.stack.pop.expr,
+            goFieldName(insn.owner, insn.name).toIdent
+          ),
+          typ = Type.getType(insn.desc),
+          cheapRef = true
+        )
+        Nil
       case Opcodes.GETSTATIC =>
         ctx.stack.push(
           expr = Node.SelectorExpression(
             ctx.staticClassRefExpr(insn.owner),
             goFieldName(insn.owner, insn.name).toIdent
           ),
-          typ = Type.getType(insn.desc)
+          typ = Type.getType(insn.desc),
+          cheapRef = true
         )
         Nil
+      case Opcodes.PUTFIELD =>
+        val Seq(objectRef, value) = ctx.stack.pop(2)
+        Seq(
+          Node.AssignStatement(
+            left = Seq(
+              Node.SelectorExpression(
+                objectRef.expr,
+                goFieldName(insn.owner, insn.name).toIdent
+              )
+            ),
+            token = Node.Token.Assign,
+            right = Seq {
+              ctx.exprToType(value.expr, value.typ, Type.getType(insn.desc))
+            }
+          )
+        )
       case Opcodes.PUTSTATIC =>
         Seq(
           Node.AssignStatement(
