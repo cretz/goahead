@@ -282,8 +282,7 @@ class NodeWriter {
     // builder.delete(builder.lastIndexOf("\n") + 1, builder.length)
     // Actually, We need to remove one level of indention which is really just the last \t char
     builder.deleteCharAt(builder.length - 1)
-    appendIdentifier(stmt.label).append(':')
-    stmt.statement.foreach { newline().appendStatement(_) }
+    appendIdentifier(stmt.label).append(':').newline().appendStatement(stmt.statement)
     this
   }
 

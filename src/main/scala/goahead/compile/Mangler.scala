@@ -7,6 +7,8 @@ trait Mangler {
   def instanceObjectName(internalName: String): String
   def methodName(name: String, desc: String): String
   def staticAccessorName(internalName: String): String
+  def staticObjectName(internalName: String): String
+  def staticVarName(internalName: String): String
 }
 
 object Mangler {
@@ -54,9 +56,9 @@ object Mangler {
 
     override def staticAccessorName(internalName: String): String = objectNamePrefix(internalName)
 
-    private[this] def staticObjectName(internalName: String): String = objectNamePrefix(internalName) + "__Static"
+    override def staticObjectName(internalName: String): String = objectNamePrefix(internalName) + "__Static"
 
-    private[this] def staticVarName(internalName: String): String = objectNamePrefix(internalName) + "__Var"
+    override def staticVarName(internalName: String): String = objectNamePrefix(internalName) + "__Var"
 
     private[this] def typeToNameString(typ: Type): String = typ.getSort match {
       case Type.BOOLEAN => "Z"

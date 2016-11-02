@@ -1,8 +1,11 @@
 package goahead.compile
 
+import java.io.{PrintWriter, StringWriter}
+
 import goahead.ast.Node
-import org.objectweb.asm.{Opcodes, Type}
 import org.objectweb.asm.tree._
+import org.objectweb.asm.util.{Textifier, TraceMethodVisitor}
+import org.objectweb.asm.{Opcodes, Type}
 
 object Helpers {
 
@@ -12,66 +15,78 @@ object Helpers {
   val StringType = Type.getType(classOf[String])
   val NilExpr = "nil".toIdent
 
-  def importQualifiedName(
-    imports: Imports,
-    internalClassName: String,
-    ident: String
-  ): (Imports, Node.Expression) = {
-    imports.classPath.findClassDir(internalClassName) match {
-      case None =>
-        sys.error(s"Class not found: $internalClassName")
-      case Some("") =>
-        imports -> ident.toIdent
-      case Some(dir) =>
-        val (newImports, alias) = imports.withImportAlias(dir)
-        newImports -> alias.dot(ident)
+  implicit class RichContextual[T <: Contextual[T]](val ctx: T) extends AnyVal {
+
+    def withImportAlias(dir: String): (T, String) = {
+      val (newImports, alias) = ctx.imports.withImportAlias(dir)
+      ctx.updatedImports(newImports) -> alias
     }
-  }
 
-  def newString(imports: Imports, v: String): (Imports, Node.CallExpression) = {
-    val (newImports, alias) = imports.withImportAlias("rt")
-    newImports -> alias.toIdent.call(v.toLit.singleSeq)
-  }
-
-  def typeToGoType(imports: Imports, typ: Type)(implicit m: Mangler): (Imports, Node.Expression) = {
-    typ.getSort match {
-      case Type.BOOLEAN => imports -> "bool".toIdent
-      case Type.CHAR => imports -> "rune".toIdent
-      case Type.SHORT => imports -> "int16".toIdent
-      case Type.INT => imports -> "int".toIdent
-      case Type.LONG => imports -> "int64".toIdent
-      case Type.FLOAT => imports -> "float32".toIdent
-      case Type.DOUBLE => imports -> "float64".toIdent
-      case Type.ARRAY =>
-        @inline
-        def arrayTypeFromGoType(typ: (Imports, Node.Expression)) = typ._1 -> Node.ArrayType(typ._2)
-        1.until(typ.getDimensions).foldLeft(arrayTypeFromGoType(typeToGoType(imports, typ.getElementType))) {
-          case ((localImports, arrayType), _) => arrayTypeFromGoType(localImports, arrayType)
-        }
-      case Type.OBJECT if imports.classPath.isInterface(typ.getInternalName) =>
-        importQualifiedName(imports, typ.getInternalName, m.instanceObjectName(typ.getInternalName))
-      case Type.OBJECT =>
-        val (newImports, expr) =
-          importQualifiedName(imports, typ.getInternalName, m.instanceObjectName(typ.getInternalName))
-        newImports -> expr.star
-      case sort => sys.error(s"Unrecognized type $sort")
+    def importQualifiedName(
+      internalClassName: String,
+      ident: String
+    ): (T, Node.Expression) = {
+      ctx.imports.classPath.findClassDir(internalClassName) match {
+        case None =>
+          sys.error(s"Class not found: $internalClassName")
+        case Some("") =>
+          ctx -> ident.toIdent
+        case Some(dir) =>
+          val (ctx, alias) = withImportAlias(dir)
+          ctx -> alias.dot(ident)
+      }
     }
-  }
 
-  def staticInstRefExpr(
-    imports: Imports,
-    internalName: String
-  )(implicit m: Mangler): (Imports, Node.CallExpression) = {
-    val (newImports, expr) = importQualifiedName(imports, internalName, m.staticAccessorName(internalName))
-    newImports -> expr.call()
-  }
+    def newString(v: String): (T, Node.CallExpression) = {
+      withImportAlias("rt").leftMap { case (ctx, alias) =>
+        ctx -> alias.toIdent.sel("NewString").call(v.toLit.singleSeq)
+      }
+    }
 
-  def staticNewExpr(
-    imports: Imports,
-    internalName: String
-  )(implicit m: Mangler): (Imports, Node.CallExpression) = {
-    val (newImports, staticRef) = staticInstRefExpr(imports, internalName)
-    newImports -> staticRef.call("New".toIdent.singleSeq)
+    def typeToGoType(typ: Type): (T, Node.Expression) = {
+      typ.getSort match {
+        case Type.BOOLEAN => ctx -> "bool".toIdent
+        case Type.CHAR => ctx -> "rune".toIdent
+        case Type.SHORT => ctx -> "int16".toIdent
+        case Type.INT => ctx -> "int".toIdent
+        case Type.LONG => ctx -> "int64".toIdent
+        case Type.FLOAT => ctx -> "float32".toIdent
+        case Type.DOUBLE => ctx -> "float64".toIdent
+        case Type.ARRAY =>
+          @inline
+          def arrayTypeFromGoType(typ: (T, Node.Expression)) = typ._1 -> Node.ArrayType(typ._2)
+          1.until(typ.getDimensions).foldLeft(arrayTypeFromGoType(typeToGoType(typ.getElementType))) {
+            case (v, _) => arrayTypeFromGoType(v)
+          }
+        case Type.OBJECT if ctx.imports.classPath.isInterface(typ.getInternalName) =>
+          importQualifiedName(typ.getInternalName, ctx.mangler.instanceObjectName(typ.getInternalName))
+        case Type.OBJECT =>
+          importQualifiedName(typ.getInternalName, ctx.mangler.instanceObjectName(typ.getInternalName)).leftMap {
+            case (ctx, expr) => ctx -> expr.star
+          }
+        case sort => sys.error(s"Unrecognized type $sort")
+      }
+    }
+
+    def staticInstRefExpr(internalName: String): (T, Node.CallExpression) = {
+      importQualifiedName(internalName, ctx.mangler.staticAccessorName(internalName)).leftMap { case (ctx, expr) =>
+        ctx -> expr.call()
+      }
+    }
+
+    def staticNewExpr(internalName: String): (T, Node.CallExpression) = {
+      staticInstRefExpr(internalName).leftMap { case (ctx, staticRef) =>
+        ctx -> staticRef.sel("New").call()
+      }
+    }
+
+    def staticInstTypeExpr(internalName: String): (T, Node.Expression) = {
+      importQualifiedName(internalName, ctx.mangler.staticObjectName(internalName))
+    }
+
+    def instTypeExpr(internalName: String): (T, Node.Expression) = {
+      importQualifiedName(internalName, ctx.mangler.instanceObjectName(internalName))
+    }
   }
 
   implicit class RichClassNode(val classNode: ClassNode) extends AnyVal {
@@ -84,6 +99,8 @@ object Helpers {
       import scala.collection.JavaConverters._
       classNode.methods.asScala.asInstanceOf[Seq[MethodNode]]
     }
+
+    def hasStaticInit = methodNodes.exists(_.name == "<clinit>")
   }
 
   implicit class RichInt(val int: Int) extends AnyVal {
@@ -121,7 +138,7 @@ object Helpers {
     def getLocalVar(index: Int, desc: String) = {
       // TODO: check if we need to check for 0 being "this"
       ctx.localVars.get(index) match {
-        case Some(expr) => ctx -> v
+        case Some(expr) => ctx -> expr
         case None =>
           val expr = TypedExpression(s"var$index".toIdent, Type.getType(desc), cheapRef = true)
           ctx.copy(localVars = ctx.localVars + (index -> expr)) -> expr
@@ -140,28 +157,25 @@ object Helpers {
     def withTempVar[T](typ: Type, f: (MethodCompiler.Context, Stack.TempVar) => T) = {
       f.tupled(getTempVar(typ))
     }
-  }
 
-  implicit class RichMethodNode(val methodNode: MethodNode) extends AnyVal {
-    def instructionIter = {
-      import scala.collection.JavaConverters._
-      methodNode.instructions.iterator.asScala.asInstanceOf[Iterator[AbstractInsnNode]]
-    }
-
-    def debugLocalVariableNodes = {
-      import scala.collection.JavaConverters._
-      methodNode.localVariables.asScala.asInstanceOf[Seq[LocalVariableNode]]
-    }
-
-    def tryCatchBlockNodes = {
-      import scala.collection.JavaConverters._
-      methodNode.tryCatchBlocks.asScala.asInstanceOf[Seq[TryCatchBlockNode]]
-    }
   }
 
   implicit class RichAsmNode(val node: AbstractInsnNode) extends AnyVal {
     def byOpcode[T](f: PartialFunction[Int, T]) =
-      f.applyOrElse(node.getOpcode, sys.error(s"Unrecognized opcode: ${node.getOpcode}"))
+      f.applyOrElse(node.getOpcode, (o: Int) => sys.error(s"Unrecognized opcode: $o"))
+
+    def pretty: String = {
+      val printer = new Textifier()
+      val writer = new StringWriter()
+      node.accept(new TraceMethodVisitor(printer))
+      printer.print(new PrintWriter(writer))
+      writer.toString.trim
+    }
+  }
+
+  implicit class RichTuple[A, B](val tuple: (A, B)) extends AnyVal {
+    @inline
+    def leftMap[C](f: (A, B) => C): C = f.tupled(tuple)
   }
 
   implicit class RichType(val typ: Type) extends AnyVal {

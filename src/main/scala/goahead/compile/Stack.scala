@@ -1,16 +1,18 @@
 package goahead.compile
 
 import goahead.ast.Node
-import org.objectweb.asm.{Label, Type}
+import org.objectweb.asm.Type
 
 case class Stack(
   items: Seq[TypedExpression],
-  //Map.empty[Type, Seq[MutableMethodStack.Entry.TempVarAssignEntry]]
   tempVars: Seq[Stack.TempVar]
 ) {
   def push(item: TypedExpression) = copy(items = items :+ item)
 
-  def pop() = copy(items = items.init) -> items.last
+  def pop() = {
+    require(items.nonEmpty, "Trying to pop from empty stack")
+    copy(items = items.init) -> items.last
+  }
 
   def pop(amount: Int) = {
     val (leftover, popped) = items.splitAt(items.length - amount)

@@ -1,7 +1,6 @@
-package goahead.transpiler
+package goahead.compile
 
 import java.io._
-import java.lang.reflect.Method
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths}
 import java.util.concurrent.TimeUnit
@@ -9,12 +8,12 @@ import java.util.concurrent.TimeUnit
 import com.google.common.io.{ByteStreams, CharStreams}
 import goahead.ast.{Node, NodeWriter}
 import goahead.{BaseSpec, ExpectedOutput}
-import goahead.testclasses._
 
 import scala.util.Try
-import org.scalatest.Assertions._
 
-class TranspilerSpec extends BaseSpec {
+class CompilerSpec extends BaseSpec {
+  import AstDsl._
+  import CompilerSpec._
 
   val defaultClassDirs = Map(
     "java/lang/NullPointerException" -> "rt",
@@ -25,30 +24,25 @@ class TranspilerSpec extends BaseSpec {
   )
 
   // Run each test case as its own setup
-  TranspilerSpec.testCases.foreach{t => t.subject should behave like expected(t)}
+  testCases.foreach{t => t.subject should behave like expected(t)}
 
-  def expected(t: TranspilerSpec.TestCase) = it should t.provideExpectedOutput in withTemporaryFolder { tempFolder =>
-    // Instantiate the compiler w/ classpath having the local classes
-    val transpiler = new Transpiler(
-      ClassPath(
-        defaultClassDirs ++ t.classes.map(c => c.getName.replace('.', '/') -> ""),
-        Seq.empty
-      )
+  def expected(t: CompilerSpec.TestCase) = it should t.provideExpectedOutput in withTemporaryFolder { tempFolder =>
+    // Set classpath with helper classes
+    val classPath = ClassPath(
+      defaultClassDirs ++ t.classes.map(c => c.getName.replace('.', '/') -> ""),
+      Seq.empty
     )
 
     // Compile to one big file
-    val transpiled = transpiler.classesToFile(t.classes.map { cls =>
-      val inStream = cls.getResourceAsStream(cls.getSimpleName + ".class")
-      try { ByteStreams.toByteArray(inStream) } finally { inStream.close() }
-    }).copy(packageName = Node.Identifier("spectest"))
+    val compiled = Compiler.compile(t.classes.map(_.readBytes()), classPath).copy(packageName = "spectest".toIdent)
 
     // Write the regular code in the spectest folder
     val codeFile = Files.createDirectories(tempFolder.resolve("spectest")).resolve("code.go")
-    writeGoCode(codeFile, transpiled)
+    writeGoCode(codeFile, compiled)
 
     // Write the main call
     val className = t.classes.find(c => Try(c.getMethod("main", classOf[Array[String]])).isSuccess).get.getName
-    val mainCode = transpiler.buildMainFile("./spectest", className.replace('.', '/'))
+    val mainCode = Compiler.compileMainFile("./spectest", className.replace('.', '/'), classPath)
     writeGoCode(tempFolder.resolve("main.go"), mainCode)
 
     // Compile go code
@@ -63,6 +57,8 @@ class TranspilerSpec extends BaseSpec {
     logger.debug(s"Asserting and writing the following to $file:\n$codeStr")
     assertValidCode(codeStr)
     Files.write(file, codeStr.getBytes(StandardCharsets.UTF_8))
+    // Discarding unneeded value above
+    ()
   }
 
   def assertValidCode(code: String): Unit = {
@@ -82,6 +78,8 @@ class TranspilerSpec extends BaseSpec {
       logger.error(s"Formatting error ($err):\n$out")
       throw e
     }).get
+    // Discarding unneeded value above
+    ()
   }
 
   def compileDir(dir: Path): Path = {
@@ -115,16 +113,21 @@ class TranspilerSpec extends BaseSpec {
     assert(process.waitFor(5, TimeUnit.SECONDS))
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
     assert(out == expected)
+    // Discarding unneeded value above
+    ()
   }
 }
 
-object TranspilerSpec {
-  val testCases = Seq(
-//    TestCase(classOf[HelloWorld]),
-//    TestCase(classOf[StaticFields]),
-//    TestCase(classOf[SimpleInstance]),
-    TestCase(classOf[TryCatch])
-  )
+object CompilerSpec {
+  val testCases = {
+    import goahead.testclasses._
+    Seq(
+//      TestCase(classOf[HelloWorld]),
+      TestCase(classOf[StaticFields])//,
+//      TestCase(classOf[SimpleInstance]),
+//      TestCase(classOf[TryCatch])
+    )
+  }
 
   case class TestCase(
     classes: Seq[Class[_]],
@@ -158,7 +161,14 @@ object TranspilerSpec {
     }
   }
 
-  def runAndGetOutput(method: Method): String = {
+  implicit class RichClass(val cls: Class[_]) extends AnyVal {
+    def readBytes(): Array[Byte] = {
+      val inStream = cls.getResourceAsStream(cls.getSimpleName + ".class")
+      try { ByteStreams.toByteArray(inStream) } finally { inStream.close() }
+    }
+  }
+
+  def runAndGetOutput(method: java.lang.reflect.Method): String = {
     val existingOut = System.out
     val byteStream = new ByteArrayOutputStream()
     val printStream = new PrintStream(byteStream)

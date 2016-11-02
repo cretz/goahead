@@ -1,6 +1,5 @@
 package goahead.compile
 import org.objectweb.asm.Type
-import org.objectweb.asm.tree.AbstractInsnNode
 
 object AstDsl {
   import goahead.ast.Node._
@@ -11,11 +10,34 @@ object AstDsl {
 
   def block(stmts: Seq[Statement]) = BlockStatement(stmts)
 
+  def emptyReturn = ReturnStatement(Nil)
+
   def field(str: String, typ: Expression) = Field(Seq(str.toIdent), typ)
 
-  def funcType(params: Seq[(String, Expression)], results: Seq[(String, Expression)] = Nil) = FunctionType(
+  def file(pkg: String, decls: Seq[Declaration]) = File(pkg.toIdent, decls)
+
+  def funcDecl(
+    rec: Option[(String, Expression)],
+    name: String,
+    params: Seq[(String, Expression)],
+    results: Option[Expression],
+    stmts: Seq[Statement]
+  ): FunctionDeclaration = {
+    funcDecl(rec.map((field _).tupled), name, funcType(params, results), stmts)
+  }
+
+  def funcDecl(
+    rec: Option[Field],
+    name: String,
+    funcType: FunctionType,
+    stmts: Seq[Statement]
+  ): FunctionDeclaration = {
+    FunctionDeclaration(rec.toSeq, name.toIdent, funcType, Some(block(stmts)))
+  }
+
+  def funcType(params: Seq[(String, Expression)], result: Option[Expression] = None) = FunctionType(
     parameters = params.map((field _).tupled),
-    results = results.map((field _).tupled)
+    results = result.map(Field(Seq.empty, _)).toSeq
   )
 
   def goto(label: String) = BranchStatement(Token.Goto, Some(label.toIdent))
@@ -32,14 +54,46 @@ object AstDsl {
       body = block(body)
     )
 
+  // Key is full path, value is alias; Unneeded aliases are weeded out
+  def imports(mports: Seq[(String, String)]) = GenericDeclaration(
+    token = Token.Import,
+    specifications = mports.map { case (alias, mport) =>
+      ImportSpecification(
+        name = if (alias == mport || mport.endsWith(s"/$alias")) None else Some(alias.toIdent),
+        path = mport.toLit
+      )
+    }
+  )
+
   def labeled(name: String, stmts: Seq[Statement]) = block(stmts).labeled(name)
 
+  def literal(typ: Option[Expression], elems: Expression*) = CompositeLiteral(typ, elems)
+
   def sel(left: Expression, right: String) = left.sel(right)
+
+  def struct(name: String, fields: Seq[Field]) = GenericDeclaration(
+    token = Token.Type,
+    specifications = Seq(TypeSpecification(name.toIdent, StructType(fields)))
+  )
 
   def varDecl(name: String, typ: Expression) = GenericDeclaration(
     token = Token.Var,
     specifications = Seq(ValueSpecification(names = Seq(name.toIdent), typ = Some(typ), Nil))
   )
+
+  def varDecls(namedTypes: (String, Expression)*): GenericDeclaration = {
+    // We need to group the named types by type
+    GenericDeclaration(
+      token = Token.Var,
+      specifications = namedTypes.groupBy(_._2).toSeq.map { case (typ, vars) =>
+        ValueSpecification(
+          names = vars.map(_._1.toIdent),
+          typ = Some(typ),
+          values = Nil
+        )
+      }
+    )
+  }
 
   implicit class RichDeclaration(val decl: Declaration) extends AnyVal {
     def toStmt = DeclarationStatement(decl)
@@ -51,6 +105,8 @@ object AstDsl {
     def assignExisting(right: Expression) = AssignStatement(Seq(expr), Token.Assign, Seq(right))
 
     def call(args: Seq[Expression] = Nil) = CallExpression(expr, args)
+
+    def namelessField = Field(Nil, expr)
 
     def ret = ReturnStatement(Seq(expr))
 
@@ -74,6 +130,9 @@ object AstDsl {
 
     def star = StarExpression(expr)
 
+    def unary(tok: Token) = UnaryExpression(tok, expr)
+
+    def withValue(v: Expression) = KeyValueExpression(expr, v)
   }
 
   implicit class RichFunctionType(val fnType: FunctionType) extends AnyVal {

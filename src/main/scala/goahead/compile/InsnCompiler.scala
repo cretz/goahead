@@ -1,38 +1,53 @@
 package goahead.compile
 
+import goahead.Logger
 import goahead.ast.Node
-import org.objectweb.asm.{Opcodes, Type}
 import org.objectweb.asm.tree._
+import org.objectweb.asm.{Opcodes, Type}
 
 import scala.annotation.tailrec
+import scala.util.control.NonFatal
 
-trait InsnCompiler {
-  import Helpers._, MethodCompiler._, AstDsl._
+trait InsnCompiler extends Logger {
+  import AstDsl._
+  import Helpers._
+  import MethodCompiler._
+
+  def compile(ctx: Context, insns: Seq[AbstractInsnNode]): (Context, Seq[Node.Statement]) =
+    recursiveCompile(ctx, insns)
 
   @tailrec
-  final def compile(
+  protected final def recursiveCompile(
     ctx: Context,
     insns: Seq[AbstractInsnNode],
     appendTo: Seq[Node.Statement] = Nil
   ): (Context, Seq[Node.Statement]) = {
     if (insns.isEmpty) ctx -> appendTo
     else {
-      val (newCtx, stmts) = insns.head match {
-        case i: FieldInsnNode => compile(ctx, i)
-        case i: InsnNode => compile(ctx, i)
-        case i: IntInsnNode => compile(ctx, i)
-        case i: JumpInsnNode => compile(ctx, i)
-        case i: LdcInsnNode => compile(ctx, i)
-        case i: MethodInsnNode => compile(ctx, i)
-        case i: TypeInsnNode => compile(ctx, i)
-        case i: VarInsnNode => compile(ctx, i)
-        case node => sys.error(s"Unrecognized node type: $node")
+      val ctxAndStmts = try {
+        insns.head match {
+          case i: FieldInsnNode => compile(ctx, i)
+          case i: InsnNode => compile(ctx, i)
+          case i: IntInsnNode => compile(ctx, i)
+          case i: JumpInsnNode => compile(ctx, i)
+          case i: LdcInsnNode => compile(ctx, i)
+          case i: MethodInsnNode => compile(ctx, i)
+          case i: TypeInsnNode => compile(ctx, i)
+          case i: VarInsnNode => compile(ctx, i)
+          case node => sys.error(s"Unrecognized node type: $node")
+        }
+      } catch {
+        case NonFatal(e) =>
+          throw new Exception(
+            s"Unable to compile method ${ctx.cls.name}::${ctx.method.name} insn - ${insns.head.pretty}",
+            e
+          )
       }
-      compile(newCtx, insns.tail, stmts)
+      recursiveCompile(ctxAndStmts._1, insns.tail, ctxAndStmts._2)
     }
   }
 
-  def compile(ctx: Context, insn: FieldInsnNode): (Context, Seq[Node.Statement]) = {
+  protected def compile(ctx: Context, insn: FieldInsnNode): (Context, Seq[Node.Statement]) = {
     import ctx.mangler
     insn.byOpcode {
       case Opcodes.GETFIELD =>
@@ -46,12 +61,13 @@ trait InsnCompiler {
           ) -> Nil
         }
       case Opcodes.GETSTATIC =>
-        val (newImports, expr) = staticInstRefExpr(ctx.imports, insn.owner)
-        ctx.copy(imports = newImports).stackPushed(TypedExpression(
-          expr = expr.sel(mangler.fieldName(insn.owner, insn.name)),
-          typ = Type.getType(insn.desc),
-          cheapRef = true
-        )) -> Nil
+        ctx.staticInstRefExpr(insn.owner).leftMap { case (ctx, expr) =>
+          ctx.stackPushed(TypedExpression(
+            expr = expr.sel(mangler.fieldName(insn.owner, insn.name)),
+            typ = Type.getType(insn.desc),
+            cheapRef = true
+          )) -> Nil
+        }
       case Opcodes.PUTFIELD =>
         ctx.stackPopped(2, { case (ctx, Seq(objectRef, value)) =>
           val field = objectRef.expr.sel(mangler.fieldName(insn.owner, insn.name))
@@ -59,17 +75,18 @@ trait InsnCompiler {
         })
       case Opcodes.PUTSTATIC =>
         ctx.stackPopped { case (ctx, value) =>
-          val (newImports, expr) = staticInstRefExpr(ctx.imports, insn.owner)
-          ctx.copy(imports = newImports).stackPopped { case (ctx, value) =>
-            ctx -> expr.sel(mangler.fieldName(insn.owner, insn.name)).assignExisting(
-              value.toExprNode(Type.getType(insn.desc))
-            ).singleSeq
+          ctx.staticInstRefExpr(insn.owner).leftMap { case (ctx, expr) =>
+            ctx.stackPopped { case (ctx, value) =>
+              ctx -> expr.sel(mangler.fieldName(insn.owner, insn.name)).assignExisting(
+                value.toExprNode(Type.getType(insn.desc))
+              ).singleSeq
+            }
           }
         }
     }
   }
 
-  def compile(ctx: Context, insn: InsnNode): (Context, Seq[Node.Statement]) = {
+  protected def compile(ctx: Context, insn: InsnNode): (Context, Seq[Node.Statement]) = {
     @inline
     def iconst(i: Int): (Context, Seq[Node.Statement]) =
       ctx.stackPushed(TypedExpression(i.toLit, Type.INT_TYPE, cheapRef = true)) -> Nil
@@ -87,8 +104,9 @@ trait InsnCompiler {
           val (newCtx, entry, stmtOpt) =
             if (item.cheapRef) (ctx, item, None)
             else {
-              val (newCtx, tempVar) = ctx.getTempVar(item.asmType)
-              (newCtx, tempVar.toTypedExpr, Some(tempVar.name.toIdent.assignExisting(item.expr)))
+              ctx.getTempVar(item.asmType).leftMap { case (ctx, tempVar) =>
+                (ctx, tempVar.toTypedExpr, Some(tempVar.name.toIdent.assignExisting(item.expr)))
+              }
             }
             // Push it twice
             newCtx.stackPushed(entry).stackPushed(entry) -> stmtOpt.toSeq
@@ -120,23 +138,23 @@ trait InsnCompiler {
           ctx -> item.expr.toStmt.singleSeq
         }
       case Opcodes.RETURN =>
-        ctx -> NilExpr.ret.singleSeq
+        ctx -> emptyReturn.singleSeq
     }
   }
 
-  def compile(ctx: Context, insn: IntInsnNode): (Context, Seq[Node.Statement]) = {
+  protected def compile(ctx: Context, insn: IntInsnNode): (Context, Seq[Node.Statement]) = {
     insn.byOpcode {
       case Opcodes.BIPUSH =>
         ctx.stackPushed(insn.operand.toTypedLit) -> Nil
     }
   }
 
-  def compile(ctx: Context, insn: JumpInsnNode): (Context, Seq[Node.Statement]) = {
-    val label = insn.label.getLabel
+  protected def compile(ctx: Context, insn: JumpInsnNode): (Context, Seq[Node.Statement]) = {
+    val label = insn.label.getLabel.toString
     insn.byOpcode {
       case Opcodes.GOTO =>
         // TODO: can we trust that these jumps are not to F_FULL/F_SAME1?
-        ctx.copy(usedLabels = ctx.usedLabels + label) -> goto(label.toString).singleSeq
+        ctx.copy(usedLabels = ctx.usedLabels + label) -> goto(label).singleSeq
       case Opcodes.IFEQ =>
         ctx.copy(usedLabels = ctx.usedLabels + label).stackPopped { case (ctx, item) =>
           ctx -> ifEq(item.expr, item.asmType.zeroExpr).singleSeq
@@ -144,19 +162,18 @@ trait InsnCompiler {
     }
   }
 
-  def compile(ctx: Context, insn: LdcInsnNode): (Context, Seq[Node.Statement]) = {
+  protected def compile(ctx: Context, insn: LdcInsnNode): (Context, Seq[Node.Statement]) = {
     insn.cst match {
       case s: String =>
-        val (newImports, str) = newString(ctx.imports, s)
-        ctx.copy(imports = newImports).stackPushed(
-          TypedExpression(str, StringType, cheapRef = true)
-        ) -> Nil
+        ctx.newString(s).leftMap { case (ctx, str) =>
+          ctx.stackPushed(TypedExpression(str, StringType, cheapRef = true)) -> Nil
+        }
       case cst =>
         sys.error(s"Unrecognized LDC type: $cst")
     }
   }
 
-  def compile(ctx: Context, insn: MethodInsnNode): (Context, Seq[Node.Statement]) = {
+  protected def compile(ctx: Context, insn: MethodInsnNode): (Context, Seq[Node.Statement]) = {
     insn.byOpcode {
       case Opcodes.INVOKESPECIAL if insn.name == "<init>" && ctx.method.name == "<init>" =>
         require(Type.getReturnType(insn.desc) == Type.VOID_TYPE)
@@ -170,7 +187,7 @@ trait InsnCompiler {
       case Opcodes.INVOKEVIRTUAL | Opcodes.INVOKESPECIAL =>
         // Note: we let null pointer exceptions cause a panic instead of checking them
         val callDesc = Type.getMethodType(insn.desc)
-        ctx.stackPopped(callDesc.getArgumentTypes.size + 1, { case (ctx, subject +: args) =>
+        ctx.stackPopped(callDesc.getArgumentTypes.length + 1, { case (ctx, subject +: args) =>
             val method = subject.expr.sel(ctx.mangler.methodName(insn.name, insn.desc))
             val call = method.call(args.zip(callDesc.getArgumentTypes).map(v => v._1.toExprNode(v._2)))
             // Put it on the stack if not void
@@ -180,18 +197,19 @@ trait InsnCompiler {
     }
   }
 
-  def compile(ctx: Context, insn: TypeInsnNode): (Context, Seq[Node.Statement]) = {
+  protected def compile(ctx: Context, insn: TypeInsnNode): (Context, Seq[Node.Statement]) = {
     insn.byOpcode {
       case Opcodes.NEW =>
         // Just create the struct and put the entire instantiation on the stack
-        val (newImports, newExpr) = staticNewExpr(ctx.imports, insn.desc)
-        ctx.copy(imports = newImports).stackPushed(
-          TypedExpression(newExpr, Type.getObjectType(insn.desc), cheapRef = false)
-        ) -> Nil
+        ctx.staticNewExpr(insn.desc).leftMap { case (ctx, newExpr) =>
+          ctx.stackPushed(
+            TypedExpression(newExpr, Type.getObjectType(insn.desc), cheapRef = false)
+          ) -> Nil
+        }
     }
   }
 
-  def compile(ctx: Context, insn: VarInsnNode): (Context, Seq[Node.Statement]) = {
+  protected def compile(ctx: Context, insn: VarInsnNode): (Context, Seq[Node.Statement]) = {
     insn.byOpcode  {
       case Opcodes.ALOAD =>
         ctx.withLocalVar(insn.`var`, ObjectType.getDescriptor, { case (ctx, local) =>
@@ -208,3 +226,5 @@ trait InsnCompiler {
     }
   }
 }
+
+object InsnCompiler extends InsnCompiler

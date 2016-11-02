@@ -10,7 +10,7 @@ import scala.util.Try
 
 trait BaseSpec extends FlatSpec with Logger {
 
-  def withTemporaryFolder(f: Path => Any): Unit = {
+  def withTemporaryFolder[T](f: Path => T): T = {
     val dir = Files.createTempDirectory("goahead")
     logger.debug(s"Created temporary directory $dir")
     try {
