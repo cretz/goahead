@@ -18,7 +18,7 @@ object Mangler {
 
     // TODO: I added "private[this]" to get rid of all unused later
 
-    private[this] def classSuffix(simpleName: String): String = s"__$simpleName"
+    private[this] def classSuffix(simpleName: String): String = "__" + simpleName.replace("$", "__innerclass__")
 
     override def fieldName(owner: String, name: String) = name.capitalize
 
@@ -47,7 +47,7 @@ object Mangler {
 
     private[this] def objectNamePrefix(internalName: String): String = {
       require(!internalName.headOption.contains('['), "Not ready yet for arrays")
-      val pieces = internalName.split('/')
+      val pieces = internalName.replace("$", "__innerclass__").split('/')
       packagePrefix(pieces.dropRight(1)) + classSuffix(pieces.last)
     }
 

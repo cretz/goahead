@@ -7,6 +7,26 @@ import (
 	"strconv"
 )
 
+// java.lang.Exception
+
+type Java__lang__Exception__Static struct{}
+
+var Java__lang__Exception__Var Java__lang__Exception__Static
+
+func Java__lang__Exception() *Java__lang__Exception__Static {
+	return &Java__lang__Exception__Var
+}
+
+func (this *Java__lang__Exception__Static) New() *Java__lang__Exception__Instance {
+	return &Java__lang__Exception__Instance{
+		Java__lang__Throwable__Instance: Java__lang__Throwable().New(),
+	}
+}
+
+type Java__lang__Exception__Instance struct {
+	*Java__lang__Throwable__Instance
+}
+
 // java.lang.NullPointerException
 
 type Java__lang__NullPointerException__Static struct{}
@@ -19,12 +39,12 @@ func Java__lang__NullPointerException() *Java__lang__NullPointerException__Stati
 
 func (this *Java__lang__NullPointerException__Static) New() *Java__lang__NullPointerException__Instance {
 	return &Java__lang__NullPointerException__Instance{
-		Java__lang__Object__Instance: Java__lang__Object().New(),
+		Java__lang__Exception__Instance: Java__lang__Exception().New(),
 	}
 }
 
 type Java__lang__NullPointerException__Instance struct {
-	*Java__lang__Object__Instance
+	*Java__lang__Exception__Instance
 }
 
 func (this *Java__lang__NullPointerException__Instance) Instance_Init__desc__() {
@@ -159,4 +179,24 @@ func (this *SystemOut) Println__desc__I(arg0 int) {
 func (this *SystemOut) Println__desc__Z(arg0 bool) {
 	print(arg0)
 	this.Println()
+}
+
+// java.lang.Throwable
+
+type Java__lang__Throwable__Static struct{}
+
+var Java__lang__Throwable__Var Java__lang__Throwable__Static
+
+func Java__lang__Throwable() *Java__lang__Throwable__Static {
+	return &Java__lang__Throwable__Var
+}
+
+func (this *Java__lang__Throwable__Static) New() *Java__lang__Throwable__Instance {
+	return &Java__lang__Throwable__Instance{
+		Java__lang__Object__Instance: Java__lang__Object().New(),
+	}
+}
+
+type Java__lang__Throwable__Instance struct {
+	*Java__lang__Object__Instance
 }

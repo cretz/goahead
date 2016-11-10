@@ -54,6 +54,9 @@ class NodeWriter {
     case Node.KeyValueExpression(Node.Identifier(ident), _) =>
       // Add 1 for the colon
       Some(ident.length + 1)
+    case Node.ValueSpecification(names, _, _) =>
+      // Add 2 for each comma+space in between, but take one away for the space that's already there
+      Some(names.map(_.name.length).sum + ((names.size - 1) * 2) - 1)
     case _ =>
       None
   }
@@ -211,21 +214,24 @@ class NodeWriter {
   def appendFunctionDeclaration(decl: FunctionDeclaration): this.type = {
     append("func ").appendParameters(decl.receivers)
     if (decl.receivers.nonEmpty) append(' ')
-    appendIdentifier(decl.name).appendFunctionType(decl.typ)
+    appendIdentifier(decl.name).appendFunctionTypeSignature(decl.typ)
     decl.body.foreach { append(' ').appendBlockStatement(_) }
     this
   }
 
   def appendFunctionLiteral(expr: FunctionLiteral): this.type = {
-    append("func").appendFunctionType(expr.typ).append(' ').appendBlockStatement(expr.body)
+    appendFunctionType(expr.typ).append(' ').appendBlockStatement(expr.body)
   }
 
   def appendFunctionType(typ: FunctionType): this.type = {
+    append("func").appendFunctionTypeSignature(typ)
+  }
+
+  def appendFunctionTypeSignature(typ: FunctionType): this.type = {
     appendParameters(typ.parameters, "()")
     if (typ.results.nonEmpty) append(' ')
     if (typ.results.length == 1) appendField(typ.results.head)
     else appendParameters(typ.results)
-    this
   }
 
   def appendGenericDeclaration(decl: GenericDeclaration): this.type = {
@@ -239,9 +245,12 @@ class NodeWriter {
     }
     val multiSpec = decl.specifications.length > 1
     if (multiSpec) append('(').indent()
-    decl.specifications.foreach { spec =>
-      if (multiSpec) newline()
-      appendSpecification(spec)
+    paddedSections(decl.specifications).foreach { section =>
+      section.nodes.foreach { spec =>
+        if (multiSpec) newline()
+        appendSpecification(spec, section.leftMax)
+      }
+
     }
     if (multiSpec) dedent().newline().append(')')
     this
@@ -295,7 +304,7 @@ class NodeWriter {
     case f: Field => appendField(f)
     case f: File => appendFile(f)
     case p: Package => appendPackage(p)
-    case s: Specification => appendSpecification(s)
+    case s: Specification => appendSpecification(s, None)
     case s: Statement => appendStatement(s)
   }
 
@@ -306,7 +315,9 @@ class NodeWriter {
     else append('(').commaSeparated(params, appendField(_: Field, None)).append(')')
   }
 
-  def appendParenthesizedExpression(expr: ParenthesizedExpression): this.type = __TODO__
+  def appendParenthesizedExpression(expr: ParenthesizedExpression): this.type = {
+    append('(').appendExpression(expr.expression).append(')')
+  }
 
   def appendRangeStatement(stmt: RangeStatement): this.type = __TODO__
 
@@ -326,9 +337,9 @@ class NodeWriter {
 
   def appendSliceExpression(expr: SliceExpression): this.type = __TODO__
 
-  def appendSpecification(spec: Specification): this.type = spec match {
+  def appendSpecification(spec: Specification, padLeftTo: Option[Int]): this.type = spec match {
     case i: ImportSpecification => appendImportSpecification(i)
-    case v: ValueSpecification => appendValueSpecification(v)
+    case v: ValueSpecification => appendValueSpecification(v, padLeftTo)
     case t: TypeSpecification => appendTypeSpecification(t)
   }
 
@@ -382,8 +393,9 @@ class NodeWriter {
     case Some(str) => append(str).appendExpression(expr.operand)
   }
 
-  def appendValueSpecification(spec: ValueSpecification): this.type = {
+  def appendValueSpecification(spec: ValueSpecification, padLeftTo: Option[Int]): this.type = {
     commaSeparated(spec.names, appendIdentifier)
+    padLeftTo.foreach(appendPaddingFromFirstNonWhitespace)
     spec.typ.foreach { append(' ').appendExpression(_) }
     if (spec.values.nonEmpty) append(" = ").commaSeparated(spec.values, appendIdentifier)
     this

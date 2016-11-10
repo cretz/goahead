@@ -1,22 +1,43 @@
 package goahead.compile
 
-import org.objectweb.asm.tree.{AbstractInsnNode, MethodNode}
+import java.io.{PrintWriter, StringWriter}
 
-case class Method(
-  access: Int,
-  name: String,
-  desc: String,
-  instructions: Seq[AbstractInsnNode]
-)
+import org.objectweb.asm.tree.{AbstractInsnNode, LocalVariableNode, MethodNode}
+import org.objectweb.asm.util.{Textifier, TraceMethodVisitor}
+
+sealed trait Method {
+  def access: Int
+  def name: String
+  def desc: String
+  def instructions: Seq[AbstractInsnNode]
+  def debugLocalVars: Seq[LocalVariableNode]
+
+  def asmString: String
+}
 
 object Method {
-  def apply(node: MethodNode): Method = Method(
-    access = node.access,
-    name = node.name,
-    desc = node.desc,
-    instructions = {
+  def apply(node: MethodNode): Method = new Simple(node)
+
+  class Simple(val node: MethodNode) extends Method {
+    override def access = node.access
+    override def name = node.name
+    override def desc = node.desc
+    override def instructions = {
       import scala.collection.JavaConverters._
       node.instructions.iterator.asScala.asInstanceOf[Iterator[AbstractInsnNode]].toSeq
     }
-  )
+    override def debugLocalVars = {
+      import scala.collection.JavaConverters._
+      if (node.localVariables == null || node.localVariables.isEmpty) Seq.empty
+      else node.localVariables.asScala.asInstanceOf[Seq[LocalVariableNode]]
+    }
+
+    override def asmString = {
+      val printer = new Textifier()
+      val writer = new StringWriter()
+      node.accept(new TraceMethodVisitor(printer))
+      printer.print(new PrintWriter(writer))
+      writer.toString.trim
+    }
+  }
 }

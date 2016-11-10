@@ -3,7 +3,7 @@ package goahead.compile
 import goahead.Logger
 import goahead.ast.Node
 import org.objectweb.asm.tree._
-import org.objectweb.asm.{Opcodes, Type}
+import org.objectweb.asm.Opcodes
 
 import scala.annotation.tailrec
 import scala.util.control.NonFatal
@@ -24,6 +24,7 @@ trait InsnCompiler extends Logger {
   ): (Context, Seq[Node.Statement]) = {
     if (insns.isEmpty) ctx -> appendTo
     else {
+      logger.debug(s"Compiling instruction - ${insns.head.pretty}")
       val ctxAndStmts = try {
         insns.head match {
           case i: FieldInsnNode => compile(ctx, i)
@@ -38,12 +39,13 @@ trait InsnCompiler extends Logger {
         }
       } catch {
         case NonFatal(e) =>
+          val insn = insns.head
           throw new Exception(
-            s"Unable to compile method ${ctx.cls.name}::${ctx.method.name} insn - ${insns.head.pretty}",
+            s"Unable to compile method ${ctx.cls.name}::${ctx.method.name} insn #${insn.index} - ${insn.pretty}",
             e
           )
       }
-      recursiveCompile(ctxAndStmts._1, insns.tail, ctxAndStmts._2)
+      recursiveCompile(ctxAndStmts._1, insns.tail, appendTo ++ ctxAndStmts._2)
     }
   }
 
@@ -55,7 +57,7 @@ trait InsnCompiler extends Logger {
           ctx.stackPushed(
             TypedExpression(
               expr = item.expr.sel(mangler.fieldName(insn.owner, insn.name)),
-              typ = Type.getType(insn.desc),
+              typ = IType.getType(insn.desc),
               cheapRef = true
             )
           ) -> Nil
@@ -64,22 +66,22 @@ trait InsnCompiler extends Logger {
         ctx.staticInstRefExpr(insn.owner).leftMap { case (ctx, expr) =>
           ctx.stackPushed(TypedExpression(
             expr = expr.sel(mangler.fieldName(insn.owner, insn.name)),
-            typ = Type.getType(insn.desc),
+            typ = IType.getType(insn.desc),
             cheapRef = true
           )) -> Nil
         }
       case Opcodes.PUTFIELD =>
         ctx.stackPopped(2, { case (ctx, Seq(objectRef, value)) =>
           val field = objectRef.expr.sel(mangler.fieldName(insn.owner, insn.name))
-          ctx -> field.assignExisting(value.toExprNode(Type.getType(insn.desc))).singleSeq
+          value.toExprNode(ctx, IType.getType(insn.desc)).leftMap { case (ctx, value) =>
+            ctx -> field.assignExisting(value).singleSeq
+          }
         })
       case Opcodes.PUTSTATIC =>
-        ctx.stackPopped { case (ctx, value) =>
-          ctx.staticInstRefExpr(insn.owner).leftMap { case (ctx, expr) =>
-            ctx.stackPopped { case (ctx, value) =>
-              ctx -> expr.sel(mangler.fieldName(insn.owner, insn.name)).assignExisting(
-                value.toExprNode(Type.getType(insn.desc))
-              ).singleSeq
+        ctx.staticInstRefExpr(insn.owner).leftMap { case (ctx, expr) =>
+          ctx.stackPopped { case (ctx, value) =>
+            value.toExprNode(ctx, IType.getType(insn.desc)).leftMap { case (ctx, value) =>
+              ctx -> expr.sel(mangler.fieldName(insn.owner, insn.name)).assignExisting(value).singleSeq
             }
           }
         }
@@ -89,14 +91,20 @@ trait InsnCompiler extends Logger {
   protected def compile(ctx: Context, insn: InsnNode): (Context, Seq[Node.Statement]) = {
     @inline
     def iconst(i: Int): (Context, Seq[Node.Statement]) =
-      ctx.stackPushed(TypedExpression(i.toLit, Type.INT_TYPE, cheapRef = true)) -> Nil
+      ctx.stackPushed(TypedExpression(i.toLit, IType.IntType, cheapRef = true)) -> Nil
 
     insn.byOpcode {
       case Opcodes.ACONST_NULL =>
-        ctx.stackPushed(TypedExpression(NilExpr, Type.VOID_TYPE, cheapRef = true)) -> Nil
+        ctx.stackPushed(TypedExpression(NilExpr, IType.NullType, cheapRef = true)) -> Nil
       case Opcodes.ARETURN =>
         ctx.stackPopped { case (ctx, item) =>
-          ctx -> item.toExprNode(Type.getReturnType(ctx.method.desc)).ret.singleSeq
+          item.toExprNode(ctx, IType.getReturnType(ctx.method.desc)).leftMap { case (ctx, item) =>
+            ctx -> item.ret.singleSeq
+          }
+        }
+      case Opcodes.ATHROW =>
+        ctx.stackPopped { case (ctx, item) =>
+          ctx -> "panic".toIdent.call(item.expr.singleSeq).toStmt.singleSeq
         }
       case Opcodes.DUP =>
         // We only dupe things that are not cheap references, otherwise we make a temp var
@@ -104,8 +112,8 @@ trait InsnCompiler extends Logger {
           val (newCtx, entry, stmtOpt) =
             if (item.cheapRef) (ctx, item, None)
             else {
-              ctx.getTempVar(item.asmType).leftMap { case (ctx, tempVar) =>
-                (ctx, tempVar.toTypedExpr, Some(tempVar.name.toIdent.assignExisting(item.expr)))
+              ctx.getTempVar(item.typ).leftMap { case (ctx, tempVar) =>
+                (ctx, tempVar, Some(tempVar.name.toIdent.assignExisting(item.expr)))
               }
             }
             // Push it twice
@@ -114,7 +122,7 @@ trait InsnCompiler extends Logger {
       case Opcodes.IADD =>
         ctx.stackPopped(2, { case (ctx, Seq(left, right)) =>
           // TODO: determine proper union type between the two
-          ctx.stackPushed(TypedExpression(left.expr + right.expr, Type.INT_TYPE, cheapRef = false)) -> Nil
+          ctx.stackPushed(TypedExpression(left.expr + right.expr, IType.IntType, cheapRef = false)) -> Nil
         })
       case Opcodes.ICONST_0 =>
         iconst(0)
@@ -157,7 +165,7 @@ trait InsnCompiler extends Logger {
         ctx.copy(usedLabels = ctx.usedLabels + label) -> goto(label).singleSeq
       case Opcodes.IFEQ =>
         ctx.copy(usedLabels = ctx.usedLabels + label).stackPopped { case (ctx, item) =>
-          ctx -> ifEq(item.expr, item.asmType.zeroExpr).singleSeq
+          ctx -> ifEq(item.expr, item.typ.zeroExpr, goto(label)).singleSeq
         }
     }
   }
@@ -176,23 +184,35 @@ trait InsnCompiler extends Logger {
   protected def compile(ctx: Context, insn: MethodInsnNode): (Context, Seq[Node.Statement]) = {
     insn.byOpcode {
       case Opcodes.INVOKESPECIAL if insn.name == "<init>" && ctx.method.name == "<init>" =>
-        require(Type.getReturnType(insn.desc) == Type.VOID_TYPE)
+        require(IType.getReturnType(insn.desc) == IType.VoidType)
         // If we're inside of init ourselves and this call is init, we know we're
         // actually running init on ourselves
         ctx.stackPopped { case (ctx, subject) =>
-          val inst = subject.expr.sel(ctx.mangler.instanceObjectName(insn.owner))
-          val init = inst.sel(ctx.mangler.methodName(insn.name, insn.desc))
-          ctx -> init.call().toStmt.singleSeq
+          subject.toExprNode(ctx, IType.getObjectType(insn.owner)).leftMap { case (ctx, subject) =>
+            val inst = subject.sel(ctx.mangler.instanceObjectName(insn.owner))
+            val init = inst.sel(ctx.mangler.methodName(insn.name, insn.desc))
+            ctx -> init.call().toStmt.singleSeq
+          }
         }
       case Opcodes.INVOKEVIRTUAL | Opcodes.INVOKESPECIAL =>
         // Note: we let null pointer exceptions cause a panic instead of checking them
-        val callDesc = Type.getMethodType(insn.desc)
-        ctx.stackPopped(callDesc.getArgumentTypes.length + 1, { case (ctx, subject +: args) =>
-            val method = subject.expr.sel(ctx.mangler.methodName(insn.name, insn.desc))
-            val call = method.call(args.zip(callDesc.getArgumentTypes).map(v => v._1.toExprNode(v._2)))
-            // Put it on the stack if not void
-            if (callDesc.getReturnType == Type.VOID_TYPE) ctx -> call.toStmt.singleSeq
-            else ctx.stackPushed(TypedExpression(call, callDesc.getReturnType, cheapRef = false)) -> Nil
+        val (argTypes, retType) = IType.getArgumentAndReturnTypes(insn.desc)
+        ctx.stackPopped(argTypes.length + 1, { case (ctx, subject +: args) =>
+          subject.toExprNode(ctx, IType.getObjectType(insn.owner)).leftMap { case (ctx, subject) =>
+            val method = subject.sel(ctx.mangler.methodName(insn.name, insn.desc))
+            val ctxAndCallVals = args.zip(argTypes).foldLeft(ctx -> Seq.empty[Node.Expression]) {
+              case ((ctx, prevExprs), (typedExpr, typ)) =>
+                typedExpr.toExprNode(ctx, typ).leftMap { case (ctx, newExpr) =>
+                  ctx -> (prevExprs :+ newExpr)
+                }
+            }
+            ctxAndCallVals.leftMap { case (ctx, callVals) =>
+              val call = method.call(callVals)
+              // Put it on the stack if not void
+              if (retType == IType.VoidType) ctx -> call.toStmt.singleSeq
+              else ctx.stackPushed(TypedExpression(call, retType, cheapRef = false)) -> Nil
+            }
+          }
         })
     }
   }
@@ -203,7 +223,7 @@ trait InsnCompiler extends Logger {
         // Just create the struct and put the entire instantiation on the stack
         ctx.staticNewExpr(insn.desc).leftMap { case (ctx, newExpr) =>
           ctx.stackPushed(
-            TypedExpression(newExpr, Type.getObjectType(insn.desc), cheapRef = false)
+            TypedExpression(newExpr, IType.getObjectType(insn.desc), cheapRef = false)
           ) -> Nil
         }
     }
@@ -212,16 +232,16 @@ trait InsnCompiler extends Logger {
   protected def compile(ctx: Context, insn: VarInsnNode): (Context, Seq[Node.Statement]) = {
     insn.byOpcode  {
       case Opcodes.ALOAD =>
-        ctx.withLocalVar(insn.`var`, ObjectType.getDescriptor, { case (ctx, local) =>
+        ctx.getLocalVar(insn.`var`, ObjectType).leftMap { case (ctx, local) =>
           ctx.stackPushed(local) -> Nil
-        })
+        }
       case Opcodes.ASTORE =>
         ctx.stackPopped { case (ctx, value) =>
-          ctx.withLocalVar(insn.`var`, value.asmType.getDescriptor, { case (ctx, local) =>
-            ctx -> local.expr.assignExisting(
-              value.toExprNode(local.asmType)
-            ).singleSeq
-          })
+          ctx.getLocalVar(insn.`var`, value.typ).leftMap { case (ctx, local) =>
+            value.toExprNode(ctx, local.typ).leftMap { case (ctx, value) =>
+              ctx -> local.expr.assignExisting(value).singleSeq
+            }
+          }
         }
     }
   }

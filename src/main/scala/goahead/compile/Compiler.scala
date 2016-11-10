@@ -1,10 +1,11 @@
 package goahead.compile
 
+import goahead.Logger
 import goahead.ast.Node
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.ClassNode
 
-trait Compiler {
+trait Compiler extends Logger {
   import AstDsl._
   import Helpers._
 

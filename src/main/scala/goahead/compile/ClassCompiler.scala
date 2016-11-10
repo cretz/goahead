@@ -2,7 +2,6 @@ package goahead.compile
 
 import goahead.Logger
 import goahead.ast.Node
-import org.objectweb.asm.Type
 import org.objectweb.asm.tree.{ClassNode, FieldNode, MethodNode}
 
 trait ClassCompiler extends Logger {
@@ -11,6 +10,7 @@ trait ClassCompiler extends Logger {
   import Helpers._
 
   def compile(cls: ClassNode, imports: Imports, mangler: Mangler): (Imports, Seq[Node.Declaration]) = {
+    logger.debug(s"Compiling class: ${cls.name}")
     compileStatic(initContext(cls, imports, mangler)).leftMap { case (ctx, staticDecls) =>
       compileInst(ctx).leftMap { case (ctx, instDecls) =>
         ctx.imports -> (staticDecls ++ instDecls)
@@ -62,7 +62,9 @@ trait ClassCompiler extends Logger {
     val staticVarName = ctx.mangler.staticVarName(ctx.cls.name).toIdent
     val initStmtOpt = if (!ctx.cls.hasStaticInit) None else Some {
       val syncOnceField = staticVarName.sel("init")
-      syncOnceField.sel("Do").call(ctx.mangler.methodName("<clinit>", "()V").toIdent.singleSeq).toStmt
+      syncOnceField.sel("Do").call(
+        staticVarName.sel(ctx.mangler.methodName("<clinit>", "()V")).singleSeq
+      ).toStmt
     }
     ctx.staticInstTypeExpr(ctx.cls.name).leftMap { case (ctx, staticTyp) =>
       ctx -> funcDecl(
@@ -124,7 +126,7 @@ trait ClassCompiler extends Logger {
   protected def compileInstStruct(ctx: Context): (Context, Node.Declaration) = {
     compileFields(ctx, ctx.cls.fieldNodes.filterNot(_.access.isAccessStatic)).leftMap { case (ctx, fields) =>
       // Super classes are embedded
-      ctx.typeToGoType(Type.getObjectType(ctx.cls.superName)).leftMap { case (ctx, superType) =>
+      ctx.typeToGoType(IType.getObjectType(ctx.cls.superName)).leftMap { case (ctx, superType) =>
         ctx -> struct(
           ctx.mangler.instanceObjectName(ctx.cls.name),
           superType.namelessField +: fields
@@ -139,22 +141,21 @@ trait ClassCompiler extends Logger {
 
   protected def compileFields(ctx: Context, fields: Seq[FieldNode]): (Context, Seq[Node.Field]) = {
     fields.foldLeft(ctx -> Seq.empty[Node.Field]) { case ((ctx, prevFields), node) =>
-      ctx.typeToGoType(Type.getType(node.desc)).leftMap { case (ctx, typ) =>
+      ctx.typeToGoType(IType.getType(node.desc)).leftMap { case (ctx, typ) =>
         ctx -> (prevFields :+ field(ctx.mangler.fieldName(ctx.cls.name, node.name), typ))
       }
     }
   }
 
   protected def compileMethods(ctx: Context, methods: Seq[MethodNode]): (Context, Seq[Node.FunctionDeclaration]) = {
-    methods.foldLeft(ctx -> Seq.empty[Node.FunctionDeclaration]) {
-      case ((ctx, prevFuncs), node) =>
-        val (newImports, fn) = methodCompiler.compile(
-          cls = ctx.cls,
-          method = Method(node),
-          imports = ctx.imports,
-          mangler = ctx.mangler
-        )
-        ctx.copy(imports = newImports) -> (prevFuncs :+ fn)
+    methods.foldLeft(ctx -> Seq.empty[Node.FunctionDeclaration]) { case ((ctx, prevFuncs), node) =>
+      val (newImports, fn) = methodCompiler.compile(
+        cls = ctx.cls,
+        method = Method(node),
+        imports = ctx.imports,
+        mangler = ctx.mangler
+      )
+      ctx.copy(imports = newImports) -> (prevFuncs :+ fn)
     }
   }
 

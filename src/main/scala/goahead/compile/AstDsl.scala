@@ -1,7 +1,7 @@
 package goahead.compile
-import org.objectweb.asm.Type
+import goahead.Logger
 
-object AstDsl {
+object AstDsl extends Logger {
   import goahead.ast.Node._
 
   // TODO: check all of these later to see if they are used
@@ -10,7 +10,11 @@ object AstDsl {
 
   def block(stmts: Seq[Statement]) = BlockStatement(stmts)
 
+  def emptyInterface = InterfaceType(Nil)
+
   def emptyReturn = ReturnStatement(Nil)
+
+  def emptyStruct = StructType(Nil)
 
   def field(str: String, typ: Expression) = Field(Seq(str.toIdent), typ)
 
@@ -102,29 +106,19 @@ object AstDsl {
   implicit class RichExpression(val expr: Expression) extends AnyVal {
     def `+`(right: Expression) = BinaryExpression(expr, Token.Add, right)
 
+    def addressOf = unary(Token.And)
+
     def assignExisting(right: Expression) = AssignStatement(Seq(expr), Token.Assign, Seq(right))
 
     def call(args: Seq[Expression] = Nil) = CallExpression(expr, args)
+
+    def inParens = ParenthesizedExpression(expr)
 
     def namelessField = Field(Nil, expr)
 
     def ret = ReturnStatement(Seq(expr))
 
     def toStmt = ExpressionStatement(expr)
-
-    def toType(oldType: Type, typ: Type): Expression = {
-      oldType.getSort -> typ.getSort match {
-        case (Type.INT, Type.BOOLEAN) => expr match {
-          case BasicLiteral(Token.Int, "1") => "true".toIdent
-          case BasicLiteral(Token.Int, "0") => "false".toIdent
-          case _ => sys.error(s"Unable to change int $expr to boolean")
-        }
-        case (oldSort, newSort) if oldSort == newSort =>
-          expr
-        case _ =>
-          sys.error(s"Unable to convert from type $oldType to $typ")
-      }
-    }
 
     def sel(right: String) = SelectorExpression(expr, right.toIdent)
 
@@ -137,6 +131,11 @@ object AstDsl {
 
   implicit class RichFunctionType(val fnType: FunctionType) extends AnyVal {
     def toFuncLit(stmts: Seq[Statement]) = FunctionLiteral(fnType, block(stmts))
+
+    def sansNames = FunctionType(
+      parameters = fnType.parameters.map(_.copy(names = Nil)),
+      results = fnType.results.map(_.copy(names = Nil))
+    )
   }
 
   implicit class RichNode[T <: goahead.ast.Node](val node: T) extends AnyVal {

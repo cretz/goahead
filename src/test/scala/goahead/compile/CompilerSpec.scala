@@ -5,36 +5,32 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths}
 import java.util.concurrent.TimeUnit
 
-import com.google.common.io.{ByteStreams, CharStreams}
+import com.google.common.io.CharStreams
 import goahead.ast.{Node, NodeWriter}
 import goahead.{BaseSpec, ExpectedOutput}
+import org.scalatest.BeforeAndAfterAll
 
 import scala.util.Try
 
-class CompilerSpec extends BaseSpec {
+class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   import AstDsl._
   import CompilerSpec._
 
-  val defaultClassDirs = Map(
-    "java/lang/NullPointerException" -> "rt",
-    "java/lang/Object" -> "rt",
-    "java/lang/String" -> "rt",
-    "java/lang/StringBuilder" -> "rt",
-    "java/lang/System" -> "rt"
-  )
+  // Create this entry for the "rt" classes and close at the end
+  val javaRuntimeEntry = ClassPath.Entry.fromJar(ClassPath.Entry.javaRuntimeJarPath, "rt")
+  override protected def afterAll() = javaRuntimeEntry.close()
 
   // Run each test case as its own setup
   testCases.foreach{t => t.subject should behave like expected(t)}
 
   def expected(t: CompilerSpec.TestCase) = it should t.provideExpectedOutput in withTemporaryFolder { tempFolder =>
+    val testClasses = t.classes.map(ClassPath.Entry.fromLocalClass(_, ""))
+
     // Set classpath with helper classes
-    val classPath = ClassPath(
-      defaultClassDirs ++ t.classes.map(c => c.getName.replace('.', '/') -> ""),
-      Seq.empty
-    )
+    val classPath = ClassPath(testClasses :+ javaRuntimeEntry)
 
     // Compile to one big file
-    val compiled = Compiler.compile(t.classes.map(_.readBytes()), classPath).copy(packageName = "spectest".toIdent)
+    val compiled = Compiler.compile(testClasses.map(_.bytes), classPath).copy(packageName = "spectest".toIdent)
 
     // Write the regular code in the spectest folder
     val codeFile = Files.createDirectories(tempFolder.resolve("spectest")).resolve("code.go")
@@ -66,8 +62,8 @@ class CompilerSpec extends BaseSpec {
     val outReader = new BufferedReader(new InputStreamReader(process.getInputStream))
     val errReader = new BufferedReader(new InputStreamReader(process.getErrorStream))
     val writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream))
-    try { writer.write(code) } finally { writer.close() }
-    assert(process.waitFor(5, TimeUnit.SECONDS))
+    try { writer.write(code); writer.flush() } finally { writer.close() }
+    process.waitFor(4, TimeUnit.SECONDS)
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
     val err = try { CharStreams.toString(errReader) } finally { errReader.close() }
     Try({
@@ -123,7 +119,8 @@ object CompilerSpec {
     import goahead.testclasses._
     Seq(
 //      TestCase(classOf[HelloWorld]),
-      TestCase(classOf[StaticFields])//,
+      TestCase(classOf[Inheritance])
+//      TestCase(classOf[StaticFields]),
 //      TestCase(classOf[SimpleInstance]),
 //      TestCase(classOf[TryCatch])
     )
@@ -134,7 +131,7 @@ object CompilerSpec {
     expectedOutput: Option[String]
   ) {
     def subject =
-      "Compiled classes " + classes.map(_.getSimpleName).mkString(",")
+      "Compiled classes " + classes.map(_.getName).mkString(", ")
 
     def provideExpectedOutput =
       // TODO: more than just stdout string
@@ -142,29 +139,27 @@ object CompilerSpec {
   }
 
   object TestCase {
-    def apply(classes: Class[_]*): TestCase = {
+    def apply(topClasses: Class[_]*): TestCase = {
+      val allClasses = topClasses.flatMap(getSelfAndAllInnerClasses).distinct
       // Get the expected out from an annotation or from a run
-      val expectedOutput = classes.flatMap(c => Option(c.getAnnotation(classOf[ExpectedOutput]))).headOption match {
+      val expectedOutput = allClasses.flatMap(c => Option(c.getAnnotation(classOf[ExpectedOutput]))).headOption match {
         case Some(expected) =>
           // Just use the annotation
           expected.value
         case None =>
           // Actually run the program and get the output assuming we can find one with the main class
-          val mainMeth = classes.flatMap(cls => Try(cls.getMethod("main", classOf[Array[String]])).toOption).headOption
+          val mainMeth = allClasses.flatMap(cls => Try(cls.getMethod("main", classOf[Array[String]])).toOption).headOption
           runAndGetOutput(mainMeth.getOrElse(sys.error("No main method")))
       }
 
       TestCase(
-        classes = classes,
+        classes = allClasses,
         expectedOutput = Some(expectedOutput)
       )
     }
-  }
 
-  implicit class RichClass(val cls: Class[_]) extends AnyVal {
-    def readBytes(): Array[Byte] = {
-      val inStream = cls.getResourceAsStream(cls.getSimpleName + ".class")
-      try { ByteStreams.toByteArray(inStream) } finally { inStream.close() }
+    def getSelfAndAllInnerClasses(cls: Class[_]): Seq[Class[_]] = {
+      cls +: cls.getDeclaredClasses.flatMap(getSelfAndAllInnerClasses)
     }
   }
 
