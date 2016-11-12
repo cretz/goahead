@@ -54,10 +54,4 @@ trait GoAheadCompiler extends Logger {
   protected def mainCompiler: MainCompiler = MainCompiler
 }
 
-object GoAheadCompiler extends GoAheadCompiler {
-  trait WithOnlyPanicMethodCompiler extends GoAheadCompiler {
-    override def classCompiler: ClassCompiler = ClassCompiler.WithOnlyPanicMethodCompiler
-  }
-
-  object WithOnlyPanicMethodCompiler extends WithOnlyPanicMethodCompiler
-}
+object GoAheadCompiler extends GoAheadCompiler

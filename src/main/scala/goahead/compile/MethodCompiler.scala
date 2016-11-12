@@ -2,13 +2,12 @@ package goahead.compile
 
 import goahead.Logger
 import goahead.ast.Node
-import goahead.ast.Node.Statement
+import goahead.compile.AstDsl._
+import goahead.compile.Helpers._
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree._
 
 import scala.annotation.tailrec
-import AstDsl._
-import Helpers._
 
 trait MethodCompiler extends Logger {
   import MethodCompiler._
@@ -388,12 +387,4 @@ object MethodCompiler extends MethodCompiler {
   ) extends Contextual[Context] {
     override def updatedImports(mports: Imports) = copy(imports = mports)
   }
-
-  trait PanicOnlyMethodCompiler extends MethodCompiler {
-    override def compileLabelSets(ctx: Context): (Context, Seq[Statement]) = {
-      ctx -> "panic".toIdent.call("Not Implemented".toLit.singleSeq).toStmt.singleSeq
-    }
-  }
-
-  object PanicOnlyMethodCompiler extends PanicOnlyMethodCompiler
 }

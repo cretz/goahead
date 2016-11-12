@@ -10,6 +10,8 @@ import goahead.compile.Helpers._
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.ClassNode
 
+import scala.util.Try
+
 // Guaranteed thread safe
 case class ClassPath(entries: Seq[ClassPath.Entry]) {
   def findClassRelativeCompiledDir(classInternalName: String): Option[String] = {
@@ -95,13 +97,13 @@ object ClassPath {
 
     def fromMap(entryToRelativeCompiledDir: Map[String, String]) = entryToRelativeCompiledDir.map((fromString _).tupled)
 
-    def fromString(str: String, relativeCompiledDir: String) = fromPath(Paths.get(str), relativeCompiledDir)
-
-    def fromPath(path: Path, relativeCompiledDir: String) = {
-      if (Files.isDirectory(path)) fromClassDir(path, relativeCompiledDir)
-      else if (path.endsWith("*")) fromJarDir(path.getParent, relativeCompiledDir)
-      else if (Files.exists(path)) fromFile(path, relativeCompiledDir)
-      else sys.error(s"Unable to find class path entry for $path")
+    def fromString(str: String, relativeCompiledDir: String) = {
+      if (str.endsWith("*")) fromJarDir(Paths.get(str.dropRight(1)), relativeCompiledDir) else {
+        val path = Try(Paths.get(str)).recover({ case e => throw new Exception(s"Invalid path: $str", e)}).get
+        if (Files.isDirectory(path)) fromClassDir(path, relativeCompiledDir)
+        else if (Files.exists(path)) fromFile(path, relativeCompiledDir)
+        else sys.error(s"Unable to find class path entry for $path")
+      }
     }
 
     def fromClassDir(dir: Path, relativeCompiledDir: String) = new SingleDirClassDir(dir, relativeCompiledDir)
@@ -125,8 +127,10 @@ object ClassPath {
       else sys.error(s"$file does not have jar or class extension")
     }
 
-    def fromJarFile(file: Path, relativeCompiledDir: String) =
+    def fromJarFile(file: Path, relativeCompiledDir: String) = {
+      require(Files.exists(file), s"$file does not exist")
       new SingleDirJarEntry(new JarFile(file.toFile), relativeCompiledDir)
+    }
 
     def fromClassFile(file: Path, relativeCompiledDir: String) =
       fromClass(Files.readAllBytes(file), relativeCompiledDir)
@@ -206,7 +210,7 @@ object ClassPath {
       override def name = node.name
 
       override def packageName = {
-        name.lastIndexOf('.') match {
+        name.lastIndexOf('/') match {
           case -1 => ""
           case index => name.substring(0, index)
         }

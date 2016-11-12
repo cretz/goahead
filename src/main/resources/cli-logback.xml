@@ -5,6 +5,8 @@
         </encoder>
     </appender>
 
+    <shutdownHook/>
+
     <root level="${logback.rootLevel}">
         <appender-ref ref="STDOUT" />
     </root>

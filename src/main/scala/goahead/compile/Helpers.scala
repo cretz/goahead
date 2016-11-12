@@ -133,9 +133,11 @@ object Helpers extends Logger {
   implicit class RichInt(val int: Int) extends AnyVal {
     @inline
     def isAccess(access: Int) = (int & access) == access
-    def isAccessSuper = isAccess(Opcodes.ACC_SUPER)
     def isAccessInterface = isAccess(Opcodes.ACC_INTERFACE)
+    def isAccessNative = isAccess(Opcodes.ACC_NATIVE)
+    def isAccessPrivate = isAccess(Opcodes.ACC_PRIVATE)
     def isAccessStatic = isAccess(Opcodes.ACC_STATIC)
+    def isAccessSuper = isAccess(Opcodes.ACC_SUPER)
 
     def toLit: Node.BasicLiteral = Node.BasicLiteral(Node.Token.Int, int.toString)
     def toTypedLit = TypedExpression(toLit, IType.IntType, cheapRef = true)

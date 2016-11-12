@@ -11,6 +11,7 @@ trait ClassCompiler extends Logger {
 
   def compile(cls: ClassNode, imports: Imports, mangler: Mangler): (Imports, Seq[Node.Declaration]) = {
     logger.debug(s"Compiling class: ${cls.name}")
+    require(!cls.access.isAccessInterface, "Interfaces not yet supported")
     compileStatic(initContext(cls, imports, mangler)).leftMap { case (ctx, staticDecls) =>
       compileDispatch(ctx).leftMap { case (ctx, dispatchDecls) =>
         compileInst(ctx).leftMap { case (ctx, instDecls) =>
@@ -32,7 +33,7 @@ trait ClassCompiler extends Logger {
         compileStaticAccessor(ctx).leftMap { case (ctx, staticAccessor) =>
           compileStaticNew(ctx).leftMap { case (ctx, staticNew) =>
             compileStaticMethods(ctx).leftMap { case (ctx, staticMethods) =>
-              ctx -> (Seq(staticStruct, staticVar, staticAccessor, staticNew) ++ staticMethods)
+              ctx -> (Seq(staticStruct, staticVar, staticAccessor) ++ staticNew ++ staticMethods)
             }
           }
         }
@@ -79,21 +80,24 @@ trait ClassCompiler extends Logger {
     }
   }
 
-  protected def compileStaticNew(ctx: Context): (Context, Node.FunctionDeclaration) = {
-    ctx.staticNewExpr(ctx.cls.superName).leftMap { case (ctx, superStaticNewExpr) =>
-      ctx -> funcDecl(
-        rec = Some("this" -> ctx.mangler.staticObjectName(ctx.cls.name).toIdent.star),
-        name = "New",
-        params = Nil,
-        results = Some(ctx.mangler.instanceObjectName(ctx.cls.name).toIdent.star),
-        stmts = Seq {
-          val structLit = literal(
-            Some(ctx.mangler.instanceObjectName(ctx.cls.name).toIdent),
-            ctx.mangler.instanceObjectName(ctx.cls.superName).toIdent.withValue(superStaticNewExpr)
-          )
-          structLit.unary(Node.Token.And).ret
-        }
-      )
+  protected def compileStaticNew(ctx: Context): (Context, Option[Node.FunctionDeclaration]) = {
+    Option(ctx.cls.superName) match {
+      case None => ctx -> None
+      case Some(superName) => ctx.staticNewExpr(superName).leftMap { case (ctx, superStaticNewExpr) =>
+        ctx -> Some(funcDecl(
+          rec = Some("this" -> ctx.mangler.staticObjectName(ctx.cls.name).toIdent.star),
+          name = "New",
+          params = Nil,
+          results = Some(ctx.mangler.instanceObjectName(ctx.cls.name).toIdent.star),
+          stmts = Seq {
+            val structLit = literal(
+              Some(ctx.mangler.instanceObjectName(ctx.cls.name).toIdent),
+              ctx.mangler.instanceObjectName(superName).toIdent.withValue(superStaticNewExpr)
+            )
+            structLit.unary(Node.Token.And).ret
+          }
+        ))
+      }
     }
   }
 
@@ -128,11 +132,14 @@ trait ClassCompiler extends Logger {
   protected def compileInstStruct(ctx: Context): (Context, Node.Declaration) = {
     compileFields(ctx, ctx.cls.fieldNodes.filterNot(_.access.isAccessStatic)).leftMap { case (ctx, fields) =>
       // Super classes are embedded
-      ctx.typeToGoType(IType.getObjectType(ctx.cls.superName)).leftMap { case (ctx, superType) =>
-        ctx -> struct(
-          ctx.mangler.instanceObjectName(ctx.cls.name),
-          superType.namelessField +: fields
-        )
+      val ctxAndSuperFieldOpt = Option(ctx.cls.superName) match {
+        case None => ctx -> None
+        case Some(superName) => ctx.typeToGoType(IType.getObjectType(superName)).leftMap { case (ctx, superType) =>
+          ctx -> Some(superType.namelessField)
+        }
+      }
+      ctxAndSuperFieldOpt.leftMap { case (ctx, superFieldOpt) =>
+        ctx -> struct(ctx.mangler.instanceObjectName(ctx.cls.name), superFieldOpt.toSeq ++ fields)
       }
     }
   }
@@ -165,22 +172,26 @@ trait ClassCompiler extends Logger {
 
   protected def compileDispatch(ctx: Context): (Context, Seq[Node.Declaration]) = {
     // Embed dispatch parent and add all iface func names
-    ctx.importQualifiedName(ctx.cls.superName, ctx.mangler.dispatchInterfaceName(ctx.cls.superName)).leftMap {
-      case (ctx, superDispatchInterfaceRef) =>
-        val dispatchMethodNodes = ctx.cls.methodNodes.filter(m => !m.access.isAccessStatic && m.name != "<init>")
-        val ctxAndDispatchMethods = dispatchMethodNodes.foldLeft(ctx -> Seq.empty[Node.Field]) {
-          case ((ctx, fields), methodNode) => compileInterfaceFunc(ctx, methodNode).leftMap { case (ctx, field) =>
-            ctx -> (fields :+ field)
-          }
-        }
+    Option(ctx.cls.superName) match {
+      case None => ctx -> Nil
+      case Some(superName) =>
+        ctx.importQualifiedName(superName, ctx.mangler.dispatchInterfaceName(superName)).leftMap {
+          case (ctx, superDispatchInterfaceRef) =>
+            val dispatchMethodNodes = ctx.cls.methodNodes.filter(m => !m.access.isAccessStatic && m.name != "<init>")
+            val ctxAndDispatchMethods = dispatchMethodNodes.foldLeft(ctx -> Seq.empty[Node.Field]) {
+              case ((ctx, fields), methodNode) => compileInterfaceFunc(ctx, methodNode).leftMap { case (ctx, field) =>
+                ctx -> (fields :+ field)
+              }
+            }
 
-        ctxAndDispatchMethods.leftMap { case (ctx, dispatchMethods) =>
-          ctx -> Seq(
-            interface(
-              name = ctx.mangler.dispatchInterfaceName(ctx.cls.name),
-              fields = superDispatchInterfaceRef.namelessField +: dispatchMethods
-            )
-          )
+            ctxAndDispatchMethods.leftMap { case (ctx, dispatchMethods) =>
+              ctx -> Seq(
+                interface(
+                  name = ctx.mangler.dispatchInterfaceName(ctx.cls.name),
+                  fields = superDispatchInterfaceRef.namelessField +: dispatchMethods
+                )
+              )
+            }
         }
     }
   }
@@ -213,10 +224,4 @@ object ClassCompiler extends ClassCompiler {
   ) extends Contextual[Context] { self =>
     override def updatedImports(mports: Imports) = copy(imports = mports)
   }
-
-  trait WithOnlyPanicMethodCompiler extends ClassCompiler {
-    override def methodCompiler: MethodCompiler = MethodCompiler.PanicOnlyMethodCompiler
-  }
-
-  object WithOnlyPanicMethodCompiler extends WithOnlyPanicMethodCompiler
 }

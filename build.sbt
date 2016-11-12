@@ -34,13 +34,13 @@ scalacOptions ++= Seq(
   "-Ywarn-unused-import"
 )
 
+logBuffered := false
+
 inScope(run.scope)(Seq(
   mainClass := Some("goahead.cli.Main"),
   showSuccess := false,
   logLevel := Level.Warn,
   onLoadMessage := ""
 ))
-
-logBuffered in Test := false
 
 testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oDF")
