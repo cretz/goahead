@@ -278,7 +278,16 @@ class NodeWriter {
 
   def appendIndexExpression(expr: IndexExpression): this.type = __TODO__
 
-  def appendInterfaceType(expr: InterfaceType): this.type = __TODO__
+  def appendInterfaceType(expr: InterfaceType): this.type = {
+    if (expr.methods.isEmpty) append("struct{}")
+    else {
+      append("interface {").indent()
+      paddedSections(expr.methods).foreach { section =>
+        section.nodes.foreach { f => newline().appendField(f, section.leftMax) }
+      }
+      dedent().newline().append('}')
+    }
+  }
 
   def appendKeyValueExpression(expr: KeyValueExpression, padLeftTo: Option[Int]): this.type = {
     appendExpression(expr.key).append(':')

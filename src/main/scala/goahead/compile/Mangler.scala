@@ -6,9 +6,13 @@ trait Mangler {
   def fieldName(owner: String, name: String): String
   def instanceObjectName(internalName: String): String
   def methodName(name: String, desc: String): String
+  def dispatchInterfaceName(internalName: String): String
+  def dispatchMethodName(name: String, desc: String): String
   def staticAccessorName(internalName: String): String
   def staticObjectName(internalName: String): String
   def staticVarName(internalName: String): String
+  // NOTE: without extension
+  def packageFileName(packageNameWithSlashesOrDots: String): String
 }
 
 object Mangler {
@@ -19,6 +23,12 @@ object Mangler {
     // TODO: I added "private[this]" to get rid of all unused later
 
     private[this] def classSuffix(simpleName: String): String = "__" + simpleName.replace("$", "__innerclass__")
+
+    override def dispatchInterfaceName(internalName: String): String =
+      objectNamePrefix(internalName) + "__Dispatch"
+
+    override def dispatchMethodName(name: String, desc: String): String =
+      "Dispatch__" + methodName(name, desc)
 
     override def fieldName(owner: String, name: String) = name.capitalize
 
@@ -74,5 +84,8 @@ object Mangler {
     }
 
     private[this] def varName(name: String): String = name
+
+    override def packageFileName(packageNameWithSlashesOrDots: String): String =
+      packageNameWithSlashesOrDots.replace('.', '_').replace('/', '_')
   }
 }

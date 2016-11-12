@@ -12,8 +12,10 @@ trait ClassCompiler extends Logger {
   def compile(cls: ClassNode, imports: Imports, mangler: Mangler): (Imports, Seq[Node.Declaration]) = {
     logger.debug(s"Compiling class: ${cls.name}")
     compileStatic(initContext(cls, imports, mangler)).leftMap { case (ctx, staticDecls) =>
-      compileInst(ctx).leftMap { case (ctx, instDecls) =>
-        ctx.imports -> (staticDecls ++ instDecls)
+      compileDispatch(ctx).leftMap { case (ctx, dispatchDecls) =>
+        compileInst(ctx).leftMap { case (ctx, instDecls) =>
+          ctx.imports -> (staticDecls ++ dispatchDecls ++ instDecls)
+        }
       }
     }
   }
@@ -160,6 +162,47 @@ trait ClassCompiler extends Logger {
   }
 
   protected def methodCompiler: MethodCompiler = MethodCompiler
+
+  protected def compileDispatch(ctx: Context): (Context, Seq[Node.Declaration]) = {
+    // Embed dispatch parent and add all iface func names
+    ctx.importQualifiedName(ctx.cls.superName, ctx.mangler.dispatchInterfaceName(ctx.cls.superName)).leftMap {
+      case (ctx, superDispatchInterfaceRef) =>
+        val dispatchMethodNodes = ctx.cls.methodNodes.filter(m => !m.access.isAccessStatic && m.name != "<init>")
+        val ctxAndDispatchMethods = dispatchMethodNodes.foldLeft(ctx -> Seq.empty[Node.Field]) {
+          case ((ctx, fields), methodNode) => compileInterfaceFunc(ctx, methodNode).leftMap { case (ctx, field) =>
+            ctx -> (fields :+ field)
+          }
+        }
+
+        ctxAndDispatchMethods.leftMap { case (ctx, dispatchMethods) =>
+          ctx -> Seq(
+            interface(
+              name = ctx.mangler.dispatchInterfaceName(ctx.cls.name),
+              fields = superDispatchInterfaceRef.namelessField +: dispatchMethods
+            )
+          )
+        }
+    }
+  }
+
+  protected def compileInterfaceFunc(ctx: Context, m: MethodNode): (Context, Node.Field) = {
+    val ctxWithParams = IType.getArgumentTypes(m.desc).foldLeft(ctx -> Seq.empty[Node.Field]) {
+      case ((ctx, params), argType) => ctx.typeToGoType(argType).leftMap { case (ctx, typ) =>
+        ctx -> (params :+ typ.namelessField)
+      }
+    }
+
+    ctxWithParams.leftMap { case (ctx, params) =>
+      val ctxWithResultTypOpt = IType.getReturnType(m.desc) match {
+        case IType.VoidType => ctx -> None
+        case retTyp => ctx.typeToGoType(retTyp).leftMap { case (ctx, typ) => ctx -> Some(typ) }
+      }
+
+      ctxWithResultTypOpt.leftMap { case (ctx, resultTypOpt) =>
+        ctx -> field(ctx.mangler.dispatchMethodName(m.name, m.desc), funcTypeWithFields(params, resultTypOpt))
+      }
+    }
+  }
 }
 
 object ClassCompiler extends ClassCompiler {
@@ -170,4 +213,10 @@ object ClassCompiler extends ClassCompiler {
   ) extends Contextual[Context] { self =>
     override def updatedImports(mports: Imports) = copy(imports = mports)
   }
+
+  trait WithOnlyPanicMethodCompiler extends ClassCompiler {
+    override def methodCompiler: MethodCompiler = MethodCompiler.PanicOnlyMethodCompiler
+  }
+
+  object WithOnlyPanicMethodCompiler extends WithOnlyPanicMethodCompiler
 }

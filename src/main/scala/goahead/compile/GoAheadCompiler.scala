@@ -5,7 +5,7 @@ import goahead.ast.Node
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.ClassNode
 
-trait Compiler extends Logger {
+trait GoAheadCompiler extends Logger {
   import AstDsl._
   import Helpers._
 
@@ -54,4 +54,10 @@ trait Compiler extends Logger {
   protected def mainCompiler: MainCompiler = MainCompiler
 }
 
-object Compiler extends Compiler
+object GoAheadCompiler extends GoAheadCompiler {
+  trait WithOnlyPanicMethodCompiler extends GoAheadCompiler {
+    override def classCompiler: ClassCompiler = ClassCompiler.WithOnlyPanicMethodCompiler
+  }
+
+  object WithOnlyPanicMethodCompiler extends WithOnlyPanicMethodCompiler
+}

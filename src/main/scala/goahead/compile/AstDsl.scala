@@ -44,6 +44,11 @@ object AstDsl extends Logger {
     results = result.map(Field(Seq.empty, _)).toSeq
   )
 
+  def funcTypeWithFields(params: Seq[Field], result: Option[Expression] = None) = FunctionType(
+    parameters = params,
+    results = result.map(Field(Seq.empty, _)).toSeq
+  )
+
   def goto(label: String) = BranchStatement(Token.Goto, Some(label.toIdent))
 
   def id(name: String) = Identifier(name)
@@ -67,6 +72,11 @@ object AstDsl extends Logger {
         path = mport.toLit
       )
     }
+  )
+
+  def interface(name: String, fields: Seq[Field]) = GenericDeclaration(
+    token = Token.Type,
+    specifications = Seq(TypeSpecification(name.toIdent, InterfaceType(fields)))
   )
 
   def labeled(name: String, stmts: Seq[Statement]) = block(stmts).labeled(name)

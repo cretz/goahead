@@ -17,7 +17,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   import CompilerSpec._
 
   // Create this entry for the "rt" classes and close at the end
-  val javaRuntimeEntry = ClassPath.Entry.fromJar(ClassPath.Entry.javaRuntimeJarPath, "rt")
+  val javaRuntimeEntry = ClassPath.Entry.fromJarFile(ClassPath.Entry.javaRuntimeJarPath, "rt")
   override protected def afterAll() = javaRuntimeEntry.close()
 
   // Run each test case as its own setup
@@ -30,7 +30,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     val classPath = ClassPath(testClasses :+ javaRuntimeEntry)
 
     // Compile to one big file
-    val compiled = Compiler.compile(testClasses.map(_.bytes), classPath).copy(packageName = "spectest".toIdent)
+    val compiled = GoAheadCompiler.compile(testClasses.map(_.bytes), classPath).copy(packageName = "spectest".toIdent)
 
     // Write the regular code in the spectest folder
     val codeFile = Files.createDirectories(tempFolder.resolve("spectest")).resolve("code.go")
@@ -38,7 +38,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
 
     // Write the main call
     val className = t.classes.find(c => Try(c.getMethod("main", classOf[Array[String]])).isSuccess).get.getName
-    val mainCode = Compiler.compileMainFile("./spectest", className.replace('.', '/'), classPath)
+    val mainCode = GoAheadCompiler.compileMainFile("./spectest", className.replace('.', '/'), classPath)
     writeGoCode(tempFolder.resolve("main.go"), mainCode)
 
     // Compile go code
