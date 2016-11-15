@@ -1,0 +1,96 @@
+https://groups.google.com/forum/#!topic/golang-nuts/tdHnfpmPp3U
+
+TODO: put discriminator on the interfaces so we know that something is explicitly implementing them
+      and we don't fall victim to implicit duck typing
+
+Example:
+
+    static class Parent {
+        public String getMyName() {
+            return "Parent";
+        }
+    }
+
+    static class Child extends Parent {
+        @Override
+        public String getMyName() {
+            return "Child";
+        }
+    }
+
+Becomes:
+
+      package main
+
+      import "unsafe"
+
+      type Object_Methods interface {
+      }
+
+      type Object_Instance struct {
+      	Object_Methods
+      }
+
+      func (this *Object_Instance) Object_InitMethods(v Object_Methods) {
+      	this.Object_Methods = v
+      }
+
+      type Parent_Methods interface {
+      	Object_Methods
+      	GetMyName() string
+      }
+
+      type Parent_Instance struct {
+      	Object_Instance
+      	Parent_Methods
+      }
+
+      func New_Parent_Instance() *Parent_Instance {
+      	v := new(Parent_Instance)
+      	v.Parent_InitMethods(v)
+      	return v
+      }
+
+      func (this *Parent_Instance) Parent_InitMethods(v Parent_Methods) {
+      	this.Object_Instance.Object_InitMethods(v)
+      	this.Parent_Methods = v
+      }
+
+      func (this *Parent_Instance) GetMyName() string {
+      	return "Parent"
+      }
+
+      func (this *Parent_Instance) Invoke_GetMyName() string {
+      	return this.Parent_Methods.GetMyName()
+      }
+
+      type Child_Methods interface {
+      	Parent_Methods
+      }
+
+      type Child_Instance struct {
+      	Parent_Instance
+      	Child_Methods
+      }
+
+      func New_Child_Instance() *Child_Instance {
+      	v := new(Child_Instance)
+      	v.Child_InitMethods(v)
+      	return v
+      }
+
+      func (this *Child_Instance) Child_InitMethods(v Child_Methods) {
+      	this.Parent_Instance.Parent_InitMethods(v)
+      	this.Child_Methods = v
+      }
+
+      func (this *Child_Instance) GetMyName() string {
+      	return "Child"
+      }
+
+      func main() {
+      	p := New_Parent_Instance()
+      	println("1: " + p.Invoke_GetMyName())
+      	p = (*Parent_Instance)(unsafe.Pointer(New_Child_Instance()))
+      	println("2: " + p.Invoke_GetMyName())
+      }

@@ -22,12 +22,28 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
     getFirstClass(classInternalName).access.isAccessInterface
   }
 
-  def classHasSuper(childInternalName: String, parentInternalName: String): Boolean = {
-    val details = getFirstClass(childInternalName)
-    val possibles = details.interfaceInternalNames ++ details.superInternalName
-    possibles.exists { possible =>
-      possible == parentInternalName || classHasSuper(possible, parentInternalName)
-    }
+  def allSuperTypes(classInternalName: String): Seq[ClassPath.ClassDetails] = {
+    // Not deep enough to rework for @tailrec
+    getFirstClass(classInternalName).superInternalName.toSeq.flatMap({ superInternalName =>
+      val details = getFirstClass(superInternalName)
+      details +: allSuperTypes(superInternalName)
+    }).distinct
+  }
+
+  def allInterfaceTypes(classInternalName: String): Seq[ClassPath.ClassDetails] = {
+    // Not deep enough to rework for @tailrec
+    getFirstClass(classInternalName).interfaceInternalNames.flatMap({ interfaceInternalName =>
+      val details = getFirstClass(interfaceInternalName)
+      details +: allInterfaceTypes(interfaceInternalName)
+    }).distinct
+  }
+
+  def allSuperAndImplementingTypes(classInternalName: String): Seq[ClassPath.ClassDetails] = {
+    (allSuperTypes(classInternalName) ++ allInterfaceTypes(classInternalName)).distinct
+  }
+
+  def classImplementsOrExtends(childInternalName: String, parentInternalName: String): Boolean = {
+    allSuperAndImplementingTypes(childInternalName).exists(_.name == parentInternalName)
   }
 
   def findFirstClassWithEntry(classInternalName: String): Option[(ClassPath.Entry, ClassPath.ClassDetails)] =
@@ -75,6 +91,7 @@ object ClassPath {
     def relativeCompiledDir: String
     def access: Int
     def bytes: Array[Byte]
+    def methods: Seq[Method]
   }
 
   // Must be thread safe!
@@ -221,6 +238,8 @@ object ClassPath {
       override def superInternalName: Option[String] = Option(node.superName)
 
       override def interfaceInternalNames: Seq[String] = node.interfaceNames
+
+      override lazy val methods = node.methodNodes.map(Method.apply)
     }
   }
 }

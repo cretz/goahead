@@ -5,22 +5,25 @@ import scala.util.Try
 
 object Args {
 
-  def validated[T](args: Seq[String], f: (Builder) => T): Either[Failure, T] = {
+  def validated[T](args: Seq[String], f: (Builder) => T): Try[T] = {
     val builder = new Builder(args)
     val result = f(builder)
     
     // If -help is anywhere in there, we show the usage but no errors
-    if (builder.args.contains("-help")) Left(Failure(Nil, builder.usageStartingWithArgs())) else {
-      var errStrs = builder.errs.map(_.getMessage)
-      if (builder.args.nonEmpty) {
-        errStrs :+= "Unrecognized args: " + builder.args.mkString(", ")
-        builder.args = Nil
+    Try {
+      if (builder.args.contains("-help")) throw Failure(Nil, builder.usageStartingWithArgs())
+      else {
+        var errStrs = builder.errs.map(_.getMessage)
+        if (builder.args.nonEmpty) {
+          errStrs :+= "Unrecognized args: " + builder.args.mkString(", ")
+          builder.args = Nil
+        }
+        if (errStrs.nonEmpty) throw Failure(errStrs, builder.usageStartingWithArgs()) else result
       }
-      if (errStrs.nonEmpty) Left(Failure(errStrs, builder.usageStartingWithArgs())) else Right(result)
     }
   }
 
-  case class Failure(errs: Seq[String], usageStartingWithArgs: String)
+  case class Failure(errs: Seq[String], usageStartingWithArgs: String) extends Exception("Argument failure")
 
   case class ArgError(arg: String, err: String, cause: Throwable = null) extends Exception(s"$arg: $err", cause)
 

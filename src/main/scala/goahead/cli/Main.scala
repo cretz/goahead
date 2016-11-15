@@ -2,15 +2,18 @@ package goahead.cli
 
 import goahead.Logger
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Success}
 
 object Main extends Logger {
   val commands = Seq[Command](
-    BuildStubs
+    BuildStubs,
+    BuildRt
   )
 
   val usage = s"""
     |Usage:
+    |  COMMAND -c file
+    |
     |  COMMAND options...
     |Commands:
     |  ${commands.map(_.name).mkString("\n  ")}
@@ -23,14 +26,14 @@ object Main extends Logger {
       case None =>
         println("Error: Unrecognized command: " + args.head)
         println(usage)
-      case Some(command) => Try(command.run(args.tail)) match {
-        case Success(Some(failure)) =>
-          if (failure.errs.nonEmpty) {
+      case Some(command) => command.run(args.tail) match {
+        case Failure(f: Args.Failure) =>
+          if (f.errs.nonEmpty) {
             println("Errors:")
-            failure.errs.foreach(e => println("  " + e))
+            f.errs.foreach(e => println("  " + e))
           }
           println("Usage:")
-          println("  " + command.name + " " + failure.usageStartingWithArgs.replace("\n", "\n  "))
+          println("  " + command.name + " " + f.usageStartingWithArgs.replace("\n", "\n  "))
           sys.exit(1)
         case Failure(e) =>
           def errMsg(e: Throwable, indent: Int = 0): String = {
@@ -41,7 +44,7 @@ object Main extends Logger {
           if (logger.underlying.isDebugEnabled) logger.debug("Execution failed", e)
           else println("Run with -vv for more details")
           sys.exit(1)
-        case Success(None) =>
+        case Success(_) =>
           logger.trace("App complete successfully")
       }
     }

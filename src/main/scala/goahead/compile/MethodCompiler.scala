@@ -18,7 +18,7 @@ trait MethodCompiler extends Logger {
     imports: Imports,
     mangler: Mangler
   ): (Imports, Node.FunctionDeclaration) = {
-    logger.debug(s"Compiling method: ${cls.name}::${method.name}")
+    logger.debug(s"Compiling method: ${cls.name}.${method.name}${method.desc}")
     logger.trace("ASM:\n    " + method.asmString.replace("\n", "\n    "))
     // Compile the sets
     val ctx = initContext(cls, method, imports, mangler, getLabelSets(method))

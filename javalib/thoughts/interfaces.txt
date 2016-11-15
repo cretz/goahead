@@ -1,0 +1,3 @@
+Following along with inheritance, since Go provides multiple inheritance and Java 8 allows static and default interface
+methods, we are just going to do it like inheritance and make the "dispatcher" still an interface. However, we might
+also make an init-less static object for static methods. And basically static methods for the default methods...we'll see.

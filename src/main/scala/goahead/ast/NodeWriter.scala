@@ -167,7 +167,7 @@ class NodeWriter {
 
   def appendEllipsis(expr: Ellipsis): this.type = __TODO__
 
-  def appendEmptyStatement(): this.type = __TODO__
+  def appendEmptyStatement(): this.type = this
 
   def appendExpression(expr: Expression): this.type = expr match {
     case a: ArrayType => appendArrayType(a)
@@ -195,11 +195,20 @@ class NodeWriter {
 
   def appendExpressionStatement(stmt: ExpressionStatement): this.type = appendExpression(stmt.expression)
 
-  def appendField(field: Field, padNameTo: Option[Int] = None): this.type = {
-    if (field.names.nonEmpty) commaSeparated(field.names, appendIdentifier).append(" ")
-    padNameTo.foreach(appendPaddingFromFirstNonWhitespace)
-    appendExpression(field.typ)
-    field.tag.foreach { append(' ').appendBasicLiteral(_) }
+  def appendField(field: Field, padNameTo: Option[Int] = None, interfaceField: Boolean = false): this.type = {
+    // As a special case, interface fields don't use the word func in their name nor are they padded in
+    // any way
+    if (interfaceField && field.typ.isInstanceOf[FunctionType]) {
+      require(field.names.length == 1, "Expected interface fn to have single name")
+      appendIdentifier(field.names.head).appendFunctionTypeSignature(field.typ.asInstanceOf[FunctionType])
+    } else {
+      if (field.names.nonEmpty) commaSeparated(field.names, appendIdentifier).append(" ")
+      padNameTo.foreach(appendPaddingFromFirstNonWhitespace)
+      appendExpression(field.typ)
+      field.tag.foreach {
+        append(' ').appendBasicLiteral(_)
+      }
+    }
     this
   }
 
@@ -235,7 +244,7 @@ class NodeWriter {
   }
 
   def appendGenericDeclaration(decl: GenericDeclaration): this.type = {
-    require(decl.specifications.nonEmpty)
+    require(decl.specifications.nonEmpty, s"Unexpected empty specs: $decl")
     decl.token match {
       case Token.Import => append("import ")
       case Token.Const => append("const ")
@@ -279,12 +288,10 @@ class NodeWriter {
   def appendIndexExpression(expr: IndexExpression): this.type = __TODO__
 
   def appendInterfaceType(expr: InterfaceType): this.type = {
-    if (expr.methods.isEmpty) append("struct{}")
+    if (expr.methods.isEmpty) append("interface{}")
     else {
       append("interface {").indent()
-      paddedSections(expr.methods).foreach { section =>
-        section.nodes.foreach { f => newline().appendField(f, section.leftMax) }
-      }
+      expr.methods.foreach(f => newline().appendField(f, interfaceField = true))
       dedent().newline().append('}')
     }
   }

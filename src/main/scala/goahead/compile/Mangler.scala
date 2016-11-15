@@ -8,11 +8,12 @@ trait Mangler {
   def methodName(name: String, desc: String): String
   def dispatchInterfaceName(internalName: String): String
   def dispatchMethodName(name: String, desc: String): String
+  def distpatchInitMethodName(classInternalName: String): String
   def staticAccessorName(internalName: String): String
   def staticObjectName(internalName: String): String
   def staticVarName(internalName: String): String
   // NOTE: without extension
-  def packageFileName(packageNameWithSlashesOrDots: String): String
+  def fileName(packageOrClassNameWithSlashesOrDots: String): String
 }
 
 object Mangler {
@@ -29,6 +30,9 @@ object Mangler {
 
     override def dispatchMethodName(name: String, desc: String): String =
       "Dispatch__" + methodName(name, desc)
+
+    override def distpatchInitMethodName(classInternalName: String): String =
+      objectNamePrefix(classInternalName) + "__InitDispatch"
 
     override def fieldName(owner: String, name: String) = name.capitalize
 
@@ -52,8 +56,12 @@ object Mangler {
       case _ => name.capitalize
     }
 
-    private[this] def methodSuffix(desc: String): String =
-      Type.getArgumentTypes(desc).map(typeToNameString).mkString("__")
+    private[this] def methodSuffix(desc: String): String = {
+      // Due to synthetic bridge methods, we have to include the return type here too...
+      val argTypes = Type.getArgumentTypes(desc).map(typeToNameString).mkString("__")
+      val retType = typeToNameString(Type.getReturnType(desc))
+      argTypes + "__ret__" + retType
+    }
 
     private[this] def objectNamePrefix(internalName: String): String = {
       require(!internalName.headOption.contains('['), "Not ready yet for arrays")
@@ -72,12 +80,14 @@ object Mangler {
 
     private[this] def typeToNameString(typ: Type): String = typ.getSort match {
       case Type.BOOLEAN => "Z"
+      case Type.BYTE => "B"
       case Type.CHAR => "C"
       case Type.SHORT => "S"
       case Type.INT => "I"
       case Type.LONG => "J"
       case Type.FLOAT => "F"
       case Type.DOUBLE => "D"
+      case Type.VOID => "V"
       case Type.ARRAY => ("__arr__" * typ.getDimensions) + typeToNameString(typ.getElementType)
       case Type.OBJECT => "__obj__" + objectNamePrefix(typ.getInternalName)
       case _ => sys.error(s"Unrecognized type: $typ")
@@ -85,7 +95,7 @@ object Mangler {
 
     private[this] def varName(name: String): String = name
 
-    override def packageFileName(packageNameWithSlashesOrDots: String): String =
-      packageNameWithSlashesOrDots.replace('.', '_').replace('/', '_')
+    override def fileName(packageOrClassNameWithSlashesOrDots: String): String =
+      packageOrClassNameWithSlashesOrDots.replace('.', '_').replace('/', '_')
   }
 }

@@ -62,6 +62,7 @@ object Helpers extends Logger {
         case Type.VOID => ctx -> emptyStruct.star
         case Type.BOOLEAN => ctx -> "bool".toIdent
         case Type.CHAR => ctx -> "rune".toIdent
+        case Type.BYTE => ctx -> "byte".toIdent
         case Type.SHORT => ctx -> "int16".toIdent
         case Type.INT => ctx -> "int".toIdent
         case Type.LONG => ctx -> "int64".toIdent

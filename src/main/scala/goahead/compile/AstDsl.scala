@@ -120,6 +120,8 @@ object AstDsl extends Logger {
 
     def assignExisting(right: Expression) = AssignStatement(Seq(expr), Token.Assign, Seq(right))
 
+    def assignDefine(right: Expression) = AssignStatement(Seq(expr), Token.Define, Seq(right))
+
     def call(args: Seq[Expression] = Nil) = CallExpression(expr, args)
 
     def inParens = ParenthesizedExpression(expr)
@@ -163,7 +165,12 @@ object AstDsl extends Logger {
       // TODO
       str
 
-    def toIdent = Identifier(str)
+    def goSafeIdent: String = {
+      // Only dollar sign so far is off
+      str.replace("$", "__dollar__")
+    }
+
+    def toIdent = Identifier(str.goSafeIdent)
 
     def toLit = BasicLiteral(Token.String, '"' + goUnescaped + '"')
   }

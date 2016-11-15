@@ -51,10 +51,9 @@ object IType extends Logger {
     }
 
     override def isAssignableFrom(classPath: ClassPath, other: IType) = {
-      logger.info(s"CHECKING IF $this is assignable from $other")
       other match {
         case Simple(otherTyp) if otherTyp.getSort == Type.OBJECT =>
-          classPath.classHasSuper(otherTyp.getInternalName, typ.getInternalName)
+          classPath.classImplementsOrExtends(otherTyp.getInternalName, typ.getInternalName)
         // TODO: more of this
         case _ =>
           false

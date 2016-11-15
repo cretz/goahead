@@ -44,10 +44,11 @@ trait GoAheadCompiler extends Logger {
         }
     }
 
-    file("", compileImports(imports) +: decls)
+    file("", compileImports(imports).toSeq ++ decls)
   }
 
-  protected def compileImports(mports: Imports): Node.Declaration = imports(mports.aliases.toSeq)
+  protected def compileImports(mports: Imports): Option[Node.Declaration] =
+    if (mports.aliases.isEmpty) None else Some(imports(mports.aliases.toSeq))
 
   protected def classCompiler: ClassCompiler = ClassCompiler
 

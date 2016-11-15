@@ -11,7 +11,7 @@ func OSArgs() []*Java__lang__String__Instance {
 }
 
 func NewString(str string) *Java__lang__String__Instance {
-	ret := Java__lang__String().New()
-	ret.Instance_Init__desc____obj__Java__lang__String(str)
-	return ret
+	v := Java__lang__String().New()
+	v.Underlying = str
+	return v
 }

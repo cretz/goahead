@@ -81,7 +81,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   def compileDir(dir: Path): Path = {
     val builder = new ProcessBuilder("go", "build", "-o", "test").directory(dir.toFile)
     // TODO: add the test workspace
-    val goPaths = Seq(Paths.get("etc/testworkspace"), dir)
+    val goPaths = Seq(Paths.get("javalib"), dir)
     val goPath = goPaths.map(_.toAbsolutePath.toString).mkString(File.pathSeparator)
     logger.debug(s"Setting GOPATH to $goPath")
     builder.environment().put("GOPATH", goPath)
@@ -108,7 +108,10 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     )
     assert(process.waitFor(5, TimeUnit.SECONDS))
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
-    assert(out == expected)
+    Try(assert(out == expected)).recover({ case e =>
+      logger.error(s"Did not match expected output. Got:\n$out\n\nExpected:\n$expected")
+      throw e
+    }).get
     // Discarding unneeded value above
     ()
   }
@@ -118,8 +121,8 @@ object CompilerSpec {
   val testCases = {
     import goahead.testclasses._
     Seq(
-//      TestCase(classOf[HelloWorld]),
-      TestCase(classOf[Inheritance])
+      TestCase(classOf[HelloWorld])
+//      TestCase(classOf[Inheritance]),
 //      TestCase(classOf[StaticFields]),
 //      TestCase(classOf[SimpleInstance]),
 //      TestCase(classOf[TryCatch])
