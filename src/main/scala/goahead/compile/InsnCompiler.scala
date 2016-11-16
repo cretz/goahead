@@ -50,13 +50,12 @@ trait InsnCompiler extends Logger {
   }
 
   protected def compile(ctx: Context, insn: FieldInsnNode): (Context, Seq[Node.Statement]) = {
-    import ctx.mangler
     insn.byOpcode {
       case Opcodes.GETFIELD =>
         ctx.stackPopped { case (ctx, item) =>
           ctx.stackPushed(
             TypedExpression(
-              expr = item.expr.sel(mangler.fieldName(insn.owner, insn.name)),
+              expr = item.expr.sel(ctx.mangler.fieldName(insn.owner, insn.name)),
               typ = IType.getType(insn.desc),
               cheapRef = true
             )
@@ -65,14 +64,14 @@ trait InsnCompiler extends Logger {
       case Opcodes.GETSTATIC =>
         ctx.staticInstRefExpr(insn.owner).leftMap { case (ctx, expr) =>
           ctx.stackPushed(TypedExpression(
-            expr = expr.sel(mangler.fieldName(insn.owner, insn.name)),
+            expr = expr.sel(ctx.mangler.fieldName(insn.owner, insn.name)),
             typ = IType.getType(insn.desc),
             cheapRef = true
           )) -> Nil
         }
       case Opcodes.PUTFIELD =>
         ctx.stackPopped(2, { case (ctx, Seq(objectRef, value)) =>
-          val field = objectRef.expr.sel(mangler.fieldName(insn.owner, insn.name))
+          val field = objectRef.expr.sel(ctx.mangler.fieldName(insn.owner, insn.name))
           value.toExprNode(ctx, IType.getType(insn.desc)).leftMap { case (ctx, value) =>
             ctx -> field.assignExisting(value).singleSeq
           }
@@ -81,7 +80,7 @@ trait InsnCompiler extends Logger {
         ctx.staticInstRefExpr(insn.owner).leftMap { case (ctx, expr) =>
           ctx.stackPopped { case (ctx, value) =>
             value.toExprNode(ctx, IType.getType(insn.desc)).leftMap { case (ctx, value) =>
-              ctx -> expr.sel(mangler.fieldName(insn.owner, insn.name)).assignExisting(value).singleSeq
+              ctx -> expr.sel(ctx.mangler.fieldName(insn.owner, insn.name)).assignExisting(value).singleSeq
             }
           }
         }
@@ -182,24 +181,27 @@ trait InsnCompiler extends Logger {
   }
 
   protected def compile(ctx: Context, insn: MethodInsnNode): (Context, Seq[Node.Statement]) = {
+    // As a special case, if we call a super version of a method in ourselves, we do not use
+    // the dispatcher and we call it on that instance
+    def subjectMethod(ctx: Context, subject: TypedExpression): (Context, Node.Expression) = {
+      val isSuperCall = subject.isThis && ctx.method.name == insn.name &&
+        ctx.method.desc == insn.desc && insn.owner != ctx.cls.name
+      subject.toExprNode(ctx, IType.getObjectType(insn.owner), noCasting = isSuperCall).leftMap { case (ctx, subject) =>
+        val methodExpr =
+          if (!isSuperCall) subject.sel(ctx.mangler.dispatchMethodName(insn.name, insn.desc))
+          else subject.sel(ctx.mangler.instanceObjectName(insn.owner)).sel(
+            ctx.mangler.methodName(insn.name, insn.desc)
+          )
+        ctx -> methodExpr
+      }
+    }
+
     insn.byOpcode {
-      case Opcodes.INVOKESPECIAL if insn.name == "<init>" && ctx.method.name == "<init>" =>
-        require(IType.getReturnType(insn.desc) == IType.VoidType)
-        // If we're inside of init ourselves and this call is init, we know we're
-        // actually running init on ourselves
-        ctx.stackPopped { case (ctx, subject) =>
-          subject.toExprNode(ctx, IType.getObjectType(insn.owner)).leftMap { case (ctx, subject) =>
-            val inst = subject.sel(ctx.mangler.instanceObjectName(insn.owner))
-            val init = inst.sel(ctx.mangler.methodName(insn.name, insn.desc))
-            ctx -> init.call().toStmt.singleSeq
-          }
-        }
       case Opcodes.INVOKEVIRTUAL | Opcodes.INVOKESPECIAL =>
         // Note: we let null pointer exceptions cause a panic instead of checking them
         val (argTypes, retType) = IType.getArgumentAndReturnTypes(insn.desc)
         ctx.stackPopped(argTypes.length + 1, { case (ctx, subject +: args) =>
-          subject.toExprNode(ctx, IType.getObjectType(insn.owner)).leftMap { case (ctx, subject) =>
-            val method = subject.sel(ctx.mangler.methodName(insn.name, insn.desc))
+          subjectMethod(ctx, subject).leftMap { case (ctx, subjectMethod) =>
             val ctxAndCallVals = args.zip(argTypes).foldLeft(ctx -> Seq.empty[Node.Expression]) {
               case ((ctx, prevExprs), (typedExpr, typ)) =>
                 typedExpr.toExprNode(ctx, typ).leftMap { case (ctx, newExpr) =>
@@ -207,7 +209,7 @@ trait InsnCompiler extends Logger {
                 }
             }
             ctxAndCallVals.leftMap { case (ctx, callVals) =>
-              val call = method.call(callVals)
+              val call = subjectMethod.call(callVals)
               // Put it on the stack if not void
               if (retType == IType.VoidType) ctx -> call.toStmt.singleSeq
               else ctx.stackPushed(TypedExpression(call, retType, cheapRef = false)) -> Nil

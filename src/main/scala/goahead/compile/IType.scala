@@ -54,7 +54,7 @@ object IType extends Logger {
       other match {
         case Simple(otherTyp) if otherTyp.getSort == Type.OBJECT =>
           classPath.classImplementsOrExtends(otherTyp.getInternalName, typ.getInternalName)
-        // TODO: more of this
+        // TODO: more of this w/ primitives and what not
         case _ =>
           false
       }

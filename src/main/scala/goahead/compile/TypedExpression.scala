@@ -7,10 +7,12 @@ sealed trait TypedExpression {
   def typ: IType
   def cheapRef: Boolean
 
-  def name: String = expr match {
-    case Node.Identifier(name) => name
-    case _ => sys.error(s"Trying to get name from non ident: $expr")
+  def maybeName = expr match {
+    case Node.Identifier(name) => Some(name)
+    case _ => None
   }
+
+  def name: String = maybeName.getOrElse(sys.error(s"Trying to get name from non ident: $expr"))
 
   def withMaybeMoreSpecificType(classPath: ClassPath, other: IType) =
     withUpdatedType(typ.maybeMakeMoreSpecific(classPath, other))

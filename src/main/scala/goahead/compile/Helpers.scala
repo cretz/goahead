@@ -263,37 +263,49 @@ object Helpers extends Logger {
   }
 
   implicit class RichTypedExpression(val expr: TypedExpression) extends AnyVal {
-    def toExprNode[T <: Contextual[T]](ctx: T, newTyp: IType): (T, Node.Expression) = {
+
+    def isThis = expr.maybeName.contains("this")
+
+    def unsafeCast[T <: Contextual[T]](ctx: T, oldTyp: IType, newTyp: IType): (T, Node.Expression) = {
+      ctx.withImportAlias("unsafe").leftMap { case (ctx, unsafeAlias) =>
+        val pointerArgExpr = oldTyp match {
+          case IType.NullType => NilExpr
+          case s: IType.Simple if s.isPointer => expr.expr
+          case IType.Simple(asmTyp) => expr.expr.addressOf
+          case other => sys.error(s"Unrecognized existing type to convert from: $other")
+        }
+        ctx.typeToGoType(newTyp).leftMap { case (ctx, goType) =>
+          val convertToPointer = unsafeAlias.toIdent.sel("Pointer").call(pointerArgExpr.singleSeq)
+          newTyp match {
+            case s: IType.Simple if s.isPointer =>
+              // Just parentheses
+              ctx -> goType.inParens.call(convertToPointer.singleSeq)
+            case _: IType.Simple =>
+              // Parens with star on both sides
+              ctx -> goType.star.inParens.call(convertToPointer.singleSeq).star
+            case other =>
+              sys.error(s"Unrecognized existing type to convert to: $other")
+          }
+        }
+      }
+    }
+
+    def toExprNode[T <: Contextual[T]](ctx: T, newTyp: IType, noCasting: Boolean = false): (T, Node.Expression) = {
       expr.typ -> newTyp match {
         case (IType.IntType, IType.BooleanType) => expr.expr match {
           case Node.BasicLiteral(Node.Token.Int, "1") => ctx -> "true".toIdent
           case Node.BasicLiteral(Node.Token.Int, "0") => ctx -> "false".toIdent
           case _ => sys.error(s"Unable to change int $expr to boolean")
         }
-        case (a, b) if a == b || b.isAssignableFrom(ctx.imports.classPath, a) =>
-          ctx -> expr.expr
+        case (oldTyp, newTyp)
+          if oldTyp == newTyp || (noCasting && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp)) =>
+            ctx -> expr.expr
+        case (oldTyp: IType.Simple, newTyp)
+          if !noCasting && oldTyp.isPointer && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp) =>
+            // TODO: this is only for objects, not primitives hence the Simple check...impl primitive side
+            unsafeCast(ctx, oldTyp, newTyp)
         case (oldTyp, newTyp) =>
-          ctx.withImportAlias("unsafe").leftMap { case (ctx, unsafeAlias) =>
-            val pointerArgExpr = oldTyp match {
-              case IType.NullType => NilExpr
-              case s: IType.Simple if s.isPointer => expr.expr
-              case IType.Simple(asmTyp) => expr.expr.addressOf
-              case other => sys.error(s"Unrecognized existing type to convert from: $other")
-            }
-            ctx.typeToGoType(newTyp).leftMap { case (ctx, goType) =>
-              val convertToPointer = unsafeAlias.toIdent.sel("Pointer").call(pointerArgExpr.singleSeq)
-              newTyp match {
-                case s: IType.Simple if s.isPointer =>
-                  // Just parentheses
-                  ctx -> goType.inParens.call(convertToPointer.singleSeq)
-                case _: IType.Simple =>
-                  // Parens with star on both sides
-                  ctx -> goType.star.inParens.call(convertToPointer.singleSeq).star
-                case other =>
-                  sys.error(s"Unrecognized existing type to convert to: $other")
-              }
-            }
-          }
+          sys.error(s"Unable to assign types: $oldTyp -> $newTyp")
       }
     }
   }

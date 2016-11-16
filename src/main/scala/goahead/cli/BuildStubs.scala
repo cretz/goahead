@@ -206,17 +206,20 @@ object BuildStubs extends BuildStubs {
   class StubCompiler(excludePatterns: Set[String], onlyIncludeClassRefs: Set[String]) extends GoAheadCompiler {
     override val classCompiler = new ClassCompiler {
 
-      override protected def methodNodes(ctx: Context): Seq[MethodNode] = super.methodNodes(ctx).filter { method =>
-        if (method.access.isAccessPrivate ||
-          excludePatterns.contains(ctx.cls.name + "." + method.name + method.desc)) false
-        else if (onlyIncludeClassRefs.isEmpty) true
-        else {
-          // We need to make sure neither the params nor the
-          val objectTypes = Type.getArgumentTypes(method.desc).flatMap(getObjectType) ++
-            getObjectType(Type.getReturnType(method.desc))
-          // Needs to be true if no object types exists that isn't in the only include
-          val hasNonIncludedClassRef = objectTypes.exists(t => !onlyIncludeClassRefs.contains(t))
-          !hasNonIncludedClassRef
+      override protected def methodNodes(ctx: Context, forDispatch: Boolean): Seq[MethodNode] = {
+        val exclusions = if (forDispatch) Set.empty[String] else excludePatterns
+        super.methodNodes(ctx, forDispatch).filter { method =>
+          if (method.access.isAccessPrivate ||
+            exclusions.contains(ctx.cls.name + "." + method.name + method.desc)) false
+          else if (onlyIncludeClassRefs.isEmpty) true
+          else {
+            // We need to make sure neither the params nor the
+            val objectTypes = Type.getArgumentTypes(method.desc).flatMap(getObjectType) ++
+              getObjectType(Type.getReturnType(method.desc))
+            // Needs to be true if no object types exists that isn't in the only include
+            val hasNonIncludedClassRef = objectTypes.exists(t => !onlyIncludeClassRefs.contains(t))
+            !hasNonIncludedClassRef
+          }
         }
       }
 

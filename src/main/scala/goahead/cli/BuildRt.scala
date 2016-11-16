@@ -35,24 +35,48 @@ trait BuildRt extends Command {
         "java.io.PrintStream",
         "java.lang.Exception",
         "java.lang.String",
+        "java.lang.StringBuilder",
         "java.lang.System"
       ),
       // Things we are handling ourselves for now
       excludePatterns = Seq(
+        "java/io/PrintStream.println(I)V",
         "java/io/PrintStream.println(Ljava/lang/String;)V",
+        "java/io/PrintStream.println(Z)V",
+        "java/lang/Object.<init>()V",
+        "java/lang/StringBuilder.<init>()V",
+        "java/lang/StringBuilder.append(I)Ljava/lang/StringBuilder;",
+        "java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;",
+        "java/lang/StringBuilder.toString()Ljava/lang/String;",
         "java/lang/System.<clinit>()V"
       )
     ))
   }
 
   protected def transformFile(conf: BuildStubs#Conf, d: Node.File): Node.File = {
-    import Node._, goahead.compile.AstDsl._
+    import goahead.compile.AstDsl._
     // Let's add a string var inside the string struct
-    val structName = conf.manglerInst.instanceObjectName("java/lang/String")
-    d.copy(
-      declarations = d.declarations.map {
+    var f = addField(
+      d,
+      conf.manglerInst.instanceObjectName("java/lang/String"),
+      field("Underlying", "string".toIdent)
+    )
+    // Also add it to the string builder struct
+    f = addField(
+      f,
+      conf.manglerInst.instanceObjectName("java/lang/StringBuilder"),
+      field("Underlying", "string".toIdent)
+    )
+    f
+  }
+
+
+  protected def addField(f: Node.File, structName: String, fld: Node.Field): Node.File = {
+    import Node._, goahead.compile.AstDsl._
+    f.copy(
+      declarations = f.declarations.map {
         case d @ GenericDeclaration(Token.Type, Seq(TypeSpecification(Identifier(id), StructType(fields))))
-          if id == structName => struct(structName, fields :+ field("Underlying", "string".toIdent))
+          if id == structName => struct(structName, fields :+ fld)
         case other => other
       }
     )

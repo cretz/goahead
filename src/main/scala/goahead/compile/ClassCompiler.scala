@@ -135,22 +135,23 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileStaticMethods(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
-    compileMethods(ctx, methodNodes(ctx).filter(_.access.isAccessStatic)).leftMap { case (ctx, funcs) =>
+    compileMethods(ctx, methodNodes(ctx, forDispatch = false).filter(_.access.isAccessStatic)).leftMap {
+      case (ctx, funcs) =>
 
-      // As a special case, we have to combine all static inits, so we'll do it with anon
-      // functions if there is more than one
-      val staticMethodName = ctx.mangler.methodName("<clinit>", "()V")
-      val (staticInitFns, otherFns) = funcs.partition(_.name.name == staticMethodName)
-      if (staticInitFns.length <= 1) ctx -> funcs else {
-        val newStaticInitFn = staticInitFns.head.copy(
-          body = Some(block(
-            staticInitFns.map { staticInitFn =>
-              funcType(Nil).toFuncLit(staticInitFn.body.get.statements).call().toStmt
-            }
-          ))
-        )
-        ctx -> (newStaticInitFn +: otherFns)
-      }
+        // As a special case, we have to combine all static inits, so we'll do it with anon
+        // functions if there is more than one
+        val staticMethodName = ctx.mangler.methodName("<clinit>", "()V")
+        val (staticInitFns, otherFns) = funcs.partition(_.name.name == staticMethodName)
+        if (staticInitFns.length <= 1) ctx -> funcs else {
+          val newStaticInitFn = staticInitFns.head.copy(
+            body = Some(block(
+              staticInitFns.map { staticInitFn =>
+                funcType(Nil).toFuncLit(staticInitFn.body.get.statements).call().toStmt
+              }
+            ))
+          )
+          ctx -> (newStaticInitFn +: otherFns)
+        }
     }
   }
 
@@ -171,11 +172,14 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileInstMethods(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
-    compileMethods(ctx, methodNodes(ctx).filterNot(_.access.isAccessStatic))
+    compileMethods(ctx, methodNodes(ctx, forDispatch = false).filterNot(_.access.isAccessStatic))
   }
 
   protected def compileStructSuperFields(ctx: Context): (Context, Seq[Node.Field]) = {
-    val ctxAndSuperFields = (ctx.cls.interfaceNames ++ Option(ctx.cls.superName)).foldLeft(ctx -> Seq.empty[Node.Field]) {
+    // TODO: don't need interfaces embedded in classes, right?
+    val superNames =
+      if (ctx.cls.access.isAccessInterface) ctx.cls.interfaceNames else Option(ctx.cls.superName).toSeq
+    val ctxAndSuperFields = superNames.foldLeft(ctx -> Seq.empty[Node.Field]) {
       case ((ctx, fields), sup) =>
         // Interfaces should not be considered to have java/lang/Object as a super name
         if (ctx.cls.access.isAccessInterface && sup == "java/lang/Object") ctx -> fields
@@ -185,7 +189,7 @@ trait ClassCompiler extends Logger {
     }
     // Also need dispatch iface
     ctxAndSuperFields.leftMap { case (ctx, superFields) =>
-      ctx -> (superFields :+ ctx.mangler.dispatchInterfaceName(ctx.cls.name).toIdent.namelessField)
+      ctx -> (superFields :+ field("_dispatch", ctx.mangler.dispatchInterfaceName(ctx.cls.name).toIdent))
     }
   }
 
@@ -214,13 +218,19 @@ trait ClassCompiler extends Logger {
   protected def compileDispatch(ctx: Context): (Context, Seq[Node.Declaration]) = {
     compileDispatchInterface(ctx).leftMap { case (ctx, ifaceDecl) =>
       compileDispatchInit(ctx).leftMap { case (ctx, initDecl) =>
-        ctx -> (Seq(ifaceDecl) ++ initDecl)
+        compileDispatchMethods(ctx).leftMap { case (ctx, funcDecls) =>
+          ctx -> (Seq(ifaceDecl) ++ initDecl ++ funcDecls)
+        }
       }
     }
   }
 
   protected def compileDispatchInterface(ctx: Context): (Context, Node.Declaration) = {
-    val allSuperTypes = ctx.imports.classPath.allSuperAndImplementingTypes(ctx.cls.name)
+    // TODO: ok for dispatch interface to include only super type checks instead of all impl type checks?
+    // val allSuperTypes = ctx.imports.classPath.allSuperAndImplementingTypes(ctx.cls.name)
+    val allSuperTypes =
+      if (ctx.cls.access.isAccessInterface) ctx.imports.classPath.allSuperAndImplementingTypes(ctx.cls.name)
+      else ctx.imports.classPath.allSuperTypes(ctx.cls.name)
     // Interfaces use parent interfaces, classes just use the parent class if present
     val superNames =
       if (ctx.cls.access.isAccessInterface) ctx.cls.interfaceNames else Option(ctx.cls.superName).toSeq
@@ -230,17 +240,20 @@ trait ClassCompiler extends Logger {
       }
     }
     ctxAndSuperDispatchRefs.leftMap { case (ctx, superDispatchRefs) =>
-      val dispatchMethodNodes = methodNodes(ctx).filter { method =>
-        // No static, no init
-        if (method.access.isAccessStatic || method.name == "<init>") false else {
+      val dispatchMethodNodes = methodNodes(ctx, forDispatch = true).filter { method =>
+        // No static
+        // TODO: should I remove init? See TODO below
+        if (method.access.isAccessStatic) false else {
           // No methods that are also defined in a super interface
           !allSuperTypes.exists(_.methods.exists(m => m.name == method.name && m.desc == method.desc))
         }
       }
       val ctxAndDispatchMethods = dispatchMethodNodes.foldLeft(ctx -> Seq.empty[Node.Field]) {
-        case ((ctx, fields), methodNode) => compileInterfaceFunc(ctx, methodNode).leftMap { case (ctx, field) =>
-          ctx -> (fields :+ field)
-        }
+        case ((ctx, fields), methodNode) =>
+          signatureCompiler.buildFuncType(ctx, Method(methodNode), includeParamNames = false).leftMap {
+            case (ctx, funcType) =>
+              ctx -> (fields :+ field(ctx.mangler.methodName(methodNode.name, methodNode.desc), funcType))
+          }
       }
 
       ctxAndDispatchMethods.leftMap { case (ctx, dispatchMethods) =>
@@ -259,8 +272,7 @@ trait ClassCompiler extends Logger {
         "this".toIdent.sel(ctx.mangler.instanceObjectName(superName)).
           sel(ctx.mangler.distpatchInitMethodName(superName)).call("v".toIdent.singleSeq).toStmt
       }
-      val setDispatchStmt =
-        "this".toIdent.sel(ctx.mangler.dispatchInterfaceName(ctx.cls.name)).assignExisting("v".toIdent)
+      val setDispatchStmt = "this".toIdent.sel("_dispatch").assignExisting("v".toIdent)
       ctx -> Some(funcDecl(
         rec = Some("this" -> ctx.mangler.instanceObjectName(ctx.cls.name).toIdent.star),
         name = ctx.mangler.distpatchInitMethodName(ctx.cls.name),
@@ -271,28 +283,48 @@ trait ClassCompiler extends Logger {
     }
   }
 
-  protected def compileInterfaceFunc(ctx: Context, m: MethodNode): (Context, Node.Field) = {
-    val ctxWithParams = IType.getArgumentTypes(m.desc).foldLeft(ctx -> Seq.empty[Node.Field]) {
-      case ((ctx, params), argType) => ctx.typeToGoType(argType).leftMap { case (ctx, typ) =>
-        ctx -> (params :+ typ.namelessField)
+  protected def compileDispatchMethods(ctx: Context): (Context, Seq[Node.Declaration]) = {
+    // No dispatch methods for interfaces
+    if (ctx.cls.access.isAccessInterface) ctx -> Nil else {
+      // We build dispatch methods ONLY for methods we define (i.e. aren't in parent classes but
+      // could be in parent interfaces)
+      val superTypes = ctx.imports.classPath.allSuperTypes(ctx.cls.name)
+      val dispatchMethodNodes = methodNodes(ctx, forDispatch = true).filter { method =>
+        // No static
+        // TODO: should I remove init here or not? Basically need to determine inheritance reqs
+        // for constructor init
+        if (method.access.isAccessStatic) false else {
+          // No methods that are also defined in a super interface
+          !superTypes.exists(_.methods.exists(m => m.name == method.name && m.desc == method.desc))
+        }
       }
-    }
 
-    ctxWithParams.leftMap { case (ctx, params) =>
-      val ctxWithResultTypOpt = IType.getReturnType(m.desc) match {
-        case IType.VoidType => ctx -> None
-        case retTyp => ctx.typeToGoType(retTyp).leftMap { case (ctx, typ) => ctx -> Some(typ) }
-      }
-
-      ctxWithResultTypOpt.leftMap { case (ctx, resultTypOpt) =>
-        ctx -> field(ctx.mangler.dispatchMethodName(m.name, m.desc), funcTypeWithFields(params, resultTypOpt))
+      // Each function simply defers to the interface
+      dispatchMethodNodes.foldLeft(ctx -> Seq.empty[Node.Declaration]) { case ((ctx, methods), method) =>
+        val call = "this".toIdent.sel("_dispatch").sel(ctx.mangler.methodName(method.name, method.desc)).call(
+            IType.getArgumentTypes(method.desc).zipWithIndex.map(v => "var" + (v._2 + 1)).map(_.toIdent)
+          )
+        val stmt = if (IType.getReturnType(method.desc) == IType.VoidType) call.toStmt else call.ret
+        signatureCompiler.buildFuncDecl(
+          ctx = ctx,
+          method = Method(method),
+          stmts = stmt.singleSeq,
+          nameOverride = Some(ctx.mangler.dispatchMethodName(method.name, method.desc))
+        ).leftMap { case (ctx, funcDecl) =>
+          ctx -> (methods :+ funcDecl)
+        }
       }
     }
   }
 
-  protected def fieldNodes(ctx: Context): Seq[FieldNode] = ctx.cls.fieldNodes
+  // TODO: slow
+  protected def fieldNodes(ctx: Context): Seq[FieldNode] = ctx.cls.fieldNodes.sortBy(_.name)
 
-  protected def methodNodes(ctx: Context): Seq[MethodNode] = ctx.cls.methodNodes
+  // TODO: slow
+  protected def methodNodes(ctx: Context, forDispatch: Boolean): Seq[MethodNode] =
+    ctx.cls.methodNodes.sortBy(m => m.name -> m.desc)
+
+  protected def signatureCompiler: SignatureCompiler = SignatureCompiler
 }
 
 object ClassCompiler extends ClassCompiler {

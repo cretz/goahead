@@ -23,51 +23,11 @@ trait MethodCompiler extends Logger {
     // Compile the sets
     val ctx = initContext(cls, method, imports, mangler, getLabelSets(method))
     compileLabelSets(ctx).leftMap { case (ctx, compiledStmts) =>
-      (buildFuncDecl _).tupled(postProcessStatements(ctx, compiledStmts)).leftMap { case (ctx, funcDecl) =>
-        ctx.imports -> funcDecl
+      postProcessStatements(ctx, compiledStmts).leftMap { case (ctx, stmts) =>
+        signatureCompiler.buildFuncDecl(ctx, method, stmts).leftMap { case (ctx, funcDecl) =>
+          ctx.imports -> funcDecl
+        }
       }
-    }
-  }
-
-  protected def buildFuncDecl(ctx: Context, stmts: Seq[Node.Statement]): (Context, Node.FunctionDeclaration) = {
-    val ctxAndNonPointerRecTyp =
-      if (ctx.method.access.isAccessStatic) ctx.staticInstTypeExpr(ctx.cls.name)
-      else ctx.instTypeExpr(ctx.cls.name)
-
-    ctxAndNonPointerRecTyp.leftMap { case (ctx, nonPointerRecTyp) =>
-
-      buildFuncType(ctx).leftMap { case (ctx, funcType) =>
-
-        ctx -> funcDecl(
-          rec = Some(field("this", nonPointerRecTyp.star)),
-          name = ctx.mangler.methodName(ctx.method.name, ctx.method.desc),
-          funcType = funcType,
-          stmts = stmts
-        )
-      }
-    }
-  }
-
-  protected def buildFuncType(ctx: Context): (Context, Node.FunctionType) = {
-    // 0 is "this" in non-static
-    val indexAdd = if (ctx.method.access.isAccessStatic) 0 else 1
-
-    val ctxWithParams =
-      IType.getArgumentTypes(ctx.method.desc).zipWithIndex.foldLeft(ctx -> Seq.empty[(String, Node.Expression)]) {
-        case ((ctx, params), (argType, argIndex)) =>
-          ctx.typeToGoType(argType).leftMap { case (ctx, typ) =>
-            val name = "var" + (argIndex + indexAdd)
-            ctx -> (params :+ (name -> typ))
-          }
-      }
-
-    ctxWithParams.leftMap { case (ctx, params) =>
-      val ctxWithResultTypOpt = IType.getReturnType(ctx.method.desc) match {
-        case IType.VoidType => ctx -> None
-        case retTyp => ctx.typeToGoType(retTyp).leftMap { case (ctx, typ) => ctx -> Some(typ) }
-      }
-
-      ctxWithResultTypOpt.leftMap { case (ctx, resultTypOpt) => ctx -> funcType(params, resultTypOpt) }
     }
   }
 
@@ -363,6 +323,8 @@ trait MethodCompiler extends Logger {
       }
     }
   }
+
+  protected def signatureCompiler: SignatureCompiler = SignatureCompiler
 }
 
 object MethodCompiler extends MethodCompiler {

@@ -10,6 +10,7 @@ import goahead.ast.{Node, NodeWriter}
 import goahead.{BaseSpec, ExpectedOutput}
 import org.scalatest.BeforeAndAfterAll
 
+import scala.io.Source
 import scala.util.Try
 
 class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
@@ -121,10 +122,10 @@ object CompilerSpec {
   val testCases = {
     import goahead.testclasses._
     Seq(
-      TestCase(classOf[HelloWorld])
-//      TestCase(classOf[Inheritance]),
-//      TestCase(classOf[StaticFields]),
-//      TestCase(classOf[SimpleInstance]),
+      TestCase(classOf[HelloWorld]),
+      TestCase(classOf[Inheritance]),
+      TestCase(classOf[StaticFields]),
+      TestCase(classOf[SimpleInstance])
 //      TestCase(classOf[TryCatch])
     )
   }
@@ -138,7 +139,15 @@ object CompilerSpec {
 
     def provideExpectedOutput =
       // TODO: more than just stdout string
-      "provide the following output: " + expectedOutput.get
+      s"provide the following output: $trimmedQuotedOutput"
+
+    def trimmedQuotedOutput = expectedOutput match {
+      case None => ""
+      case Some(str) =>
+        val flattened = Source.fromString(expectedOutput.get).getLines.mkString("\\n")
+        val trimmed = if (flattened.length > 40) flattened.substring(0, 39) + "..." else flattened
+        '"' + trimmed + '"'
+    }
   }
 
   object TestCase {
