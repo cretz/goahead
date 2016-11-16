@@ -7,7 +7,7 @@ trait Mangler {
   def instanceObjectName(internalName: String): String
   def methodName(name: String, desc: String): String
   def dispatchInterfaceName(internalName: String): String
-  def dispatchMethodName(name: String, desc: String): String
+  def forwardMethodName(name: String, desc: String): String
   def distpatchInitMethodName(classInternalName: String): String
   def staticAccessorName(internalName: String): String
   def staticObjectName(internalName: String): String
@@ -28,8 +28,8 @@ object Mangler {
     override def dispatchInterfaceName(internalName: String): String =
       objectNamePrefix(internalName) + "__Dispatch"
 
-    override def dispatchMethodName(name: String, desc: String): String =
-      "Dispatch__" + methodName(name, desc)
+    override def forwardMethodName(name: String, desc: String): String =
+      "Forward__" + methodName(name, desc)
 
     override def distpatchInitMethodName(classInternalName: String): String =
       objectNamePrefix(classInternalName) + "__InitDispatch"

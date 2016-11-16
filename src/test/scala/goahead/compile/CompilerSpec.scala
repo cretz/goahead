@@ -124,6 +124,8 @@ object CompilerSpec {
     Seq(
       TestCase(classOf[HelloWorld]),
       TestCase(classOf[Inheritance]),
+      TestCase(classOf[InheritanceConstructors]),
+      TestCase(classOf[Interfaces]),
       TestCase(classOf[StaticFields]),
       TestCase(classOf[SimpleInstance])
 //      TestCase(classOf[TryCatch])

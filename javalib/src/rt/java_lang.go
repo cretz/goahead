@@ -84,223 +84,223 @@ func (this *Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStr
 	this._dispatch = v
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Instance_Init__desc__I__ret__V(var1 int) {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Instance_Init__desc__I__ret__V(var1 int) {
 	this._dispatch.Instance_Init__desc__I__ret__V(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc__C__ret____obj__Java__lang__AbstractStringBuilder(var1 rune) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc__C__ret____obj__Java__lang__AbstractStringBuilder(var1 rune) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc__C__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc__C__ret____obj__Java__lang__Appendable(var1 rune) Java__lang__Appendable__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc__C__ret____obj__Java__lang__Appendable(var1 rune) Java__lang__Appendable__Instance {
 	return this._dispatch.Append__desc__C__ret____obj__Java__lang__Appendable(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc__D__ret____obj__Java__lang__AbstractStringBuilder(var1 float64) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc__D__ret____obj__Java__lang__AbstractStringBuilder(var1 float64) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc__D__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc__F__ret____obj__Java__lang__AbstractStringBuilder(var1 float32) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc__F__ret____obj__Java__lang__AbstractStringBuilder(var1 float32) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc__F__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc__J__ret____obj__Java__lang__AbstractStringBuilder(var1 int64) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc__J__ret____obj__Java__lang__AbstractStringBuilder(var1 int64) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc__J__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(var1 *Java__lang__AbstractStringBuilder__Instance) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(var1 *Java__lang__AbstractStringBuilder__Instance) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(var1 Java__lang__CharSequence__Instance) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(var1 Java__lang__CharSequence__Instance) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(var1 Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(var1 Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 Java__lang__CharSequence__Instance, var2 int, var3 int) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 Java__lang__CharSequence__Instance, var2 int, var3 int) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1, var2, var3)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(var1 Java__lang__CharSequence__Instance, var2 int, var3 int) Java__lang__Appendable__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(var1 Java__lang__CharSequence__Instance, var2 int, var3 int) Java__lang__Appendable__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(var1, var2, var3)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(var1 *Java__lang__Object__Instance) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(var1 *Java__lang__Object__Instance) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var1 *Java__lang__String__Instance) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var1 *Java__lang__String__Instance) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc__Z__ret____obj__Java__lang__AbstractStringBuilder(var1 bool) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc__Z__ret____obj__Java__lang__AbstractStringBuilder(var1 bool) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc__Z__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var1 []rune) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var1 []rune) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 []rune, var2 int, var3 int) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 []rune, var2 int, var3 int) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1, var2, var3)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__AppendCodePoint__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__AppendCodePoint__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.AppendCodePoint__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Capacity__desc____ret__I() int {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Capacity__desc____ret__I() int {
 	return this._dispatch.Capacity__desc____ret__I()
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__CharAt__desc__I__ret__C(var1 int) rune {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__CharAt__desc__I__ret__C(var1 int) rune {
 	return this._dispatch.CharAt__desc__I__ret__C(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__CodePointAt__desc__I__ret__I(var1 int) int {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__CodePointAt__desc__I__ret__I(var1 int) int {
 	return this._dispatch.CodePointAt__desc__I__ret__I(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__CodePointBefore__desc__I__ret__I(var1 int) int {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__CodePointBefore__desc__I__ret__I(var1 int) int {
 	return this._dispatch.CodePointBefore__desc__I__ret__I(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__CodePointCount__desc__I__I__ret__I(var1 int, var2 int) int {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__CodePointCount__desc__I__I__ret__I(var1 int, var2 int) int {
 	return this._dispatch.CodePointCount__desc__I__I__ret__I(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Delete__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 int) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Delete__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 int) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Delete__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__DeleteCharAt__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__DeleteCharAt__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.DeleteCharAt__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__EnsureCapacity__desc__I__ret__V(var1 int) {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__EnsureCapacity__desc__I__ret__V(var1 int) {
 	this._dispatch.EnsureCapacity__desc__I__ret__V(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__ExpandCapacity__desc__I__ret__V(var1 int) {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__ExpandCapacity__desc__I__ret__V(var1 int) {
 	this._dispatch.ExpandCapacity__desc__I__ret__V(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__GetChars__desc__I__I____arr__C__I__ret__V(var1 int, var2 int, var3 []rune, var4 int) {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__GetChars__desc__I__I____arr__C__I__ret__V(var1 int, var2 int, var3 []rune, var4 int) {
 	this._dispatch.GetChars__desc__I__I____arr__C__I__ret__V(var1, var2, var3, var4)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__GetValue__desc____ret____arr__C() []rune {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__GetValue__desc____ret____arr__C() []rune {
 	return this._dispatch.GetValue__desc____ret____arr__C()
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__IndexOf__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__IndexOf__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
 	return this._dispatch.IndexOf__desc____obj__Java__lang__String__ret__I(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__IndexOf__desc____obj__Java__lang__String__I__ret__I(var1 *Java__lang__String__Instance, var2 int) int {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__IndexOf__desc____obj__Java__lang__String__I__ret__I(var1 *Java__lang__String__Instance, var2 int) int {
 	return this._dispatch.IndexOf__desc____obj__Java__lang__String__I__ret__I(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I__C__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 rune) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I__C__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 rune) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__C__ret____obj__Java__lang__AbstractStringBuilder(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I__D__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 float64) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I__D__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 float64) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__D__ret____obj__Java__lang__AbstractStringBuilder(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I__F__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 float32) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I__F__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 float32) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__F__ret____obj__Java__lang__AbstractStringBuilder(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 int) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 int) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I__J__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 int64) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I__J__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 int64) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__J__ret____obj__Java__lang__AbstractStringBuilder(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 Java__lang__CharSequence__Instance) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 Java__lang__CharSequence__Instance) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 Java__lang__CharSequence__Instance, var3 int, var4 int) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 Java__lang__CharSequence__Instance, var3 int, var4 int) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1, var2, var3, var4)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 *Java__lang__Object__Instance) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 *Java__lang__Object__Instance) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 *Java__lang__String__Instance) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 *Java__lang__String__Instance) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I__Z__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 bool) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I__Z__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 bool) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__Z__ret____obj__Java__lang__AbstractStringBuilder(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 []rune) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 []rune) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 []rune, var3 int, var4 int) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 []rune, var3 int, var4 int) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var1, var2, var3, var4)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__LastIndexOf__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__LastIndexOf__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
 	return this._dispatch.LastIndexOf__desc____obj__Java__lang__String__ret__I(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__LastIndexOf__desc____obj__Java__lang__String__I__ret__I(var1 *Java__lang__String__Instance, var2 int) int {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__LastIndexOf__desc____obj__Java__lang__String__I__ret__I(var1 *Java__lang__String__Instance, var2 int) int {
 	return this._dispatch.LastIndexOf__desc____obj__Java__lang__String__I__ret__I(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Length__desc____ret__I() int {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Length__desc____ret__I() int {
 	return this._dispatch.Length__desc____ret__I()
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__OffsetByCodePoints__desc__I__I__ret__I(var1 int, var2 int) int {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__OffsetByCodePoints__desc__I__I__ret__I(var1 int, var2 int) int {
 	return this._dispatch.OffsetByCodePoints__desc__I__I__ret__I(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 int, var3 *Java__lang__String__Instance) *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var1 int, var2 int, var3 *Java__lang__String__Instance) *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var1, var2, var3)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Reverse__desc____ret____obj__Java__lang__AbstractStringBuilder() *Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Reverse__desc____ret____obj__Java__lang__AbstractStringBuilder() *Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Reverse__desc____ret____obj__Java__lang__AbstractStringBuilder()
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__SetCharAt__desc__I__C__ret__V(var1 int, var2 rune) {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__SetCharAt__desc__I__C__ret__V(var1 int, var2 rune) {
 	this._dispatch.SetCharAt__desc__I__C__ret__V(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__SetLength__desc__I__ret__V(var1 int) {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__SetLength__desc__I__ret__V(var1 int) {
 	this._dispatch.SetLength__desc__I__ret__V(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(var1 int, var2 int) Java__lang__CharSequence__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(var1 int, var2 int) Java__lang__CharSequence__Instance {
 	return this._dispatch.SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Substring__desc__I__ret____obj__Java__lang__String(var1 int) *Java__lang__String__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Substring__desc__I__ret____obj__Java__lang__String(var1 int) *Java__lang__String__Instance {
 	return this._dispatch.Substring__desc__I__ret____obj__Java__lang__String(var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__Substring__desc__I__I__ret____obj__Java__lang__String(var1 int, var2 int) *Java__lang__String__Instance {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__Substring__desc__I__I__ret____obj__Java__lang__String(var1 int, var2 int) *Java__lang__String__Instance {
 	return this._dispatch.Substring__desc__I__I__ret____obj__Java__lang__String(var1, var2)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Instance) Dispatch__TrimToSize__desc____ret__V() {
+func (this *Java__lang__AbstractStringBuilder__Instance) Forward__TrimToSize__desc____ret__V() {
 	this._dispatch.TrimToSize__desc____ret__V()
 }
 
@@ -547,6 +547,9 @@ type Java__lang__Appendable__Dispatch interface {
 
 type Java__lang__Appendable__Instance interface {
 	Java__lang__Appendable__Dispatch
+	Forward__Append__desc__C__ret____obj__Java__lang__Appendable(rune) Java__lang__Appendable__Instance
+	Forward__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance
+	Forward__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(Java__lang__CharSequence__Instance, int, int) Java__lang__Appendable__Instance
 }
 
 type Java__lang__AutoCloseable__Dispatch interface {
@@ -555,6 +558,7 @@ type Java__lang__AutoCloseable__Dispatch interface {
 
 type Java__lang__AutoCloseable__Instance interface {
 	Java__lang__AutoCloseable__Dispatch
+	Forward__Close__desc____ret__V()
 }
 
 type Java__lang__CharSequence__Dispatch interface {
@@ -565,6 +569,10 @@ type Java__lang__CharSequence__Dispatch interface {
 
 type Java__lang__CharSequence__Instance interface {
 	Java__lang__CharSequence__Dispatch
+	Forward__CharAt__desc__I__ret__C(int) rune
+	Forward__Length__desc____ret__I() int
+	Forward__SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(int, int) Java__lang__CharSequence__Instance
+	Forward__ToString__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance
 }
 
 type Java__lang__Comparable__Dispatch interface {
@@ -573,6 +581,7 @@ type Java__lang__Comparable__Dispatch interface {
 
 type Java__lang__Comparable__Instance interface {
 	Java__lang__Comparable__Dispatch
+	Forward__CompareTo__desc____obj__Java__lang__Object__ret__I(*Java__lang__Object__Instance) int
 }
 
 type Java__lang__Exception__Static struct {
@@ -666,47 +675,47 @@ func (this *Java__lang__Object__Instance) Java__lang__Object__InitDispatch(v Jav
 	this._dispatch = v
 }
 
-func (this *Java__lang__Object__Instance) Dispatch__Instance_Init__desc____ret__V() {
+func (this *Java__lang__Object__Instance) Forward__Instance_Init__desc____ret__V() {
 	this._dispatch.Instance_Init__desc____ret__V()
 }
 
-func (this *Java__lang__Object__Instance) Dispatch__Clone__desc____ret____obj__Java__lang__Object() *Java__lang__Object__Instance {
+func (this *Java__lang__Object__Instance) Forward__Clone__desc____ret____obj__Java__lang__Object() *Java__lang__Object__Instance {
 	return this._dispatch.Clone__desc____ret____obj__Java__lang__Object()
 }
 
-func (this *Java__lang__Object__Instance) Dispatch__Equals__desc____obj__Java__lang__Object__ret__Z(var1 *Java__lang__Object__Instance) bool {
+func (this *Java__lang__Object__Instance) Forward__Equals__desc____obj__Java__lang__Object__ret__Z(var1 *Java__lang__Object__Instance) bool {
 	return this._dispatch.Equals__desc____obj__Java__lang__Object__ret__Z(var1)
 }
 
-func (this *Java__lang__Object__Instance) Dispatch__Finalize__desc____ret__V() {
+func (this *Java__lang__Object__Instance) Forward__Finalize__desc____ret__V() {
 	this._dispatch.Finalize__desc____ret__V()
 }
 
-func (this *Java__lang__Object__Instance) Dispatch__HashCode__desc____ret__I() int {
+func (this *Java__lang__Object__Instance) Forward__HashCode__desc____ret__I() int {
 	return this._dispatch.HashCode__desc____ret__I()
 }
 
-func (this *Java__lang__Object__Instance) Dispatch__Notify__desc____ret__V() {
+func (this *Java__lang__Object__Instance) Forward__Notify__desc____ret__V() {
 	this._dispatch.Notify__desc____ret__V()
 }
 
-func (this *Java__lang__Object__Instance) Dispatch__NotifyAll__desc____ret__V() {
+func (this *Java__lang__Object__Instance) Forward__NotifyAll__desc____ret__V() {
 	this._dispatch.NotifyAll__desc____ret__V()
 }
 
-func (this *Java__lang__Object__Instance) Dispatch__ToString__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
+func (this *Java__lang__Object__Instance) Forward__ToString__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
 	return this._dispatch.ToString__desc____ret____obj__Java__lang__String()
 }
 
-func (this *Java__lang__Object__Instance) Dispatch__Wait__desc____ret__V() {
+func (this *Java__lang__Object__Instance) Forward__Wait__desc____ret__V() {
 	this._dispatch.Wait__desc____ret__V()
 }
 
-func (this *Java__lang__Object__Instance) Dispatch__Wait__desc__J__ret__V(var1 int64) {
+func (this *Java__lang__Object__Instance) Forward__Wait__desc__J__ret__V(var1 int64) {
 	this._dispatch.Wait__desc__J__ret__V(var1)
 }
 
-func (this *Java__lang__Object__Instance) Dispatch__Wait__desc__J__I__ret__V(var1 int64, var2 int) {
+func (this *Java__lang__Object__Instance) Forward__Wait__desc__J__I__ret__V(var1 int64, var2 int) {
 	this._dispatch.Wait__desc__J__I__ret__V(var1, var2)
 }
 
@@ -913,239 +922,239 @@ func (this *Java__lang__String__Instance) Java__lang__String__InitDispatch(v Jav
 	this._dispatch = v
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
 	this._dispatch.Instance_Init__desc____obj__Java__lang__String__ret__V(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____obj__Java__lang__StringBuilder__ret__V(var1 *Java__lang__StringBuilder__Instance) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____obj__Java__lang__StringBuilder__ret__V(var1 *Java__lang__StringBuilder__Instance) {
 	this._dispatch.Instance_Init__desc____obj__Java__lang__StringBuilder__ret__V(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____arr__B__ret__V(var1 []byte) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____arr__B__ret__V(var1 []byte) {
 	this._dispatch.Instance_Init__desc____arr__B__ret__V(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____arr__B__I__ret__V(var1 []byte, var2 int) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____arr__B__I__ret__V(var1 []byte, var2 int) {
 	this._dispatch.Instance_Init__desc____arr__B__I__ret__V(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____arr__B__I__I__ret__V(var1 []byte, var2 int, var3 int) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____arr__B__I__I__ret__V(var1 []byte, var2 int, var3 int) {
 	this._dispatch.Instance_Init__desc____arr__B__I__I__ret__V(var1, var2, var3)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____arr__B__I__I__I__ret__V(var1 []byte, var2 int, var3 int, var4 int) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____arr__B__I__I__I__ret__V(var1 []byte, var2 int, var3 int, var4 int) {
 	this._dispatch.Instance_Init__desc____arr__B__I__I__I__ret__V(var1, var2, var3, var4)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V(var1 []byte, var2 int, var3 int, var4 *Java__lang__String__Instance) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V(var1 []byte, var2 int, var3 int, var4 *Java__lang__String__Instance) {
 	this._dispatch.Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V(var1, var2, var3, var4)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V(var1 []byte, var2 *Java__lang__String__Instance) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V(var1 []byte, var2 *Java__lang__String__Instance) {
 	this._dispatch.Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____arr__C__ret__V(var1 []rune) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____arr__C__ret__V(var1 []rune) {
 	this._dispatch.Instance_Init__desc____arr__C__ret__V(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____arr__C__I__I__ret__V(var1 []rune, var2 int, var3 int) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____arr__C__I__I__ret__V(var1 []rune, var2 int, var3 int) {
 	this._dispatch.Instance_Init__desc____arr__C__I__I__ret__V(var1, var2, var3)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____arr__C__Z__ret__V(var1 []rune, var2 bool) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____arr__C__Z__ret__V(var1 []rune, var2 bool) {
 	this._dispatch.Instance_Init__desc____arr__C__Z__ret__V(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Instance_Init__desc____arr__I__I__I__ret__V(var1 []int, var2 int, var3 int) {
+func (this *Java__lang__String__Instance) Forward__Instance_Init__desc____arr__I__I__I__ret__V(var1 []int, var2 int, var3 int) {
 	this._dispatch.Instance_Init__desc____arr__I__I__I__ret__V(var1, var2, var3)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__CharAt__desc__I__ret__C(var1 int) rune {
+func (this *Java__lang__String__Instance) Forward__CharAt__desc__I__ret__C(var1 int) rune {
 	return this._dispatch.CharAt__desc__I__ret__C(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__CodePointAt__desc__I__ret__I(var1 int) int {
+func (this *Java__lang__String__Instance) Forward__CodePointAt__desc__I__ret__I(var1 int) int {
 	return this._dispatch.CodePointAt__desc__I__ret__I(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__CodePointBefore__desc__I__ret__I(var1 int) int {
+func (this *Java__lang__String__Instance) Forward__CodePointBefore__desc__I__ret__I(var1 int) int {
 	return this._dispatch.CodePointBefore__desc__I__ret__I(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__CodePointCount__desc__I__I__ret__I(var1 int, var2 int) int {
+func (this *Java__lang__String__Instance) Forward__CodePointCount__desc__I__I__ret__I(var1 int, var2 int) int {
 	return this._dispatch.CodePointCount__desc__I__I__ret__I(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__CompareTo__desc____obj__Java__lang__Object__ret__I(var1 *Java__lang__Object__Instance) int {
+func (this *Java__lang__String__Instance) Forward__CompareTo__desc____obj__Java__lang__Object__ret__I(var1 *Java__lang__Object__Instance) int {
 	return this._dispatch.CompareTo__desc____obj__Java__lang__Object__ret__I(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__CompareTo__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
+func (this *Java__lang__String__Instance) Forward__CompareTo__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
 	return this._dispatch.CompareTo__desc____obj__Java__lang__String__ret__I(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__CompareToIgnoreCase__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
+func (this *Java__lang__String__Instance) Forward__CompareToIgnoreCase__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
 	return this._dispatch.CompareToIgnoreCase__desc____obj__Java__lang__String__ret__I(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Concat__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var1 *Java__lang__String__Instance) *Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__Concat__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var1 *Java__lang__String__Instance) *Java__lang__String__Instance {
 	return this._dispatch.Concat__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Contains__desc____obj__Java__lang__CharSequence__ret__Z(var1 Java__lang__CharSequence__Instance) bool {
+func (this *Java__lang__String__Instance) Forward__Contains__desc____obj__Java__lang__CharSequence__ret__Z(var1 Java__lang__CharSequence__Instance) bool {
 	return this._dispatch.Contains__desc____obj__Java__lang__CharSequence__ret__Z(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__ContentEquals__desc____obj__Java__lang__CharSequence__ret__Z(var1 Java__lang__CharSequence__Instance) bool {
+func (this *Java__lang__String__Instance) Forward__ContentEquals__desc____obj__Java__lang__CharSequence__ret__Z(var1 Java__lang__CharSequence__Instance) bool {
 	return this._dispatch.ContentEquals__desc____obj__Java__lang__CharSequence__ret__Z(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__EndsWith__desc____obj__Java__lang__String__ret__Z(var1 *Java__lang__String__Instance) bool {
+func (this *Java__lang__String__Instance) Forward__EndsWith__desc____obj__Java__lang__String__ret__Z(var1 *Java__lang__String__Instance) bool {
 	return this._dispatch.EndsWith__desc____obj__Java__lang__String__ret__Z(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__EqualsIgnoreCase__desc____obj__Java__lang__String__ret__Z(var1 *Java__lang__String__Instance) bool {
+func (this *Java__lang__String__Instance) Forward__EqualsIgnoreCase__desc____obj__Java__lang__String__ret__Z(var1 *Java__lang__String__Instance) bool {
 	return this._dispatch.EqualsIgnoreCase__desc____obj__Java__lang__String__ret__Z(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__GetBytes__desc____ret____arr__B() []byte {
+func (this *Java__lang__String__Instance) Forward__GetBytes__desc____ret____arr__B() []byte {
 	return this._dispatch.GetBytes__desc____ret____arr__B()
 }
 
-func (this *Java__lang__String__Instance) Dispatch__GetBytes__desc__I__I____arr__B__I__ret__V(var1 int, var2 int, var3 []byte, var4 int) {
+func (this *Java__lang__String__Instance) Forward__GetBytes__desc__I__I____arr__B__I__ret__V(var1 int, var2 int, var3 []byte, var4 int) {
 	this._dispatch.GetBytes__desc__I__I____arr__B__I__ret__V(var1, var2, var3, var4)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__GetBytes__desc____obj__Java__lang__String__ret____arr__B(var1 *Java__lang__String__Instance) []byte {
+func (this *Java__lang__String__Instance) Forward__GetBytes__desc____obj__Java__lang__String__ret____arr__B(var1 *Java__lang__String__Instance) []byte {
 	return this._dispatch.GetBytes__desc____obj__Java__lang__String__ret____arr__B(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__GetChars__desc__I__I____arr__C__I__ret__V(var1 int, var2 int, var3 []rune, var4 int) {
+func (this *Java__lang__String__Instance) Forward__GetChars__desc__I__I____arr__C__I__ret__V(var1 int, var2 int, var3 []rune, var4 int) {
 	this._dispatch.GetChars__desc__I__I____arr__C__I__ret__V(var1, var2, var3, var4)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__GetChars__desc____arr__C__I__ret__V(var1 []rune, var2 int) {
+func (this *Java__lang__String__Instance) Forward__GetChars__desc____arr__C__I__ret__V(var1 []rune, var2 int) {
 	this._dispatch.GetChars__desc____arr__C__I__ret__V(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__IndexOf__desc__I__ret__I(var1 int) int {
+func (this *Java__lang__String__Instance) Forward__IndexOf__desc__I__ret__I(var1 int) int {
 	return this._dispatch.IndexOf__desc__I__ret__I(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__IndexOf__desc__I__I__ret__I(var1 int, var2 int) int {
+func (this *Java__lang__String__Instance) Forward__IndexOf__desc__I__I__ret__I(var1 int, var2 int) int {
 	return this._dispatch.IndexOf__desc__I__I__ret__I(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__IndexOf__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
+func (this *Java__lang__String__Instance) Forward__IndexOf__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
 	return this._dispatch.IndexOf__desc____obj__Java__lang__String__ret__I(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__IndexOf__desc____obj__Java__lang__String__I__ret__I(var1 *Java__lang__String__Instance, var2 int) int {
+func (this *Java__lang__String__Instance) Forward__IndexOf__desc____obj__Java__lang__String__I__ret__I(var1 *Java__lang__String__Instance, var2 int) int {
 	return this._dispatch.IndexOf__desc____obj__Java__lang__String__I__ret__I(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Intern__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__Intern__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
 	return this._dispatch.Intern__desc____ret____obj__Java__lang__String()
 }
 
-func (this *Java__lang__String__Instance) Dispatch__IsEmpty__desc____ret__Z() bool {
+func (this *Java__lang__String__Instance) Forward__IsEmpty__desc____ret__Z() bool {
 	return this._dispatch.IsEmpty__desc____ret__Z()
 }
 
-func (this *Java__lang__String__Instance) Dispatch__LastIndexOf__desc__I__ret__I(var1 int) int {
+func (this *Java__lang__String__Instance) Forward__LastIndexOf__desc__I__ret__I(var1 int) int {
 	return this._dispatch.LastIndexOf__desc__I__ret__I(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__LastIndexOf__desc__I__I__ret__I(var1 int, var2 int) int {
+func (this *Java__lang__String__Instance) Forward__LastIndexOf__desc__I__I__ret__I(var1 int, var2 int) int {
 	return this._dispatch.LastIndexOf__desc__I__I__ret__I(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__LastIndexOf__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
+func (this *Java__lang__String__Instance) Forward__LastIndexOf__desc____obj__Java__lang__String__ret__I(var1 *Java__lang__String__Instance) int {
 	return this._dispatch.LastIndexOf__desc____obj__Java__lang__String__ret__I(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__LastIndexOf__desc____obj__Java__lang__String__I__ret__I(var1 *Java__lang__String__Instance, var2 int) int {
+func (this *Java__lang__String__Instance) Forward__LastIndexOf__desc____obj__Java__lang__String__I__ret__I(var1 *Java__lang__String__Instance, var2 int) int {
 	return this._dispatch.LastIndexOf__desc____obj__Java__lang__String__I__ret__I(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Length__desc____ret__I() int {
+func (this *Java__lang__String__Instance) Forward__Length__desc____ret__I() int {
 	return this._dispatch.Length__desc____ret__I()
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Matches__desc____obj__Java__lang__String__ret__Z(var1 *Java__lang__String__Instance) bool {
+func (this *Java__lang__String__Instance) Forward__Matches__desc____obj__Java__lang__String__ret__Z(var1 *Java__lang__String__Instance) bool {
 	return this._dispatch.Matches__desc____obj__Java__lang__String__ret__Z(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__OffsetByCodePoints__desc__I__I__ret__I(var1 int, var2 int) int {
+func (this *Java__lang__String__Instance) Forward__OffsetByCodePoints__desc__I__I__ret__I(var1 int, var2 int) int {
 	return this._dispatch.OffsetByCodePoints__desc__I__I__ret__I(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__RegionMatches__desc__I____obj__Java__lang__String__I__I__ret__Z(var1 int, var2 *Java__lang__String__Instance, var3 int, var4 int) bool {
+func (this *Java__lang__String__Instance) Forward__RegionMatches__desc__I____obj__Java__lang__String__I__I__ret__Z(var1 int, var2 *Java__lang__String__Instance, var3 int, var4 int) bool {
 	return this._dispatch.RegionMatches__desc__I____obj__Java__lang__String__I__I__ret__Z(var1, var2, var3, var4)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__RegionMatches__desc__Z__I____obj__Java__lang__String__I__I__ret__Z(var1 bool, var2 int, var3 *Java__lang__String__Instance, var4 int, var5 int) bool {
+func (this *Java__lang__String__Instance) Forward__RegionMatches__desc__Z__I____obj__Java__lang__String__I__I__ret__Z(var1 bool, var2 int, var3 *Java__lang__String__Instance, var4 int, var5 int) bool {
 	return this._dispatch.RegionMatches__desc__Z__I____obj__Java__lang__String__I__I__ret__Z(var1, var2, var3, var4, var5)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Replace__desc__C__C__ret____obj__Java__lang__String(var1 rune, var2 rune) *Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__Replace__desc__C__C__ret____obj__Java__lang__String(var1 rune, var2 rune) *Java__lang__String__Instance {
 	return this._dispatch.Replace__desc__C__C__ret____obj__Java__lang__String(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Replace__desc____obj__Java__lang__CharSequence____obj__Java__lang__CharSequence__ret____obj__Java__lang__String(var1 Java__lang__CharSequence__Instance, var2 Java__lang__CharSequence__Instance) *Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__Replace__desc____obj__Java__lang__CharSequence____obj__Java__lang__CharSequence__ret____obj__Java__lang__String(var1 Java__lang__CharSequence__Instance, var2 Java__lang__CharSequence__Instance) *Java__lang__String__Instance {
 	return this._dispatch.Replace__desc____obj__Java__lang__CharSequence____obj__Java__lang__CharSequence__ret____obj__Java__lang__String(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__ReplaceAll__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(var1 *Java__lang__String__Instance, var2 *Java__lang__String__Instance) *Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__ReplaceAll__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(var1 *Java__lang__String__Instance, var2 *Java__lang__String__Instance) *Java__lang__String__Instance {
 	return this._dispatch.ReplaceAll__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__ReplaceFirst__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(var1 *Java__lang__String__Instance, var2 *Java__lang__String__Instance) *Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__ReplaceFirst__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(var1 *Java__lang__String__Instance, var2 *Java__lang__String__Instance) *Java__lang__String__Instance {
 	return this._dispatch.ReplaceFirst__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(var1 *Java__lang__String__Instance) []*Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(var1 *Java__lang__String__Instance) []*Java__lang__String__Instance {
 	return this._dispatch.Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(var1 *Java__lang__String__Instance, var2 int) []*Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(var1 *Java__lang__String__Instance, var2 int) []*Java__lang__String__Instance {
 	return this._dispatch.Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__StartsWith__desc____obj__Java__lang__String__ret__Z(var1 *Java__lang__String__Instance) bool {
+func (this *Java__lang__String__Instance) Forward__StartsWith__desc____obj__Java__lang__String__ret__Z(var1 *Java__lang__String__Instance) bool {
 	return this._dispatch.StartsWith__desc____obj__Java__lang__String__ret__Z(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__StartsWith__desc____obj__Java__lang__String__I__ret__Z(var1 *Java__lang__String__Instance, var2 int) bool {
+func (this *Java__lang__String__Instance) Forward__StartsWith__desc____obj__Java__lang__String__I__ret__Z(var1 *Java__lang__String__Instance, var2 int) bool {
 	return this._dispatch.StartsWith__desc____obj__Java__lang__String__I__ret__Z(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(var1 int, var2 int) Java__lang__CharSequence__Instance {
+func (this *Java__lang__String__Instance) Forward__SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(var1 int, var2 int) Java__lang__CharSequence__Instance {
 	return this._dispatch.SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Substring__desc__I__ret____obj__Java__lang__String(var1 int) *Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__Substring__desc__I__ret____obj__Java__lang__String(var1 int) *Java__lang__String__Instance {
 	return this._dispatch.Substring__desc__I__ret____obj__Java__lang__String(var1)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Substring__desc__I__I__ret____obj__Java__lang__String(var1 int, var2 int) *Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__Substring__desc__I__I__ret____obj__Java__lang__String(var1 int, var2 int) *Java__lang__String__Instance {
 	return this._dispatch.Substring__desc__I__I__ret____obj__Java__lang__String(var1, var2)
 }
 
-func (this *Java__lang__String__Instance) Dispatch__ToCharArray__desc____ret____arr__C() []rune {
+func (this *Java__lang__String__Instance) Forward__ToCharArray__desc____ret____arr__C() []rune {
 	return this._dispatch.ToCharArray__desc____ret____arr__C()
 }
 
-func (this *Java__lang__String__Instance) Dispatch__ToLowerCase__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__ToLowerCase__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
 	return this._dispatch.ToLowerCase__desc____ret____obj__Java__lang__String()
 }
 
-func (this *Java__lang__String__Instance) Dispatch__ToUpperCase__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__ToUpperCase__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
 	return this._dispatch.ToUpperCase__desc____ret____obj__Java__lang__String()
 }
 
-func (this *Java__lang__String__Instance) Dispatch__Trim__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
+func (this *Java__lang__String__Instance) Forward__Trim__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
 	return this._dispatch.Trim__desc____ret____obj__Java__lang__String()
 }
 
@@ -1465,127 +1474,127 @@ func (this *Java__lang__StringBuilder__Instance) Java__lang__StringBuilder__Init
 	this._dispatch = v
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Instance_Init__desc____obj__Java__lang__CharSequence__ret__V(var1 Java__lang__CharSequence__Instance) {
+func (this *Java__lang__StringBuilder__Instance) Forward__Instance_Init__desc____obj__Java__lang__CharSequence__ret__V(var1 Java__lang__CharSequence__Instance) {
 	this._dispatch.Instance_Init__desc____obj__Java__lang__CharSequence__ret__V(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Instance_Init__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
+func (this *Java__lang__StringBuilder__Instance) Forward__Instance_Init__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
 	this._dispatch.Instance_Init__desc____obj__Java__lang__String__ret__V(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc__C__ret____obj__Java__lang__StringBuilder(var1 rune) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc__C__ret____obj__Java__lang__StringBuilder(var1 rune) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc__C__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc__D__ret____obj__Java__lang__StringBuilder(var1 float64) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc__D__ret____obj__Java__lang__StringBuilder(var1 float64) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc__D__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc__F__ret____obj__Java__lang__StringBuilder(var1 float32) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc__F__ret____obj__Java__lang__StringBuilder(var1 float32) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc__F__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc__I__ret____obj__Java__lang__StringBuilder(var1 int) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc__I__ret____obj__Java__lang__StringBuilder(var1 int) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc__I__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc__J__ret____obj__Java__lang__StringBuilder(var1 int64) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc__J__ret____obj__Java__lang__StringBuilder(var1 int64) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc__J__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__StringBuilder(var1 Java__lang__CharSequence__Instance) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__StringBuilder(var1 Java__lang__CharSequence__Instance) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__StringBuilder(var1 Java__lang__CharSequence__Instance, var2 int, var3 int) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__StringBuilder(var1 Java__lang__CharSequence__Instance, var2 int, var3 int) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__StringBuilder(var1, var2, var3)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__StringBuilder(var1 *Java__lang__Object__Instance) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__StringBuilder(var1 *Java__lang__Object__Instance) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var1 *Java__lang__String__Instance) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var1 *Java__lang__String__Instance) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc__Z__ret____obj__Java__lang__StringBuilder(var1 bool) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc__Z__ret____obj__Java__lang__StringBuilder(var1 bool) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc__Z__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc____arr__C__ret____obj__Java__lang__StringBuilder(var1 []rune) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc____arr__C__ret____obj__Java__lang__StringBuilder(var1 []rune) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc____arr__C__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var1 []rune, var2 int, var3 int) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var1 []rune, var2 int, var3 int) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var1, var2, var3)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__AppendCodePoint__desc__I__ret____obj__Java__lang__StringBuilder(var1 int) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__AppendCodePoint__desc__I__ret____obj__Java__lang__StringBuilder(var1 int) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.AppendCodePoint__desc__I__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Delete__desc__I__I__ret____obj__Java__lang__StringBuilder(var1 int, var2 int) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Delete__desc__I__I__ret____obj__Java__lang__StringBuilder(var1 int, var2 int) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Delete__desc__I__I__ret____obj__Java__lang__StringBuilder(var1, var2)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__DeleteCharAt__desc__I__ret____obj__Java__lang__StringBuilder(var1 int) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__DeleteCharAt__desc__I__ret____obj__Java__lang__StringBuilder(var1 int) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.DeleteCharAt__desc__I__ret____obj__Java__lang__StringBuilder(var1)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I__C__ret____obj__Java__lang__StringBuilder(var1 int, var2 rune) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I__C__ret____obj__Java__lang__StringBuilder(var1 int, var2 rune) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__C__ret____obj__Java__lang__StringBuilder(var1, var2)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I__D__ret____obj__Java__lang__StringBuilder(var1 int, var2 float64) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I__D__ret____obj__Java__lang__StringBuilder(var1 int, var2 float64) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__D__ret____obj__Java__lang__StringBuilder(var1, var2)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I__F__ret____obj__Java__lang__StringBuilder(var1 int, var2 float32) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I__F__ret____obj__Java__lang__StringBuilder(var1 int, var2 float32) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__F__ret____obj__Java__lang__StringBuilder(var1, var2)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I__I__ret____obj__Java__lang__StringBuilder(var1 int, var2 int) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I__I__ret____obj__Java__lang__StringBuilder(var1 int, var2 int) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__I__ret____obj__Java__lang__StringBuilder(var1, var2)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I__J__ret____obj__Java__lang__StringBuilder(var1 int, var2 int64) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I__J__ret____obj__Java__lang__StringBuilder(var1 int, var2 int64) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__J__ret____obj__Java__lang__StringBuilder(var1, var2)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I____obj__Java__lang__CharSequence__ret____obj__Java__lang__StringBuilder(var1 int, var2 Java__lang__CharSequence__Instance) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I____obj__Java__lang__CharSequence__ret____obj__Java__lang__StringBuilder(var1 int, var2 Java__lang__CharSequence__Instance) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____obj__Java__lang__CharSequence__ret____obj__Java__lang__StringBuilder(var1, var2)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__StringBuilder(var1 int, var2 Java__lang__CharSequence__Instance, var3 int, var4 int) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__StringBuilder(var1 int, var2 Java__lang__CharSequence__Instance, var3 int, var4 int) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__StringBuilder(var1, var2, var3, var4)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__StringBuilder(var1 int, var2 *Java__lang__Object__Instance) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__StringBuilder(var1 int, var2 *Java__lang__Object__Instance) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__StringBuilder(var1, var2)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var1 int, var2 *Java__lang__String__Instance) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var1 int, var2 *Java__lang__String__Instance) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var1, var2)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I__Z__ret____obj__Java__lang__StringBuilder(var1 int, var2 bool) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I__Z__ret____obj__Java__lang__StringBuilder(var1 int, var2 bool) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I__Z__ret____obj__Java__lang__StringBuilder(var1, var2)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(var1 int, var2 []rune) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(var1 int, var2 []rune) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(var1, var2)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var1 int, var2 []rune, var3 int, var4 int) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var1 int, var2 []rune, var3 int, var4 int) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var1, var2, var3, var4)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var1 int, var2 int, var3 *Java__lang__String__Instance) *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var1 int, var2 int, var3 *Java__lang__String__Instance) *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var1, var2, var3)
 }
 
-func (this *Java__lang__StringBuilder__Instance) Dispatch__Reverse__desc____ret____obj__Java__lang__StringBuilder() *Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Instance) Forward__Reverse__desc____ret____obj__Java__lang__StringBuilder() *Java__lang__StringBuilder__Instance {
 	return this._dispatch.Reverse__desc____ret____obj__Java__lang__StringBuilder()
 }
 
@@ -2077,59 +2086,59 @@ func (this *Java__lang__Throwable__Instance) Java__lang__Throwable__InitDispatch
 	this._dispatch = v
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__Instance_Init__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
+func (this *Java__lang__Throwable__Instance) Forward__Instance_Init__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
 	this._dispatch.Instance_Init__desc____obj__Java__lang__String__ret__V(var1)
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(var1 *Java__lang__String__Instance, var2 *Java__lang__Throwable__Instance) {
+func (this *Java__lang__Throwable__Instance) Forward__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(var1 *Java__lang__String__Instance, var2 *Java__lang__Throwable__Instance) {
 	this._dispatch.Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(var1, var2)
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(var1 *Java__lang__String__Instance, var2 *Java__lang__Throwable__Instance, var3 bool, var4 bool) {
+func (this *Java__lang__Throwable__Instance) Forward__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(var1 *Java__lang__String__Instance, var2 *Java__lang__Throwable__Instance, var3 bool, var4 bool) {
 	this._dispatch.Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(var1, var2, var3, var4)
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__Instance_Init__desc____obj__Java__lang__Throwable__ret__V(var1 *Java__lang__Throwable__Instance) {
+func (this *Java__lang__Throwable__Instance) Forward__Instance_Init__desc____obj__Java__lang__Throwable__ret__V(var1 *Java__lang__Throwable__Instance) {
 	this._dispatch.Instance_Init__desc____obj__Java__lang__Throwable__ret__V(var1)
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(var1 *Java__lang__Throwable__Instance) {
+func (this *Java__lang__Throwable__Instance) Forward__AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(var1 *Java__lang__Throwable__Instance) {
 	this._dispatch.AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(var1)
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__FillInStackTrace__desc____ret____obj__Java__lang__Throwable() *Java__lang__Throwable__Instance {
+func (this *Java__lang__Throwable__Instance) Forward__FillInStackTrace__desc____ret____obj__Java__lang__Throwable() *Java__lang__Throwable__Instance {
 	return this._dispatch.FillInStackTrace__desc____ret____obj__Java__lang__Throwable()
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__GetCause__desc____ret____obj__Java__lang__Throwable() *Java__lang__Throwable__Instance {
+func (this *Java__lang__Throwable__Instance) Forward__GetCause__desc____ret____obj__Java__lang__Throwable() *Java__lang__Throwable__Instance {
 	return this._dispatch.GetCause__desc____ret____obj__Java__lang__Throwable()
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__GetLocalizedMessage__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
+func (this *Java__lang__Throwable__Instance) Forward__GetLocalizedMessage__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
 	return this._dispatch.GetLocalizedMessage__desc____ret____obj__Java__lang__String()
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__GetMessage__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
+func (this *Java__lang__Throwable__Instance) Forward__GetMessage__desc____ret____obj__Java__lang__String() *Java__lang__String__Instance {
 	return this._dispatch.GetMessage__desc____ret____obj__Java__lang__String()
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__GetStackTraceDepth__desc____ret__I() int {
+func (this *Java__lang__Throwable__Instance) Forward__GetStackTraceDepth__desc____ret__I() int {
 	return this._dispatch.GetStackTraceDepth__desc____ret__I()
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []*Java__lang__Throwable__Instance {
+func (this *Java__lang__Throwable__Instance) Forward__GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []*Java__lang__Throwable__Instance {
 	return this._dispatch.GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable()
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(var1 *Java__lang__Throwable__Instance) *Java__lang__Throwable__Instance {
+func (this *Java__lang__Throwable__Instance) Forward__InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(var1 *Java__lang__Throwable__Instance) *Java__lang__Throwable__Instance {
 	return this._dispatch.InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(var1)
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__PrintStackTrace__desc____ret__V() {
+func (this *Java__lang__Throwable__Instance) Forward__PrintStackTrace__desc____ret__V() {
 	this._dispatch.PrintStackTrace__desc____ret__V()
 }
 
-func (this *Java__lang__Throwable__Instance) Dispatch__PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(var1 *Java__io__PrintStream__Instance) {
+func (this *Java__lang__Throwable__Instance) Forward__PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(var1 *Java__io__PrintStream__Instance) {
 	this._dispatch.PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(var1)
 }
 

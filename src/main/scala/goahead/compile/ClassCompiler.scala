@@ -33,11 +33,19 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileInterfaceStruct(ctx: Context): (Context, Node.Declaration) = {
-    // Simple interface that embeds the dispatch and nothing more
-    ctx -> interface(
-      name = ctx.mangler.instanceObjectName(ctx.cls.name),
-      fields = ctx.mangler.dispatchInterfaceName(ctx.cls.name).toIdent.namelessField.singleSeq
-    )
+    // Embed the dispatch and all the forwarding methods
+    val ctxAndMethodSigs = dispatchMethodsForForwarding(ctx).foldLeft(ctx -> Seq.empty[Node.Field]) {
+      case ((ctx, methodSigs), method) =>
+        signatureCompiler.buildFuncType(ctx, method, includeParamNames = false).leftMap { case (ctx, funcType) =>
+          ctx -> (methodSigs :+ field(ctx.mangler.forwardMethodName(method.name, method.desc), funcType))
+        }
+    }
+    ctxAndMethodSigs.leftMap { case (ctx, methodSigs) =>
+      ctx -> interface(
+        name = ctx.mangler.instanceObjectName(ctx.cls.name),
+        fields = ctx.mangler.dispatchInterfaceName(ctx.cls.name).toIdent.namelessField +: methodSigs
+      )
+    }
   }
 
   protected def compileClass(ctx: Context): (Context, Seq[Node.Declaration]) = {
@@ -218,7 +226,7 @@ trait ClassCompiler extends Logger {
   protected def compileDispatch(ctx: Context): (Context, Seq[Node.Declaration]) = {
     compileDispatchInterface(ctx).leftMap { case (ctx, ifaceDecl) =>
       compileDispatchInit(ctx).leftMap { case (ctx, initDecl) =>
-        compileDispatchMethods(ctx).leftMap { case (ctx, funcDecls) =>
+        compileDispatchForwardMethods(ctx).leftMap { case (ctx, funcDecls) =>
           ctx -> (Seq(ifaceDecl) ++ initDecl ++ funcDecls)
         }
       }
@@ -283,38 +291,42 @@ trait ClassCompiler extends Logger {
     }
   }
 
-  protected def compileDispatchMethods(ctx: Context): (Context, Seq[Node.Declaration]) = {
+  protected def compileDispatchForwardMethods(ctx: Context): (Context, Seq[Node.Declaration]) = {
     // No dispatch methods for interfaces
     if (ctx.cls.access.isAccessInterface) ctx -> Nil else {
-      // We build dispatch methods ONLY for methods we define (i.e. aren't in parent classes but
-      // could be in parent interfaces)
-      val superTypes = ctx.imports.classPath.allSuperTypes(ctx.cls.name)
-      val dispatchMethodNodes = methodNodes(ctx, forDispatch = true).filter { method =>
-        // No static
-        // TODO: should I remove init here or not? Basically need to determine inheritance reqs
-        // for constructor init
-        if (method.access.isAccessStatic) false else {
-          // No methods that are also defined in a super interface
-          !superTypes.exists(_.methods.exists(m => m.name == method.name && m.desc == method.desc))
-        }
-      }
-
-      // Each function simply defers to the interface
-      dispatchMethodNodes.foldLeft(ctx -> Seq.empty[Node.Declaration]) { case ((ctx, methods), method) =>
+      dispatchMethodsForForwarding(ctx).foldLeft(ctx -> Seq.empty[Node.Declaration]) { case ((ctx, methods), method) =>
         val call = "this".toIdent.sel("_dispatch").sel(ctx.mangler.methodName(method.name, method.desc)).call(
             IType.getArgumentTypes(method.desc).zipWithIndex.map(v => "var" + (v._2 + 1)).map(_.toIdent)
           )
         val stmt = if (IType.getReturnType(method.desc) == IType.VoidType) call.toStmt else call.ret
         signatureCompiler.buildFuncDecl(
           ctx = ctx,
-          method = Method(method),
+          method = method,
           stmts = stmt.singleSeq,
-          nameOverride = Some(ctx.mangler.dispatchMethodName(method.name, method.desc))
+          nameOverride = Some(ctx.mangler.forwardMethodName(method.name, method.desc))
         ).leftMap { case (ctx, funcDecl) =>
           ctx -> (methods :+ funcDecl)
         }
       }
     }
+  }
+
+  protected def dispatchMethodsForForwarding(ctx: Context): Seq[Method] = {
+    // We build dispatch methods ONLY for methods we declare the first time
+    val superTypes =
+      if (ctx.cls.access.isAccessInterface) ctx.imports.classPath.allInterfaceTypes(ctx.cls.name)
+      else ctx.imports.classPath.allSuperTypes(ctx.cls.name)
+    val dispatchMethodNodes = methodNodes(ctx, forDispatch = true).filter { method =>
+      // No static
+      // TODO: should I remove init here or not? Basically need to determine inheritance reqs
+      // for constructor init
+      if (method.access.isAccessStatic) false else {
+        // No methods that are also defined in a super interface
+        !superTypes.exists(_.methods.exists(m => m.name == method.name && m.desc == method.desc))
+      }
+    }
+
+    dispatchMethodNodes.map(Method.apply)
   }
 
   // TODO: slow

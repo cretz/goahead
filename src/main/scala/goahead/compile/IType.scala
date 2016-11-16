@@ -60,7 +60,9 @@ object IType extends Logger {
       }
     }
 
-    def isPointer: Boolean = typ.getSort == Type.OBJECT
+    def isInterface(classPath: ClassPath): Boolean = isObject && classPath.isInterface(typ.getInternalName)
+
+    def isObject: Boolean = typ.getSort == Type.OBJECT
   }
 
   case object NullType extends IType {

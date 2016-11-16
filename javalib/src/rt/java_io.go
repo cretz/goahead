@@ -36,7 +36,7 @@ func (this *Java__io__FilterOutputStream__Instance) Java__io__FilterOutputStream
 	this._dispatch = v
 }
 
-func (this *Java__io__FilterOutputStream__Instance) Dispatch__Instance_Init__desc____obj__Java__io__OutputStream__ret__V(var1 *Java__io__OutputStream__Instance) {
+func (this *Java__io__FilterOutputStream__Instance) Forward__Instance_Init__desc____obj__Java__io__OutputStream__ret__V(var1 *Java__io__OutputStream__Instance) {
 	this._dispatch.Instance_Init__desc____obj__Java__io__OutputStream__ret__V(var1)
 }
 
@@ -76,6 +76,7 @@ type Java__io__Flushable__Dispatch interface {
 
 type Java__io__Flushable__Instance interface {
 	Java__io__Flushable__Dispatch
+	Forward__Flush__desc____ret__V()
 }
 
 type Java__io__OutputStream__Static struct{}
@@ -108,23 +109,23 @@ func (this *Java__io__OutputStream__Instance) Java__io__OutputStream__InitDispat
 	this._dispatch = v
 }
 
-func (this *Java__io__OutputStream__Instance) Dispatch__Close__desc____ret__V() {
+func (this *Java__io__OutputStream__Instance) Forward__Close__desc____ret__V() {
 	this._dispatch.Close__desc____ret__V()
 }
 
-func (this *Java__io__OutputStream__Instance) Dispatch__Flush__desc____ret__V() {
+func (this *Java__io__OutputStream__Instance) Forward__Flush__desc____ret__V() {
 	this._dispatch.Flush__desc____ret__V()
 }
 
-func (this *Java__io__OutputStream__Instance) Dispatch__Write__desc__I__ret__V(var1 int) {
+func (this *Java__io__OutputStream__Instance) Forward__Write__desc__I__ret__V(var1 int) {
 	this._dispatch.Write__desc__I__ret__V(var1)
 }
 
-func (this *Java__io__OutputStream__Instance) Dispatch__Write__desc____arr__B__ret__V(var1 []byte) {
+func (this *Java__io__OutputStream__Instance) Forward__Write__desc____arr__B__ret__V(var1 []byte) {
 	this._dispatch.Write__desc____arr__B__ret__V(var1)
 }
 
-func (this *Java__io__OutputStream__Instance) Dispatch__Write__desc____arr__B__I__I__ret__V(var1 []byte, var2 int, var3 int) {
+func (this *Java__io__OutputStream__Instance) Forward__Write__desc____arr__B__I__I__ret__V(var1 []byte, var2 int, var3 int) {
 	this._dispatch.Write__desc____arr__B__I__I__ret__V(var1, var2, var3)
 }
 
@@ -216,139 +217,139 @@ func (this *Java__io__PrintStream__Instance) Java__io__PrintStream__InitDispatch
 	this._dispatch = v
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Instance_Init__desc____obj__Java__io__OutputStream__Z__ret__V(var1 *Java__io__OutputStream__Instance, var2 bool) {
+func (this *Java__io__PrintStream__Instance) Forward__Instance_Init__desc____obj__Java__io__OutputStream__Z__ret__V(var1 *Java__io__OutputStream__Instance, var2 bool) {
 	this._dispatch.Instance_Init__desc____obj__Java__io__OutputStream__Z__ret__V(var1, var2)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Instance_Init__desc____obj__Java__io__OutputStream__Z____obj__Java__lang__String__ret__V(var1 *Java__io__OutputStream__Instance, var2 bool, var3 *Java__lang__String__Instance) {
+func (this *Java__io__PrintStream__Instance) Forward__Instance_Init__desc____obj__Java__io__OutputStream__Z____obj__Java__lang__String__ret__V(var1 *Java__io__OutputStream__Instance, var2 bool, var3 *Java__lang__String__Instance) {
 	this._dispatch.Instance_Init__desc____obj__Java__io__OutputStream__Z____obj__Java__lang__String__ret__V(var1, var2, var3)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Instance_Init__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
+func (this *Java__io__PrintStream__Instance) Forward__Instance_Init__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
 	this._dispatch.Instance_Init__desc____obj__Java__lang__String__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance, var2 *Java__lang__String__Instance) {
+func (this *Java__io__PrintStream__Instance) Forward__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance, var2 *Java__lang__String__Instance) {
 	this._dispatch.Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__String__ret__V(var1, var2)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Append__desc__C__ret____obj__Java__io__PrintStream(var1 rune) *Java__io__PrintStream__Instance {
+func (this *Java__io__PrintStream__Instance) Forward__Append__desc__C__ret____obj__Java__io__PrintStream(var1 rune) *Java__io__PrintStream__Instance {
 	return this._dispatch.Append__desc__C__ret____obj__Java__io__PrintStream(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Append__desc__C__ret____obj__Java__lang__Appendable(var1 rune) Java__lang__Appendable__Instance {
+func (this *Java__io__PrintStream__Instance) Forward__Append__desc__C__ret____obj__Java__lang__Appendable(var1 rune) Java__lang__Appendable__Instance {
 	return this._dispatch.Append__desc__C__ret____obj__Java__lang__Appendable(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__io__PrintStream(var1 Java__lang__CharSequence__Instance) *Java__io__PrintStream__Instance {
+func (this *Java__io__PrintStream__Instance) Forward__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__io__PrintStream(var1 Java__lang__CharSequence__Instance) *Java__io__PrintStream__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__io__PrintStream(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(var1 Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance {
+func (this *Java__io__PrintStream__Instance) Forward__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(var1 Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__io__PrintStream(var1 Java__lang__CharSequence__Instance, var2 int, var3 int) *Java__io__PrintStream__Instance {
+func (this *Java__io__PrintStream__Instance) Forward__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__io__PrintStream(var1 Java__lang__CharSequence__Instance, var2 int, var3 int) *Java__io__PrintStream__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__io__PrintStream(var1, var2, var3)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(var1 Java__lang__CharSequence__Instance, var2 int, var3 int) Java__lang__Appendable__Instance {
+func (this *Java__io__PrintStream__Instance) Forward__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(var1 Java__lang__CharSequence__Instance, var2 int, var3 int) Java__lang__Appendable__Instance {
 	return this._dispatch.Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(var1, var2, var3)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__CheckError__desc____ret__Z() bool {
+func (this *Java__io__PrintStream__Instance) Forward__CheckError__desc____ret__Z() bool {
 	return this._dispatch.CheckError__desc____ret__Z()
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__ClearError__desc____ret__V() {
+func (this *Java__io__PrintStream__Instance) Forward__ClearError__desc____ret__V() {
 	this._dispatch.ClearError__desc____ret__V()
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var1 *Java__lang__String__Instance, var2 []*Java__lang__Object__Instance) *Java__io__PrintStream__Instance {
+func (this *Java__io__PrintStream__Instance) Forward__Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var1 *Java__lang__String__Instance, var2 []*Java__lang__Object__Instance) *Java__io__PrintStream__Instance {
 	return this._dispatch.Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var1, var2)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Print__desc__C__ret__V(var1 rune) {
+func (this *Java__io__PrintStream__Instance) Forward__Print__desc__C__ret__V(var1 rune) {
 	this._dispatch.Print__desc__C__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Print__desc__D__ret__V(var1 float64) {
+func (this *Java__io__PrintStream__Instance) Forward__Print__desc__D__ret__V(var1 float64) {
 	this._dispatch.Print__desc__D__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Print__desc__F__ret__V(var1 float32) {
+func (this *Java__io__PrintStream__Instance) Forward__Print__desc__F__ret__V(var1 float32) {
 	this._dispatch.Print__desc__F__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Print__desc__I__ret__V(var1 int) {
+func (this *Java__io__PrintStream__Instance) Forward__Print__desc__I__ret__V(var1 int) {
 	this._dispatch.Print__desc__I__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Print__desc__J__ret__V(var1 int64) {
+func (this *Java__io__PrintStream__Instance) Forward__Print__desc__J__ret__V(var1 int64) {
 	this._dispatch.Print__desc__J__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Print__desc____obj__Java__lang__Object__ret__V(var1 *Java__lang__Object__Instance) {
+func (this *Java__io__PrintStream__Instance) Forward__Print__desc____obj__Java__lang__Object__ret__V(var1 *Java__lang__Object__Instance) {
 	this._dispatch.Print__desc____obj__Java__lang__Object__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Print__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
+func (this *Java__io__PrintStream__Instance) Forward__Print__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
 	this._dispatch.Print__desc____obj__Java__lang__String__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Print__desc__Z__ret__V(var1 bool) {
+func (this *Java__io__PrintStream__Instance) Forward__Print__desc__Z__ret__V(var1 bool) {
 	this._dispatch.Print__desc__Z__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Print__desc____arr__C__ret__V(var1 []rune) {
+func (this *Java__io__PrintStream__Instance) Forward__Print__desc____arr__C__ret__V(var1 []rune) {
 	this._dispatch.Print__desc____arr__C__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var1 *Java__lang__String__Instance, var2 []*Java__lang__Object__Instance) *Java__io__PrintStream__Instance {
+func (this *Java__io__PrintStream__Instance) Forward__Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var1 *Java__lang__String__Instance, var2 []*Java__lang__Object__Instance) *Java__io__PrintStream__Instance {
 	return this._dispatch.Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var1, var2)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Println__desc____ret__V() {
+func (this *Java__io__PrintStream__Instance) Forward__Println__desc____ret__V() {
 	this._dispatch.Println__desc____ret__V()
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Println__desc__C__ret__V(var1 rune) {
+func (this *Java__io__PrintStream__Instance) Forward__Println__desc__C__ret__V(var1 rune) {
 	this._dispatch.Println__desc__C__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Println__desc__D__ret__V(var1 float64) {
+func (this *Java__io__PrintStream__Instance) Forward__Println__desc__D__ret__V(var1 float64) {
 	this._dispatch.Println__desc__D__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Println__desc__F__ret__V(var1 float32) {
+func (this *Java__io__PrintStream__Instance) Forward__Println__desc__F__ret__V(var1 float32) {
 	this._dispatch.Println__desc__F__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Println__desc__I__ret__V(var1 int) {
+func (this *Java__io__PrintStream__Instance) Forward__Println__desc__I__ret__V(var1 int) {
 	this._dispatch.Println__desc__I__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Println__desc__J__ret__V(var1 int64) {
+func (this *Java__io__PrintStream__Instance) Forward__Println__desc__J__ret__V(var1 int64) {
 	this._dispatch.Println__desc__J__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Println__desc____obj__Java__lang__Object__ret__V(var1 *Java__lang__Object__Instance) {
+func (this *Java__io__PrintStream__Instance) Forward__Println__desc____obj__Java__lang__Object__ret__V(var1 *Java__lang__Object__Instance) {
 	this._dispatch.Println__desc____obj__Java__lang__Object__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Println__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
+func (this *Java__io__PrintStream__Instance) Forward__Println__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
 	this._dispatch.Println__desc____obj__Java__lang__String__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Println__desc__Z__ret__V(var1 bool) {
+func (this *Java__io__PrintStream__Instance) Forward__Println__desc__Z__ret__V(var1 bool) {
 	this._dispatch.Println__desc__Z__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__Println__desc____arr__C__ret__V(var1 []rune) {
+func (this *Java__io__PrintStream__Instance) Forward__Println__desc____arr__C__ret__V(var1 []rune) {
 	this._dispatch.Println__desc____arr__C__ret__V(var1)
 }
 
-func (this *Java__io__PrintStream__Instance) Dispatch__SetError__desc____ret__V() {
+func (this *Java__io__PrintStream__Instance) Forward__SetError__desc____ret__V() {
 	this._dispatch.SetError__desc____ret__V()
 }
 

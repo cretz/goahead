@@ -270,14 +270,14 @@ object Helpers extends Logger {
       ctx.withImportAlias("unsafe").leftMap { case (ctx, unsafeAlias) =>
         val pointerArgExpr = oldTyp match {
           case IType.NullType => NilExpr
-          case s: IType.Simple if s.isPointer => expr.expr
+          case s: IType.Simple if s.isObject => expr.expr
           case IType.Simple(asmTyp) => expr.expr.addressOf
           case other => sys.error(s"Unrecognized existing type to convert from: $other")
         }
         ctx.typeToGoType(newTyp).leftMap { case (ctx, goType) =>
           val convertToPointer = unsafeAlias.toIdent.sel("Pointer").call(pointerArgExpr.singleSeq)
           newTyp match {
-            case s: IType.Simple if s.isPointer =>
+            case s: IType.Simple if s.isObject =>
               // Just parentheses
               ctx -> goType.inParens.call(convertToPointer.singleSeq)
             case _: IType.Simple =>
@@ -297,13 +297,15 @@ object Helpers extends Logger {
           case Node.BasicLiteral(Node.Token.Int, "0") => ctx -> "false".toIdent
           case _ => sys.error(s"Unable to change int $expr to boolean")
         }
-        case (oldTyp, newTyp)
-          if oldTyp == newTyp || (noCasting && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp)) =>
-            ctx -> expr.expr
-        case (oldTyp: IType.Simple, newTyp)
-          if !noCasting && oldTyp.isPointer && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp) =>
-            // TODO: this is only for objects, not primitives hence the Simple check...impl primitive side
-            unsafeCast(ctx, oldTyp, newTyp)
+        case (oldTyp, newTyp) if oldTyp == newTyp =>
+          ctx -> expr.expr
+        case (oldTyp, newTyp: IType.Simple)
+          if newTyp.isObject && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp) =>
+            // Casting to an object unless asked not to or it's an interface
+            if (noCasting) ctx -> expr.expr
+            else if (newTyp.isInterface(ctx.imports.classPath)) ctx -> expr.expr
+            else unsafeCast(ctx, oldTyp, newTyp)
+        // TODO: support primitives
         case (oldTyp, newTyp) =>
           sys.error(s"Unable to assign types: $oldTyp -> $newTyp")
       }
