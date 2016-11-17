@@ -1,6 +1,6 @@
 package goahead.compile
 
-import goahead.ast.Node
+import goahead.ast.{Node, NodeWriter}
 
 sealed trait TypedExpression {
   def expr: Node.Expression
@@ -18,6 +18,8 @@ sealed trait TypedExpression {
     withUpdatedType(typ.maybeMakeMoreSpecific(classPath, other))
 
   def withUpdatedType(typ: IType): TypedExpression
+
+  def pretty: String = typ.pretty + " -> " + NodeWriter.fromNode(expr).replace('\n', ' ')
 }
 
 object TypedExpression {

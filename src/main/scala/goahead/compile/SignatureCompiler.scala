@@ -34,16 +34,11 @@ trait SignatureCompiler {
     method: Method,
     includeParamNames: Boolean
   ): (T, Node.FunctionType) = {
-    // 0 is "this" in non-static
-    val indexAdd = if (method.access.isAccessStatic) 0 else 1
-
     val ctxWithParams =
       IType.getArgumentTypes(method.desc).zipWithIndex.foldLeft(ctx -> Seq.empty[Node.Field]) {
         case ((ctx, params), (argType, argIndex)) =>
           ctx.typeToGoType(argType).leftMap { case (ctx, typ) =>
-            val param =
-              if (includeParamNames) field("var" + (argIndex + indexAdd), typ)
-              else typ.namelessField
+            val param = if (includeParamNames) field(s"var$argIndex", typ) else typ.namelessField
             ctx -> (params :+ param)
           }
       }

@@ -25,6 +25,7 @@ trait InsnCompiler extends Logger {
     if (insns.isEmpty) ctx -> appendTo
     else {
       logger.debug(s"Compiling instruction - ${insns.head.pretty}")
+      logger.trace(s"Context before ${insns.head.pretty}: ${ctx.prettyAppend}")
       val ctxAndStmts = try {
         insns.head match {
           case i: FieldInsnNode => compile(ctx, i)
@@ -45,6 +46,7 @@ trait InsnCompiler extends Logger {
             e
           )
       }
+      logger.trace(s"Context after ${insns.head.pretty}: ${ctxAndStmts._1.prettyAppend}")
       recursiveCompile(ctxAndStmts._1, insns.tail, appendTo ++ ctxAndStmts._2)
     }
   }
@@ -160,7 +162,6 @@ trait InsnCompiler extends Logger {
     val label = insn.label.getLabel.toString
     insn.byOpcode {
       case Opcodes.GOTO =>
-        // TODO: can we trust that these jumps are not to F_FULL/F_SAME1?
         ctx.copy(usedLabels = ctx.usedLabels + label) -> goto(label).singleSeq
       case Opcodes.IFEQ =>
         ctx.copy(usedLabels = ctx.usedLabels + label).stackPopped { case (ctx, item) =>

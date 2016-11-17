@@ -163,7 +163,9 @@ class NodeWriter {
     appendDeclaration(stmt.declaration)
   }
 
-  def appendDeferStatement(stmt: DeferStatement): this.type = __TODO__
+  def appendDeferStatement(stmt: DeferStatement): this.type = {
+    append("defer ").appendCallExpression(stmt.call)
+  }
 
   def appendEllipsis(expr: Ellipsis): this.type = __TODO__
 
@@ -245,16 +247,23 @@ class NodeWriter {
 
   def appendGenericDeclaration(decl: GenericDeclaration): this.type = {
     require(decl.specifications.nonEmpty, s"Unexpected empty specs: $decl")
+    var specs = decl.specifications
     decl.token match {
-      case Token.Import => append("import ")
+      case Token.Import =>
+        append("import ")
+        // Have to sort specs for import
+        specs = specs.sortBy {
+          case ImportSpecification(name, path) => name.map(_.name).getOrElse(path.value)
+          case s => sys.error(s"Unrecognized import spec: $s")
+        }
       case Token.Const => append("const ")
       case Token.Type => append("type ")
       case Token.Var => append("var ")
       case _ => sys.error("Unrecognized token: " + decl.token)
     }
-    val multiSpec = decl.specifications.length > 1
+    val multiSpec = specs.length > 1
     if (multiSpec) append('(').indent()
-    paddedSections(decl.specifications).foreach { section =>
+    paddedSections(specs).foreach { section =>
       section.nodes.foreach { spec =>
         if (multiSpec) newline()
         appendSpecification(spec, section.leftMax)

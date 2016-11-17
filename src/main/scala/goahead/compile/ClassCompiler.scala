@@ -184,7 +184,6 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileStructSuperFields(ctx: Context): (Context, Seq[Node.Field]) = {
-    // TODO: don't need interfaces embedded in classes, right?
     val superNames =
       if (ctx.cls.access.isAccessInterface) ctx.cls.interfaceNames else Option(ctx.cls.superName).toSeq
     val ctxAndSuperFields = superNames.foldLeft(ctx -> Seq.empty[Node.Field]) {
@@ -221,6 +220,7 @@ trait ClassCompiler extends Logger {
     }
   }
 
+  //protected def methodCompiler: MethodCompiler = MethodCompiler
   protected def methodCompiler: MethodCompiler = MethodCompiler
 
   protected def compileDispatch(ctx: Context): (Context, Seq[Node.Declaration]) = {
@@ -234,8 +234,6 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileDispatchInterface(ctx: Context): (Context, Node.Declaration) = {
-    // TODO: ok for dispatch interface to include only super type checks instead of all impl type checks?
-    // val allSuperTypes = ctx.imports.classPath.allSuperAndImplementingTypes(ctx.cls.name)
     val allSuperTypes =
       if (ctx.cls.access.isAccessInterface) ctx.imports.classPath.allSuperAndImplementingTypes(ctx.cls.name)
       else ctx.imports.classPath.allSuperTypes(ctx.cls.name)
@@ -250,7 +248,6 @@ trait ClassCompiler extends Logger {
     ctxAndSuperDispatchRefs.leftMap { case (ctx, superDispatchRefs) =>
       val dispatchMethodNodes = methodNodes(ctx, forDispatch = true).filter { method =>
         // No static
-        // TODO: should I remove init? See TODO below
         if (method.access.isAccessStatic) false else {
           // No methods that are also defined in a super interface
           !allSuperTypes.exists(_.methods.exists(m => m.name == method.name && m.desc == method.desc))
@@ -296,7 +293,7 @@ trait ClassCompiler extends Logger {
     if (ctx.cls.access.isAccessInterface) ctx -> Nil else {
       dispatchMethodsForForwarding(ctx).foldLeft(ctx -> Seq.empty[Node.Declaration]) { case ((ctx, methods), method) =>
         val call = "this".toIdent.sel("_dispatch").sel(ctx.mangler.methodName(method.name, method.desc)).call(
-            IType.getArgumentTypes(method.desc).zipWithIndex.map(v => "var" + (v._2 + 1)).map(_.toIdent)
+            IType.getArgumentTypes(method.desc).zipWithIndex.map("var" + _._2).map(_.toIdent)
           )
         val stmt = if (IType.getReturnType(method.desc) == IType.VoidType) call.toStmt else call.ret
         signatureCompiler.buildFuncDecl(
@@ -318,8 +315,6 @@ trait ClassCompiler extends Logger {
       else ctx.imports.classPath.allSuperTypes(ctx.cls.name)
     val dispatchMethodNodes = methodNodes(ctx, forDispatch = true).filter { method =>
       // No static
-      // TODO: should I remove init here or not? Basically need to determine inheritance reqs
-      // for constructor init
       if (method.access.isAccessStatic) false else {
         // No methods that are also defined in a super interface
         !superTypes.exists(_.methods.exists(m => m.name == method.name && m.desc == method.desc))

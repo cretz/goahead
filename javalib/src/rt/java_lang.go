@@ -636,6 +636,44 @@ func (this *Java__lang__Exception__Instance) Instance_Init__desc____obj__Java__l
 	panic("Not Implemented")
 }
 
+type Java__lang__NullPointerException__Static struct{}
+
+var Java__lang__NullPointerException__Var Java__lang__NullPointerException__Static
+
+func Java__lang__NullPointerException() *Java__lang__NullPointerException__Static {
+	return &Java__lang__NullPointerException__Var
+}
+
+func (this *Java__lang__NullPointerException__Static) New() *Java__lang__NullPointerException__Instance {
+	v := &Java__lang__NullPointerException__Instance{
+		Java__lang__RuntimeException__Instance: Java__lang__RuntimeException().New(),
+	}
+	v.Java__lang__NullPointerException__InitDispatch(v)
+	return v
+}
+
+type Java__lang__NullPointerException__Dispatch interface {
+	Java__lang__RuntimeException__Dispatch
+}
+
+func (this *Java__lang__NullPointerException__Instance) Java__lang__NullPointerException__InitDispatch(v Java__lang__NullPointerException__Dispatch) {
+	this.Java__lang__RuntimeException__Instance.Java__lang__RuntimeException__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__NullPointerException__Instance struct {
+	*Java__lang__RuntimeException__Instance
+	_dispatch Java__lang__NullPointerException__Dispatch
+}
+
+func (this *Java__lang__NullPointerException__Instance) Instance_Init__desc____ret__V() {
+	panic("Not Implemented")
+}
+
+func (this *Java__lang__NullPointerException__Instance) Instance_Init__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
+	panic("Not Implemented")
+}
+
 type Java__lang__Object__Static struct {
 	init sync.Once
 }
@@ -760,6 +798,58 @@ func (this *Java__lang__Object__Instance) Wait__desc__J__ret__V(var1 int64) {
 }
 
 func (this *Java__lang__Object__Instance) Wait__desc__J__I__ret__V(var1 int64, var2 int) {
+	panic("Not Implemented")
+}
+
+type Java__lang__RuntimeException__Static struct {
+	SerialVersionUID int64
+}
+
+var Java__lang__RuntimeException__Var Java__lang__RuntimeException__Static
+
+func Java__lang__RuntimeException() *Java__lang__RuntimeException__Static {
+	return &Java__lang__RuntimeException__Var
+}
+
+func (this *Java__lang__RuntimeException__Static) New() *Java__lang__RuntimeException__Instance {
+	v := &Java__lang__RuntimeException__Instance{
+		Java__lang__Exception__Instance: Java__lang__Exception().New(),
+	}
+	v.Java__lang__RuntimeException__InitDispatch(v)
+	return v
+}
+
+type Java__lang__RuntimeException__Dispatch interface {
+	Java__lang__Exception__Dispatch
+}
+
+func (this *Java__lang__RuntimeException__Instance) Java__lang__RuntimeException__InitDispatch(v Java__lang__RuntimeException__Dispatch) {
+	this.Java__lang__Exception__Instance.Java__lang__Exception__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__RuntimeException__Instance struct {
+	*Java__lang__Exception__Instance
+	_dispatch Java__lang__RuntimeException__Dispatch
+}
+
+func (this *Java__lang__RuntimeException__Instance) Instance_Init__desc____ret__V() {
+	panic("Not Implemented")
+}
+
+func (this *Java__lang__RuntimeException__Instance) Instance_Init__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
+	panic("Not Implemented")
+}
+
+func (this *Java__lang__RuntimeException__Instance) Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(var1 *Java__lang__String__Instance, var2 *Java__lang__Throwable__Instance) {
+	panic("Not Implemented")
+}
+
+func (this *Java__lang__RuntimeException__Instance) Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(var1 *Java__lang__String__Instance, var2 *Java__lang__Throwable__Instance, var3 bool, var4 bool) {
+	panic("Not Implemented")
+}
+
+func (this *Java__lang__RuntimeException__Instance) Instance_Init__desc____obj__Java__lang__Throwable__ret__V(var1 *Java__lang__Throwable__Instance) {
 	panic("Not Implemented")
 }
 

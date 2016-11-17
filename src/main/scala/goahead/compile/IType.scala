@@ -8,6 +8,8 @@ sealed trait IType {
   def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType
 
   def isAssignableFrom(classPath: ClassPath, other: IType): Boolean
+
+  def pretty: String
 }
 object IType extends Logger {
   def apply(typ: Type): IType = Simple(typ)
@@ -54,6 +56,9 @@ object IType extends Logger {
       other match {
         case Simple(otherTyp) if otherTyp.getSort == Type.OBJECT =>
           classPath.classImplementsOrExtends(otherTyp.getInternalName, typ.getInternalName)
+        // Nulls can be assigned to this type if this type is an object
+        case NullType if isObject =>
+          true
         // TODO: more of this w/ primitives and what not
         case _ =>
           false
@@ -63,20 +68,25 @@ object IType extends Logger {
     def isInterface(classPath: ClassPath): Boolean = isObject && classPath.isInterface(typ.getInternalName)
 
     def isObject: Boolean = typ.getSort == Type.OBJECT
+
+    override def pretty: String = typ.toString
   }
 
   case object NullType extends IType {
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = other
     override def isAssignableFrom(classPath: ClassPath, other: IType) = other == this
+    override def pretty: String = "null"
   }
 
   case object Undefined extends IType {
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = other
     override def isAssignableFrom(classPath: ClassPath, other: IType) = other == this
+    override def pretty: String = "<undefined>"
   }
 
   case class UndefinedLabelInitialized(label: Label) extends IType {
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = other
     override def isAssignableFrom(classPath: ClassPath, other: IType) = other == this
+    override def pretty: String = s"<undefined on $label>"
   }
 }

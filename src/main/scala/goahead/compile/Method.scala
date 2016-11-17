@@ -2,7 +2,7 @@ package goahead.compile
 
 import java.io.{PrintWriter, StringWriter}
 
-import org.objectweb.asm.tree.{AbstractInsnNode, LocalVariableNode, MethodNode}
+import org.objectweb.asm.tree.{AbstractInsnNode, LocalVariableNode, MethodNode, TryCatchBlockNode}
 import org.objectweb.asm.util.{Textifier, TraceMethodVisitor}
 
 sealed trait Method {
@@ -13,6 +13,8 @@ sealed trait Method {
   def debugLocalVars: Seq[LocalVariableNode]
 
   def asmString: String
+
+  def tryCatchBlocks: Seq[TryCatchBlockNode]
 }
 
 object Method {
@@ -38,6 +40,11 @@ object Method {
       node.accept(new TraceMethodVisitor(printer))
       printer.print(new PrintWriter(writer))
       writer.toString.trim
+    }
+
+    override def tryCatchBlocks: Seq[TryCatchBlockNode] = {
+      import scala.collection.JavaConverters._
+      node.tryCatchBlocks.iterator.asScala.asInstanceOf[Iterator[TryCatchBlockNode]].toSeq
     }
   }
 }

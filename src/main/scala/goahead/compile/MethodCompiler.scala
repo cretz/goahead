@@ -7,8 +7,6 @@ import goahead.compile.Helpers._
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree._
 
-import scala.annotation.tailrec
-
 trait MethodCompiler extends Logger {
   import MethodCompiler._
 
@@ -49,7 +47,10 @@ trait MethodCompiler extends Logger {
   protected def getLabelSets(node: Method): Seq[LabelSet] = {
     val insns = node.instructions
     require(insns.headOption.exists(_.isInstanceOf[LabelNode]), "Expected label to be first insn")
-    val initial = LabelSet(insns.head.asInstanceOf[LabelNode])
+    val initial = LabelSet(
+      node = insns.head.asInstanceOf[LabelNode],
+      handlerOf = node.tryCatchBlocks.find(_.handler.getLabel == insns.head.asInstanceOf[LabelNode].getLabel)
+    )
     insns.foldLeft(Seq(initial)) { case (labelSets, insn) =>
       insn match {
         case n: FrameNode =>
@@ -59,198 +60,149 @@ trait MethodCompiler extends Logger {
           if (n.start.getLabel != labelSets.last.node.getLabel) labelSets
           else labelSets.init :+ labelSets.last.copy(line = Some(n.line))
         case n: LabelNode =>
-          labelSets :+ LabelSet(n)
+          labelSets :+ LabelSet(
+            node = n,
+            handlerOf = node.tryCatchBlocks.find(_.handler.getLabel == n.getLabel)
+          )
         case n =>
           labelSets.init :+ labelSets.last.copy(insns = labelSets.last.insns :+ n)
       }
     }
   }
 
-  protected def compileLabelSets(ctx: Context): (Context, Seq[Node.Statement]) =
-    recursiveCompileLabelSets(ctx, _.toSeq)
-
-  @tailrec
-  protected final def recursiveCompileLabelSets(
-    origCtx: Context,
-    stmtFn: Seq[Node.Statement] => Seq[Node.Statement]
-  ): (Context, Seq[Node.Statement]) = {
-    if (origCtx.sets.isEmpty) origCtx -> stmtFn(Nil)
-    else {
-      // Compile the label w/ framing info...
-      val (ctx, newStmtFn) = compileLabel(origCtx).leftMap { case (ctx, stmts) =>
-
-        // We need to check whether we are an anon function or not
-        // and make a wrapping function accordingly
-        val labelName = ctx.sets.head.node.getLabel.toString
-        val newStmtFn: Seq[Node.Statement] => Seq[Node.Statement] = ctx.labelsAsFunctions.get(labelName) match {
-          case None =>
-            // This is a regular labeled statement
-            nextStmts => stmtFn(labeled(labelName, stmts) +: nextStmts)
-          case Some(funcType) =>
-            // This is an anon function which we assign to a var which we expect
-            // to be declared at the very top of the func
-
-            // We have to add a statement to the bottom here that goes-to the next label
-            val ctxAndStmts = ctx.sets.lift(1) match {
-              case None =>
-                ctx -> stmts
-              case Some(nextSet) =>
-                val nextLabel = nextSet.node.getLabel.toString
-                ctx.copy(usedLabels = ctx.usedLabels + nextLabel) -> (stmts :+ goto(nextLabel))
-            }
-
-            ctxAndStmts.leftMap { case (ctx, stmts) =>
-              nextStmts => stmtFn(labelName.toIdent.assignExisting(funcType.toFuncLit(stmts)) +: nextStmts)
-            }
-        }
-
-        ctx -> newStmtFn
+  protected def compileLabelSets(ctx: Context): (Context, Seq[Node.Statement]) = {
+    ctx.sets.foldLeft(ctx -> Seq.empty[Node.Statement]) { case ((ctx, stmts), labelSet) =>
+      compileLabelSet(ctx, labelSet).leftMap { case (ctx, labeledStatement) =>
+        ctx -> (stmts :+ labeledStatement)
       }
-
-      // Make the tail recursive call with the top set taken off
-      recursiveCompileLabelSets(ctx.copy(sets = ctx.sets.tail), newStmtFn)
     }
   }
 
-  protected def compileLabel(origCtx: Context): (Context, Seq[Node.Statement]) = {
-    // Manip the context and get head statements for frame
-    contextAndStatementsBeforeFrame(origCtx).leftMap { case (ctx, frameStmts) =>
-      // TODO: does the frame only last the length of one label? Doubt it...
-      compileLabelCode(ctx).leftMap { case (ctx, codeStmts) =>
-        // Fix up the context after compilation
-        contextAfterFrame(origCtx, ctx).leftMap { case (ctx, afterFrameStmts) =>
-          ctx -> (frameStmts ++ afterFrameStmts ++ codeStmts)
+  protected def compileLabelSet(ctx: Context, labelSet: LabelSet): (Context, Node.LabeledStatement) = {
+    // Setup the frame
+    logger.trace(s"Context before setup of ${labelSet.pretty}: ${ctx.prettyAppend}")
+    setupFrame(ctx, labelSet).map { ctx =>
+      // Build the code
+      logger.trace(s"Context after setup of ${labelSet.pretty}: ${ctx.prettyAppend}")
+      insnCompiler.compile(ctx, labelSet.insns).leftMap { case (ctx, stmts) =>
+        // Post process it
+        logger.trace(s"Context after compile of ${labelSet.pretty}: ${ctx.prettyAppend}")
+        postProcessLabel(ctx, labelSet, stmts).leftMap { case (ctx, labelStmt) =>
+          logger.trace(s"Context after post process of ${labelSet.pretty}: ${ctx.prettyAppend}")
+          ctx -> labelStmt
         }
       }
     }
   }
 
-  protected def contextAndStatementsBeforeFrame(ctx: Context): (Context, Seq[Node.Statement]) = {
-    ctx.sets.head.newFrame match {
-      case None =>
-        ctx -> Nil
+  protected def setupFrame(origCtx: Context, labelSet: LabelSet): Context = {
+    labelSet.newFrame match {
+      case None => origCtx
       case Some(frame) =>
-        contextLocalsAndStatementsBeforeFrame(contextStackBeforeFrame(ctx, frame), frame)
-    }
-  }
+        // Add a stack variable for each stack item here
+        val initCtx = origCtx.copy(stack = Stack.empty)
+        val ctx = origCtx.frameStack(frame).zipWithIndex.foldLeft(initCtx) {
+          case (ctx, (stackType, index)) =>
+            val stackVar = TypedExpression.namedVar(s"${labelSet.node.getLabel}_stack$index", stackType)
+            ctx.copy(functionVars = ctx.functionVars :+ stackVar).stackPushed(stackVar)
+        }
 
-  protected def contextStackBeforeFrame(ctx: Context, f: FrameNode): Context = {
-    if (f.stack == null || f.stack.isEmpty) ctx.copy(stack = Stack.empty)
-    else {
-      import scala.collection.JavaConversions._
-      val initial = ctx.copy(stack = Stack.empty) -> Seq.empty[(String, Node.Expression)]
-      val ctxWithFuncParams = f.stack.zipWithIndex.foldLeft(initial) {
-        case ((ctx, prevFuncParams), (stackItem, index)) =>
-
-          val name = s"stack$index"
-
-          val exprType = IType.fromFrameVarType(ctx.cls, stackItem)
-
-          ctx.typeToGoType(exprType).leftMap  { case (ctx, goType) =>
-            ctx.copy(
-              stack = ctx.stack.push(TypedExpression.namedVar(name, exprType))
-            ) -> (prevFuncParams :+ (name -> goType))
-          }
-      }
-
-      ctxWithFuncParams.leftMap { case (ctx, funcParams) =>
-        // If there are params, we need to add the function type for this label
-        if (funcParams.isEmpty) ctx
-        else ctx.copy(
-          labelsAsFunctions = ctx.labelsAsFunctions + (ctx.sets.head.node.getLabel.toString -> funcType(funcParams))
-        )
-      }
-    }
-  }
-
-  protected def contextLocalsAndStatementsBeforeFrame(
-    origCtx: Context,
-    f: FrameNode
-  ): (Context, Seq[Node.Statement]) = {
-    import scala.collection.JavaConversions._
-
-    if (f.local == null || f.local.isEmpty) origCtx -> Nil
-    else if (f.`type` == Opcodes.F_CHOP) {
-      // If it's chop, remove the last X locals
-      origCtx.copy(localVars = origCtx.localVars.dropRight(f.local.size)) -> Nil
-    } else {
-
-      // Otherwise, we add/decls the locals as necessary
-      val ctxToStartWith = f.`type` match {
-        case Opcodes.F_APPEND => origCtx
-        // Clear out the existing locals, though we may append some at the end down there
-        case Opcodes.F_FULL => origCtx.copy(localVars = IndexedSeq.empty)
-        case typ => sys.error(s"Unknown frame type: $typ")
-      }
-
-      val ctxAndStmts = f.local.foldLeft(ctxToStartWith -> Seq.empty[Node.Statement]) {
-        case ((ctx, stmts), localVar) =>
-          val exprType = IType.fromFrameVarType(ctx.cls, localVar)
-
-          ctx.appendLocalVar(exprType).leftMap { case (ctx, localVarRef) =>
-            ctx.typeToGoType(localVarRef.typ).leftMap { case (ctx, goType) =>
-              // We're allowed to assume the local var is always an identifier
-              ctx -> (stmts :+ varDecl(localVarRef.name, goType).toStmt)
+        // Now with the local variables
+        frame.`type` match {
+          case Opcodes.F_SAME1 | Opcodes.F_SAME =>
+            ctx
+          case Opcodes.F_APPEND =>
+            ctx.frameLocals(frame).foldLeft(ctx) { case (ctx, localType) =>
+              ctx.appendLocalVar(localType)._1
             }
-          }
-      }
-
-      // In the case of F_FULL, we need to tack on the old locals that were there (TODO: right?)
-      if (f.`type` != Opcodes.F_FULL) ctxAndStmts
-      else ctxAndStmts.leftMap { case (ctx, stmts) =>
-        ctx.copy(localVars = ctx.localVars ++ origCtx.localVars.drop(f.local.size())) -> stmts
-      }
+          case Opcodes.F_CHOP =>
+            ctx.copy(localVars = ctx.localVars.dropRight(ctx.frameLocals(frame).size))
+          case Opcodes.F_FULL =>
+            val locals = ctx.frameLocals(frame)
+            if (locals.length == ctx.localVars.length) ctx
+            else if (locals.length < ctx.localVars.length) ctx.copy(localVars = ctx.localVars.take(locals.length))
+            else locals.drop(ctx.localVars.length).foldLeft(ctx) { case (ctx, localType) =>
+              ctx.appendLocalVar(localType)._1
+            }
+        }
     }
   }
 
-  protected def contextAfterFrame(origCtx: Context, ctx: Context): (Context, Seq[Node.Statement]) = {
-    /*  protected def addTempVars(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
-    if (ctx.tempVars.isEmpty) ctx -> stmts
-    else createVarDecl(ctx, ctx.tempVars).leftMap { case (ctx, declStmt) => ctx -> (declStmt +: stmts) }
-  }*/
-    // Technically we only need to fix up locals, not the stack
-    val updatedCtx = ctx.sets.head.newFrame match {
-      case None => ctx
-      case Some(f) => f.`type` match {
-        case Opcodes.F_SAME | Opcodes.F_SAME1 =>
-          // Nothing to change
-          ctx
-        case Opcodes.F_APPEND =>
-          // Remove the appended locals
-          ctx.copy(localVars = ctx.localVars.dropRight(f.local.size))
-        case Opcodes.F_CHOP =>
-          // Put the removed ones back...note, we do this instead of just completely put the
-          // orig back because we want whatever type inference we got during this frame
-          ctx.copy(localVars = ctx.localVars ++ origCtx.localVars.takeRight(f.local.size))
-        case Opcodes.F_FULL =>
-          // Put only the locals back that we took away
-          ctx.copy(localVars = origCtx.localVars.take(f.local.size()) ++ ctx.localVars.drop(f.local.size()))
-        case code => sys.error(s"Unrecognized frame code $code")
-      }
-    }
-    // Now we will include the temp vars that were added after the original and are NOT on the stack
-    val (tempVarsToKeep, tempVarsToWriteStmts) =
-      updatedCtx.tempVars.drop(origCtx.tempVars.size).partition(updatedCtx.stack.items.contains)
-    if (tempVarsToWriteStmts.isEmpty) updatedCtx -> Nil
-    else createVarDecl(updatedCtx, tempVarsToWriteStmts).leftMap { case (ctx, stmt) =>
-      ctx.copy(tempVars = ctx.tempVars.take(origCtx.tempVars.size) ++ tempVarsToKeep) -> Seq(stmt)
-    }
-  }
+  protected def postProcessLabel(
+    ctx: Context,
+    labelSet: LabelSet,
+    stmts: Seq[Node.Statement]
+  ): (Context, Node.LabeledStatement) = {
+    // All temp vars that are in the temp var section but are not on the stack are removed
+    // from the temp var section and decld. If they are on the stack and not already in
+    // functionVars, they get added to function vars
+    val (tempVarsOnStack, tempVarsNotOnStack) = ctx.localTempVars.partition(ctx.stack.items.contains)
+    // Make local decls out of ones not on stack and not already in function vars
+    val ctxAndVarDecl =
+    if (tempVarsNotOnStack.isEmpty) ctx -> None
+    else createVarDecl(ctx, tempVarsNotOnStack.filterNot(ctx.functionVars.contains)).leftMap(_ -> Some(_))
 
-  protected def compileLabelCode(ctx: Context): (Context, Seq[Node.Statement]) = {
-    insnCompiler.compile(ctx, ctx.sets.head.insns)
+    // Leave the existing ones on the stack and in the temp set and add them to func-level vars
+    ctxAndVarDecl.leftMap { case (ctx, maybeDecl) =>
+      ctx.copy(localTempVars = tempVarsOnStack, functionVars = ctx.functionVars ++ tempVarsOnStack) ->
+        labeled(labelSet.node.getLabel.toString, maybeDecl.toSeq ++ stmts)
+    }
   }
 
   protected def statementPostProcessors = Seq(
+    applyTryCatch _,
     removeUnusedLabels _,
-    addTempVars _,
-    addLocalVars _,
-    addLabelFuncDecls _
+    addFunctionVars _
   )
 
   protected def postProcessStatements(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
     statementPostProcessors.foldLeft(ctx -> stmts) {
       case (ret, postProcessor) => postProcessor.tupled(ret)
+    }
+  }
+
+  protected def addFunctionVars(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
+    // Add all function vars not part of the arg list
+    val argTypeCount = IType.getArgumentTypes(ctx.method.desc).length
+    require(ctx.functionVars.size >= argTypeCount)
+    val varsToDecl = ctx.functionVars.drop(argTypeCount)
+    if (varsToDecl.isEmpty) ctx -> stmts
+    else createVarDecl(ctx, varsToDecl).leftMap { case (ctx, declStmt) => ctx -> (declStmt +: stmts) }
+  }
+
+  protected def applyTryCatch(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
+    // If there are no try/catch, we do nothing
+    val tryCatchNodes = ctx.method.tryCatchBlocks
+    if (tryCatchNodes.isEmpty) ctx -> stmts else {
+      // We must have a new statement at the top for holding the current label
+      val labelVarDecl = varDecl("currentLabel", "string".toIdent).toStmt
+
+      // We have to go over every top-level label statement and set the current label as the first statement
+      val updatedStmts = stmts.map {
+        case Node.LabeledStatement(Node.Identifier(label), Node.BlockStatement(stmts)) =>
+          labeled(label, "currentLabel".toIdent.assignExisting(label.toLit) +: stmts)
+        case stmt =>
+          stmt
+      }
+
+      // Now we have to have recover code
+      ctx.withImportAlias("fmt").leftMap { case (ctx, fmt) =>
+        val recoverStmt = iff(
+          init = Some("r".toIdent.assignDefine("recover".toIdent.call())),
+          lhs = "r".toIdent,
+          op = Node.Token.Neq,
+          rhs = NilExpr,
+          body = Seq("panic".toIdent.call(Seq(
+            fmt.toIdent.sel("Sprintf").call(Seq(
+              "Got panic at label %v: %v".toLit,
+              "currentLabel".toIdent,
+              "r".toIdent
+            ))
+          )).toStmt)
+        )
+        val deferStmt = funcType(Nil, None).toFuncLit(Seq(recoverStmt)).call().defer
+        ctx -> (Seq(labelVarDecl, deferStmt) ++ updatedStmts)
+      }
     }
   }
 
@@ -283,44 +235,22 @@ trait MethodCompiler extends Logger {
     }
   }
 
-  protected def addTempVars(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
-    if (ctx.tempVars.isEmpty) ctx -> stmts
-    else createVarDecl(ctx, ctx.tempVars).leftMap { case (ctx, declStmt) => ctx -> (declStmt +: stmts) }
-  }
-
-  protected def addLocalVars(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
-    val argTypeCount = IType.getArgumentTypes(ctx.method.desc).length
-    require(ctx.localVars.size >= argTypeCount)
-    // Add all local var defs
-    val localVarsToDecl = ctx.localVars.drop(argTypeCount)
-    if (localVarsToDecl.isEmpty) ctx -> stmts
-    else createVarDecl(ctx, localVarsToDecl).leftMap { case (ctx, declStmt) => ctx -> (declStmt +: stmts) }
-  }
-
   protected def createVarDecl(ctx: Context, vars: Seq[TypedExpression]): (Context, Node.Statement) = {
     // Collect them all and then send at once to a single var decl
     val ctxAndNamedTypes = vars.foldLeft(ctx -> Seq.empty[(String, Node.Expression)]) {
       case ((ctx, prevNamedTypes), localVar) =>
-        ctx.typeToGoType(localVar.typ).leftMap { case (ctx, typ) =>
-          ctx -> (prevNamedTypes :+ (localVar.name -> typ))
+        // We ignore undefined types here...
+        localVar.typ match {
+          case IType.Undefined =>
+            ctx -> prevNamedTypes
+          case _ =>
+            ctx.typeToGoType(localVar.typ).leftMap { case (ctx, typ) =>
+              ctx -> (prevNamedTypes :+ (localVar.name -> typ))
+            }
         }
     }
     ctxAndNamedTypes.leftMap { case (ctx, namedTypes) =>
       ctx -> varDecls(namedTypes: _*).toStmt
-    }
-  }
-
-  protected def addLabelFuncDecls(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
-    if (ctx.labelsAsFunctions.isEmpty) ctx -> stmts
-    else {
-      val ctxAndNamedTypes = ctx.labelsAsFunctions.foldLeft(ctx -> Seq.empty[(String, Node.Expression)]) {
-        case ((ctx, prevNamedTypes), (name, funcType)) =>
-          // Have to remove the names from the func types
-          ctx -> (prevNamedTypes :+ (name -> funcType.sansNames))
-      }
-      ctxAndNamedTypes.leftMap { case (ctx, namedTypes) =>
-        ctx -> (varDecls(namedTypes: _*).toStmt +: stmts)
-      }
     }
   }
 
@@ -332,8 +262,12 @@ object MethodCompiler extends MethodCompiler {
     node: LabelNode,
     newFrame: Option[FrameNode] = None,
     line: Option[Int] = None,
-    insns: Seq[AbstractInsnNode] = Nil
-  )
+    insns: Seq[AbstractInsnNode] = Nil,
+    handlerOf: Option[TryCatchBlockNode] = None
+  ) {
+    def pretty: String = node.getLabel.toString + newFrame.map(" - " + _.pretty).getOrElse("")
+    def endsWithUnconditionalJump = insns.nonEmpty && insns.last.isUnconditionalJump
+  }
 
   case class Context(
     cls: ClassNode,
@@ -344,9 +278,17 @@ object MethodCompiler extends MethodCompiler {
     usedLabels: Set[String] = Set.empty,
     labelsAsFunctions: Map[String, Node.FunctionType] = Map.empty,
     stack: Stack = Stack.empty,
-    tempVars: IndexedSeq[TypedExpression] = IndexedSeq.empty,
-    localVars: IndexedSeq[TypedExpression] = IndexedSeq.empty
+    localTempVars: IndexedSeq[TypedExpression] = IndexedSeq.empty,
+    localVars: IndexedSeq[TypedExpression] = IndexedSeq.empty,
+    functionVars: Seq[TypedExpression] = IndexedSeq.empty
   ) extends Contextual[Context] {
     override def updatedImports(mports: Imports) = copy(imports = mports)
+
+    def prettyLines: Seq[String] = {
+      Seq("Context:") ++ stack.prettyLines.map("  " + _) ++ Seq("  Locals:") ++
+        localVars.zipWithIndex.map { case (v, i) => s"    $i: ${v.pretty}" }
+    }
+
+    def prettyAppend: String = prettyLines.mkString("\n  ", "\n  ", "")
   }
 }

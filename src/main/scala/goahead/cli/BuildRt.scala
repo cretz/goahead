@@ -34,6 +34,7 @@ trait BuildRt extends Command {
       classes = Seq(
         "java.io.PrintStream",
         "java.lang.Exception",
+        "java.lang.NullPointerException",
         "java.lang.String",
         "java.lang.StringBuilder",
         "java.lang.System"

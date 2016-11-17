@@ -13,6 +13,8 @@ case class Stack(items: Seq[TypedExpression]) {
     require(popped.size == amount, s"Not enough on stack, expected $amount, got ${popped.size}")
     copy(items = leftover) -> popped
   }
+
+  def prettyLines: Seq[String] = "Stack: " +: items.map("  " + _.pretty)
 }
 
 object Stack {

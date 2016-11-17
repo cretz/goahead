@@ -53,6 +53,17 @@ object AstDsl extends Logger {
 
   def id(name: String) = Identifier(name)
 
+  def iff(init: Option[Statement], lhs: Expression, op: Token, rhs: Expression, body: Seq[Statement]) =
+    IfStatement(
+      init = init,
+      condition = BinaryExpression(
+        left = lhs,
+        operator = op,
+        right = rhs
+      ),
+      body = block(body)
+    )
+
   def ifEq(left: Expression, right: Expression, body: Statement*) =
     IfStatement(
       condition = BinaryExpression(
@@ -107,6 +118,10 @@ object AstDsl extends Logger {
         )
       }
     )
+  }
+
+  implicit class RichCallExpression(val expr: CallExpression) extends AnyVal {
+    def defer = DeferStatement(expr)
   }
 
   implicit class RichDeclaration(val decl: Declaration) extends AnyVal {

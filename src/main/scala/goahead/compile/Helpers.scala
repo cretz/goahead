@@ -23,6 +23,9 @@ object Helpers extends Logger {
 
   implicit class RichContextual[T <: Contextual[T]](val ctx: T) extends AnyVal {
 
+    @inline
+    def map[U](f: T => U): U = f(ctx)
+
     def withImportAlias(dir: String): (T, String) = {
       val (newImports, alias) = ctx.imports.withImportAlias(dir)
       ctx.updatedImports(newImports) -> alias
@@ -52,7 +55,7 @@ object Helpers extends Logger {
     def typeToGoType(typ: IType): (T, Node.Expression) = {
       typ match {
         case IType.Simple(typ) => asmTypeToGoType(typ)
-        case IType.NullType | IType.Undefined | _: IType.UndefinedLabelInitialized => ctx -> emptyInterface
+        case IType.NullType | IType.Undefined | _: IType.UndefinedLabelInitialized => ctx -> emptyInterface.star
       }
     }
 
@@ -109,6 +112,20 @@ object Helpers extends Logger {
 
     def instTypeExpr(internalName: String): (T, Node.Expression) = {
       importQualifiedName(internalName, ctx.mangler.instanceObjectName(internalName))
+    }
+
+    def frameStack(frame: FrameNode): Seq[IType] = Option(frame.stack) match {
+      case None => Nil
+      case Some(stack) =>
+        import scala.collection.JavaConverters._
+        stack.asScala.map(IType.fromFrameVarType(ctx.cls, _))
+    }
+
+    def frameLocals(frame: FrameNode): Seq[IType] = Option(frame.local) match {
+      case None => Nil
+      case Some(locals) =>
+        import scala.collection.JavaConverters._
+        locals.asScala.map(IType.fromFrameVarType(ctx.cls, _))
     }
   }
 
@@ -177,25 +194,21 @@ object Helpers extends Logger {
         // Index 1 for non-static is actually 0 in the seq
         val seqIndex = if (static) index else index - 1
         if (ctx.localVars.size > seqIndex) {
-          // Try to make it more specific if we can
-          val localVar = ctx.localVars(seqIndex)
-          /* TODO: actually, we can't make this more specific, because the base type more
-             accurately represents what it may be when reused
-          ctx.copy(
-            localVars = ctx.localVars.updated(
-              seqIndex,
-              localVar.withMaybeMoreSpecificType(ctx.imports.classPath, typ)
-            )
-          ) -> localVar
-          */
-          ctx -> localVar
-        } else if (ctx.localVars.size != seqIndex) {
-          sys.error(s"Trying to access local var at index $index (seq index $seqIndex) but it must " +
-            s"be skipping some because the var seq size is ${ctx.localVars.size}")
+          // TODO: try to make it more specific if we can
+          ctx -> ctx.localVars(seqIndex)
         } else {
-          // Append a new one
-          val localVar = TypedExpression.namedVar(s"var$index", typ)
-          ctx.copy(localVars = ctx.localVars :+ localVar) -> localVar
+          // Fill in with uninitialized...
+          Range(ctx.localVars.size, seqIndex).foldLeft(ctx)({ case (ctx, index) =>
+            getLocalVar(index, IType.Undefined)._1
+          }).map { ctx =>
+            // Append a new one, first find the max existing index
+            val varIndices = ctx.functionVars.flatMap(_.maybeName).collect {
+              case name if name.startsWith("var") => name.substring(3).toInt
+            }
+            val maxIndex = if (varIndices.isEmpty) -1 else varIndices.max
+            val localVar = TypedExpression.namedVar("var" + (maxIndex + 1), typ)
+            ctx.copy(localVars = ctx.localVars :+ localVar, functionVars = ctx.functionVars :+ localVar) -> localVar
+          }
         }
       }
     }
@@ -207,15 +220,16 @@ object Helpers extends Logger {
 
     def getTempVar(typ: IType) = {
       // Try to find one not in use, otherwise create
-      ctx.tempVars.find(t => t.typ == typ && !ctx.stack.items.contains(t)) match {
+      val possibleTempVars = ctx.functionVars ++ ctx.localTempVars
+      possibleTempVars.find(t => t.typ == typ && !ctx.stack.items.contains(t)) match {
         case Some(tempVar) => ctx -> tempVar
         case None =>
           // Since temp vars can be removed after frames, just keep trying names
           val name = Iterator.from(0).map("temp" + _).find({ name =>
-            !ctx.tempVars.exists(_.name == name)
+            !possibleTempVars.exists(_.name == name)
           }).get
           val tempVar = TypedExpression.namedVar(name, typ)
-          ctx.copy(tempVars = ctx.tempVars :+ tempVar) -> tempVar
+          ctx.copy(localTempVars = ctx.localTempVars :+ tempVar) -> tempVar
       }
     }
 
@@ -246,6 +260,13 @@ object Helpers extends Logger {
         if (n == null) indexCount else nodeIndex(n.getPrevious, indexCount + 1)
       nodeIndex(node)
     }
+
+    def isUnconditionalJump = node.getOpcode match {
+      case Opcodes.GOTO | Opcodes.RET | Opcodes.TABLESWITCH | Opcodes.LOOKUPSWITCH |
+        Opcodes.IRETURN | Opcodes.LRETURN | Opcodes.FRETURN | Opcodes.DRETURN |
+        Opcodes.ARETURN | Opcodes.RETURN | Opcodes.ATHROW => true
+      case _ => false
+    }
   }
 
   implicit class RichTuple[A, B](val tuple: (A, B)) extends AnyVal {
@@ -269,7 +290,7 @@ object Helpers extends Logger {
     def unsafeCast[T <: Contextual[T]](ctx: T, oldTyp: IType, newTyp: IType): (T, Node.Expression) = {
       ctx.withImportAlias("unsafe").leftMap { case (ctx, unsafeAlias) =>
         val pointerArgExpr = oldTyp match {
-          case IType.NullType => NilExpr
+          case IType.NullType => expr.expr
           case s: IType.Simple if s.isObject => expr.expr
           case IType.Simple(asmTyp) => expr.expr.addressOf
           case other => sys.error(s"Unrecognized existing type to convert from: $other")
@@ -291,6 +312,7 @@ object Helpers extends Logger {
     }
 
     def toExprNode[T <: Contextual[T]](ctx: T, newTyp: IType, noCasting: Boolean = false): (T, Node.Expression) = {
+      logger.trace(s"Converting from '${expr.typ.pretty}' to '${newTyp.pretty}'")
       expr.typ -> newTyp match {
         case (IType.IntType, IType.BooleanType) => expr.expr match {
           case Node.BasicLiteral(Node.Token.Int, "1") => ctx -> "true".toIdent
@@ -304,7 +326,14 @@ object Helpers extends Logger {
             // Casting to an object unless asked not to or it's an interface
             if (noCasting) ctx -> expr.expr
             else if (newTyp.isInterface(ctx.imports.classPath)) ctx -> expr.expr
-            else unsafeCast(ctx, oldTyp, newTyp)
+            else oldTyp match {
+              case IType.NullType =>
+                unsafeCast(ctx, oldTyp, newTyp)
+              case old: IType.Simple if old.isObject =>
+                unsafeCast(ctx, oldTyp, newTyp)
+              case other =>
+                sys.error(s"Unable to assign types: $oldTyp -> $newTyp")
+            }
         // TODO: support primitives
         case (oldTyp, newTyp) =>
           sys.error(s"Unable to assign types: $oldTyp -> $newTyp")
