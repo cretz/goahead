@@ -11,23 +11,28 @@ sealed trait Method {
   def desc: String
   def instructions: Seq[AbstractInsnNode]
   def debugLocalVars: Seq[LocalVariableNode]
-
   def asmString: String
-
   def tryCatchBlocks: Seq[TryCatchBlockNode]
 }
 
 object Method {
-  def apply(node: MethodNode): Method = new Simple(node)
+  def apply(node: MethodNode): Method = Asm(node)
 
-  class Simple(val node: MethodNode) extends Method {
+  case class Asm(node: MethodNode) extends Method {
+    @inline
     override def access = node.access
+
+    @inline
     override def name = node.name
+
+    @inline
     override def desc = node.desc
+
     override def instructions = {
       import scala.collection.JavaConverters._
       node.instructions.iterator.asScala.asInstanceOf[Iterator[AbstractInsnNode]].toSeq
     }
+
     override def debugLocalVars = {
       import scala.collection.JavaConverters._
       if (node.localVariables == null || node.localVariables.isEmpty) Seq.empty

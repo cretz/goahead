@@ -7,6 +7,8 @@ case class Imports(
   aliases: Map[String, String] = Map.empty
 ) {
 
+  def withRuntimeImportAlias: (Imports, String) = withImportAlias(classPath.runtimeRelativeCompiledDir)
+
   def withImportAlias(dir: String): (Imports, String) = {
     // Get the alias and keep adding 1 to it until it's not in the map
     val alias = dir.substring(dir.lastIndexOf('/') + 1)

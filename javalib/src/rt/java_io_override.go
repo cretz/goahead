@@ -13,17 +13,17 @@ func newline() {
 	}
 }
 
-func (this *Java__io__PrintStream__Instance) Println__desc____obj__Java__lang__String__ret__V(var1 *Java__lang__String__Instance) {
-	print(var1.Underlying)
+func (this *Java__io__PrintStream__Impl) Impl__Println__desc____obj__Java__lang__String__ret__V(var1 Java__lang__String__Instance) {
+	print(var1.(*Java__lang__String__Impl).Underlying)
 	newline()
 }
 
-func (this *Java__io__PrintStream__Instance) Println__desc__I__ret__V(var1 int) {
+func (this *Java__io__PrintStream__Impl) Impl__Println__desc__I__ret__V(var1 int) {
 	print(var1)
 	newline()
 }
 
-func (this *Java__io__PrintStream__Instance) Println__desc__Z__ret__V(var1 bool) {
+func (this *Java__io__PrintStream__Impl) Impl__Println__desc__Z__ret__V(var1 bool) {
 	if var1 {
 		print("true")
 	} else {

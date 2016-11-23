@@ -10,21 +10,25 @@ import goahead.compile.Helpers._
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.ClassNode
 
+import scala.annotation.tailrec
 import scala.util.Try
 
 // Guaranteed thread safe
 case class ClassPath(entries: Seq[ClassPath.Entry]) {
+
+  def runtimeRelativeCompiledDir = getFirstClass("java/lang/Object").relativeCompiledDir
+
   def findClassRelativeCompiledDir(classInternalName: String): Option[String] = {
     findFirstClass(classInternalName).map(_.relativeCompiledDir)
   }
 
   def isInterface(classInternalName: String): Boolean = {
-    getFirstClass(classInternalName).access.isAccessInterface
+    getFirstClass(classInternalName).cls.access.isAccessInterface
   }
 
   def allSuperTypes(classInternalName: String): Seq[ClassPath.ClassDetails] = {
     // Not deep enough to rework for @tailrec
-    getFirstClass(classInternalName).superInternalName.toSeq.flatMap({ superInternalName =>
+    getFirstClass(classInternalName).cls.parent.toSeq.flatMap({ superInternalName =>
       val details = getFirstClass(superInternalName)
       details +: allSuperTypes(superInternalName)
     }).distinct
@@ -32,7 +36,7 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
 
   def allInterfaceTypes(classInternalName: String): Seq[ClassPath.ClassDetails] = {
     // Not deep enough to rework for @tailrec
-    getFirstClass(classInternalName).interfaceInternalNames.flatMap({ interfaceInternalName =>
+    getFirstClass(classInternalName).cls.interfaces.flatMap({ interfaceInternalName =>
       val details = getFirstClass(interfaceInternalName)
       details +: allInterfaceTypes(interfaceInternalName)
     }).distinct
@@ -43,7 +47,7 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
   }
 
   def classImplementsOrExtends(childInternalName: String, parentInternalName: String): Boolean = {
-    allSuperAndImplementingTypes(childInternalName).exists(_.name == parentInternalName)
+    allSuperAndImplementingTypes(childInternalName).exists(_.cls.name == parentInternalName)
   }
 
   def findFirstClassWithEntry(classInternalName: String): Option[(ClassPath.Entry, ClassPath.ClassDetails)] =
@@ -63,6 +67,24 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
       case Some(entry) => entry
       case None => sys.error(s"Unable to find class $classInternalName")
     }
+
+  @tailrec
+  final def getFieldDeclarer(
+    startAtClassInternalName: String,
+    fieldName: String,
+    static: Boolean
+  ): ClassPath.ClassDetails = {
+    // We don't check permissions yet...
+    val clsDet = getFirstClass(startAtClassInternalName)
+    clsDet.cls.fields.find(f => f.access.isAccessStatic == static && f.name == fieldName) match {
+      case Some(field) => clsDet
+      case None => clsDet.cls.parent match {
+        case None => sys.error(s"Cannot find field $fieldName")
+        case Some(parent) => getFieldDeclarer(parent, fieldName, static)
+      }
+    }
+
+  }
 
   def close(): Unit = entries.foreach(e => swallowException(e.close()))
 }
@@ -84,14 +106,8 @@ object ClassPath {
     ClassPath(Entry.fromMap(entryToRelativeCompiledDir).toSeq)
 
   sealed trait ClassDetails {
-    def name: String
-    def packageName: String
-    def superInternalName: Option[String]
-    def interfaceInternalNames: Seq[String]
+    def cls: Cls
     def relativeCompiledDir: String
-    def access: Int
-    def bytes: Array[Byte]
-    def methods: Seq[Method]
   }
 
   // Must be thread safe!
@@ -212,34 +228,19 @@ object ClassPath {
       override def close() = synchronized(swallowException(jar.close()))
     }
 
-    case class SingleClassEntry(bytes: Array[Byte], relativeCompiledDir: String) extends Entry with ClassDetails {
-      private[this] val node = {
-        val node = new ClassNode()
-        new ClassReader(bytes).accept(node, 0)
-        node
-      }
-
+    case class SingleClassEntry(cls: Cls, relativeCompiledDir: String) extends Entry with ClassDetails {
       override def findClass(internalClassName: String): Option[ClassDetails] =
-        if (node.name == internalClassName) Some(this) else None
+        if (cls.name == internalClassName) Some(this) else None
 
       override def close() = ()
+    }
 
-      override def name = node.name
-
-      override def packageName = {
-        name.lastIndexOf('/') match {
-          case -1 => ""
-          case index => name.substring(0, index)
-        }
+    object SingleClassEntry {
+      def apply(bytes: Array[Byte], relativeCompiledDir: String): SingleClassEntry = {
+        val node = new ClassNode()
+        new ClassReader(bytes).accept(node, 0)
+        SingleClassEntry(Cls(node), relativeCompiledDir)
       }
-
-      override def access = node.access
-
-      override def superInternalName: Option[String] = Option(node.superName)
-
-      override def interfaceInternalNames: Seq[String] = node.interfaceNames
-
-      override lazy val methods = node.methodNodes.map(Method.apply)
     }
   }
 }

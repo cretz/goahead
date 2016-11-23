@@ -2,7 +2,7 @@ package goahead.compile
 
 import java.io._
 import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{Files, Path}
 import java.util.concurrent.TimeUnit
 
 import com.google.common.io.CharStreams
@@ -18,7 +18,11 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   import CompilerSpec._
 
   // Create this entry for the "rt" classes and close at the end
-  val javaRuntimeEntry = ClassPath.Entry.fromJarFile(ClassPath.Entry.javaRuntimeJarPath, "rt")
+  val javaRuntimeEntry = ClassPath.Entry.fromJarFile(
+    ClassPath.Entry.javaRuntimeJarPath,
+    //"rt"
+    "github.com/cretz/goahead/javalib/src/rt"
+  )
   override protected def afterAll() = javaRuntimeEntry.close()
 
   // Run each test case as its own setup
@@ -31,7 +35,10 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     val classPath = ClassPath(testClasses :+ javaRuntimeEntry)
 
     // Compile to one big file
-    val compiled = GoAheadCompiler.compile(testClasses.map(_.bytes), classPath).copy(packageName = "spectest".toIdent)
+    val compiled = GoAheadCompiler.compile(
+      testClasses.map(_.cls.name),
+      classPath
+    ).copy(packageName = "spectest".toIdent)
 
     // Write the regular code in the spectest folder
     val codeFile = Files.createDirectories(tempFolder.resolve("spectest")).resolve("code.go")
@@ -82,8 +89,8 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   def compileDir(dir: Path): Path = {
     val builder = new ProcessBuilder("go", "build", "-o", "test").directory(dir.toFile)
     // TODO: add the test workspace
-    val goPaths = Seq(Paths.get("javalib"), dir)
-    val goPath = goPaths.map(_.toAbsolutePath.toString).mkString(File.pathSeparator)
+    val goPaths = Seq(dir.toAbsolutePath.toString, sys.env.getOrElse("GOPATH", sys.error("Can't find GOPATH env")))
+    val goPath = goPaths.mkString(File.pathSeparator)
     logger.debug(s"Setting GOPATH to $goPath")
     builder.environment().put("GOPATH", goPath)
     val process = builder.start()

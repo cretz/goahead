@@ -5,12 +5,11 @@ import java.nio.file.{Files, Path, Paths}
 import java.util.concurrent.TimeUnit
 
 import goahead.Logger
+import goahead.ast.Node.Statement
 import goahead.ast.{Node, NodeWriter}
-import goahead.compile.ClassCompiler.Context
 import goahead.compile.ClassPath._
 import goahead.compile._
 import org.objectweb.asm.Type
-import org.objectweb.asm.tree.{FieldNode, MethodNode}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
@@ -48,8 +47,8 @@ trait BuildStubs extends Command with Logger {
         case _ => sys.error(s"Unrecognized file grouping: $name")
       }
 
-      case object Cls extends FileGrouping { override def groupClassBy(det: ClassDetails) = det.name }
-      case object Pkg extends FileGrouping { override def groupClassBy(det: ClassDetails) = det.packageName }
+      case object Cls extends FileGrouping { override def groupClassBy(det: ClassDetails) = det.cls.name }
+      case object Pkg extends FileGrouping { override def groupClassBy(det: ClassDetails) = det.cls.packageName }
     }
   }
 
@@ -131,7 +130,7 @@ trait BuildStubs extends Command with Logger {
 
     // Build up the class list which might include super classes
     val classEntries = getClassEntriesByFileName(conf, classPath, conf.manglerInst)
-    logger.trace(s"Class entries: " + classEntries.mapValues(_.map(_.name)))
+    logger.trace(s"Class entries: " + classEntries.mapValues(_.map(_.cls.name)))
 
     // Build the compiler
     // (excludePatterns: Set[String], allClassNamesRefsToCheck: Set[String])
@@ -139,7 +138,7 @@ trait BuildStubs extends Command with Logger {
       excludePatterns = conf.excludePatterns.toSet,
       onlyIncludeClassRefs =
         if (!conf.onlyMethodsReferencingClasses) Set.empty
-        else classEntries.flatMap(_._2.map(_.name)).toSet
+        else classEntries.flatMap(_._2.map(_.cls.name)).toSet
     )
 
     // Compile (with panics), one package per file
@@ -151,7 +150,7 @@ trait BuildStubs extends Command with Logger {
       import goahead.compile.AstDsl._
       futFn {
         val code = compiler.compile(
-          classes = classes.map(_.bytes),
+          internalClassNames = classes.map(_.cls.name),
           classPath = classPath,
           mangler = conf.manglerInst
         ).copy(packageName = goPackageName.toIdent)
@@ -180,7 +179,7 @@ trait BuildStubs extends Command with Logger {
       else {
         // Meh, @tailrec not needed, the stack won't get too deep (//TODO: right?)
         def withSupersOfSameEntry(expectedEntry: Entry, child: ClassDetails): Seq[ClassDetails] = {
-          val supers = (child.superInternalName ++ child.interfaceInternalNames).flatMap({ internalName =>
+          val supers = (child.cls.parent ++ child.cls.interfaces).flatMap({ internalName =>
             val (entry, cls) = classPath.getFirstClassWithEntry(internalName)
             if (entry == expectedEntry) Some(cls) else None
           }).toSeq
@@ -195,8 +194,10 @@ trait BuildStubs extends Command with Logger {
       }
 
     // Have to remove class entries that are excluded by user
-    classEntries.filterNot(c => conf.excludePatterns.contains(c.name)).distinct.
-      groupBy(conf.fileGrouping.groupClassBy).map { case (k, v) => (mangler.fileName(k) + ".go") -> v.sortBy(_.name) }
+    classEntries.filterNot(c => conf.excludePatterns.contains(c.cls.name)).distinct.
+      groupBy(conf.fileGrouping.groupClassBy).map { case (k, v) =>
+        (mangler.fileName(k) + ".go") -> v.sortBy(_.cls.name)
+      }
   }
 }
 
@@ -206,9 +207,9 @@ object BuildStubs extends BuildStubs {
   class StubCompiler(excludePatterns: Set[String], onlyIncludeClassRefs: Set[String]) extends GoAheadCompiler {
     override val classCompiler = new ClassCompiler {
 
-      override protected def methodNodes(ctx: Context, forDispatch: Boolean): Seq[MethodNode] = {
+      override protected def clsMethods(ctx: ClassCompiler.Context, forDispatch: Boolean): Seq[Method] = {
         val exclusions = if (forDispatch) Set.empty[String] else excludePatterns
-        super.methodNodes(ctx, forDispatch).filter { method =>
+        super.clsMethods(ctx, forDispatch).filter { method =>
           if (method.access.isAccessPrivate ||
             exclusions.contains(ctx.cls.name + "." + method.name + method.desc)) false
           else if (onlyIncludeClassRefs.isEmpty) true
@@ -223,14 +224,19 @@ object BuildStubs extends BuildStubs {
         }
       }
 
-      override protected def fieldNodes(ctx: Context): Seq[FieldNode] = super.fieldNodes(ctx).filter { field =>
-        if (field.access.isAccessPrivate || excludePatterns.contains(ctx.cls.name + "." + field.name)) false
-        else if (onlyIncludeClassRefs.isEmpty) true
-        else {
-          // Has to be in only-include-class-refs
-          getObjectType(Type.getType(field.desc)) match {
-            case None => true
-            case Some(typ) => onlyIncludeClassRefs.contains(typ)
+      override protected def clsFields(
+        ctx: ClassCompiler.Context,
+        includeParentFields: Boolean = false
+      ): Seq[Field] = {
+        super.clsFields(ctx, includeParentFields).filter { field =>
+          if (field.access.isAccessPrivate || excludePatterns.contains(ctx.cls.name + "." + field.name)) false
+          else if (onlyIncludeClassRefs.isEmpty) true
+          else {
+            // Has to be in only-include-class-refs
+            getObjectType(Type.getType(field.desc)) match {
+              case None => true
+              case Some(typ) => onlyIncludeClassRefs.contains(typ)
+            }
           }
         }
       }
@@ -248,6 +254,12 @@ object BuildStubs extends BuildStubs {
           if (ctx.method.name == "<clinit>") ctx -> Seq(Node.EmptyStatement)
           else ctx -> "panic".toIdent.call("Not Implemented".toLit.singleSeq).toStmt.singleSeq
         }
+
+        override def postProcessStatements(
+          ctx: MethodCompiler.Context,
+          stmts: Seq[Statement]
+        ): (MethodCompiler.Context, Seq[Statement]) = ctx -> stmts
+
       }
     }
   }

@@ -407,7 +407,15 @@ class NodeWriter {
 
   def appendSwitchStatement(stmt: SwitchStatement): this.type = __TODO__
 
-  def appendTypeAssertExpression(expr: TypeAssertExpression): this.type = __TODO__
+  def appendTypeAssertExpression(expr: TypeAssertExpression): this.type = {
+    require(expr.typ.isDefined, "Type for assertion required")
+    appendExpression(expr.expression).append(".").append('(')
+    expr.typ match {
+      case None => append("type")
+      case Some(typ) => appendExpression(typ)
+    }
+    append(')')
+  }
 
   def appendTypeSpecification(spec: TypeSpecification): this.type = {
     appendIdentifier(spec.name).append(' ').appendExpression(spec.typ)

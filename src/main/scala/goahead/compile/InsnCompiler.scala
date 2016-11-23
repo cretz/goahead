@@ -55,9 +55,10 @@ trait InsnCompiler extends Logger {
     insn.byOpcode {
       case Opcodes.GETFIELD =>
         ctx.stackPopped { case (ctx, item) =>
+          val declarer = ctx.imports.classPath.getFieldDeclarer(insn.owner, insn.name, static = false)
           ctx.stackPushed(
             TypedExpression(
-              expr = item.expr.sel(ctx.mangler.fieldName(insn.owner, insn.name)),
+              expr = item.expr.sel(ctx.mangler.fieldGetterName(declarer.cls.name, insn.name)).call(),
               typ = IType.getType(insn.desc),
               cheapRef = true
             )
@@ -73,9 +74,10 @@ trait InsnCompiler extends Logger {
         }
       case Opcodes.PUTFIELD =>
         ctx.stackPopped(2, { case (ctx, Seq(objectRef, value)) =>
-          val field = objectRef.expr.sel(ctx.mangler.fieldName(insn.owner, insn.name))
+          val declarer = ctx.imports.classPath.getFieldDeclarer(insn.owner, insn.name, static = false)
           value.toExprNode(ctx, IType.getType(insn.desc)).leftMap { case (ctx, value) =>
-            ctx -> field.assignExisting(value).singleSeq
+            ctx -> objectRef.expr.sel(ctx.mangler.fieldSetterName(declarer.cls.name, insn.name)).
+              call(Seq(value)).toStmt.singleSeq
           }
         })
       case Opcodes.PUTSTATIC =>
@@ -193,8 +195,8 @@ trait InsnCompiler extends Logger {
       subject.toExprNode(ctx, IType.getObjectType(insn.owner), noCasting = isSuperCall).leftMap { case (ctx, subject) =>
         val methodExpr =
           if (!isSuperCall) subject.sel(ctx.mangler.forwardMethodName(insn.name, insn.desc))
-          else subject.sel(ctx.mangler.instanceObjectName(insn.owner)).sel(
-            ctx.mangler.methodName(insn.name, insn.desc)
+          else subject.sel(ctx.mangler.implObjectName(insn.owner)).sel(
+            ctx.mangler.implMethodName(insn.name, insn.desc)
           )
         ctx -> methodExpr
       }
@@ -223,7 +225,7 @@ trait InsnCompiler extends Logger {
       case Opcodes.INVOKESTATIC =>
         ctx.staticInstRefExpr(insn.owner).leftMap { case (ctx, staticInstExpr) =>
           ctx.stackPopped(argTypes.length, { case (ctx, args) =>
-            invoke(ctx, staticInstExpr.sel(ctx.mangler.methodName(insn.name, insn.desc)), args)
+            invoke(ctx, staticInstExpr.sel(ctx.mangler.implMethodName(insn.name, insn.desc)), args)
           })
         }
       case Opcodes.INVOKEINTERFACE | Opcodes.INVOKESPECIAL | Opcodes.INVOKEVIRTUAL =>

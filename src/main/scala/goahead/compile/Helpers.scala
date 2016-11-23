@@ -26,6 +26,11 @@ object Helpers extends Logger {
     @inline
     def map[U](f: T => U): U = f(ctx)
 
+    def withRuntimeImportAlias: (T, String) = {
+      val (newImports, alias) = ctx.imports.withRuntimeImportAlias
+      ctx.updatedImports(newImports) -> alias
+    }
+
     def withImportAlias(dir: String): (T, String) = {
       val (newImports, alias) = ctx.imports.withImportAlias(dir)
       ctx.updatedImports(newImports) -> alias
@@ -47,7 +52,7 @@ object Helpers extends Logger {
     }
 
     def newString(v: String): (T, Node.CallExpression) = {
-      withImportAlias("rt").leftMap { case (ctx, alias) =>
+      withRuntimeImportAlias.leftMap { case (ctx, alias) =>
         ctx -> alias.toIdent.sel("NewString").call(v.toLit.singleSeq)
       }
     }
@@ -77,12 +82,8 @@ object Helpers extends Logger {
           1.until(typ.getDimensions).foldLeft(arrayTypeFromGoType(asmTypeToGoType(typ.getElementType))) {
             case (v, _) => arrayTypeFromGoType(v)
           }
-        case Type.OBJECT if ctx.imports.classPath.isInterface(typ.getInternalName) =>
-          importQualifiedName(typ.getInternalName, ctx.mangler.instanceObjectName(typ.getInternalName))
         case Type.OBJECT =>
-          importQualifiedName(typ.getInternalName, ctx.mangler.instanceObjectName(typ.getInternalName)).leftMap {
-            case (ctx, expr) => ctx -> expr.star
-          }
+          importQualifiedName(typ.getInternalName, ctx.mangler.instanceInterfaceName(typ.getInternalName))
         case sort => sys.error(s"Unrecognized type $sort")
       }
     }
@@ -107,11 +108,15 @@ object Helpers extends Logger {
     }
 
     def staticInstTypeExpr(internalName: String): (T, Node.Expression) = {
-      importQualifiedName(internalName, ctx.mangler.staticObjectName(internalName))
+      importQualifiedName(internalName, ctx.mangler.staticObjectName(internalName)).leftMap { case (ctx, typ) =>
+        ctx -> typ.star
+      }
     }
 
-    def instTypeExpr(internalName: String): (T, Node.Expression) = {
-      importQualifiedName(internalName, ctx.mangler.instanceObjectName(internalName))
+    def implTypeExpr(internalName: String): (T, Node.Expression) = {
+      importQualifiedName(internalName, ctx.mangler.implObjectName(internalName)).leftMap { case (ctx, typ) =>
+        ctx -> typ.star
+      }
     }
 
     def frameStack(frame: FrameNode): Seq[IType] = Option(frame.stack) match {
@@ -129,23 +134,8 @@ object Helpers extends Logger {
     }
   }
 
-  implicit class RichClassNode(val classNode: ClassNode) extends AnyVal {
-    def fieldNodes = {
-      import scala.collection.JavaConverters._
-      classNode.fields.asScala.asInstanceOf[Seq[FieldNode]]
-    }
-
-    def methodNodes = {
-      import scala.collection.JavaConverters._
-      classNode.methods.asScala.asInstanceOf[Seq[MethodNode]]
-    }
-
-    def interfaceNames = {
-      import scala.collection.JavaConverters._
-      classNode.interfaces.asScala.asInstanceOf[Seq[String]]
-    }
-
-    def hasStaticInit = methodNodes.exists(_.name == "<clinit>")
+  implicit class RichCls(val cls: Cls) extends AnyVal {
+    def hasStaticInit = cls.methods.exists(_.name == "<clinit>")
   }
 
   implicit class RichInt(val int: Int) extends AnyVal {
@@ -287,30 +277,6 @@ object Helpers extends Logger {
 
     def isThis = expr.maybeName.contains("this")
 
-    def unsafeCast[T <: Contextual[T]](ctx: T, oldTyp: IType, newTyp: IType): (T, Node.Expression) = {
-      ctx.withImportAlias("unsafe").leftMap { case (ctx, unsafeAlias) =>
-        val pointerArgExpr = oldTyp match {
-          case IType.NullType => expr.expr
-          case s: IType.Simple if s.isObject => expr.expr
-          case IType.Simple(asmTyp) => expr.expr.addressOf
-          case other => sys.error(s"Unrecognized existing type to convert from: $other")
-        }
-        ctx.typeToGoType(newTyp).leftMap { case (ctx, goType) =>
-          val convertToPointer = unsafeAlias.toIdent.sel("Pointer").call(pointerArgExpr.singleSeq)
-          newTyp match {
-            case s: IType.Simple if s.isObject =>
-              // Just parentheses
-              ctx -> goType.inParens.call(convertToPointer.singleSeq)
-            case _: IType.Simple =>
-              // Parens with star on both sides
-              ctx -> goType.star.inParens.call(convertToPointer.singleSeq).star
-            case other =>
-              sys.error(s"Unrecognized existing type to convert to: $other")
-          }
-        }
-      }
-    }
-
     def toExprNode[T <: Contextual[T]](ctx: T, newTyp: IType, noCasting: Boolean = false): (T, Node.Expression) = {
       logger.trace(s"Converting from '${expr.typ.pretty}' to '${newTyp.pretty}'")
       expr.typ -> newTyp match {
@@ -323,17 +289,7 @@ object Helpers extends Logger {
           ctx -> expr.expr
         case (oldTyp, newTyp: IType.Simple)
           if newTyp.isObject && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp) =>
-            // Casting to an object unless asked not to or it's an interface
-            if (noCasting) ctx -> expr.expr
-            else if (newTyp.isInterface(ctx.imports.classPath)) ctx -> expr.expr
-            else oldTyp match {
-              case IType.NullType =>
-                unsafeCast(ctx, oldTyp, newTyp)
-              case old: IType.Simple if old.isObject =>
-                unsafeCast(ctx, oldTyp, newTyp)
-              case other =>
-                sys.error(s"Unable to assign types: $oldTyp -> $newTyp")
-            }
+            ctx -> expr.expr
         // TODO: support primitives
         case (oldTyp, newTyp) =>
           sys.error(s"Unable to assign types: $oldTyp -> $newTyp")

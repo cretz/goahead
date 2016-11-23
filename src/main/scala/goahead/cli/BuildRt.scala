@@ -37,38 +37,54 @@ trait BuildRt extends Command {
         "java.lang.NullPointerException",
         "java.lang.String",
         "java.lang.StringBuilder",
-        "java.lang.System"
+        "java.lang.System",
+        "java.lang.VirtualMachineError"
       ),
       // Things we are handling ourselves for now
       excludePatterns = Seq(
         "java/io/PrintStream.println(I)V",
         "java/io/PrintStream.println(Ljava/lang/String;)V",
         "java/io/PrintStream.println(Z)V",
+        "java/lang/Exception.<init>(Ljava/lang/String;)V",
+        "java/lang/NullPointerException.<init>(Ljava/lang/String;)V",
         "java/lang/Object.<init>()V",
         "java/lang/StringBuilder.<init>()V",
         "java/lang/StringBuilder.append(I)Ljava/lang/StringBuilder;",
         "java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;",
         "java/lang/StringBuilder.toString()Ljava/lang/String;",
-        "java/lang/System.<clinit>()V"
+        "java/lang/System.<clinit>()V",
+        "java/lang/Throwable.<init>(Ljava/lang/String;)V",
+        "java/lang/Throwable.getMessage()Ljava/lang/String;",
+        "java/lang/VirtualMachineError.<init>(Ljava/lang/String;)V"
       )
     ))
   }
 
   protected def transformFile(conf: BuildStubs#Conf, d: Node.File): Node.File = {
     import goahead.compile.AstDsl._
-    // Let's add a string var inside the string struct
-    var f = addField(
-      d,
-      conf.manglerInst.instanceObjectName("java/lang/String"),
-      field("Underlying", "string".toIdent)
+    val transformers: Seq[Node.File => Node.File] = Seq(
+      // Let's add a string var inside the string struct
+      file => addField(
+        file,
+        conf.manglerInst.implObjectName("java/lang/String"),
+        field("Underlying", "string".toIdent)
+      ),
+      // Also add it to the string builder struct
+      file => addField(
+        file,
+        conf.manglerInst.implObjectName("java/lang/StringBuilder"),
+        field("Underlying", "string".toIdent)
+      ),
+      // Add message to throwable
+      file => addField(
+        file,
+        conf.manglerInst.implObjectName("java/lang/Throwable"),
+        field("Message", conf.manglerInst.instanceInterfaceName("java/lang/String").toIdent)
+      )
     )
-    // Also add it to the string builder struct
-    f = addField(
-      f,
-      conf.manglerInst.instanceObjectName("java/lang/StringBuilder"),
-      field("Underlying", "string".toIdent)
-    )
-    f
+
+    // Run the transformers
+    transformers.foldLeft(d) { case (file, transformer) => transformer(file) }
   }
 
 

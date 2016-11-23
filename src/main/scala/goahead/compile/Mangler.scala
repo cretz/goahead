@@ -4,11 +4,14 @@ import org.objectweb.asm.Type
 
 trait Mangler {
   def fieldName(owner: String, name: String): String
-  def instanceObjectName(internalName: String): String
-  def methodName(name: String, desc: String): String
+  def fieldGetterName(owner: String, name: String): String
+  def fieldSetterName(owner: String, name: String): String
+  def implObjectName(internalName: String): String
+  def implMethodName(name: String, desc: String): String
   def dispatchInterfaceName(internalName: String): String
+  def instanceInterfaceName(internalName: String): String
   def forwardMethodName(name: String, desc: String): String
-  def distpatchInitMethodName(classInternalName: String): String
+  def dispatchInitMethodName(classInternalName: String): String
   def staticAccessorName(internalName: String): String
   def staticObjectName(internalName: String): String
   def staticVarName(internalName: String): String
@@ -28,17 +31,29 @@ object Mangler {
     override def dispatchInterfaceName(internalName: String): String =
       objectNamePrefix(internalName) + "__Dispatch"
 
-    override def forwardMethodName(name: String, desc: String): String =
-      "Forward__" + methodName(name, desc)
+    override def instanceInterfaceName(internalName: String): String =
+      objectNamePrefix(internalName) + "__Instance"
 
-    override def distpatchInitMethodName(classInternalName: String): String =
+    override def forwardMethodName(name: String, desc: String): String =
+      methodName(name, desc)
+
+    override def dispatchInitMethodName(classInternalName: String): String =
       objectNamePrefix(classInternalName) + "__InitDispatch"
 
     override def fieldName(owner: String, name: String) = name.capitalize
 
-    override def instanceObjectName(internalName: String) = objectNamePrefix(internalName) + "__Instance"
+    override def fieldGetterName(owner: String, name: String) =
+      "FieldGet__" + objectNamePrefix(owner) + "__" + fieldName(owner, name)
 
-    override def methodName(name: String, desc: String): String =
+    override def fieldSetterName(owner: String, name: String) =
+      "FieldSet__" + objectNamePrefix(owner) + "__" + fieldName(owner, name)
+
+    override def implObjectName(internalName: String) = objectNamePrefix(internalName) + "__Impl"
+
+    override def implMethodName(name: String, desc: String): String =
+      "Impl__" + methodName(name, desc)
+
+    private[this] def methodName(name: String, desc: String): String =
       methodPrefix(name) + "__desc__" + methodSuffix(desc)
 
     private[this] def methodName(name: String, desc: Type): String =

@@ -2,8 +2,6 @@ package goahead.compile
 
 import goahead.Logger
 import goahead.ast.Node
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.tree.ClassNode
 
 trait GoAheadCompiler extends Logger {
   import AstDsl._
@@ -19,20 +17,18 @@ trait GoAheadCompiler extends Logger {
 
   // Note, resulting package name is empty and expected to be filled in by caller
   def compile(
-    classes: Seq[Array[Byte]],
+    internalClassNames: Seq[String],
     classPath: ClassPath,
     mangler: Mangler = Mangler.Simple
-  ): Node.File = compileNodes(classes.map(classBytesToNode), classPath, mangler)
-
-  protected def classBytesToNode(bytes: Array[Byte]): ClassNode = {
-    val node = new ClassNode()
-    new ClassReader(bytes).accept(node, 0)
-    node
-  }
+  ): Node.File = compileClasses(
+    internalClassNames.map(n => classPath.getFirstClass(n).cls),
+    classPath,
+    mangler
+  )
 
   // Note, resulting package name is empty and expected to be filled in by caller
-  protected def compileNodes(
-    classes: Seq[ClassNode],
+  protected def compileClasses(
+    classes: Seq[Cls],
     classPath: ClassPath,
     mangler: Mangler
   ): Node.File = {

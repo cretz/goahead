@@ -15,11 +15,11 @@ trait MainCompiler {
     mangler: Mangler
   ): Node.File = {
     val (mports, javaPkgAlias, rtAlias) = Imports(classPath).withImportAlias(importPath).leftMap {
-      case (mports, javaPkgAlias) => mports.withImportAlias("rt").leftMap {
+      case (mports, javaPkgAlias) => mports.withRuntimeImportAlias.leftMap {
         case (mports, rtAlias) => (mports, javaPkgAlias.toIdent, rtAlias.toIdent)
       }
     }
-    val mainName = mangler.methodName(
+    val mainName = mangler.implMethodName(
       "main",
       Type.getMethodDescriptor(Type.VOID_TYPE, Type.getType(classOf[Array[String]]))
     )

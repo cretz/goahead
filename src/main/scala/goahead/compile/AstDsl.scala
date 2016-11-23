@@ -1,5 +1,6 @@
 package goahead.compile
 import goahead.Logger
+import goahead.ast.Node
 
 object AstDsl extends Logger {
   import goahead.ast.Node._
@@ -31,7 +32,7 @@ object AstDsl extends Logger {
   }
 
   def funcDecl(
-    rec: Option[Field],
+    rec: Option[Node.Field],
     name: String,
     funcType: FunctionType,
     stmts: Seq[Statement]
@@ -41,12 +42,12 @@ object AstDsl extends Logger {
 
   def funcType(params: Seq[(String, Expression)], result: Option[Expression] = None) = FunctionType(
     parameters = params.map((field _).tupled),
-    results = result.map(Field(Seq.empty, _)).toSeq
+    results = result.map(Node.Field(Seq.empty, _)).toSeq
   )
 
-  def funcTypeWithFields(params: Seq[Field], result: Option[Expression] = None) = FunctionType(
+  def funcTypeWithFields(params: Seq[Node.Field], result: Option[Expression] = None) = FunctionType(
     parameters = params,
-    results = result.map(Field(Seq.empty, _)).toSeq
+    results = result.map(Node.Field(Seq.empty, _)).toSeq
   )
 
   def goto(label: String) = BranchStatement(Token.Goto, Some(label.toIdent))
@@ -85,7 +86,7 @@ object AstDsl extends Logger {
     }
   )
 
-  def interface(name: String, fields: Seq[Field]) = GenericDeclaration(
+  def interface(name: String, fields: Seq[Node.Field]) = GenericDeclaration(
     token = Token.Type,
     specifications = Seq(TypeSpecification(name.toIdent, InterfaceType(fields)))
   )
@@ -96,7 +97,7 @@ object AstDsl extends Logger {
 
   def sel(left: Expression, right: String) = left.sel(right)
 
-  def struct(name: String, fields: Seq[Field]) = GenericDeclaration(
+  def struct(name: String, fields: Seq[Node.Field]) = GenericDeclaration(
     token = Token.Type,
     specifications = Seq(TypeSpecification(name.toIdent, StructType(fields)))
   )
@@ -150,6 +151,8 @@ object AstDsl extends Logger {
     def sel(right: String) = SelectorExpression(expr, right.toIdent)
 
     def star = StarExpression(expr)
+
+    def typeAssert(right: Expression) = TypeAssertExpression(expr, Some(right))
 
     def unary(tok: Token) = UnaryExpression(tok, expr)
 

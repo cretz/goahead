@@ -11,7 +11,7 @@ trait MethodCompiler extends Logger {
   import MethodCompiler._
 
   def compile(
-    cls: ClassNode,
+    cls: Cls,
     method: Method,
     imports: Imports,
     mangler: Mangler
@@ -30,7 +30,7 @@ trait MethodCompiler extends Logger {
   }
 
   protected def initContext(
-    cls: ClassNode,
+    cls: Cls,
     method: Method,
     imports: Imports,
     mangler: Mangler,
@@ -186,19 +186,16 @@ trait MethodCompiler extends Logger {
       }
 
       // Now we have to have recover code
-      ctx.withImportAlias("fmt").leftMap { case (ctx, fmt) =>
+      ctx.withRuntimeImportAlias.leftMap { case (ctx, rt) =>
         val recoverStmt = iff(
           init = Some("r".toIdent.assignDefine("recover".toIdent.call())),
           lhs = "r".toIdent,
           op = Node.Token.Neq,
           rhs = NilExpr,
-          body = Seq("panic".toIdent.call(Seq(
-            fmt.toIdent.sel("Sprintf").call(Seq(
-              "Got panic at label %v: %v".toLit,
-              "currentLabel".toIdent,
-              "r".toIdent
-            ))
-          )).toStmt)
+          body = Seq(
+            rt.toIdent.sel("PanicToThrowable").call(Seq("r".toIdent)).toStmt,
+            "println".toIdent.call(Seq("currentLabel".toIdent)).toStmt
+          )
         )
         val deferStmt = funcType(Nil, None).toFuncLit(Seq(recoverStmt)).call().defer
         ctx -> (Seq(labelVarDecl, deferStmt) ++ updatedStmts)
@@ -270,7 +267,7 @@ object MethodCompiler extends MethodCompiler {
   }
 
   case class Context(
-    cls: ClassNode,
+    cls: Cls,
     method: Method,
     imports: Imports,
     mangler: Mangler,

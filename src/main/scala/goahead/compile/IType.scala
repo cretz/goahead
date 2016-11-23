@@ -1,7 +1,6 @@
 package goahead.compile
 
 import goahead.Logger
-import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.{Label, Opcodes, Type}
 
 sealed trait IType {
@@ -31,7 +30,7 @@ object IType extends Logger {
   val DoubleType = IType(Type.DOUBLE_TYPE)
   val LongType = IType(Type.LONG_TYPE)
 
-  def fromFrameVarType(thisNode: ClassNode, typ: Any) = typ match {
+  def fromFrameVarType(thisNode: Cls, typ: Any) = typ match {
     case Opcodes.TOP => Undefined
     case Opcodes.INTEGER => IntType
     case Opcodes.FLOAT => FloatType

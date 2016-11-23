@@ -11,17 +11,17 @@ trait SignatureCompiler {
     stmts: Seq[Node.Statement],
     nameOverride: Option[String] = None
   ): (T, Node.FunctionDeclaration) = {
-    val ctxAndNonPointerRecTyp =
+    val ctxAndRecTyp =
       if (method.access.isAccessStatic) ctx.staticInstTypeExpr(ctx.cls.name)
-      else ctx.instTypeExpr(ctx.cls.name)
+      else ctx.implTypeExpr(ctx.cls.name)
 
-    ctxAndNonPointerRecTyp.leftMap { case (ctx, nonPointerRecTyp) =>
+    ctxAndRecTyp.leftMap { case (ctx, recTyp) =>
 
       buildFuncType(ctx, method, includeParamNames = true).leftMap { case (ctx, funcType) =>
 
         ctx -> funcDecl(
-          rec = Some(field("this", nonPointerRecTyp.star)),
-          name = nameOverride.getOrElse(ctx.mangler.methodName(method.name, method.desc)),
+          rec = Some(field("this", recTyp)),
+          name = nameOverride.getOrElse(ctx.mangler.implMethodName(method.name, method.desc)),
           funcType = funcType,
           stmts = stmts
         )
@@ -50,6 +50,22 @@ trait SignatureCompiler {
       }
 
       ctxWithResultTypOpt.leftMap { case (ctx, resultTypOpt) => ctx -> funcTypeWithFields(params, resultTypOpt) }
+    }
+  }
+
+  def buildFieldGetterFuncType[T <: Contextual[T]](ctx: T, field: Field): (T, Node.FunctionType) = {
+    ctx.typeToGoType(IType.getType(field.desc)).leftMap { case (ctx, fieldType) =>
+      ctx -> funcType(params = Nil, result = Some(fieldType))
+    }
+  }
+
+  def buildFieldSetterFuncType[T <: Contextual[T]](
+    ctx: T,
+    field: Field,
+    includeParamNames: Boolean
+  ): (T, Node.FunctionType) = {
+    ctx.typeToGoType(IType.getType(field.desc)).leftMap { case (ctx, fieldType) =>
+      ctx -> funcType(params = Seq("v" -> fieldType), result = None)
     }
   }
 }
