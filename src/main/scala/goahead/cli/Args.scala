@@ -112,7 +112,7 @@ object Args {
     ) extends Opt[String] {
       override def aliases = Nil
       override def validatedGet(builder: Builder): String = {
-        val vals = builder.findTrailing(includePossibleFlags)
+        val vals = builder.findTrailing(includePossibleFlags, maxLength = 1)
         if (vals.isEmpty && required) throw ArgError(name, "Required, not present")
         else if (vals.isEmpty) default
         else if (vals.length > 1) throw ArgError(name, "Only single value allowed")
@@ -161,10 +161,10 @@ object Args {
       nextOpt(names, Nil)
     }
 
-    private[Args] def findTrailing(includePossibleFlags: Boolean): Seq[String] = {
+    private[Args] def findTrailing(includePossibleFlags: Boolean, maxLength: Int = Int.MaxValue): Seq[String] = {
       val (found, leftover, _) = args.foldLeft((Seq.empty[String], Seq.empty[String], false)) {
         case ((found, leftover, ignoreNext), arg) =>
-          if (ignoreNext) (found, leftover :+ arg, false)
+          if (ignoreNext || found.length >= maxLength) (found, leftover :+ arg, false)
           else if (!includePossibleFlags && arg.startsWith("-")) (found, leftover :+ arg, true)
           else (found :+ arg, leftover, false)
       }

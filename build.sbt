@@ -6,6 +6,9 @@ scalaVersion := "2.11.8"
 
 libraryDependencies ++= Seq(
   "org.ow2.asm" % "asm-all" % "5.1",
+  "io.circe" %% "circe-core" % "0.6.1",
+  "io.circe" %% "circe-generic" % "0.6.1",
+  "io.circe" %% "circe-parser" % "0.6.1",
   "com.github.melrief" %% "pureconfig" % "0.3.3",
   "com.google.guava" % "guava" % "19.0",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
