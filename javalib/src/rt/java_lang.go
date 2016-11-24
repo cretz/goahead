@@ -305,8 +305,6 @@ func (this *Java__lang__AbstractStringBuilder__Impl) TrimToSize__desc____ret__V(
 }
 
 type Java__lang__AbstractStringBuilder__Instance interface {
-	Instance_Init__desc____ret__V()
-	Instance_Init__desc__I__ret__V(int)
 	Append__desc__C__ret____obj__Java__lang__AbstractStringBuilder(rune) Java__lang__AbstractStringBuilder__Instance
 	Append__desc__C__ret____obj__Java__lang__Appendable(rune) Java__lang__Appendable__Instance
 	Append__desc__D__ret____obj__Java__lang__AbstractStringBuilder(float64) Java__lang__AbstractStringBuilder__Instance
@@ -326,15 +324,20 @@ type Java__lang__AbstractStringBuilder__Instance interface {
 	AppendCodePoint__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	Capacity__desc____ret__I() int
 	CharAt__desc__I__ret__C(int) rune
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	CodePointAt__desc__I__ret__I(int) int
 	CodePointBefore__desc__I__ret__I(int) int
 	CodePointCount__desc__I__I__ret__I(int, int) int
 	Delete__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(int, int) Java__lang__AbstractStringBuilder__Instance
 	DeleteCharAt__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	EnsureCapacity__desc__I__ret__V(int)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
 	ExpandCapacity__desc__I__ret__V(int)
+	Finalize__desc____ret__V()
 	GetChars__desc__I__I____arr__C__I__ret__V(int, int, []rune, int)
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetValue__desc____ret____arr__C() []rune
+	HashCode__desc____ret__I() int
 	IndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	IndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
 	Insert__desc__I__C__ret____obj__Java__lang__AbstractStringBuilder(int, rune) Java__lang__AbstractStringBuilder__Instance
@@ -352,6 +355,8 @@ type Java__lang__AbstractStringBuilder__Instance interface {
 	LastIndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	LastIndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
 	Length__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
 	OffsetByCodePoints__desc__I__I__ret__I(int, int) int
 	Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(int, int, Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance
 	Reverse__desc____ret____obj__Java__lang__AbstractStringBuilder() Java__lang__AbstractStringBuilder__Instance
@@ -362,6 +367,9 @@ type Java__lang__AbstractStringBuilder__Instance interface {
 	Substring__desc__I__I__ret____obj__Java__lang__String(int, int) Java__lang__String__Instance
 	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	TrimToSize__desc____ret__V()
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 	FieldGet__Java__lang__AbstractStringBuilder__Count() int
 	FieldSet__Java__lang__AbstractStringBuilder__Count(v int)
 	FieldGet__Java__lang__AbstractStringBuilder__Value() []rune
@@ -392,231 +400,231 @@ func (this *Java__lang__AbstractStringBuilder__Impl) FieldSet__Java__lang__Abstr
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Instance_Init__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.<init>()V")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Instance_Init__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.<init>(I)V")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc__C__ret____obj__Java__lang__AbstractStringBuilder(var0 rune) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(C)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc__C__ret____obj__Java__lang__Appendable(var0 rune) Java__lang__Appendable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(C)Ljava/lang/Appendable;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc__D__ret____obj__Java__lang__AbstractStringBuilder(var0 float64) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(D)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc__F__ret____obj__Java__lang__AbstractStringBuilder(var0 float32) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(F)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(I)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc__J__ret____obj__Java__lang__AbstractStringBuilder(var0 int64) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(J)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(Ljava/lang/AbstractStringBuilder;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__CharSequence__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(Ljava/lang/CharSequence;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(var0 Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(Ljava/lang/CharSequence;)Ljava/lang/Appendable;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(Ljava/lang/CharSequence;II)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) Java__lang__Appendable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(Ljava/lang/CharSequence;II)Ljava/lang/Appendable;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__Object__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(Ljava/lang/Object;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(Ljava/lang/String;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc__Z__ret____obj__Java__lang__AbstractStringBuilder(var0 bool) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append(Z)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 []rune) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append([C)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 []rune, var1 int, var2 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.append([CII)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__AppendCodePoint__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.appendCodePoint(I)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Capacity__desc____ret__I() int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.capacity()I")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__CharAt__desc__I__ret__C(var0 int) rune {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.charAt(I)C")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__CodePointAt__desc__I__ret__I(var0 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.codePointAt(I)I")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__CodePointBefore__desc__I__ret__I(var0 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.codePointBefore(I)I")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__CodePointCount__desc__I__I__ret__I(var0 int, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.codePointCount(II)I")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Delete__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.delete(II)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__DeleteCharAt__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.deleteCharAt(I)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__EnsureCapacity__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.ensureCapacity(I)V")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__ExpandCapacity__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.expandCapacity(I)V")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 []rune, var3 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.getChars(II[CI)V")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__GetValue__desc____ret____arr__C() []rune {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.getValue()[C")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__IndexOf__desc____obj__Java__lang__String__ret__I(var0 Java__lang__String__Instance) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.indexOf(Ljava/lang/String;)I")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__IndexOf__desc____obj__Java__lang__String__I__ret__I(var0 Java__lang__String__Instance, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.indexOf(Ljava/lang/String;I)I")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I__C__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 rune) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(IC)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I__D__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 float64) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(ID)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I__F__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 float32) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(IF)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(II)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I__J__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 int64) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(IJ)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 Java__lang__CharSequence__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(ILjava/lang/CharSequence;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 Java__lang__CharSequence__Instance, var2 int, var3 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(ILjava/lang/CharSequence;II)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 Java__lang__Object__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(ILjava/lang/Object;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(ILjava/lang/String;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I__Z__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 bool) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(IZ)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 []rune) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(I[C)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 []rune, var2 int, var3 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(I[CII)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__LastIndexOf__desc____obj__Java__lang__String__ret__I(var0 Java__lang__String__Instance) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.lastIndexOf(Ljava/lang/String;)I")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__LastIndexOf__desc____obj__Java__lang__String__I__ret__I(var0 Java__lang__String__Instance, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.lastIndexOf(Ljava/lang/String;I)I")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Length__desc____ret__I() int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.length()I")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__OffsetByCodePoints__desc__I__I__ret__I(var0 int, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.offsetByCodePoints(II)I")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 int, var2 Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.replace(IILjava/lang/String;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Reverse__desc____ret____obj__Java__lang__AbstractStringBuilder() Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.reverse()Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__SetCharAt__desc__I__C__ret__V(var0 int, var1 rune) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.setCharAt(IC)V")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__SetLength__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.setLength(I)V")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(var0 int, var1 int) Java__lang__CharSequence__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.subSequence(II)Ljava/lang/CharSequence;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Substring__desc__I__ret____obj__Java__lang__String(var0 int) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.substring(I)Ljava/lang/String;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Substring__desc__I__I__ret____obj__Java__lang__String(var0 int, var1 int) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.substring(II)Ljava/lang/String;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.toString()Ljava/lang/String;")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__TrimToSize__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/AbstractStringBuilder.trimToSize()V")
 }
 
 type Java__lang__Appendable__Instance interface {
@@ -634,6 +642,451 @@ type Java__lang__CharSequence__Instance interface {
 	Length__desc____ret__I() int
 	SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(int, int) Java__lang__CharSequence__Instance
 	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+}
+
+type Java__lang__Class__Static struct {
+	init sync.Once
+}
+
+var Java__lang__Class__Var Java__lang__Class__Static
+
+func Java__lang__Class() *Java__lang__Class__Static {
+	Java__lang__Class__Var.init.Do(Java__lang__Class__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__Class__Var
+}
+
+func (this *Java__lang__Class__Static) New() *Java__lang__Class__Impl {
+	v := &Java__lang__Class__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__Class__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__Class__Static) Impl__Static_Init__desc____ret__V() {
+	
+}
+
+func (this *Java__lang__Class__Static) Impl__Access__dollar__300__desc____arr____obj__Java__lang__Object____arr____obj__Java__lang__Object__ret__Z(var0 []Java__lang__Object__Instance, var1 []Java__lang__Object__Instance) bool {
+	panic("Not Implemented - java/lang/Class.access$300([Ljava/lang/Object;[Ljava/lang/Object;)Z")
+}
+
+func (this *Java__lang__Class__Static) Impl__Access__dollar__402__desc__Z__ret__Z(var0 bool) bool {
+	panic("Not Implemented - java/lang/Class.access$402(Z)Z")
+}
+
+func (this *Java__lang__Class__Static) Impl__Access__dollar__502__desc__Z__ret__Z(var0 bool) bool {
+	panic("Not Implemented - java/lang/Class.access$502(Z)Z")
+}
+
+func (this *Java__lang__Class__Static) Impl__ForName__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Class.forName(Ljava/lang/String;)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__Class__Static) Impl__GetPrimitiveClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Class.getPrimitiveClass(Ljava/lang/String;)Ljava/lang/Class;")
+}
+
+type Java__lang__Class__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__AsSubclass__desc____obj__Java__lang__Class__ret____obj__Java__lang__Class(Java__lang__Class__Instance) Java__lang__Class__Instance
+	Impl__Cast__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance) Java__lang__Object__Instance
+	Impl__DesiredAssertionStatus__desc____ret__Z() bool
+	Impl__GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	Impl__GetComponentType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Impl__GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	Impl__GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Impl__GetEnclosingClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Impl__GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
+	Impl__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
+	Impl__GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() []Java__lang__reflect__Type__Instance
+	Impl__GetGenericSuperclass__desc____ret____obj__Java__lang__reflect__Type() Java__lang__reflect__Type__Instance
+	Impl__GetInterfaces__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	Impl__GetModifiers__desc____ret__I() int
+	Impl__GetName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetRawAnnotations__desc____ret____arr__B() []byte
+	Impl__GetRawTypeAnnotations__desc____ret____arr__B() []byte
+	Impl__GetSigners__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
+	Impl__GetSimpleName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetSuperclass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Impl__GetTypeName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__IsAnnotation__desc____ret__Z() bool
+	Impl__IsAnnotationPresent__desc____obj__Java__lang__Class__ret__Z(Java__lang__Class__Instance) bool
+	Impl__IsAnonymousClass__desc____ret__Z() bool
+	Impl__IsArray__desc____ret__Z() bool
+	Impl__IsAssignableFrom__desc____obj__Java__lang__Class__ret__Z(Java__lang__Class__Instance) bool
+	Impl__IsEnum__desc____ret__Z() bool
+	Impl__IsInstance__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Impl__IsInterface__desc____ret__Z() bool
+	Impl__IsLocalClass__desc____ret__Z() bool
+	Impl__IsMemberClass__desc____ret__Z() bool
+	Impl__IsPrimitive__desc____ret__Z() bool
+	Impl__IsSynthetic__desc____ret__Z() bool
+	Impl__NewInstance__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Impl__SetSigners__desc____arr____obj__Java__lang__Object__ret__V([]Java__lang__Object__Instance)
+	Impl__ToGenericString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+}
+
+func (this *Java__lang__Class__Impl) Java__lang__Class__InitDispatch(v Java__lang__Class__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__Class__Impl) AsSubclass__desc____obj__Java__lang__Class__ret____obj__Java__lang__Class(var0 Java__lang__Class__Instance) Java__lang__Class__Instance {
+	return this._dispatch.Impl__AsSubclass__desc____obj__Java__lang__Class__ret____obj__Java__lang__Class(var0)
+}
+
+func (this *Java__lang__Class__Impl) Cast__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 Java__lang__Object__Instance) Java__lang__Object__Instance {
+	return this._dispatch.Impl__Cast__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0)
+}
+
+func (this *Java__lang__Class__Impl) DesiredAssertionStatus__desc____ret__Z() bool {
+	return this._dispatch.Impl__DesiredAssertionStatus__desc____ret__Z()
+}
+
+func (this *Java__lang__Class__Impl) GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetCanonicalName__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__Class__Impl) GetClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+	return this._dispatch.Impl__GetClasses__desc____ret____arr____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__Class__Impl) GetComponentType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__GetComponentType__desc____ret____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__Class__Impl) GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+	return this._dispatch.Impl__GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__Class__Impl) GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__GetDeclaringClass__desc____ret____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__Class__Impl) GetEnclosingClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__GetEnclosingClass__desc____ret____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__Class__Impl) GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+	return this._dispatch.Impl__GetEnumConstants__desc____ret____arr____obj__Java__lang__Object()
+}
+
+func (this *Java__lang__Class__Impl) GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+	return this._dispatch.Impl__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object()
+}
+
+func (this *Java__lang__Class__Impl) GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() []Java__lang__reflect__Type__Instance {
+	return this._dispatch.Impl__GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type()
+}
+
+func (this *Java__lang__Class__Impl) GetGenericSuperclass__desc____ret____obj__Java__lang__reflect__Type() Java__lang__reflect__Type__Instance {
+	return this._dispatch.Impl__GetGenericSuperclass__desc____ret____obj__Java__lang__reflect__Type()
+}
+
+func (this *Java__lang__Class__Impl) GetInterfaces__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+	return this._dispatch.Impl__GetInterfaces__desc____ret____arr____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__Class__Impl) GetModifiers__desc____ret__I() int {
+	return this._dispatch.Impl__GetModifiers__desc____ret__I()
+}
+
+func (this *Java__lang__Class__Impl) GetName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetName__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__Class__Impl) GetRawAnnotations__desc____ret____arr__B() []byte {
+	return this._dispatch.Impl__GetRawAnnotations__desc____ret____arr__B()
+}
+
+func (this *Java__lang__Class__Impl) GetRawTypeAnnotations__desc____ret____arr__B() []byte {
+	return this._dispatch.Impl__GetRawTypeAnnotations__desc____ret____arr__B()
+}
+
+func (this *Java__lang__Class__Impl) GetSigners__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+	return this._dispatch.Impl__GetSigners__desc____ret____arr____obj__Java__lang__Object()
+}
+
+func (this *Java__lang__Class__Impl) GetSimpleName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetSimpleName__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__Class__Impl) GetSuperclass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__GetSuperclass__desc____ret____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__Class__Impl) GetTypeName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetTypeName__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__Class__Impl) IsAnnotation__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsAnnotation__desc____ret__Z()
+}
+
+func (this *Java__lang__Class__Impl) IsAnnotationPresent__desc____obj__Java__lang__Class__ret__Z(var0 Java__lang__Class__Instance) bool {
+	return this._dispatch.Impl__IsAnnotationPresent__desc____obj__Java__lang__Class__ret__Z(var0)
+}
+
+func (this *Java__lang__Class__Impl) IsAnonymousClass__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsAnonymousClass__desc____ret__Z()
+}
+
+func (this *Java__lang__Class__Impl) IsArray__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsArray__desc____ret__Z()
+}
+
+func (this *Java__lang__Class__Impl) IsAssignableFrom__desc____obj__Java__lang__Class__ret__Z(var0 Java__lang__Class__Instance) bool {
+	return this._dispatch.Impl__IsAssignableFrom__desc____obj__Java__lang__Class__ret__Z(var0)
+}
+
+func (this *Java__lang__Class__Impl) IsEnum__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsEnum__desc____ret__Z()
+}
+
+func (this *Java__lang__Class__Impl) IsInstance__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
+	return this._dispatch.Impl__IsInstance__desc____obj__Java__lang__Object__ret__Z(var0)
+}
+
+func (this *Java__lang__Class__Impl) IsInterface__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsInterface__desc____ret__Z()
+}
+
+func (this *Java__lang__Class__Impl) IsLocalClass__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsLocalClass__desc____ret__Z()
+}
+
+func (this *Java__lang__Class__Impl) IsMemberClass__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsMemberClass__desc____ret__Z()
+}
+
+func (this *Java__lang__Class__Impl) IsPrimitive__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsPrimitive__desc____ret__Z()
+}
+
+func (this *Java__lang__Class__Impl) IsSynthetic__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsSynthetic__desc____ret__Z()
+}
+
+func (this *Java__lang__Class__Impl) NewInstance__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance {
+	return this._dispatch.Impl__NewInstance__desc____ret____obj__Java__lang__Object()
+}
+
+func (this *Java__lang__Class__Impl) SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0 []Java__lang__Object__Instance) {
+	this._dispatch.Impl__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0)
+}
+
+func (this *Java__lang__Class__Impl) ToGenericString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__ToGenericString__desc____ret____obj__Java__lang__String()
+}
+
+type Java__lang__Class__Instance interface {
+	AsSubclass__desc____obj__Java__lang__Class__ret____obj__Java__lang__Class(Java__lang__Class__Instance) Java__lang__Class__Instance
+	Cast__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance) Java__lang__Object__Instance
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	DesiredAssertionStatus__desc____ret__Z() bool
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	GetComponentType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetEnclosingClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
+	GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
+	GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() []Java__lang__reflect__Type__Instance
+	GetGenericSuperclass__desc____ret____obj__Java__lang__reflect__Type() Java__lang__reflect__Type__Instance
+	GetInterfaces__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	GetModifiers__desc____ret__I() int
+	GetName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetRawAnnotations__desc____ret____arr__B() []byte
+	GetRawTypeAnnotations__desc____ret____arr__B() []byte
+	GetSigners__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
+	GetSimpleName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetSuperclass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetTypeName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	HashCode__desc____ret__I() int
+	IsAnnotation__desc____ret__Z() bool
+	IsAnnotationPresent__desc____obj__Java__lang__Class__ret__Z(Java__lang__Class__Instance) bool
+	IsAnonymousClass__desc____ret__Z() bool
+	IsArray__desc____ret__Z() bool
+	IsAssignableFrom__desc____obj__Java__lang__Class__ret__Z(Java__lang__Class__Instance) bool
+	IsEnum__desc____ret__Z() bool
+	IsInstance__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	IsInterface__desc____ret__Z() bool
+	IsLocalClass__desc____ret__Z() bool
+	IsMemberClass__desc____ret__Z() bool
+	IsPrimitive__desc____ret__Z() bool
+	IsSynthetic__desc____ret__Z() bool
+	NewInstance__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	SetSigners__desc____arr____obj__Java__lang__Object__ret__V([]Java__lang__Object__Instance)
+	ToGenericString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+}
+
+type Java__lang__Class__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__Class__Dispatch
+}
+
+func (this *Java__lang__Class__Impl) Impl__AsSubclass__desc____obj__Java__lang__Class__ret____obj__Java__lang__Class(var0 Java__lang__Class__Instance) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Class.asSubclass(Ljava/lang/Class;)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__Cast__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 Java__lang__Object__Instance) Java__lang__Object__Instance {
+	panic("Not Implemented - java/lang/Class.cast(Ljava/lang/Object;)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__DesiredAssertionStatus__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Class.desiredAssertionStatus()Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Class.getCanonicalName()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Class.getClasses()[Ljava/lang/Class;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetComponentType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Class.getComponentType()Ljava/lang/Class;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Class.getDeclaredClasses()[Ljava/lang/Class;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Class.getDeclaringClass()Ljava/lang/Class;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetEnclosingClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Class.getEnclosingClass()Ljava/lang/Class;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+	panic("Not Implemented - java/lang/Class.getEnumConstants()[Ljava/lang/Object;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+	panic("Not Implemented - java/lang/Class.getEnumConstantsShared()[Ljava/lang/Object;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() []Java__lang__reflect__Type__Instance {
+	panic("Not Implemented - java/lang/Class.getGenericInterfaces()[Ljava/lang/reflect/Type;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetGenericSuperclass__desc____ret____obj__Java__lang__reflect__Type() Java__lang__reflect__Type__Instance {
+	panic("Not Implemented - java/lang/Class.getGenericSuperclass()Ljava/lang/reflect/Type;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetInterfaces__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Class.getInterfaces()[Ljava/lang/Class;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetModifiers__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Class.getModifiers()I")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Class.getName()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetRawAnnotations__desc____ret____arr__B() []byte {
+	panic("Not Implemented - java/lang/Class.getRawAnnotations()[B")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetRawTypeAnnotations__desc____ret____arr__B() []byte {
+	panic("Not Implemented - java/lang/Class.getRawTypeAnnotations()[B")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetSigners__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+	panic("Not Implemented - java/lang/Class.getSigners()[Ljava/lang/Object;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetSimpleName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Class.getSimpleName()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetSuperclass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Class.getSuperclass()Ljava/lang/Class;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetTypeName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Class.getTypeName()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsAnnotation__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Class.isAnnotation()Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsAnnotationPresent__desc____obj__Java__lang__Class__ret__Z(var0 Java__lang__Class__Instance) bool {
+	panic("Not Implemented - java/lang/Class.isAnnotationPresent(Ljava/lang/Class;)Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsAnonymousClass__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Class.isAnonymousClass()Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsArray__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Class.isArray()Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsAssignableFrom__desc____obj__Java__lang__Class__ret__Z(var0 Java__lang__Class__Instance) bool {
+	panic("Not Implemented - java/lang/Class.isAssignableFrom(Ljava/lang/Class;)Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsEnum__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Class.isEnum()Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsInstance__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
+	panic("Not Implemented - java/lang/Class.isInstance(Ljava/lang/Object;)Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsInterface__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Class.isInterface()Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsLocalClass__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Class.isLocalClass()Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsMemberClass__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Class.isMemberClass()Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsPrimitive__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Class.isPrimitive()Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__IsSynthetic__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Class.isSynthetic()Z")
+}
+
+func (this *Java__lang__Class__Impl) Impl__NewInstance__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance {
+	panic("Not Implemented - java/lang/Class.newInstance()Ljava/lang/Object;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0 []Java__lang__Object__Instance) {
+	panic("Not Implemented - java/lang/Class.setSigners([Ljava/lang/Object;)V")
+}
+
+func (this *Java__lang__Class__Impl) Impl__ToGenericString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Class.toGenericString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Class.toString()Ljava/lang/String;")
 }
 
 type Java__lang__Comparable__Instance interface {
@@ -668,11 +1121,27 @@ func (this *Java__lang__Error__Impl) Java__lang__Error__InitDispatch(v Java__lan
 }
 
 type Java__lang__Error__Instance interface {
-	Instance_Init__desc____ret__V()
-	Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
-	Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(Java__lang__String__Instance, Java__lang__Throwable__Instance)
-	Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(Java__lang__String__Instance, Java__lang__Throwable__Instance, bool, bool)
-	Instance_Init__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	FillInStackTrace__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	Finalize__desc____ret__V()
+	GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetStackTraceDepth__desc____ret__I() int
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	HashCode__desc____ret__I() int
+	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	PrintStackTrace__desc____ret__V()
+	PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(Java__io__PrintStream__Instance)
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 }
 
 type Java__lang__Error__Impl struct {
@@ -681,23 +1150,23 @@ type Java__lang__Error__Impl struct {
 }
 
 func (this *Java__lang__Error__Impl) Impl__Instance_Init__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Error.<init>()V")
 }
 
 func (this *Java__lang__Error__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Error.<init>(Ljava/lang/String;)V")
 }
 
 func (this *Java__lang__Error__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__Throwable__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Error.<init>(Ljava/lang/String;Ljava/lang/Throwable;)V")
 }
 
 func (this *Java__lang__Error__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__Throwable__Instance, var2 bool, var3 bool) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Error.<init>(Ljava/lang/String;Ljava/lang/Throwable;ZZ)V")
 }
 
 func (this *Java__lang__Error__Impl) Impl__Instance_Init__desc____obj__Java__lang__Throwable__ret__V(var0 Java__lang__Throwable__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Error.<init>(Ljava/lang/Throwable;)V")
 }
 
 type Java__lang__Exception__Static struct {
@@ -728,11 +1197,27 @@ func (this *Java__lang__Exception__Impl) Java__lang__Exception__InitDispatch(v J
 }
 
 type Java__lang__Exception__Instance interface {
-	Instance_Init__desc____ret__V()
-	Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
-	Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(Java__lang__String__Instance, Java__lang__Throwable__Instance)
-	Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(Java__lang__String__Instance, Java__lang__Throwable__Instance, bool, bool)
-	Instance_Init__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	FillInStackTrace__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	Finalize__desc____ret__V()
+	GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetStackTraceDepth__desc____ret__I() int
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	HashCode__desc____ret__I() int
+	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	PrintStackTrace__desc____ret__V()
+	PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(Java__io__PrintStream__Instance)
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 }
 
 type Java__lang__Exception__Impl struct {
@@ -741,19 +1226,15 @@ type Java__lang__Exception__Impl struct {
 }
 
 func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____ret__V() {
-	panic("Not Implemented")
-}
-
-func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__Throwable__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Exception.<init>()V")
 }
 
 func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__Throwable__Instance, var2 bool, var3 bool) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Exception.<init>(Ljava/lang/String;Ljava/lang/Throwable;ZZ)V")
 }
 
 func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____obj__Java__lang__Throwable__ret__V(var0 Java__lang__Throwable__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Exception.<init>(Ljava/lang/Throwable;)V")
 }
 
 type Java__lang__NullPointerException__Static struct{}
@@ -782,8 +1263,27 @@ func (this *Java__lang__NullPointerException__Impl) Java__lang__NullPointerExcep
 }
 
 type Java__lang__NullPointerException__Instance interface {
-	Instance_Init__desc____ret__V()
-	Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
+	AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	FillInStackTrace__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	Finalize__desc____ret__V()
+	GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetStackTraceDepth__desc____ret__I() int
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	HashCode__desc____ret__I() int
+	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	PrintStackTrace__desc____ret__V()
+	PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(Java__io__PrintStream__Instance)
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 }
 
 type Java__lang__NullPointerException__Impl struct {
@@ -792,7 +1292,7 @@ type Java__lang__NullPointerException__Impl struct {
 }
 
 func (this *Java__lang__NullPointerException__Impl) Impl__Instance_Init__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/NullPointerException.<init>()V")
 }
 
 type Java__lang__Object__Static struct {
@@ -821,6 +1321,7 @@ type Java__lang__Object__Dispatch interface {
 	Impl__Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Impl__Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
 	Impl__Finalize__desc____ret__V()
+	Impl__GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	Impl__HashCode__desc____ret__I() int
 	Impl__Notify__desc____ret__V()
 	Impl__NotifyAll__desc____ret__V()
@@ -848,6 +1349,10 @@ func (this *Java__lang__Object__Impl) Equals__desc____obj__Java__lang__Object__r
 
 func (this *Java__lang__Object__Impl) Finalize__desc____ret__V() {
 	this._dispatch.Impl__Finalize__desc____ret__V()
+}
+
+func (this *Java__lang__Object__Impl) GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__GetClass__desc____ret____obj__Java__lang__Class()
 }
 
 func (this *Java__lang__Object__Impl) HashCode__desc____ret__I() int {
@@ -879,10 +1384,10 @@ func (this *Java__lang__Object__Impl) Wait__desc__J__I__ret__V(var0 int64, var1 
 }
 
 type Java__lang__Object__Instance interface {
-	Instance_Init__desc____ret__V()
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
 	Finalize__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	HashCode__desc____ret__I() int
 	Notify__desc____ret__V()
 	NotifyAll__desc____ret__V()
@@ -897,43 +1402,47 @@ type Java__lang__Object__Impl struct {
 }
 
 func (this *Java__lang__Object__Impl) Impl__Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Object.clone()Ljava/lang/Object;")
 }
 
 func (this *Java__lang__Object__Impl) Impl__Equals__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Object.equals(Ljava/lang/Object;)Z")
 }
 
 func (this *Java__lang__Object__Impl) Impl__Finalize__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Object.finalize()V")
+}
+
+func (this *Java__lang__Object__Impl) Impl__GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Object.getClass()Ljava/lang/Class;")
 }
 
 func (this *Java__lang__Object__Impl) Impl__HashCode__desc____ret__I() int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Object.hashCode()I")
 }
 
 func (this *Java__lang__Object__Impl) Impl__Notify__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Object.notify()V")
 }
 
 func (this *Java__lang__Object__Impl) Impl__NotifyAll__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Object.notifyAll()V")
 }
 
 func (this *Java__lang__Object__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Object.toString()Ljava/lang/String;")
 }
 
 func (this *Java__lang__Object__Impl) Impl__Wait__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Object.wait()V")
 }
 
 func (this *Java__lang__Object__Impl) Impl__Wait__desc__J__ret__V(var0 int64) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Object.wait(J)V")
 }
 
 func (this *Java__lang__Object__Impl) Impl__Wait__desc__J__I__ret__V(var0 int64, var1 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Object.wait(JI)V")
 }
 
 type Java__lang__RuntimeException__Static struct {
@@ -964,11 +1473,27 @@ func (this *Java__lang__RuntimeException__Impl) Java__lang__RuntimeException__In
 }
 
 type Java__lang__RuntimeException__Instance interface {
-	Instance_Init__desc____ret__V()
-	Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
-	Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(Java__lang__String__Instance, Java__lang__Throwable__Instance)
-	Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(Java__lang__String__Instance, Java__lang__Throwable__Instance, bool, bool)
-	Instance_Init__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	FillInStackTrace__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	Finalize__desc____ret__V()
+	GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetStackTraceDepth__desc____ret__I() int
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	HashCode__desc____ret__I() int
+	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	PrintStackTrace__desc____ret__V()
+	PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(Java__io__PrintStream__Instance)
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 }
 
 type Java__lang__RuntimeException__Impl struct {
@@ -977,23 +1502,23 @@ type Java__lang__RuntimeException__Impl struct {
 }
 
 func (this *Java__lang__RuntimeException__Impl) Impl__Instance_Init__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/RuntimeException.<init>()V")
 }
 
 func (this *Java__lang__RuntimeException__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/RuntimeException.<init>(Ljava/lang/String;)V")
 }
 
 func (this *Java__lang__RuntimeException__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__Throwable__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/RuntimeException.<init>(Ljava/lang/String;Ljava/lang/Throwable;)V")
 }
 
 func (this *Java__lang__RuntimeException__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__Throwable__Instance, var2 bool, var3 bool) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/RuntimeException.<init>(Ljava/lang/String;Ljava/lang/Throwable;ZZ)V")
 }
 
 func (this *Java__lang__RuntimeException__Impl) Impl__Instance_Init__desc____obj__Java__lang__Throwable__ret__V(var0 Java__lang__Throwable__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/RuntimeException.<init>(Ljava/lang/Throwable;)V")
 }
 
 type Java__lang__String__Static struct {
@@ -1020,71 +1545,71 @@ func (this *Java__lang__String__Static) Impl__Static_Init__desc____ret__V() {
 }
 
 func (this *Java__lang__String__Static) Impl__CopyValueOf__desc____arr__C__ret____obj__Java__lang__String(var0 []rune) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.copyValueOf([C)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__CopyValueOf__desc____arr__C__I__I__ret____obj__Java__lang__String(var0 []rune, var1 int, var2 int) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.copyValueOf([CII)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 []Java__lang__Object__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__IndexOf__desc____arr__C__I__I____obj__Java__lang__String__I__ret__I(var0 []rune, var1 int, var2 int, var3 Java__lang__String__Instance, var4 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.indexOf([CIILjava/lang/String;I)I")
 }
 
 func (this *Java__lang__String__Static) Impl__IndexOf__desc____arr__C__I__I____arr__C__I__I__I__ret__I(var0 []rune, var1 int, var2 int, var3 []rune, var4 int, var5 int, var6 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.indexOf([CII[CIII)I")
 }
 
 func (this *Java__lang__String__Static) Impl__Join__desc____obj__Java__lang__CharSequence____arr____obj__Java__lang__CharSequence__ret____obj__Java__lang__String(var0 Java__lang__CharSequence__Instance, var1 []Java__lang__CharSequence__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.join(Ljava/lang/CharSequence;[Ljava/lang/CharSequence;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__LastIndexOf__desc____arr__C__I__I____obj__Java__lang__String__I__ret__I(var0 []rune, var1 int, var2 int, var3 Java__lang__String__Instance, var4 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.lastIndexOf([CIILjava/lang/String;I)I")
 }
 
 func (this *Java__lang__String__Static) Impl__LastIndexOf__desc____arr__C__I__I____arr__C__I__I__I__ret__I(var0 []rune, var1 int, var2 int, var3 []rune, var4 int, var5 int, var6 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.lastIndexOf([CII[CIII)I")
 }
 
 func (this *Java__lang__String__Static) Impl__ValueOf__desc__C__ret____obj__Java__lang__String(var0 rune) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.valueOf(C)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__ValueOf__desc__D__ret____obj__Java__lang__String(var0 float64) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.valueOf(D)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__ValueOf__desc__F__ret____obj__Java__lang__String(var0 float32) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.valueOf(F)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__ValueOf__desc__I__ret____obj__Java__lang__String(var0 int) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.valueOf(I)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__ValueOf__desc__J__ret____obj__Java__lang__String(var0 int64) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.valueOf(J)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__ValueOf__desc____obj__Java__lang__Object__ret____obj__Java__lang__String(var0 Java__lang__Object__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.valueOf(Ljava/lang/Object;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__ValueOf__desc__Z__ret____obj__Java__lang__String(var0 bool) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.valueOf(Z)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__ValueOf__desc____arr__C__ret____obj__Java__lang__String(var0 []rune) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.valueOf([C)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Static) Impl__ValueOf__desc____arr__C__I__I__ret____obj__Java__lang__String(var0 []rune, var1 int, var2 int) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.valueOf([CII)Ljava/lang/String;")
 }
 
 type Java__lang__String__Dispatch interface {
@@ -1392,20 +1917,8 @@ func (this *Java__lang__String__Impl) Trim__desc____ret____obj__Java__lang__Stri
 }
 
 type Java__lang__String__Instance interface {
-	Instance_Init__desc____ret__V()
-	Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
-	Instance_Init__desc____obj__Java__lang__StringBuilder__ret__V(Java__lang__StringBuilder__Instance)
-	Instance_Init__desc____arr__B__ret__V([]byte)
-	Instance_Init__desc____arr__B__I__ret__V([]byte, int)
-	Instance_Init__desc____arr__B__I__I__ret__V([]byte, int, int)
-	Instance_Init__desc____arr__B__I__I__I__ret__V([]byte, int, int, int)
-	Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V([]byte, int, int, Java__lang__String__Instance)
-	Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V([]byte, Java__lang__String__Instance)
-	Instance_Init__desc____arr__C__ret__V([]rune)
-	Instance_Init__desc____arr__C__I__I__ret__V([]rune, int, int)
-	Instance_Init__desc____arr__C__Z__ret__V([]rune, bool)
-	Instance_Init__desc____arr__I__I__I__ret__V([]int, int, int)
 	CharAt__desc__I__ret__C(int) rune
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	CodePointAt__desc__I__ret__I(int) int
 	CodePointBefore__desc__I__ret__I(int) int
 	CodePointCount__desc__I__I__ret__I(int, int) int
@@ -1418,11 +1931,13 @@ type Java__lang__String__Instance interface {
 	EndsWith__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
 	EqualsIgnoreCase__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
+	Finalize__desc____ret__V()
 	GetBytes__desc____ret____arr__B() []byte
 	GetBytes__desc__I__I____arr__B__I__ret__V(int, int, []byte, int)
 	GetBytes__desc____obj__Java__lang__String__ret____arr__B(Java__lang__String__Instance) []byte
 	GetChars__desc__I__I____arr__C__I__ret__V(int, int, []rune, int)
 	GetChars__desc____arr__C__I__ret__V([]rune, int)
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	HashCode__desc____ret__I() int
 	IndexOf__desc__I__ret__I(int) int
 	IndexOf__desc__I__I__ret__I(int, int) int
@@ -1436,6 +1951,8 @@ type Java__lang__String__Instance interface {
 	LastIndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
 	Length__desc____ret__I() int
 	Matches__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
 	OffsetByCodePoints__desc__I__I__ret__I(int, int) int
 	RegionMatches__desc__I____obj__Java__lang__String__I__I__ret__Z(int, Java__lang__String__Instance, int, int) bool
 	RegionMatches__desc__Z__I____obj__Java__lang__String__I__I__ret__Z(bool, int, Java__lang__String__Instance, int, int) bool
@@ -1455,6 +1972,9 @@ type Java__lang__String__Instance interface {
 	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	ToUpperCase__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Trim__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 }
 
 type Java__lang__String__Impl struct {
@@ -1464,255 +1984,255 @@ type Java__lang__String__Impl struct {
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>()V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>(Ljava/lang/String;)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____obj__Java__lang__StringBuilder__ret__V(var0 Java__lang__StringBuilder__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>(Ljava/lang/StringBuilder;)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__ret__V(var0 []byte) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>([B)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__ret__V(var0 []byte, var1 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>([BI)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__I__ret__V(var0 []byte, var1 int, var2 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>([BII)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__I__I__ret__V(var0 []byte, var1 int, var2 int, var3 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>([BIII)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V(var0 []byte, var1 int, var2 int, var3 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>([BIILjava/lang/String;)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V(var0 []byte, var1 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>([BLjava/lang/String;)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__C__ret__V(var0 []rune) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>([C)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__C__I__I__ret__V(var0 []rune, var1 int, var2 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>([CII)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__C__Z__ret__V(var0 []rune, var1 bool) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>([CZ)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__I__I__I__ret__V(var0 []int, var1 int, var2 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.<init>([III)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__CharAt__desc__I__ret__C(var0 int) rune {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.charAt(I)C")
 }
 
 func (this *Java__lang__String__Impl) Impl__CodePointAt__desc__I__ret__I(var0 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.codePointAt(I)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__CodePointBefore__desc__I__ret__I(var0 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.codePointBefore(I)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__CodePointCount__desc__I__I__ret__I(var0 int, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.codePointCount(II)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.compareTo(Ljava/lang/Object;)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__CompareTo__desc____obj__Java__lang__String__ret__I(var0 Java__lang__String__Instance) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.compareTo(Ljava/lang/String;)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__CompareToIgnoreCase__desc____obj__Java__lang__String__ret__I(var0 Java__lang__String__Instance) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.compareToIgnoreCase(Ljava/lang/String;)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__Concat__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.concat(Ljava/lang/String;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__Contains__desc____obj__Java__lang__CharSequence__ret__Z(var0 Java__lang__CharSequence__Instance) bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.contains(Ljava/lang/CharSequence;)Z")
 }
 
 func (this *Java__lang__String__Impl) Impl__ContentEquals__desc____obj__Java__lang__CharSequence__ret__Z(var0 Java__lang__CharSequence__Instance) bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.contentEquals(Ljava/lang/CharSequence;)Z")
 }
 
 func (this *Java__lang__String__Impl) Impl__EndsWith__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.endsWith(Ljava/lang/String;)Z")
 }
 
 func (this *Java__lang__String__Impl) Impl__Equals__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.equals(Ljava/lang/Object;)Z")
 }
 
 func (this *Java__lang__String__Impl) Impl__EqualsIgnoreCase__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.equalsIgnoreCase(Ljava/lang/String;)Z")
 }
 
 func (this *Java__lang__String__Impl) Impl__GetBytes__desc____ret____arr__B() []byte {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.getBytes()[B")
 }
 
 func (this *Java__lang__String__Impl) Impl__GetBytes__desc__I__I____arr__B__I__ret__V(var0 int, var1 int, var2 []byte, var3 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.getBytes(II[BI)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__GetBytes__desc____obj__Java__lang__String__ret____arr__B(var0 Java__lang__String__Instance) []byte {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.getBytes(Ljava/lang/String;)[B")
 }
 
 func (this *Java__lang__String__Impl) Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 []rune, var3 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.getChars(II[CI)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__GetChars__desc____arr__C__I__ret__V(var0 []rune, var1 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.getChars([CI)V")
 }
 
 func (this *Java__lang__String__Impl) Impl__HashCode__desc____ret__I() int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.hashCode()I")
 }
 
 func (this *Java__lang__String__Impl) Impl__IndexOf__desc__I__ret__I(var0 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.indexOf(I)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__IndexOf__desc__I__I__ret__I(var0 int, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.indexOf(II)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__IndexOf__desc____obj__Java__lang__String__ret__I(var0 Java__lang__String__Instance) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.indexOf(Ljava/lang/String;)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__IndexOf__desc____obj__Java__lang__String__I__ret__I(var0 Java__lang__String__Instance, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.indexOf(Ljava/lang/String;I)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__Intern__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.intern()Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__IsEmpty__desc____ret__Z() bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.isEmpty()Z")
 }
 
 func (this *Java__lang__String__Impl) Impl__LastIndexOf__desc__I__ret__I(var0 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.lastIndexOf(I)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__LastIndexOf__desc__I__I__ret__I(var0 int, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.lastIndexOf(II)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__LastIndexOf__desc____obj__Java__lang__String__ret__I(var0 Java__lang__String__Instance) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.lastIndexOf(Ljava/lang/String;)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__LastIndexOf__desc____obj__Java__lang__String__I__ret__I(var0 Java__lang__String__Instance, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.lastIndexOf(Ljava/lang/String;I)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__Length__desc____ret__I() int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.length()I")
 }
 
 func (this *Java__lang__String__Impl) Impl__Matches__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.matches(Ljava/lang/String;)Z")
 }
 
 func (this *Java__lang__String__Impl) Impl__OffsetByCodePoints__desc__I__I__ret__I(var0 int, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.offsetByCodePoints(II)I")
 }
 
 func (this *Java__lang__String__Impl) Impl__RegionMatches__desc__I____obj__Java__lang__String__I__I__ret__Z(var0 int, var1 Java__lang__String__Instance, var2 int, var3 int) bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.regionMatches(ILjava/lang/String;II)Z")
 }
 
 func (this *Java__lang__String__Impl) Impl__RegionMatches__desc__Z__I____obj__Java__lang__String__I__I__ret__Z(var0 bool, var1 int, var2 Java__lang__String__Instance, var3 int, var4 int) bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.regionMatches(ZILjava/lang/String;II)Z")
 }
 
 func (this *Java__lang__String__Impl) Impl__Replace__desc__C__C__ret____obj__Java__lang__String(var0 rune, var1 rune) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.replace(CC)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__Replace__desc____obj__Java__lang__CharSequence____obj__Java__lang__CharSequence__ret____obj__Java__lang__String(var0 Java__lang__CharSequence__Instance, var1 Java__lang__CharSequence__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.replace(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__ReplaceAll__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 Java__lang__String__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.replaceAll(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__ReplaceFirst__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 Java__lang__String__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.replaceFirst(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(var0 Java__lang__String__Instance) []Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.split(Ljava/lang/String;)[Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 int) []Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.split(Ljava/lang/String;I)[Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__StartsWith__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.startsWith(Ljava/lang/String;)Z")
 }
 
 func (this *Java__lang__String__Impl) Impl__StartsWith__desc____obj__Java__lang__String__I__ret__Z(var0 Java__lang__String__Instance, var1 int) bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.startsWith(Ljava/lang/String;I)Z")
 }
 
 func (this *Java__lang__String__Impl) Impl__SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(var0 int, var1 int) Java__lang__CharSequence__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.subSequence(II)Ljava/lang/CharSequence;")
 }
 
 func (this *Java__lang__String__Impl) Impl__Substring__desc__I__ret____obj__Java__lang__String(var0 int) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.substring(I)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__Substring__desc__I__I__ret____obj__Java__lang__String(var0 int, var1 int) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.substring(II)Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__ToCharArray__desc____ret____arr__C() []rune {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.toCharArray()[C")
 }
 
 func (this *Java__lang__String__Impl) Impl__ToLowerCase__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.toLowerCase()Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.toString()Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__ToUpperCase__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.toUpperCase()Ljava/lang/String;")
 }
 
 func (this *Java__lang__String__Impl) Impl__Trim__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/String.trim()Ljava/lang/String;")
 }
 
 type Java__lang__StringBuilder__Static struct {
@@ -1898,10 +2418,6 @@ func (this *Java__lang__StringBuilder__Impl) Reverse__desc____ret____obj__Java__
 }
 
 type Java__lang__StringBuilder__Instance interface {
-	Instance_Init__desc____ret__V()
-	Instance_Init__desc__I__ret__V(int)
-	Instance_Init__desc____obj__Java__lang__CharSequence__ret__V(Java__lang__CharSequence__Instance)
-	Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
 	Append__desc__C__ret____obj__Java__lang__AbstractStringBuilder(rune) Java__lang__AbstractStringBuilder__Instance
 	Append__desc__C__ret____obj__Java__lang__Appendable(rune) Java__lang__Appendable__Instance
 	Append__desc__C__ret____obj__Java__lang__StringBuilder(rune) Java__lang__StringBuilder__Instance
@@ -1913,6 +2429,7 @@ type Java__lang__StringBuilder__Instance interface {
 	Append__desc__I__ret____obj__Java__lang__StringBuilder(int) Java__lang__StringBuilder__Instance
 	Append__desc__J__ret____obj__Java__lang__AbstractStringBuilder(int64) Java__lang__AbstractStringBuilder__Instance
 	Append__desc__J__ret____obj__Java__lang__StringBuilder(int64) Java__lang__StringBuilder__Instance
+	Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance
 	Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__CharSequence__Instance) Java__lang__AbstractStringBuilder__Instance
 	Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance
 	Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__StringBuilder(Java__lang__CharSequence__Instance) Java__lang__StringBuilder__Instance
@@ -1933,6 +2450,7 @@ type Java__lang__StringBuilder__Instance interface {
 	AppendCodePoint__desc__I__ret____obj__Java__lang__StringBuilder(int) Java__lang__StringBuilder__Instance
 	Capacity__desc____ret__I() int
 	CharAt__desc__I__ret__C(int) rune
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	CodePointAt__desc__I__ret__I(int) int
 	CodePointBefore__desc__I__ret__I(int) int
 	CodePointCount__desc__I__I__ret__I(int, int) int
@@ -1941,7 +2459,13 @@ type Java__lang__StringBuilder__Instance interface {
 	DeleteCharAt__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	DeleteCharAt__desc__I__ret____obj__Java__lang__StringBuilder(int) Java__lang__StringBuilder__Instance
 	EnsureCapacity__desc__I__ret__V(int)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	ExpandCapacity__desc__I__ret__V(int)
+	Finalize__desc____ret__V()
 	GetChars__desc__I__I____arr__C__I__ret__V(int, int, []rune, int)
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetValue__desc____ret____arr__C() []rune
+	HashCode__desc____ret__I() int
 	IndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	IndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
 	Insert__desc__I__C__ret____obj__Java__lang__AbstractStringBuilder(int, rune) Java__lang__AbstractStringBuilder__Instance
@@ -1971,6 +2495,8 @@ type Java__lang__StringBuilder__Instance interface {
 	LastIndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	LastIndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
 	Length__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
 	OffsetByCodePoints__desc__I__I__ret__I(int, int) int
 	Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(int, int, Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance
 	Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(int, int, Java__lang__String__Instance) Java__lang__StringBuilder__Instance
@@ -1983,6 +2509,13 @@ type Java__lang__StringBuilder__Instance interface {
 	Substring__desc__I__I__ret____obj__Java__lang__String(int, int) Java__lang__String__Instance
 	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	TrimToSize__desc____ret__V()
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	FieldGet__Java__lang__AbstractStringBuilder__Count() int
+	FieldSet__Java__lang__AbstractStringBuilder__Count(v int)
+	FieldGet__Java__lang__AbstractStringBuilder__Value() []rune
+	FieldSet__Java__lang__AbstractStringBuilder__Value(v []rune)
 }
 
 type Java__lang__StringBuilder__Impl struct {
@@ -1992,327 +2525,327 @@ type Java__lang__StringBuilder__Impl struct {
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Instance_Init__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.<init>(I)V")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Instance_Init__desc____obj__Java__lang__CharSequence__ret__V(var0 Java__lang__CharSequence__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.<init>(Ljava/lang/CharSequence;)V")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.<init>(Ljava/lang/String;)V")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__C__ret____obj__Java__lang__AbstractStringBuilder(var0 rune) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(C)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__C__ret____obj__Java__lang__Appendable(var0 rune) Java__lang__Appendable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(C)Ljava/lang/Appendable;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__C__ret____obj__Java__lang__StringBuilder(var0 rune) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(C)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__D__ret____obj__Java__lang__AbstractStringBuilder(var0 float64) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(D)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__D__ret____obj__Java__lang__StringBuilder(var0 float64) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(D)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__F__ret____obj__Java__lang__AbstractStringBuilder(var0 float32) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(F)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__F__ret____obj__Java__lang__StringBuilder(var0 float32) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(F)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(I)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__J__ret____obj__Java__lang__AbstractStringBuilder(var0 int64) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(J)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__J__ret____obj__Java__lang__StringBuilder(var0 int64) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(J)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__CharSequence__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(Ljava/lang/CharSequence;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(var0 Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(Ljava/lang/CharSequence;)Ljava/lang/Appendable;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__StringBuilder(var0 Java__lang__CharSequence__Instance) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(Ljava/lang/CharSequence;)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(Ljava/lang/CharSequence;II)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) Java__lang__Appendable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(Ljava/lang/CharSequence;II)Ljava/lang/Appendable;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__StringBuilder(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(Ljava/lang/CharSequence;II)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__Object__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(Ljava/lang/Object;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__StringBuilder(var0 Java__lang__Object__Instance) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(Ljava/lang/Object;)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__Z__ret____obj__Java__lang__AbstractStringBuilder(var0 bool) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(Z)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__Z__ret____obj__Java__lang__StringBuilder(var0 bool) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append(Z)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 []rune) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append([C)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__ret____obj__Java__lang__StringBuilder(var0 []rune) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append([C)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 []rune, var1 int, var2 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append([CII)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0 []rune, var1 int, var2 int) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.append([CII)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__AppendCodePoint__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.appendCodePoint(I)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__AppendCodePoint__desc__I__ret____obj__Java__lang__StringBuilder(var0 int) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.appendCodePoint(I)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Capacity__desc____ret__I() int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.capacity()I")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__CharAt__desc__I__ret__C(var0 int) rune {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.charAt(I)C")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__CodePointAt__desc__I__ret__I(var0 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.codePointAt(I)I")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__CodePointBefore__desc__I__ret__I(var0 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.codePointBefore(I)I")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__CodePointCount__desc__I__I__ret__I(var0 int, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.codePointCount(II)I")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Delete__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.delete(II)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Delete__desc__I__I__ret____obj__Java__lang__StringBuilder(var0 int, var1 int) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.delete(II)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__DeleteCharAt__desc__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.deleteCharAt(I)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__DeleteCharAt__desc__I__ret____obj__Java__lang__StringBuilder(var0 int) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.deleteCharAt(I)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__EnsureCapacity__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.ensureCapacity(I)V")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 []rune, var3 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.getChars(II[CI)V")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__IndexOf__desc____obj__Java__lang__String__ret__I(var0 Java__lang__String__Instance) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.indexOf(Ljava/lang/String;)I")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__IndexOf__desc____obj__Java__lang__String__I__ret__I(var0 Java__lang__String__Instance, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.indexOf(Ljava/lang/String;I)I")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__C__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 rune) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(IC)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__C__ret____obj__Java__lang__StringBuilder(var0 int, var1 rune) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(IC)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__D__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 float64) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(ID)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__D__ret____obj__Java__lang__StringBuilder(var0 int, var1 float64) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(ID)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__F__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 float32) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(IF)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__F__ret____obj__Java__lang__StringBuilder(var0 int, var1 float32) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(IF)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(II)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__I__ret____obj__Java__lang__StringBuilder(var0 int, var1 int) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(II)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__J__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 int64) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(IJ)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__J__ret____obj__Java__lang__StringBuilder(var0 int, var1 int64) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(IJ)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 Java__lang__CharSequence__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(ILjava/lang/CharSequence;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__CharSequence__ret____obj__Java__lang__StringBuilder(var0 int, var1 Java__lang__CharSequence__Instance) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(ILjava/lang/CharSequence;)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 Java__lang__CharSequence__Instance, var2 int, var3 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(ILjava/lang/CharSequence;II)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__StringBuilder(var0 int, var1 Java__lang__CharSequence__Instance, var2 int, var3 int) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(ILjava/lang/CharSequence;II)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 Java__lang__Object__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(ILjava/lang/Object;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__StringBuilder(var0 int, var1 Java__lang__Object__Instance) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(ILjava/lang/Object;)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(ILjava/lang/String;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var0 int, var1 Java__lang__String__Instance) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(ILjava/lang/String;)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__Z__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 bool) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(IZ)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__Z__ret____obj__Java__lang__StringBuilder(var0 int, var1 bool) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(IZ)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 []rune) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(I[C)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(var0 int, var1 []rune) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(I[C)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 []rune, var2 int, var3 int) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(I[CII)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0 int, var1 []rune, var2 int, var3 int) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.insert(I[CII)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__LastIndexOf__desc____obj__Java__lang__String__ret__I(var0 Java__lang__String__Instance) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.lastIndexOf(Ljava/lang/String;)I")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__LastIndexOf__desc____obj__Java__lang__String__I__ret__I(var0 Java__lang__String__Instance, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.lastIndexOf(Ljava/lang/String;I)I")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Length__desc____ret__I() int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.length()I")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__OffsetByCodePoints__desc__I__I__ret__I(var0 int, var1 int) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.offsetByCodePoints(II)I")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 int, var2 Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.replace(IILjava/lang/String;)Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var0 int, var1 int, var2 Java__lang__String__Instance) Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.replace(IILjava/lang/String;)Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Reverse__desc____ret____obj__Java__lang__AbstractStringBuilder() Java__lang__AbstractStringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.reverse()Ljava/lang/AbstractStringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Reverse__desc____ret____obj__Java__lang__StringBuilder() Java__lang__StringBuilder__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.reverse()Ljava/lang/StringBuilder;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__SetCharAt__desc__I__C__ret__V(var0 int, var1 rune) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.setCharAt(IC)V")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__SetLength__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.setLength(I)V")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(var0 int, var1 int) Java__lang__CharSequence__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.subSequence(II)Ljava/lang/CharSequence;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Substring__desc__I__ret____obj__Java__lang__String(var0 int) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.substring(I)Ljava/lang/String;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Substring__desc__I__I__ret____obj__Java__lang__String(var0 int, var1 int) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.substring(II)Ljava/lang/String;")
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__TrimToSize__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/StringBuilder.trimToSize()V")
 }
 
 type Java__lang__System__Static struct {
@@ -2337,79 +2870,79 @@ func (this *Java__lang__System__Static) New() *Java__lang__System__Impl {
 }
 
 func (this *Java__lang__System__Static) Impl__Arraycopy__desc____obj__Java__lang__Object__I____obj__Java__lang__Object__I__I__ret__V(var0 Java__lang__Object__Instance, var1 int, var2 Java__lang__Object__Instance, var3 int, var4 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V")
 }
 
 func (this *Java__lang__System__Static) Impl__ClearProperty__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.clearProperty(Ljava/lang/String;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__System__Static) Impl__CurrentTimeMillis__desc____ret__J() int64 {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.currentTimeMillis()J")
 }
 
 func (this *Java__lang__System__Static) Impl__Exit__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.exit(I)V")
 }
 
 func (this *Java__lang__System__Static) Impl__Gc__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.gc()V")
 }
 
 func (this *Java__lang__System__Static) Impl__GetProperty__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.getProperty(Ljava/lang/String;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__System__Static) Impl__GetProperty__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 Java__lang__String__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.getProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__System__Static) Impl__Getenv__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.getenv(Ljava/lang/String;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__System__Static) Impl__IdentityHashCode__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.identityHashCode(Ljava/lang/Object;)I")
 }
 
 func (this *Java__lang__System__Static) Impl__LineSeparator__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.lineSeparator()Ljava/lang/String;")
 }
 
 func (this *Java__lang__System__Static) Impl__Load__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.load(Ljava/lang/String;)V")
 }
 
 func (this *Java__lang__System__Static) Impl__LoadLibrary__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.loadLibrary(Ljava/lang/String;)V")
 }
 
 func (this *Java__lang__System__Static) Impl__MapLibraryName__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.mapLibraryName(Ljava/lang/String;)Ljava/lang/String;")
 }
 
 func (this *Java__lang__System__Static) Impl__NanoTime__desc____ret__J() int64 {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.nanoTime()J")
 }
 
 func (this *Java__lang__System__Static) Impl__RunFinalization__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.runFinalization()V")
 }
 
 func (this *Java__lang__System__Static) Impl__RunFinalizersOnExit__desc__Z__ret__V(var0 bool) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.runFinalizersOnExit(Z)V")
 }
 
 func (this *Java__lang__System__Static) Impl__SetErr__desc____obj__Java__io__PrintStream__ret__V(var0 Java__io__PrintStream__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.setErr(Ljava/io/PrintStream;)V")
 }
 
 func (this *Java__lang__System__Static) Impl__SetOut__desc____obj__Java__io__PrintStream__ret__V(var0 Java__io__PrintStream__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.setOut(Ljava/io/PrintStream;)V")
 }
 
 func (this *Java__lang__System__Static) Impl__SetProperty__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 Java__lang__String__Instance) Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/System.setProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;")
 }
 
 type Java__lang__System__Dispatch interface {
@@ -2421,7 +2954,19 @@ func (this *Java__lang__System__Impl) Java__lang__System__InitDispatch(v Java__l
 	this._dispatch = v
 }
 
-type Java__lang__System__Instance interface{}
+type Java__lang__System__Instance interface {
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+}
 
 type Java__lang__System__Impl struct {
 	*Java__lang__Object__Impl
@@ -2532,22 +3077,27 @@ func (this *Java__lang__Throwable__Impl) PrintStackTrace__desc____obj__Java__io_
 }
 
 type Java__lang__Throwable__Instance interface {
-	Instance_Init__desc____ret__V()
-	Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
-	Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(Java__lang__String__Instance, Java__lang__Throwable__Instance)
-	Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(Java__lang__String__Instance, Java__lang__Throwable__Instance, bool, bool)
-	Instance_Init__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
 	AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
 	FillInStackTrace__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	Finalize__desc____ret__V()
 	GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetStackTraceDepth__desc____ret__I() int
 	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
 	PrintStackTrace__desc____ret__V()
 	PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(Java__io__PrintStream__Instance)
 	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 }
 
 type Java__lang__Throwable__Impl struct {
@@ -2557,59 +3107,59 @@ type Java__lang__Throwable__Impl struct {
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__Instance_Init__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.<init>()V")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__Throwable__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.<init>(Ljava/lang/String;Ljava/lang/Throwable;)V")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__Z__Z__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__Throwable__Instance, var2 bool, var3 bool) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.<init>(Ljava/lang/String;Ljava/lang/Throwable;ZZ)V")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__Instance_Init__desc____obj__Java__lang__Throwable__ret__V(var0 Java__lang__Throwable__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.<init>(Ljava/lang/Throwable;)V")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(var0 Java__lang__Throwable__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.addSuppressed(Ljava/lang/Throwable;)V")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__FillInStackTrace__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.fillInStackTrace()Ljava/lang/Throwable;")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.getCause()Ljava/lang/Throwable;")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.getLocalizedMessage()Ljava/lang/String;")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__GetStackTraceDepth__desc____ret__I() int {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.getStackTraceDepth()I")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.getSuppressed()[Ljava/lang/Throwable;")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(var0 Java__lang__Throwable__Instance) Java__lang__Throwable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.initCause(Ljava/lang/Throwable;)Ljava/lang/Throwable;")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__PrintStackTrace__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.printStackTrace()V")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(var0 Java__io__PrintStream__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.printStackTrace(Ljava/io/PrintStream;)V")
 }
 
 func (this *Java__lang__Throwable__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/Throwable.toString()Ljava/lang/String;")
 }
 
 type Java__lang__VirtualMachineError__Static struct{}
@@ -2638,10 +3188,27 @@ func (this *Java__lang__VirtualMachineError__Impl) Java__lang__VirtualMachineErr
 }
 
 type Java__lang__VirtualMachineError__Instance interface {
-	Instance_Init__desc____ret__V()
-	Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
-	Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(Java__lang__String__Instance, Java__lang__Throwable__Instance)
-	Instance_Init__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	FillInStackTrace__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	Finalize__desc____ret__V()
+	GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetStackTraceDepth__desc____ret__I() int
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	HashCode__desc____ret__I() int
+	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	PrintStackTrace__desc____ret__V()
+	PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(Java__io__PrintStream__Instance)
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 }
 
 type Java__lang__VirtualMachineError__Impl struct {
@@ -2650,13 +3217,13 @@ type Java__lang__VirtualMachineError__Impl struct {
 }
 
 func (this *Java__lang__VirtualMachineError__Impl) Impl__Instance_Init__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/VirtualMachineError.<init>()V")
 }
 
 func (this *Java__lang__VirtualMachineError__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__Throwable__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/VirtualMachineError.<init>(Ljava/lang/String;Ljava/lang/Throwable;)V")
 }
 
 func (this *Java__lang__VirtualMachineError__Impl) Impl__Instance_Init__desc____obj__Java__lang__Throwable__ret__V(var0 Java__lang__Throwable__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/lang/VirtualMachineError.<init>(Ljava/lang/Throwable;)V")
 }

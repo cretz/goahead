@@ -1,0 +1,35 @@
+We want to reuse panic/defer/recover, however there are some things we have to work around:
+
+* Can only capture the panic in a defered function
+* Cannot do a jump in the deferred function or any function
+* Need to be able to "re-defer"
+
+Example java code:
+
+try {
+  somethingBad();
+} catch (Exception e) {
+  somethingElse();
+}
+
+Translated:
+
+  [var decls]
+  currentEx *Exception
+  currentLabel *Label
+body:
+  // Ret is only a thing if the function does have a return
+  ret := func() {
+    defer func() {
+      currentEx = translate(recover)
+    }()
+    if currentEx != nil {
+      [exception handling code]
+    }
+    [full method body w/ current label sets and proper return]
+  }()
+  // This should only get here after defer
+  if currentEx != nil {
+    goto body
+  }
+  return ret

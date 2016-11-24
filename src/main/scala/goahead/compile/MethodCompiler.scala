@@ -140,7 +140,7 @@ trait MethodCompiler extends Logger {
     // Make local decls out of ones not on stack and not already in function vars
     val ctxAndVarDecl =
     if (tempVarsNotOnStack.isEmpty) ctx -> None
-    else createVarDecl(ctx, tempVarsNotOnStack.filterNot(ctx.functionVars.contains)).leftMap(_ -> Some(_))
+    else ctx.createVarDecl(tempVarsNotOnStack.filterNot(ctx.functionVars.contains)).leftMap(_ -> Some(_))
 
     // Leave the existing ones on the stack and in the temp set and add them to func-level vars
     ctxAndVarDecl.leftMap { case (ctx, maybeDecl) =>
@@ -149,10 +149,10 @@ trait MethodCompiler extends Logger {
     }
   }
 
-  protected def statementPostProcessors = Seq(
-    applyTryCatch _,
-    removeUnusedLabels _,
-    addFunctionVars _
+  protected def statementPostProcessors: Seq[PostProcessor] = Seq(
+    postprocess.ApplyTryCatch,
+    postprocess.AddFunctionVars,
+    postprocess.RemoveUnusedLabels
   )
 
   protected def postProcessStatements(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
@@ -161,100 +161,12 @@ trait MethodCompiler extends Logger {
     }
   }
 
-  protected def addFunctionVars(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
-    // Add all function vars not part of the arg list
-    val argTypeCount = IType.getArgumentTypes(ctx.method.desc).length
-    require(ctx.functionVars.size >= argTypeCount)
-    val varsToDecl = ctx.functionVars.drop(argTypeCount)
-    if (varsToDecl.isEmpty) ctx -> stmts
-    else createVarDecl(ctx, varsToDecl).leftMap { case (ctx, declStmt) => ctx -> (declStmt +: stmts) }
-  }
-
-  protected def applyTryCatch(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
-    // If there are no try/catch, we do nothing
-    val tryCatchNodes = ctx.method.tryCatchBlocks
-    if (tryCatchNodes.isEmpty) ctx -> stmts else {
-      // We must have a new statement at the top for holding the current label
-      val labelVarDecl = varDecl("currentLabel", "string".toIdent).toStmt
-
-      // We have to go over every top-level label statement and set the current label as the first statement
-      val updatedStmts = stmts.map {
-        case Node.LabeledStatement(Node.Identifier(label), Node.BlockStatement(stmts)) =>
-          labeled(label, "currentLabel".toIdent.assignExisting(label.toLit) +: stmts)
-        case stmt =>
-          stmt
-      }
-
-      // Now we have to have recover code
-      ctx.withRuntimeImportAlias.leftMap { case (ctx, rt) =>
-        val recoverStmt = iff(
-          init = Some("r".toIdent.assignDefine("recover".toIdent.call())),
-          lhs = "r".toIdent,
-          op = Node.Token.Neq,
-          rhs = NilExpr,
-          body = Seq(
-            rt.toIdent.sel("PanicToThrowable").call(Seq("r".toIdent)).toStmt,
-            "println".toIdent.call(Seq("currentLabel".toIdent)).toStmt
-          )
-        )
-        val deferStmt = funcType(Nil, None).toFuncLit(Seq(recoverStmt)).call().defer
-        ctx -> (Seq(labelVarDecl, deferStmt) ++ updatedStmts)
-      }
-    }
-  }
-
-  protected def removeUnusedLabels(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
-    // This shouldn't blow up the stack too much, no need reworking to tailrec
-    // We know the labeled statements are not in if statements, TODO: right?
-    stmts.foldLeft(ctx -> Seq.empty[Node.Statement]) { case ((ctx, stmts), stmt) =>
-      stmt match {
-        case labelStmt @ Node.LabeledStatement(Node.Identifier(label), innerStmt) =>
-          removeUnusedLabels(ctx, Seq(innerStmt)).leftMap { case (ctx, newInnerStmts) =>
-            if (!ctx.usedLabels.contains(label)) ctx -> (stmts ++ newInnerStmts)
-            else {
-              require(newInnerStmts.length == 1)
-              ctx -> (stmts :+ labelStmt.copy(statement = newInnerStmts.head))
-            }
-          }
-        case Node.BlockStatement(blockStmts) =>
-          // If the block is empty, just remove it
-          if (blockStmts.isEmpty) ctx -> stmts
-          else removeUnusedLabels(ctx, blockStmts).leftMap { case (ctx, newStmts) =>
-            // Only put a block around the statement if it's not already a single block
-            newStmts match {
-              case Seq(Node.BlockStatement(innerStmts)) => ctx -> (stmts ++ innerStmts)
-              case _ => ctx -> (stmts :+ block(newStmts))
-            }
-          }
-        case other =>
-          ctx -> (stmts :+ other)
-      }
-    }
-  }
-
-  protected def createVarDecl(ctx: Context, vars: Seq[TypedExpression]): (Context, Node.Statement) = {
-    // Collect them all and then send at once to a single var decl
-    val ctxAndNamedTypes = vars.foldLeft(ctx -> Seq.empty[(String, Node.Expression)]) {
-      case ((ctx, prevNamedTypes), localVar) =>
-        // We ignore undefined types here...
-        localVar.typ match {
-          case IType.Undefined =>
-            ctx -> prevNamedTypes
-          case _ =>
-            ctx.typeToGoType(localVar.typ).leftMap { case (ctx, typ) =>
-              ctx -> (prevNamedTypes :+ (localVar.name -> typ))
-            }
-        }
-    }
-    ctxAndNamedTypes.leftMap { case (ctx, namedTypes) =>
-      ctx -> varDecls(namedTypes: _*).toStmt
-    }
-  }
-
   protected def signatureCompiler: SignatureCompiler = SignatureCompiler
 }
 
 object MethodCompiler extends MethodCompiler {
+  type PostProcessor = (Context, Seq[Node.Statement]) => (Context, Seq[Node.Statement])
+
   case class LabelSet(
     node: LabelNode,
     newFrame: Option[FrameNode] = None,

@@ -37,9 +37,19 @@ func (this *Java__io__FilterOutputStream__Impl) Instance_Init__desc____obj__Java
 }
 
 type Java__io__FilterOutputStream__Instance interface {
-	Instance_Init__desc____obj__Java__io__OutputStream__ret__V(Java__io__OutputStream__Instance)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Close__desc____ret__V()
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
 	Flush__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 	Write__desc__I__ret__V(int)
 	Write__desc____arr__B__ret__V([]byte)
 	Write__desc____arr__B__I__I__ret__V([]byte, int, int)
@@ -62,27 +72,27 @@ func (this *Java__io__FilterOutputStream__Impl) FieldSet__Java__io__FilterOutput
 }
 
 func (this *Java__io__FilterOutputStream__Impl) Impl__Instance_Init__desc____obj__Java__io__OutputStream__ret__V(var0 Java__io__OutputStream__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/FilterOutputStream.<init>(Ljava/io/OutputStream;)V")
 }
 
 func (this *Java__io__FilterOutputStream__Impl) Impl__Close__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/FilterOutputStream.close()V")
 }
 
 func (this *Java__io__FilterOutputStream__Impl) Impl__Flush__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/FilterOutputStream.flush()V")
 }
 
 func (this *Java__io__FilterOutputStream__Impl) Impl__Write__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/FilterOutputStream.write(I)V")
 }
 
 func (this *Java__io__FilterOutputStream__Impl) Impl__Write__desc____arr__B__ret__V(var0 []byte) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/FilterOutputStream.write([B)V")
 }
 
 func (this *Java__io__FilterOutputStream__Impl) Impl__Write__desc____arr__B__I__I__ret__V(var0 []byte, var1 int, var2 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/FilterOutputStream.write([BII)V")
 }
 
 type Java__io__Flushable__Instance interface {
@@ -140,9 +150,19 @@ func (this *Java__io__OutputStream__Impl) Write__desc____arr__B__I__I__ret__V(va
 }
 
 type Java__io__OutputStream__Instance interface {
-	Instance_Init__desc____ret__V()
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Close__desc____ret__V()
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
 	Flush__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 	Write__desc__I__ret__V(int)
 	Write__desc____arr__B__ret__V([]byte)
 	Write__desc____arr__B__I__I__ret__V([]byte, int, int)
@@ -154,27 +174,27 @@ type Java__io__OutputStream__Impl struct {
 }
 
 func (this *Java__io__OutputStream__Impl) Impl__Instance_Init__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/OutputStream.<init>()V")
 }
 
 func (this *Java__io__OutputStream__Impl) Impl__Close__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/OutputStream.close()V")
 }
 
 func (this *Java__io__OutputStream__Impl) Impl__Flush__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/OutputStream.flush()V")
 }
 
 func (this *Java__io__OutputStream__Impl) Impl__Write__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/OutputStream.write(I)V")
 }
 
 func (this *Java__io__OutputStream__Impl) Impl__Write__desc____arr__B__ret__V(var0 []byte) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/OutputStream.write([B)V")
 }
 
 func (this *Java__io__OutputStream__Impl) Impl__Write__desc____arr__B__I__I__ret__V(var0 []byte, var1 int, var2 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/OutputStream.write([BII)V")
 }
 
 type Java__io__PrintStream__Static struct{}
@@ -373,11 +393,6 @@ func (this *Java__io__PrintStream__Impl) SetError__desc____ret__V() {
 }
 
 type Java__io__PrintStream__Instance interface {
-	Instance_Init__desc____obj__Java__io__OutputStream__ret__V(Java__io__OutputStream__Instance)
-	Instance_Init__desc____obj__Java__io__OutputStream__Z__ret__V(Java__io__OutputStream__Instance, bool)
-	Instance_Init__desc____obj__Java__io__OutputStream__Z____obj__Java__lang__String__ret__V(Java__io__OutputStream__Instance, bool, Java__lang__String__Instance)
-	Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
-	Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__String__ret__V(Java__lang__String__Instance, Java__lang__String__Instance)
 	Append__desc__C__ret____obj__Java__io__PrintStream(rune) Java__io__PrintStream__Instance
 	Append__desc__C__ret____obj__Java__lang__Appendable(rune) Java__lang__Appendable__Instance
 	Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__io__PrintStream(Java__lang__CharSequence__Instance) Java__io__PrintStream__Instance
@@ -386,9 +401,16 @@ type Java__io__PrintStream__Instance interface {
 	Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(Java__lang__CharSequence__Instance, int, int) Java__lang__Appendable__Instance
 	CheckError__desc____ret__Z() bool
 	ClearError__desc____ret__V()
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Close__desc____ret__V()
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
 	Flush__desc____ret__V()
 	Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(Java__lang__String__Instance, []Java__lang__Object__Instance) Java__io__PrintStream__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
 	Print__desc__C__ret__V(rune)
 	Print__desc__D__ret__V(float64)
 	Print__desc__F__ret__V(float32)
@@ -410,8 +432,15 @@ type Java__io__PrintStream__Instance interface {
 	Println__desc__Z__ret__V(bool)
 	Println__desc____arr__C__ret__V([]rune)
 	SetError__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 	Write__desc__I__ret__V(int)
+	Write__desc____arr__B__ret__V([]byte)
 	Write__desc____arr__B__I__I__ret__V([]byte, int, int)
+	FieldGet__Java__io__FilterOutputStream__Out() Java__io__OutputStream__Instance
+	FieldSet__Java__io__FilterOutputStream__Out(v Java__io__OutputStream__Instance)
 }
 
 type Java__io__PrintStream__Impl struct {
@@ -420,147 +449,147 @@ type Java__io__PrintStream__Impl struct {
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Instance_Init__desc____obj__Java__io__OutputStream__ret__V(var0 Java__io__OutputStream__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.<init>(Ljava/io/OutputStream;)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Instance_Init__desc____obj__Java__io__OutputStream__Z__ret__V(var0 Java__io__OutputStream__Instance, var1 bool) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.<init>(Ljava/io/OutputStream;Z)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Instance_Init__desc____obj__Java__io__OutputStream__Z____obj__Java__lang__String__ret__V(var0 Java__io__OutputStream__Instance, var1 bool, var2 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.<init>(Ljava/io/OutputStream;ZLjava/lang/String;)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.<init>(Ljava/lang/String;)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.<init>(Ljava/lang/String;Ljava/lang/String;)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Append__desc__C__ret____obj__Java__io__PrintStream(var0 rune) Java__io__PrintStream__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.append(C)Ljava/io/PrintStream;")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Append__desc__C__ret____obj__Java__lang__Appendable(var0 rune) Java__lang__Appendable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.append(C)Ljava/lang/Appendable;")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__io__PrintStream(var0 Java__lang__CharSequence__Instance) Java__io__PrintStream__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.append(Ljava/lang/CharSequence;)Ljava/io/PrintStream;")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(var0 Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.append(Ljava/lang/CharSequence;)Ljava/lang/Appendable;")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__io__PrintStream(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) Java__io__PrintStream__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.append(Ljava/lang/CharSequence;II)Ljava/io/PrintStream;")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) Java__lang__Appendable__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.append(Ljava/lang/CharSequence;II)Ljava/lang/Appendable;")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__CheckError__desc____ret__Z() bool {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.checkError()Z")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__ClearError__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.clearError()V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Close__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.close()V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Flush__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.flush()V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0 Java__lang__String__Instance, var1 []Java__lang__Object__Instance) Java__io__PrintStream__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Print__desc__C__ret__V(var0 rune) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.print(C)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Print__desc__D__ret__V(var0 float64) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.print(D)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Print__desc__F__ret__V(var0 float32) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.print(F)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Print__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.print(I)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Print__desc__J__ret__V(var0 int64) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.print(J)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Print__desc____obj__Java__lang__Object__ret__V(var0 Java__lang__Object__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.print(Ljava/lang/Object;)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Print__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.print(Ljava/lang/String;)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Print__desc__Z__ret__V(var0 bool) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.print(Z)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Print__desc____arr__C__ret__V(var0 []rune) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.print([C)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0 Java__lang__String__Instance, var1 []Java__lang__Object__Instance) Java__io__PrintStream__Instance {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Println__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.println()V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Println__desc__C__ret__V(var0 rune) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.println(C)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Println__desc__D__ret__V(var0 float64) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.println(D)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Println__desc__F__ret__V(var0 float32) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.println(F)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Println__desc__J__ret__V(var0 int64) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.println(J)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Println__desc____obj__Java__lang__Object__ret__V(var0 Java__lang__Object__Instance) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.println(Ljava/lang/Object;)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Println__desc____arr__C__ret__V(var0 []rune) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.println([C)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__SetError__desc____ret__V() {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.setError()V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Write__desc__I__ret__V(var0 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.write(I)V")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Write__desc____arr__B__I__I__ret__V(var0 []byte, var1 int, var2 int) {
-	panic("Not Implemented")
+	panic("Not Implemented - java/io/PrintStream.write([BII)V")
 }
 
 type Java__io__Serializable__Instance interface{}

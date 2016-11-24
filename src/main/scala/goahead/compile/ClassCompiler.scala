@@ -146,9 +146,9 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileInstInterface(ctx: Context): (Context, Node.Declaration) = {
-    // Only non-private methods
-    val methods = clsMethods(ctx, forDispatch = true).
-      filterNot(m => m.access.isAccessStatic || m.access.isAccessPrivate)
+    // Only non-private, non-init methods including parents
+    val methods = clsMethods(ctx, forDispatch = true, includeParentInstMethodsOnClass = true).
+      filterNot(m => m.access.isAccessStatic || m.access.isAccessPrivate || m.name == "<init>")
     val ctxAndMethodSigs = methods.foldLeft(ctx -> Seq.empty[Node.Field]) {
       case ((ctx, methodSigs), method) =>
         signatureCompiler.buildFuncType(ctx, method, includeParamNames = false).leftMap {
@@ -394,8 +394,21 @@ trait ClassCompiler extends Logger {
   }
 
   // TODO: slow
-  protected def clsMethods(ctx: Context, forDispatch: Boolean): Seq[Method] =
-    ctx.cls.methods.sortBy(m => m.name -> m.desc)
+  protected def clsMethods(
+    ctx: Context,
+    forDispatch: Boolean,
+    // Does not apply to interface
+    includeParentInstMethodsOnClass: Boolean = false
+  ): Seq[Method] = {
+    if (!includeParentInstMethodsOnClass || ctx.cls.access.isAccessInterface) {
+      ctx.cls.methods.sortBy(m => m.name -> m.desc)
+    } else {
+      val methods = ctx.cls.methods ++
+        ctx.imports.classPath.allSuperTypes(ctx.cls.name).flatMap(_.cls.methods).filterNot(_.access.isAccessStatic)
+      // Make them distinct by name and desc
+      methods.groupBy(m => m.name -> m.desc).map(_._2.head).toSeq.sortBy(m => m.name -> m.desc)
+    }
+  }
 
   protected def signatureCompiler: SignatureCompiler = SignatureCompiler
 }

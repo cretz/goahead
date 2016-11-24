@@ -2,6 +2,9 @@ package rt
 
 import (
 	"os"
+	"runtime"
+	"fmt"
+	"strings"
 )
 
 func OSArgs() []Java__lang__String__Instance {
@@ -18,38 +21,34 @@ func NewString(str string) Java__lang__String__Instance {
 	return v
 }
 
-func PanicToThrowable(v interface{}) *Java__lang__Throwable__Impl {
+func PanicToThrowable(v interface{}) Java__lang__Throwable__Instance {
 	// TODO: stack traces
-	/*
 	switch v := v.(type) {
 	case nil:
-		println("NIL")
 		ret := Java__lang__Exception().New()
 		ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString("Unknown error"))
-		return (*Java__lang__Throwable__Instance)(ret)
-	case *Java__lang__Throwable__Instance:
-		println("THROW")
+		return ret
+	case Java__lang__Throwable__Instance:
 		return v
 	case runtime.Error:
-		println("RUNTIME")
-		if (v.Error() == "invalid memory address or nil pointer dereference") {
+		errStr := v.Error()
+		isNpe := errStr == "invalid memory address or nil pointer dereference" ||
+			(strings.HasPrefix(errStr, "interface conversion: ") && strings.Contains(errStr, " is nil, not "))
+		if isNpe {
 			ret := Java__lang__NullPointerException().New()
 			ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(v.Error()))
 			return ret
 		}
 		ret := Java__lang__VirtualMachineError().New()
-		ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(v.Error()))
+		ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(errStr))
 		return ret
 	case error:
-		println("ERR")
 		ret := Java__lang__Exception().New()
 		ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(v.Error()))
 		return ret
 	default:
-		println("OTHER")
 		ret := Java__lang__Exception().New()
 		ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(fmt.Sprintf("%v", v)))
 		return ret
-	}*/
-	panic("TODO")
+	}
 }

@@ -207,9 +207,13 @@ object BuildStubs extends BuildStubs {
   class StubCompiler(excludePatterns: Set[String], onlyIncludeClassRefs: Set[String]) extends GoAheadCompiler {
     override val classCompiler = new ClassCompiler {
 
-      override protected def clsMethods(ctx: ClassCompiler.Context, forDispatch: Boolean): Seq[Method] = {
+      override protected def clsMethods(
+        ctx: ClassCompiler.Context,
+        forDispatch: Boolean,
+        includeParentInstMethodsOnClass: Boolean = false
+      ): Seq[Method] = {
         val exclusions = if (forDispatch) Set.empty[String] else excludePatterns
-        super.clsMethods(ctx, forDispatch).filter { method =>
+        super.clsMethods(ctx, forDispatch, includeParentInstMethodsOnClass).filter { method =>
           if (method.access.isAccessPrivate ||
             exclusions.contains(ctx.cls.name + "." + method.name + method.desc)) false
           else if (onlyIncludeClassRefs.isEmpty) true
@@ -251,8 +255,9 @@ object BuildStubs extends BuildStubs {
         override def getLabelSets(node: Method) = Nil
         override def compileLabelSets(ctx: MethodCompiler.Context): (MethodCompiler.Context, Seq[Node.Statement]) = {
           // Only panic calls except for static init
+          val methodStr = s"${ctx.cls.name}.${ctx.method.name}${ctx.method.desc}"
           if (ctx.method.name == "<clinit>") ctx -> Seq(Node.EmptyStatement)
-          else ctx -> "panic".toIdent.call("Not Implemented".toLit.singleSeq).toStmt.singleSeq
+          else ctx -> "panic".toIdent.call(s"Not Implemented - $methodStr".toLit.singleSeq).toStmt.singleSeq
         }
 
         override def postProcessStatements(

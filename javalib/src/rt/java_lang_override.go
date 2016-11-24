@@ -6,6 +6,11 @@ func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____obj__Java_
 	this.Java__lang__Throwable__Impl.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
 }
 
+func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__Throwable__Instance) {
+	// TODO: being lazy, impl this properly one day
+	this.Java__lang__Throwable__Impl.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
+}
+
 func (this *Java__lang__NullPointerException__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
 	this.Java__lang__Throwable__Impl.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
 }
@@ -23,7 +28,12 @@ func (this *Java__lang__StringBuilder__Impl) Impl__ToString__desc____ret____obj_
 }
 
 func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(var1 Java__lang__String__Instance) Java__lang__StringBuilder__Instance {
-	this.Underlying += var1.(*Java__lang__String__Impl).Underlying
+	// TODO: put the auto-string conv stuff somewhere
+	if var1 == nil {
+		this.Underlying += "null"
+	} else {
+		this.Underlying += var1.(*Java__lang__String__Impl).Underlying
+	}
 	return this
 }
 

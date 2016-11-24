@@ -190,15 +190,23 @@ trait InsnCompiler extends Logger {
     // the dispatcher and we call it on that instance
     def subjectMethod(ctx: Context, subject: TypedExpression): (Context, Node.Expression) = {
       // Doesn't need to be the same desc if it's an init calling an init
-      val isSuperCall = subject.isThis && ctx.method.name == insn.name &&
+      val isThis = subject.isThis
+      val isSuperCall = isThis && ctx.method.name == insn.name &&
         (insn.name == "<init>" || ctx.method.desc == insn.desc) && insn.owner != ctx.cls.name
       subject.toExprNode(ctx, IType.getObjectType(insn.owner), noCasting = isSuperCall).leftMap { case (ctx, subject) =>
-        val methodExpr =
-          if (!isSuperCall) subject.sel(ctx.mangler.forwardMethodName(insn.name, insn.desc))
-          else subject.sel(ctx.mangler.implObjectName(insn.owner)).sel(
+        if (!isSuperCall && insn.name == "<init>" && !isThis) {
+          // Init methods are not on the inst interface, so we type assert first
+          // (the isThis check is because we can call init on ourselves)
+          ctx.implTypeExpr(insn.owner).leftMap { case (ctx, implType) =>
+            ctx -> subject.typeAssert(implType).sel(ctx.mangler.forwardMethodName(insn.name, insn.desc))
+          }
+        } else if (!isSuperCall) {
+          ctx -> subject.sel(ctx.mangler.forwardMethodName(insn.name, insn.desc))
+        } else {
+          ctx -> subject.sel(ctx.mangler.implObjectName(insn.owner)).sel(
             ctx.mangler.implMethodName(insn.name, insn.desc)
           )
-        ctx -> methodExpr
+        }
       }
     }
 

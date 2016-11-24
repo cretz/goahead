@@ -11,7 +11,7 @@ public class TryCatch {
                 System.out.println(test1.length());
                 System.out.println("try-inside-end");
             } catch (NullPointerException e) {
-                test2 = "catch-inside: " + e.getMessage();
+                test2 = "catch-inside: NPE";
                 throw new Exception(test2, e);
             }
             System.out.println("try-outside-end");

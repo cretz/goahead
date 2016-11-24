@@ -134,8 +134,8 @@ object CompilerSpec {
       TestCase(classOf[InheritanceConstructors]),
       TestCase(classOf[Interfaces]),
       TestCase(classOf[StaticFields]),
-      TestCase(classOf[SimpleInstance])
-//      TestCase(classOf[TryCatch])
+      TestCase(classOf[SimpleInstance]),
+      TestCase(classOf[TryCatch])
     )
   }
 

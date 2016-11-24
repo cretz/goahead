@@ -9,6 +9,8 @@ object AstDsl extends Logger {
 
   def assignExisting(left: Expression, right: Expression) = left.assignExisting(right)
 
+  def assignDefineMultiple(left: Seq[Expression], right: Seq[Expression]) = AssignStatement(left, Token.Define, right)
+
   def block(stmts: Seq[Statement]) = BlockStatement(stmts)
 
   def emptyInterface = InterfaceType(Nil)
@@ -53,6 +55,9 @@ object AstDsl extends Logger {
   def goto(label: String) = BranchStatement(Token.Goto, Some(label.toIdent))
 
   def id(name: String) = Identifier(name)
+
+  def iff(init: Option[Statement], cond: Expression, body: Seq[Statement]) =
+    IfStatement(init = init, condition = cond, body = block(body))
 
   def iff(init: Option[Statement], lhs: Expression, op: Token, rhs: Expression, body: Seq[Statement]) =
     IfStatement(
@@ -134,15 +139,21 @@ object AstDsl extends Logger {
 
     def addressOf = unary(Token.And)
 
+    def andAnd(right: Expression) = BinaryExpression(expr, Token.LAnd, right)
+
     def assignExisting(right: Expression) = AssignStatement(Seq(expr), Token.Assign, Seq(right))
 
     def assignDefine(right: Expression) = AssignStatement(Seq(expr), Token.Define, Seq(right))
 
     def call(args: Seq[Expression] = Nil) = CallExpression(expr, args)
 
+    def eql(right: Expression) = BinaryExpression(expr, Token.Eql, right)
+
     def inParens = ParenthesizedExpression(expr)
 
     def namelessField = Field(Nil, expr)
+
+    def orOr(right: Expression) = BinaryExpression(expr, Token.LOr, right)
 
     def ret = ReturnStatement(Seq(expr))
 

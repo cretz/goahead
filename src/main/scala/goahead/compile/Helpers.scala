@@ -60,7 +60,7 @@ object Helpers extends Logger {
     def typeToGoType(typ: IType): (T, Node.Expression) = {
       typ match {
         case IType.Simple(typ) => asmTypeToGoType(typ)
-        case IType.NullType | IType.Undefined | _: IType.UndefinedLabelInitialized => ctx -> emptyInterface.star
+        case IType.NullType | IType.Undefined | _: IType.UndefinedLabelInitialized => ctx -> emptyInterface
       }
     }
 
@@ -131,6 +131,25 @@ object Helpers extends Logger {
       case Some(locals) =>
         import scala.collection.JavaConverters._
         locals.asScala.map(IType.fromFrameVarType(ctx.cls, _))
+    }
+
+    def createVarDecl(vars: Seq[TypedExpression]): (T, Node.Statement) = {
+      // Collect them all and then send at once to a single var decl
+      val ctxAndNamedTypes = vars.foldLeft(ctx -> Seq.empty[(String, Node.Expression)]) {
+        case ((ctx, prevNamedTypes), localVar) =>
+          // We ignore undefined types here...
+          localVar.typ match {
+            case IType.Undefined =>
+              ctx -> prevNamedTypes
+            case _ =>
+              ctx.typeToGoType(localVar.typ).leftMap { case (ctx, typ) =>
+                ctx -> (prevNamedTypes :+ (localVar.name -> typ))
+              }
+          }
+      }
+      ctxAndNamedTypes.leftMap { case (ctx, namedTypes) =>
+        ctx -> varDecls(namedTypes: _*).toStmt
+      }
     }
   }
 
@@ -226,7 +245,6 @@ object Helpers extends Logger {
     def withTempVar[T](typ: IType, f: (MethodCompiler.Context, TypedExpression) => T) = {
       f.tupled(getTempVar(typ))
     }
-
   }
 
   implicit class RichAsmNode(val node: AbstractInsnNode) extends AnyVal {
@@ -287,6 +305,11 @@ object Helpers extends Logger {
         }
         case (oldTyp, newTyp) if oldTyp == newTyp =>
           ctx -> expr.expr
+        // Null type to object requires type cast
+        case (IType.NullType, newTyp: IType.Simple) if newTyp.isObject =>
+          ctx.typeToGoType(newTyp).leftMap { case (ctx, newTyp) =>
+            ctx -> expr.expr.typeAssert(newTyp)
+          }
         case (oldTyp, newTyp: IType.Simple)
           if newTyp.isObject && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp) =>
             ctx -> expr.expr
