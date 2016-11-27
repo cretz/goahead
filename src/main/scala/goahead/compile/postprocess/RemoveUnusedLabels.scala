@@ -1,11 +1,12 @@
 package goahead.compile
 package postprocess
 
+import goahead.Logger
 import goahead.ast.Node
 import goahead.ast.Node.Statement
 import goahead.compile.MethodCompiler._
 
-trait RemoveUnusedLabels extends PostProcessor {
+trait RemoveUnusedLabels extends PostProcessor with Logger {
   import AstDsl._
 
   override def apply(ctx: Context, stmts: Seq[Statement]): (Context, Seq[Statement]) = {
@@ -20,8 +21,8 @@ trait RemoveUnusedLabels extends PostProcessor {
         case labelStmt @ Node.LabeledStatement(Node.Identifier(label), innerStmt) =>
           val newInnerStmts = removeUnusedLabels(ctx, Seq(innerStmt))
           if (!ctx.usedLabels.contains(label)) stmts ++ newInnerStmts else {
-            require(newInnerStmts.length == 1)
-            stmts :+ labelStmt.copy(statement = newInnerStmts.head)
+            require(newInnerStmts.length <= 1)
+            stmts :+ labelStmt.copy(statement = newInnerStmts.headOption.getOrElse(block(Nil)))
           }
         case Node.BlockStatement(blockStmts) =>
           // If the block is empty, just remove it

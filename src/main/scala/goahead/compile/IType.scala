@@ -9,6 +9,11 @@ sealed trait IType {
   def isAssignableFrom(classPath: ClassPath, other: IType): Boolean
 
   def pretty: String
+
+  def asArray(dimensions: Int = 1): IType
+
+  // Fails is not array
+  def elementType: IType
 }
 object IType extends Logger {
   def apply(typ: Type): IType = Simple(typ)
@@ -25,10 +30,13 @@ object IType extends Logger {
 
   val VoidType = IType(Type.VOID_TYPE)
   val BooleanType = IType(Type.BOOLEAN_TYPE)
+  val ByteType = IType(Type.BYTE_TYPE)
+  val CharType = IType(Type.CHAR_TYPE)
   val IntType = IType(Type.INT_TYPE)
   val FloatType = IType(Type.FLOAT_TYPE)
   val DoubleType = IType(Type.DOUBLE_TYPE)
   val LongType = IType(Type.LONG_TYPE)
+  val ShortType = IType(Type.SHORT_TYPE)
 
   def fromFrameVarType(thisNode: Cls, typ: Any) = typ match {
     case Opcodes.TOP => Undefined
@@ -67,25 +75,42 @@ object IType extends Logger {
     def isInterface(classPath: ClassPath): Boolean = isObject && classPath.isInterface(typ.getInternalName)
 
     def isObject: Boolean = typ.getSort == Type.OBJECT
+    def isArray: Boolean = typ.getSort == Type.ARRAY
 
     override def pretty: String = typ.toString
+
+    override def asArray(dimensions: Int = 1): IType = {
+      val baseType = if (isArray) typ.getElementType else typ
+      Simple(Type.getType(("[" * dimensions) + baseType.getDescriptor))
+    }
+
+    override def elementType: IType = {
+      require(isArray, "Not array")
+      Simple(typ.getElementType)
+    }
   }
 
   case object NullType extends IType {
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = other
     override def isAssignableFrom(classPath: ClassPath, other: IType) = other == this
     override def pretty: String = "null"
+    override def asArray(dimensions: Int = 1): IType = sys.error("Cannot make array of null type")
+    override def elementType: IType = sys.error("No element type of null type")
   }
 
   case object Undefined extends IType {
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = other
     override def isAssignableFrom(classPath: ClassPath, other: IType) = other == this
     override def pretty: String = "<undefined>"
+    override def asArray(dimensions: Int = 1): IType = sys.error("Cannot make array of undefined type")
+    override def elementType: IType = sys.error("No element type of undefined type")
   }
 
   case class UndefinedLabelInitialized(label: Label) extends IType {
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = other
     override def isAssignableFrom(classPath: ClassPath, other: IType) = other == this
     override def pretty: String = s"<undefined on $label>"
+    override def asArray(dimensions: Int = 1): IType = sys.error("Cannot make array of undefined label type")
+    override def elementType: IType = sys.error("No element type of undefined label type")
   }
 }

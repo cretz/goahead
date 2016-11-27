@@ -4,6 +4,7 @@ import goahead.Logger
 import goahead.ast.Node
 import goahead.compile.AstDsl._
 import goahead.compile.Helpers._
+import goahead.compile.insn.InsnCompiler
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree._
 
@@ -47,22 +48,21 @@ trait MethodCompiler extends Logger {
   protected def getLabelSets(node: Method): Seq[LabelSet] = {
     val insns = node.instructions
     require(insns.headOption.exists(_.isInstanceOf[LabelNode]), "Expected label to be first insn")
-    val initial = LabelSet(
-      node = insns.head.asInstanceOf[LabelNode],
-      handlerOf = node.tryCatchBlocks.find(_.handler.getLabel == insns.head.asInstanceOf[LabelNode].getLabel)
-    )
+    val initial = LabelSet(insns.head.asInstanceOf[LabelNode])
     insns.foldLeft(Seq(initial)) { case (labelSets, insn) =>
       insn match {
         case n: FrameNode =>
           require(labelSets.last.newFrame.isEmpty, "Expected label to not have two frames")
           labelSets.init :+ labelSets.last.copy(newFrame = Some(n))
         case n: LineNumberNode =>
-          if (n.start.getLabel != labelSets.last.node.getLabel) labelSets
+          if (n.start.getLabel != labelSets.last.label.getLabel) labelSets
           else labelSets.init :+ labelSets.last.copy(line = Some(n.line))
         case n: LabelNode =>
-          labelSets :+ LabelSet(
-            node = n,
-            handlerOf = node.tryCatchBlocks.find(_.handler.getLabel == n.getLabel)
+          labelSets.init :+ labelSets.last.copy(nextLabel = Some(n)) :+ LabelSet(
+            label = n,
+            exceptionType = node.tryCatchBlocks.find(_.handler.getLabel == n).map { block =>
+              Option(block.`type`).getOrElse("java/lang/Throwable")
+            }
           )
         case n =>
           labelSets.init :+ labelSets.last.copy(insns = labelSets.last.insns :+ n)
@@ -81,7 +81,7 @@ trait MethodCompiler extends Logger {
   protected def compileLabelSet(ctx: Context, labelSet: LabelSet): (Context, Node.LabeledStatement) = {
     // Setup the frame
     logger.trace(s"Context before setup of ${labelSet.pretty}: ${ctx.prettyAppend}")
-    setupFrame(ctx, labelSet).map { ctx =>
+    setupLabel(ctx, labelSet).map { ctx =>
       // Build the code
       logger.trace(s"Context after setup of ${labelSet.pretty}: ${ctx.prettyAppend}")
       insnCompiler.compile(ctx, labelSet.insns).leftMap { case (ctx, stmts) =>
@@ -95,7 +95,7 @@ trait MethodCompiler extends Logger {
     }
   }
 
-  protected def setupFrame(origCtx: Context, labelSet: LabelSet): Context = {
+  protected def setupLabel(origCtx: Context, labelSet: LabelSet): Context = {
     labelSet.newFrame match {
       case None => origCtx
       case Some(frame) =>
@@ -103,7 +103,7 @@ trait MethodCompiler extends Logger {
         val initCtx = origCtx.copy(stack = Stack.empty)
         val ctx = origCtx.frameStack(frame).zipWithIndex.foldLeft(initCtx) {
           case (ctx, (stackType, index)) =>
-            val stackVar = TypedExpression.namedVar(s"${labelSet.node.getLabel}_stack$index", stackType)
+            val stackVar = TypedExpression.namedVar(s"${labelSet.label.getLabel}_stack$index", stackType)
             ctx.copy(functionVars = ctx.functionVars :+ stackVar).stackPushed(stackVar)
         }
 
@@ -139,13 +139,24 @@ trait MethodCompiler extends Logger {
     val (tempVarsOnStack, tempVarsNotOnStack) = ctx.localTempVars.partition(ctx.stack.items.contains)
     // Make local decls out of ones not on stack and not already in function vars
     val ctxAndVarDecl =
-    if (tempVarsNotOnStack.isEmpty) ctx -> None
-    else ctx.createVarDecl(tempVarsNotOnStack.filterNot(ctx.functionVars.contains)).leftMap(_ -> Some(_))
+      if (tempVarsNotOnStack.isEmpty) ctx -> None
+      else ctx.createVarDecl(tempVarsNotOnStack.filterNot(ctx.functionVars.contains)).leftMap(_ -> Some(_))
 
     // Leave the existing ones on the stack and in the temp set and add them to func-level vars
     ctxAndVarDecl.leftMap { case (ctx, maybeDecl) =>
-      ctx.copy(localTempVars = tempVarsOnStack, functionVars = ctx.functionVars ++ tempVarsOnStack) ->
-        labeled(labelSet.node.getLabel.toString, maybeDecl.toSeq ++ stmts)
+
+      // If the last insn of the label is not an unconditional jump, we need to prepare to
+      // fall through
+      val ctxAndAddOnStmts = labelSet.nextLabel match {
+        case Some(nextLabel) if !labelSet.insns.lastOption.exists(_.isUnconditionalJump) =>
+          ctx.prepareToGotoLabel(nextLabel)
+        case _ => ctx -> Nil
+      }
+
+      ctxAndAddOnStmts.leftMap { case (ctx, addOnStmts) =>
+        ctx.copy(localTempVars = tempVarsOnStack, functionVars = ctx.functionVars ++ tempVarsOnStack) ->
+          labeled(labelSet.label.getLabel.toString, maybeDecl.toSeq ++ stmts ++ addOnStmts)
+      }
     }
   }
 
@@ -168,13 +179,14 @@ object MethodCompiler extends MethodCompiler {
   type PostProcessor = (Context, Seq[Node.Statement]) => (Context, Seq[Node.Statement])
 
   case class LabelSet(
-    node: LabelNode,
+    label: LabelNode,
+    exceptionType: Option[String] = None,
     newFrame: Option[FrameNode] = None,
     line: Option[Int] = None,
     insns: Seq[AbstractInsnNode] = Nil,
-    handlerOf: Option[TryCatchBlockNode] = None
+    nextLabel: Option[LabelNode] = None
   ) {
-    def pretty: String = node.getLabel.toString + newFrame.map(" - " + _.pretty).getOrElse("")
+    def pretty: String = label.getLabel.toString + newFrame.map(" - " + _.pretty).getOrElse("")
     def endsWithUnconditionalJump = insns.nonEmpty && insns.last.isUnconditionalJump
   }
 

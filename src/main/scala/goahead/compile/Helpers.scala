@@ -21,6 +21,10 @@ object Helpers extends Logger {
   @inline
   def swallowException[T](f: => T): Unit = { f; () }
 
+  implicit class RichBoolean(val boolean: Boolean) extends AnyVal {
+    def toLit = if (boolean) "true".toIdent else "false".toIdent
+  }
+
   implicit class RichContextual[T <: Contextual[T]](val ctx: T) extends AnyVal {
 
     @inline
@@ -157,6 +161,14 @@ object Helpers extends Logger {
     def hasStaticInit = cls.methods.exists(_.name == "<clinit>")
   }
 
+  implicit class RichDouble(val double: Double) extends AnyVal {
+    def toLit: Node.BasicLiteral = Node.BasicLiteral(Node.Token.Float, double.toString)
+  }
+
+  implicit class RichFloat(val float: Float) extends AnyVal {
+    def toLit: Node.BasicLiteral = Node.BasicLiteral(Node.Token.Float, float.toString)
+  }
+
   implicit class RichInt(val int: Int) extends AnyVal {
     @inline
     def isAccess(access: Int) = (int & access) == access
@@ -168,6 +180,10 @@ object Helpers extends Logger {
 
     def toLit: Node.BasicLiteral = Node.BasicLiteral(Node.Token.Int, int.toString)
     def toTypedLit = TypedExpression(toLit, IType.IntType, cheapRef = true)
+  }
+
+  implicit class RichLong(val long: Long) extends AnyVal {
+    def toLit: Node.BasicLiteral = Node.BasicLiteral(Node.Token.Int, long.toString)
   }
 
   implicit class RichMethodContext(val ctx: MethodCompiler.Context) extends AnyVal {
@@ -245,6 +261,21 @@ object Helpers extends Logger {
     def withTempVar[T](typ: IType, f: (MethodCompiler.Context, TypedExpression) => T) = {
       f.tupled(getTempVar(typ))
     }
+
+    def prepareToGotoLabel(label: LabelNode): (MethodCompiler.Context, Seq[Node.Statement]) = {
+      // Set a stack vars in prep for the jump
+      ctx.sets.find(_.label.getLabel == label.getLabel).get.newFrame match {
+        case None => ctx -> Nil
+        case Some(otherFrame) =>
+          ctx -> ctx.frameStack(otherFrame).zipWithIndex.flatMap {
+            case (frameType, index) =>
+              // TODO: do we need to convert to anything here?
+              ctx.stack.items.lift(index).map { existingStackItem =>
+                s"${label.getLabel}_stack$index".toIdent.assignExisting(existingStackItem.expr)
+              }
+          }
+      }
+    }
   }
 
   implicit class RichAsmNode(val node: AbstractInsnNode) extends AnyVal {
@@ -285,8 +316,10 @@ object Helpers extends Logger {
   implicit class RichIType(val typ: IType) extends AnyVal {
     // We can safely ignore the ctx change here
     def zeroExpr = typ match {
-      case IType.IntType | IType.FloatType | IType.DoubleType | IType.LongType => 0.toLit
+      case IType.IntType | IType.FloatType | IType.DoubleType | IType.LongType | IType.ShortType => 0.toLit
       case IType.BooleanType => "false".toIdent
+      case IType.ByteType => "byte".toIdent.call(Seq(0.toLit))
+      case IType.CharType => "rune".toIdent.call(Seq(0.toLit))
       case _ => sys.error(s"Unrecognized type to get zero val for: $typ")
     }
   }
@@ -298,11 +331,18 @@ object Helpers extends Logger {
     def toExprNode[T <: Contextual[T]](ctx: T, newTyp: IType, noCasting: Boolean = false): (T, Node.Expression) = {
       logger.trace(s"Converting from '${expr.typ.pretty}' to '${newTyp.pretty}'")
       expr.typ -> newTyp match {
-        case (IType.IntType, IType.BooleanType) => expr.expr match {
-          case Node.BasicLiteral(Node.Token.Int, "1") => ctx -> "true".toIdent
-          case Node.BasicLiteral(Node.Token.Int, "0") => ctx -> "false".toIdent
-          case _ => sys.error(s"Unable to change int $expr to boolean")
-        }
+        case (IType.FloatType, IType.DoubleType) =>
+          ctx -> "float64".toIdent.call(Seq(expr.expr))
+        case (IType.IntType, IType.BooleanType) =>
+          // A simple x != 0
+          // TODO: should parenthesize?
+          ctx -> expr.expr.neq(0.toLit)
+        case (IType.IntType, IType.ByteType) =>
+          ctx -> "byte".toIdent.call(Seq(expr.expr))
+        case (IType.IntType, IType.CharType) =>
+          ctx -> "rune".toIdent.call(Seq(expr.expr))
+        case (IType.IntType, IType.ShortType) =>
+          ctx -> "int16".toIdent.call(Seq(expr.expr))
         case (oldTyp, newTyp) if oldTyp == newTyp =>
           ctx -> expr.expr
         // Null type to object requires type cast

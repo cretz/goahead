@@ -7,7 +7,8 @@ import java.util.concurrent.TimeUnit
 
 import com.google.common.io.CharStreams
 import goahead.ast.{Node, NodeWriter}
-import goahead.{BaseSpec, ExpectedOutput}
+import goahead.{BaseSpec, ExpectedOutput, Logger}
+import org.objectweb.asm.util.Printer
 import org.scalatest.BeforeAndAfterAll
 
 import scala.io.Source
@@ -23,7 +24,11 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     //"rt"
     "github.com/cretz/goahead/javalib/src/rt"
   )
-  override protected def afterAll() = javaRuntimeEntry.close()
+
+  override protected def afterAll() = {
+    javaRuntimeEntry.close()
+    showUsedOpcodes()
+  }
 
   // Run each test case as its own setup
   testCases.foreach{t => t.subject should behave like expected(t)}
@@ -33,10 +38,13 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
 
     // Set classpath with helper classes
     val classPath = ClassPath(testClasses :+ javaRuntimeEntry)
+    val testClassNames = testClasses.map(_.cls.name)
+
+    addUsedOpcodes(testClassNames, classPath)
 
     // Compile to one big file
     val compiled = GoAheadCompiler.compile(
-      testClasses.map(_.cls.name),
+      testClassNames,
       classPath
     ).copy(packageName = "spectest".toIdent)
 
@@ -125,10 +133,11 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   }
 }
 
-object CompilerSpec {
+object CompilerSpec extends Logger {
   val testCases = {
     import goahead.testclasses._
     Seq(
+      TestCase(classOf[ArrayTests]),
       TestCase(classOf[HelloWorld]),
       TestCase(classOf[Inheritance]),
       TestCase(classOf[InheritanceConstructors]),
@@ -136,6 +145,23 @@ object CompilerSpec {
       TestCase(classOf[StaticFields]),
       TestCase(classOf[SimpleInstance]),
       TestCase(classOf[TryCatch])
+    )
+  }
+
+  val knownOpcodes = Printer.OPCODES.zipWithIndex.
+    collect({ case (str, opcode) if str != null && str.nonEmpty => opcode -> str }).toMap
+  var usedOpcodes = Set.empty[Int]
+
+  def addUsedOpcodes(internalClassNames: Seq[String], classPath: ClassPath) = synchronized {
+    usedOpcodes ++= internalClassNames.flatMap { className =>
+      classPath.getFirstClass(className).cls.methods.flatMap(_.instructions.map(_.getOpcode).toSet).toSet
+    }
+  }
+
+  def showUsedOpcodes(): Unit = {
+    logger.info(s"Tested ${usedOpcodes.size} of ${knownOpcodes.size} opcodes")
+    logger.info(
+      "Opcodes untested: " + knownOpcodes.keySet.diff(usedOpcodes).map(knownOpcodes.apply).toSeq.sorted.mkString(",")
     )
   }
 
@@ -184,11 +210,10 @@ object CompilerSpec {
     }
   }
 
-  def runAndGetOutput(method: java.lang.reflect.Method): String = {
+  def runAndGetOutput(method: java.lang.reflect.Method): String = synchronized {
     val existingOut = System.out
     val byteStream = new ByteArrayOutputStream()
-    val printStream = new PrintStream(byteStream)
-    System.setOut(printStream)
+    System.setOut(new PrintStream(byteStream))
     try {
       method.invoke(null, Array.empty[String])
       System.out.flush()

@@ -120,10 +120,10 @@ trait ApplyTryCatch extends PostProcessor {
   }
 
   protected def getLabelNamesInRange(ctx: Context, start: LabelNode, endExclusive: LabelNode): Seq[String] = {
-    val startIndex = ctx.sets.indexWhere(_.node.getLabel == start.getLabel)
-    val endIndex = ctx.sets.lastIndexWhere(_.node.getLabel == endExclusive.getLabel)
+    val startIndex = ctx.sets.indexWhere(_.label.getLabel == start.getLabel)
+    val endIndex = ctx.sets.lastIndexWhere(_.label.getLabel == endExclusive.getLabel)
     require(startIndex != -1 && endIndex != -1 && startIndex <= endIndex)
-    ctx.sets.slice(startIndex, endIndex).map(_.node.getLabel.toString)
+    ctx.sets.slice(startIndex, endIndex).map(_.label.getLabel.toString)
   }
 
   protected def wrapAndInvokeStmts(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {

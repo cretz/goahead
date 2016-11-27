@@ -17,6 +17,8 @@ object AstDsl extends Logger {
 
   def emptyReturn = ReturnStatement(Nil)
 
+  def emptyStmt = EmptyStatement
+
   def emptyStruct = StructType(Nil)
 
   def field(str: String, typ: Expression) = Field(Seq(str.toIdent), typ)
@@ -151,7 +153,11 @@ object AstDsl extends Logger {
 
     def inParens = ParenthesizedExpression(expr)
 
+    def indexed(index: Expression) = IndexExpression(expr, index)
+
     def namelessField = Field(Nil, expr)
+
+    def neq(right: Expression) = BinaryExpression(expr, Token.Neq, right)
 
     def orOr(right: Expression) = BinaryExpression(expr, Token.LOr, right)
 
@@ -160,6 +166,8 @@ object AstDsl extends Logger {
     def toStmt = ExpressionStatement(expr)
 
     def sel(right: String) = SelectorExpression(expr, right.toIdent)
+
+    def sliceType = ArrayType(expr)
 
     def star = StarExpression(expr)
 

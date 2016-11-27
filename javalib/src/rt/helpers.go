@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"fmt"
 	"strings"
+	"math"
 )
 
 func OSArgs() []Java__lang__String__Instance {
@@ -19,6 +20,54 @@ func NewString(str string) Java__lang__String__Instance {
 	v := Java__lang__String().New()
 	v.Underlying = str
 	return v
+}
+
+func CompareDouble(left, right float64, nanMeansOne bool) int {
+	if left > right {
+		return 1
+	} else if left == right {
+		return 0
+	} else if left < right {
+		return -1
+	} else if math.IsNaN(left) || math.IsNaN(right) {
+		if nanMeansOne {
+			return 1
+		} else {
+			return -1
+		}
+	} else {
+		panic("Unexpected fall through")
+	}
+}
+
+func CompareFloat(left, right float32, nanMeansOne bool) int {
+	if left > right {
+		return 1
+	} else if left == right {
+		return 0
+	} else if left < right {
+		return -1
+	} else if math.IsNaN(float64(left)) || math.IsNaN(float64(right)) {
+		if nanMeansOne {
+			return 1
+		} else {
+			return -1
+		}
+	} else {
+		panic("Unexpected fall through")
+	}
+}
+
+func CompareLong(left, right int64) int {
+	if left > right {
+		return 1
+	} else if left == right {
+		return 0
+	} else if left < right {
+		return -1
+	} else {
+		panic("Unexpected fall through")
+	}
 }
 
 func PanicToThrowable(v interface{}) Java__lang__Throwable__Instance {

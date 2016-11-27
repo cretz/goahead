@@ -294,7 +294,9 @@ class NodeWriter {
 
   def appendIncrementDecrementStatement(stmt: IncrementDecrementStatement): this.type = __TODO__
 
-  def appendIndexExpression(expr: IndexExpression): this.type = __TODO__
+  def appendIndexExpression(expr: IndexExpression): this.type = {
+    appendExpression(expr.expression).append('[').appendExpression(expr.index).append(']')
+  }
 
   def appendInterfaceType(expr: InterfaceType): this.type = {
     if (expr.methods.isEmpty) append("interface{}")
@@ -317,7 +319,6 @@ class NodeWriter {
     // Actually, We need to remove one level of indention which is really just the last \t char
     builder.deleteCharAt(builder.length - 1)
     appendIdentifier(stmt.label).append(':').newline().appendStatement(stmt.statement)
-    this
   }
 
   def appendMapType(expr: MapType): this.type = __TODO__
