@@ -2,6 +2,10 @@ package rt
 
 import "strconv"
 
+func (this *Java__lang__ClassCastException__Impl) Impl__Instance_Init__desc____ret__V() {
+
+}
+
 func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
 	this.Java__lang__Throwable__Impl.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
 }

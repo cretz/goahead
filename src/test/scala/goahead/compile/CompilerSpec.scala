@@ -138,6 +138,7 @@ object CompilerSpec extends Logger {
     import goahead.testclasses._
     Seq(
       TestCase(classOf[ArrayTests]),
+      TestCase(classOf[Casts]),
       TestCase(classOf[HelloWorld]),
       TestCase(classOf[Inheritance]),
       TestCase(classOf[InheritanceConstructors]),

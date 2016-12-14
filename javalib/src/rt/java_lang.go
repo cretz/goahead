@@ -37,8 +37,8 @@ type Java__lang__AbstractStringBuilder__Dispatch interface {
 	Impl__Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__Object__Instance) Java__lang__AbstractStringBuilder__Instance
 	Impl__Append__desc____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance
 	Impl__Append__desc__Z__ret____obj__Java__lang__AbstractStringBuilder(bool) Java__lang__AbstractStringBuilder__Instance
-	Impl__Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder([]rune) Java__lang__AbstractStringBuilder__Instance
-	Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder([]rune, int, int) Java__lang__AbstractStringBuilder__Instance
+	Impl__Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(CharArray__Instance) Java__lang__AbstractStringBuilder__Instance
+	Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(CharArray__Instance, int, int) Java__lang__AbstractStringBuilder__Instance
 	Impl__AppendCodePoint__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	Impl__Capacity__desc____ret__I() int
 	Impl__CharAt__desc__I__ret__C(int) rune
@@ -49,8 +49,8 @@ type Java__lang__AbstractStringBuilder__Dispatch interface {
 	Impl__DeleteCharAt__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	Impl__EnsureCapacity__desc__I__ret__V(int)
 	Impl__ExpandCapacity__desc__I__ret__V(int)
-	Impl__GetChars__desc__I__I____arr__C__I__ret__V(int, int, []rune, int)
-	Impl__GetValue__desc____ret____arr__C() []rune
+	Impl__GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
+	Impl__GetValue__desc____ret____arr__C() CharArray__Instance
 	Impl__IndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	Impl__IndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
 	Impl__Insert__desc__I__C__ret____obj__Java__lang__AbstractStringBuilder(int, rune) Java__lang__AbstractStringBuilder__Instance
@@ -63,8 +63,8 @@ type Java__lang__AbstractStringBuilder__Dispatch interface {
 	Impl__Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(int, Java__lang__Object__Instance) Java__lang__AbstractStringBuilder__Instance
 	Impl__Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(int, Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance
 	Impl__Insert__desc__I__Z__ret____obj__Java__lang__AbstractStringBuilder(int, bool) Java__lang__AbstractStringBuilder__Instance
-	Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(int, []rune) Java__lang__AbstractStringBuilder__Instance
-	Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(int, []rune, int, int) Java__lang__AbstractStringBuilder__Instance
+	Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(int, CharArray__Instance) Java__lang__AbstractStringBuilder__Instance
+	Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(int, CharArray__Instance, int, int) Java__lang__AbstractStringBuilder__Instance
 	Impl__LastIndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	Impl__LastIndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
 	Impl__Length__desc____ret__I() int
@@ -144,11 +144,11 @@ func (this *Java__lang__AbstractStringBuilder__Impl) Append__desc__Z__ret____obj
 	return this._dispatch.Impl__Append__desc__Z__ret____obj__Java__lang__AbstractStringBuilder(var0)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 []rune) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Impl) Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 CharArray__Instance) Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Impl__Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 []rune, var1 int, var2 int) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Impl) Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 CharArray__Instance, var1 int, var2 int) Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0, var1, var2)
 }
 
@@ -192,11 +192,11 @@ func (this *Java__lang__AbstractStringBuilder__Impl) ExpandCapacity__desc__I__re
 	this._dispatch.Impl__ExpandCapacity__desc__I__ret__V(var0)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 []rune, var3 int) {
+func (this *Java__lang__AbstractStringBuilder__Impl) GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 CharArray__Instance, var3 int) {
 	this._dispatch.Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0, var1, var2, var3)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) GetValue__desc____ret____arr__C() []rune {
+func (this *Java__lang__AbstractStringBuilder__Impl) GetValue__desc____ret____arr__C() CharArray__Instance {
 	return this._dispatch.Impl__GetValue__desc____ret____arr__C()
 }
 
@@ -248,11 +248,11 @@ func (this *Java__lang__AbstractStringBuilder__Impl) Insert__desc__I__Z__ret____
 	return this._dispatch.Impl__Insert__desc__I__Z__ret____obj__Java__lang__AbstractStringBuilder(var0, var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 []rune) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Impl) Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 CharArray__Instance) Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0, var1)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 []rune, var2 int, var3 int) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Impl) Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 CharArray__Instance, var2 int, var3 int) Java__lang__AbstractStringBuilder__Instance {
 	return this._dispatch.Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0, var1, var2, var3)
 }
 
@@ -319,8 +319,8 @@ type Java__lang__AbstractStringBuilder__Instance interface {
 	Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__Object__Instance) Java__lang__AbstractStringBuilder__Instance
 	Append__desc____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance
 	Append__desc__Z__ret____obj__Java__lang__AbstractStringBuilder(bool) Java__lang__AbstractStringBuilder__Instance
-	Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder([]rune) Java__lang__AbstractStringBuilder__Instance
-	Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder([]rune, int, int) Java__lang__AbstractStringBuilder__Instance
+	Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(CharArray__Instance) Java__lang__AbstractStringBuilder__Instance
+	Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(CharArray__Instance, int, int) Java__lang__AbstractStringBuilder__Instance
 	AppendCodePoint__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	Capacity__desc____ret__I() int
 	CharAt__desc__I__ret__C(int) rune
@@ -334,9 +334,9 @@ type Java__lang__AbstractStringBuilder__Instance interface {
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
 	ExpandCapacity__desc__I__ret__V(int)
 	Finalize__desc____ret__V()
-	GetChars__desc__I__I____arr__C__I__ret__V(int, int, []rune, int)
+	GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	GetValue__desc____ret____arr__C() []rune
+	GetValue__desc____ret____arr__C() CharArray__Instance
 	HashCode__desc____ret__I() int
 	IndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	IndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
@@ -350,8 +350,8 @@ type Java__lang__AbstractStringBuilder__Instance interface {
 	Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__AbstractStringBuilder(int, Java__lang__Object__Instance) Java__lang__AbstractStringBuilder__Instance
 	Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__AbstractStringBuilder(int, Java__lang__String__Instance) Java__lang__AbstractStringBuilder__Instance
 	Insert__desc__I__Z__ret____obj__Java__lang__AbstractStringBuilder(int, bool) Java__lang__AbstractStringBuilder__Instance
-	Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(int, []rune) Java__lang__AbstractStringBuilder__Instance
-	Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(int, []rune, int, int) Java__lang__AbstractStringBuilder__Instance
+	Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(int, CharArray__Instance) Java__lang__AbstractStringBuilder__Instance
+	Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(int, CharArray__Instance, int, int) Java__lang__AbstractStringBuilder__Instance
 	LastIndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	LastIndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
 	Length__desc____ret__I() int
@@ -372,15 +372,15 @@ type Java__lang__AbstractStringBuilder__Instance interface {
 	Wait__desc__J__I__ret__V(int64, int)
 	FieldGet__Java__lang__AbstractStringBuilder__Count() int
 	FieldSet__Java__lang__AbstractStringBuilder__Count(v int)
-	FieldGet__Java__lang__AbstractStringBuilder__Value() []rune
-	FieldSet__Java__lang__AbstractStringBuilder__Value(v []rune)
+	FieldGet__Java__lang__AbstractStringBuilder__Value() CharArray__Instance
+	FieldSet__Java__lang__AbstractStringBuilder__Value(v CharArray__Instance)
 }
 
 type Java__lang__AbstractStringBuilder__Impl struct {
 	*Java__lang__Object__Impl
 	_dispatch Java__lang__AbstractStringBuilder__Dispatch
 	Count     int
-	Value     []rune
+	Value     CharArray__Instance
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) FieldGet__Java__lang__AbstractStringBuilder__Count() int {
@@ -391,11 +391,11 @@ func (this *Java__lang__AbstractStringBuilder__Impl) FieldSet__Java__lang__Abstr
 	this.Count = v
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) FieldGet__Java__lang__AbstractStringBuilder__Value() []rune {
+func (this *Java__lang__AbstractStringBuilder__Impl) FieldGet__Java__lang__AbstractStringBuilder__Value() CharArray__Instance {
 	return this.Value
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) FieldSet__Java__lang__AbstractStringBuilder__Value(v []rune) {
+func (this *Java__lang__AbstractStringBuilder__Impl) FieldSet__Java__lang__AbstractStringBuilder__Value(v CharArray__Instance) {
 	this.Value = v
 }
 
@@ -463,11 +463,11 @@ func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc__Z__ret_
 	panic("Not Implemented - java/lang/AbstractStringBuilder.append(Z)Ljava/lang/AbstractStringBuilder;")
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 []rune) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 CharArray__Instance) Java__lang__AbstractStringBuilder__Instance {
 	panic("Not Implemented - java/lang/AbstractStringBuilder.append([C)Ljava/lang/AbstractStringBuilder;")
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 []rune, var1 int, var2 int) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 CharArray__Instance, var1 int, var2 int) Java__lang__AbstractStringBuilder__Instance {
 	panic("Not Implemented - java/lang/AbstractStringBuilder.append([CII)Ljava/lang/AbstractStringBuilder;")
 }
 
@@ -511,11 +511,11 @@ func (this *Java__lang__AbstractStringBuilder__Impl) Impl__ExpandCapacity__desc_
 	panic("Not Implemented - java/lang/AbstractStringBuilder.expandCapacity(I)V")
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 []rune, var3 int) {
+func (this *Java__lang__AbstractStringBuilder__Impl) Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 CharArray__Instance, var3 int) {
 	panic("Not Implemented - java/lang/AbstractStringBuilder.getChars(II[CI)V")
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Impl__GetValue__desc____ret____arr__C() []rune {
+func (this *Java__lang__AbstractStringBuilder__Impl) Impl__GetValue__desc____ret____arr__C() CharArray__Instance {
 	panic("Not Implemented - java/lang/AbstractStringBuilder.getValue()[C")
 }
 
@@ -567,11 +567,11 @@ func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I__Z__r
 	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(IZ)Ljava/lang/AbstractStringBuilder;")
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 []rune) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 CharArray__Instance) Java__lang__AbstractStringBuilder__Instance {
 	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(I[C)Ljava/lang/AbstractStringBuilder;")
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 []rune, var2 int, var3 int) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 CharArray__Instance, var2 int, var3 int) Java__lang__AbstractStringBuilder__Instance {
 	panic("Not Implemented - java/lang/AbstractStringBuilder.insert(I[CII)Ljava/lang/AbstractStringBuilder;")
 }
 
@@ -664,10 +664,10 @@ func (this *Java__lang__Class__Static) New() *Java__lang__Class__Impl {
 }
 
 func (this *Java__lang__Class__Static) Impl__Static_Init__desc____ret__V() {
-
+	
 }
 
-func (this *Java__lang__Class__Static) Impl__Access__dollar__300__desc____arr____obj__Java__lang__Object____arr____obj__Java__lang__Object__ret__Z(var0 []Java__lang__Object__Instance, var1 []Java__lang__Object__Instance) bool {
+func (this *Java__lang__Class__Static) Impl__Access__dollar__300__desc____arr____obj__Java__lang__Object____arr____obj__Java__lang__Object__ret__Z(var0 ObjectArray__Instance, var1 ObjectArray__Instance) bool {
 	panic("Not Implemented - java/lang/Class.access$300([Ljava/lang/Object;[Ljava/lang/Object;)Z")
 }
 
@@ -693,21 +693,21 @@ type Java__lang__Class__Dispatch interface {
 	Impl__Cast__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance) Java__lang__Object__Instance
 	Impl__DesiredAssertionStatus__desc____ret__Z() bool
 	Impl__GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	Impl__GetClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	Impl__GetClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	Impl__GetComponentType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	Impl__GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	Impl__GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	Impl__GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	Impl__GetEnclosingClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	Impl__GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
-	Impl__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
-	Impl__GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() []Java__lang__reflect__Type__Instance
+	Impl__GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
+	Impl__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
+	Impl__GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() ObjectArray__Instance
 	Impl__GetGenericSuperclass__desc____ret____obj__Java__lang__reflect__Type() Java__lang__reflect__Type__Instance
-	Impl__GetInterfaces__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	Impl__GetInterfaces__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	Impl__GetModifiers__desc____ret__I() int
 	Impl__GetName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	Impl__GetRawAnnotations__desc____ret____arr__B() []byte
-	Impl__GetRawTypeAnnotations__desc____ret____arr__B() []byte
-	Impl__GetSigners__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
+	Impl__GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance
+	Impl__GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance
+	Impl__GetSigners__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
 	Impl__GetSimpleName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Impl__GetSuperclass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	Impl__GetTypeName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
@@ -724,7 +724,7 @@ type Java__lang__Class__Dispatch interface {
 	Impl__IsPrimitive__desc____ret__Z() bool
 	Impl__IsSynthetic__desc____ret__Z() bool
 	Impl__NewInstance__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Impl__SetSigners__desc____arr____obj__Java__lang__Object__ret__V([]Java__lang__Object__Instance)
+	Impl__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(ObjectArray__Instance)
 	Impl__ToGenericString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 }
 
@@ -749,7 +749,7 @@ func (this *Java__lang__Class__Impl) GetCanonicalName__desc____ret____obj__Java_
 	return this._dispatch.Impl__GetCanonicalName__desc____ret____obj__Java__lang__String()
 }
 
-func (this *Java__lang__Class__Impl) GetClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+func (this *Java__lang__Class__Impl) GetClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
 	return this._dispatch.Impl__GetClasses__desc____ret____arr____obj__Java__lang__Class()
 }
 
@@ -757,7 +757,7 @@ func (this *Java__lang__Class__Impl) GetComponentType__desc____ret____obj__Java_
 	return this._dispatch.Impl__GetComponentType__desc____ret____obj__Java__lang__Class()
 }
 
-func (this *Java__lang__Class__Impl) GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+func (this *Java__lang__Class__Impl) GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
 	return this._dispatch.Impl__GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class()
 }
 
@@ -769,15 +769,15 @@ func (this *Java__lang__Class__Impl) GetEnclosingClass__desc____ret____obj__Java
 	return this._dispatch.Impl__GetEnclosingClass__desc____ret____obj__Java__lang__Class()
 }
 
-func (this *Java__lang__Class__Impl) GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+func (this *Java__lang__Class__Impl) GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance {
 	return this._dispatch.Impl__GetEnumConstants__desc____ret____arr____obj__Java__lang__Object()
 }
 
-func (this *Java__lang__Class__Impl) GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+func (this *Java__lang__Class__Impl) GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance {
 	return this._dispatch.Impl__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object()
 }
 
-func (this *Java__lang__Class__Impl) GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() []Java__lang__reflect__Type__Instance {
+func (this *Java__lang__Class__Impl) GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() ObjectArray__Instance {
 	return this._dispatch.Impl__GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type()
 }
 
@@ -785,7 +785,7 @@ func (this *Java__lang__Class__Impl) GetGenericSuperclass__desc____ret____obj__J
 	return this._dispatch.Impl__GetGenericSuperclass__desc____ret____obj__Java__lang__reflect__Type()
 }
 
-func (this *Java__lang__Class__Impl) GetInterfaces__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+func (this *Java__lang__Class__Impl) GetInterfaces__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
 	return this._dispatch.Impl__GetInterfaces__desc____ret____arr____obj__Java__lang__Class()
 }
 
@@ -797,15 +797,15 @@ func (this *Java__lang__Class__Impl) GetName__desc____ret____obj__Java__lang__St
 	return this._dispatch.Impl__GetName__desc____ret____obj__Java__lang__String()
 }
 
-func (this *Java__lang__Class__Impl) GetRawAnnotations__desc____ret____arr__B() []byte {
+func (this *Java__lang__Class__Impl) GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance {
 	return this._dispatch.Impl__GetRawAnnotations__desc____ret____arr__B()
 }
 
-func (this *Java__lang__Class__Impl) GetRawTypeAnnotations__desc____ret____arr__B() []byte {
+func (this *Java__lang__Class__Impl) GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance {
 	return this._dispatch.Impl__GetRawTypeAnnotations__desc____ret____arr__B()
 }
 
-func (this *Java__lang__Class__Impl) GetSigners__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+func (this *Java__lang__Class__Impl) GetSigners__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance {
 	return this._dispatch.Impl__GetSigners__desc____ret____arr____obj__Java__lang__Object()
 }
 
@@ -873,7 +873,7 @@ func (this *Java__lang__Class__Impl) NewInstance__desc____ret____obj__Java__lang
 	return this._dispatch.Impl__NewInstance__desc____ret____obj__Java__lang__Object()
 }
 
-func (this *Java__lang__Class__Impl) SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0 []Java__lang__Object__Instance) {
+func (this *Java__lang__Class__Impl) SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0 ObjectArray__Instance) {
 	this._dispatch.Impl__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0)
 }
 
@@ -890,21 +890,21 @@ type Java__lang__Class__Instance interface {
 	Finalize__desc____ret__V()
 	GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	GetClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	GetClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	GetComponentType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetEnclosingClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
-	GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
-	GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() []Java__lang__reflect__Type__Instance
+	GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
+	GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
+	GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() ObjectArray__Instance
 	GetGenericSuperclass__desc____ret____obj__Java__lang__reflect__Type() Java__lang__reflect__Type__Instance
-	GetInterfaces__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance
+	GetInterfaces__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	GetModifiers__desc____ret__I() int
 	GetName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetRawAnnotations__desc____ret____arr__B() []byte
-	GetRawTypeAnnotations__desc____ret____arr__B() []byte
-	GetSigners__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance
+	GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance
+	GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance
+	GetSigners__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
 	GetSimpleName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetSuperclass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetTypeName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
@@ -924,7 +924,7 @@ type Java__lang__Class__Instance interface {
 	NewInstance__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Notify__desc____ret__V()
 	NotifyAll__desc____ret__V()
-	SetSigners__desc____arr____obj__Java__lang__Object__ret__V([]Java__lang__Object__Instance)
+	SetSigners__desc____arr____obj__Java__lang__Object__ret__V(ObjectArray__Instance)
 	ToGenericString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Wait__desc____ret__V()
@@ -953,7 +953,7 @@ func (this *Java__lang__Class__Impl) Impl__GetCanonicalName__desc____ret____obj_
 	panic("Not Implemented - java/lang/Class.getCanonicalName()Ljava/lang/String;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+func (this *Java__lang__Class__Impl) Impl__GetClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
 	panic("Not Implemented - java/lang/Class.getClasses()[Ljava/lang/Class;")
 }
 
@@ -961,7 +961,7 @@ func (this *Java__lang__Class__Impl) Impl__GetComponentType__desc____ret____obj_
 	panic("Not Implemented - java/lang/Class.getComponentType()Ljava/lang/Class;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+func (this *Java__lang__Class__Impl) Impl__GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
 	panic("Not Implemented - java/lang/Class.getDeclaredClasses()[Ljava/lang/Class;")
 }
 
@@ -973,15 +973,15 @@ func (this *Java__lang__Class__Impl) Impl__GetEnclosingClass__desc____ret____obj
 	panic("Not Implemented - java/lang/Class.getEnclosingClass()Ljava/lang/Class;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+func (this *Java__lang__Class__Impl) Impl__GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance {
 	panic("Not Implemented - java/lang/Class.getEnumConstants()[Ljava/lang/Object;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+func (this *Java__lang__Class__Impl) Impl__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance {
 	panic("Not Implemented - java/lang/Class.getEnumConstantsShared()[Ljava/lang/Object;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() []Java__lang__reflect__Type__Instance {
+func (this *Java__lang__Class__Impl) Impl__GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() ObjectArray__Instance {
 	panic("Not Implemented - java/lang/Class.getGenericInterfaces()[Ljava/lang/reflect/Type;")
 }
 
@@ -989,7 +989,7 @@ func (this *Java__lang__Class__Impl) Impl__GetGenericSuperclass__desc____ret____
 	panic("Not Implemented - java/lang/Class.getGenericSuperclass()Ljava/lang/reflect/Type;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetInterfaces__desc____ret____arr____obj__Java__lang__Class() []Java__lang__Class__Instance {
+func (this *Java__lang__Class__Impl) Impl__GetInterfaces__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
 	panic("Not Implemented - java/lang/Class.getInterfaces()[Ljava/lang/Class;")
 }
 
@@ -1001,15 +1001,15 @@ func (this *Java__lang__Class__Impl) Impl__GetName__desc____ret____obj__Java__la
 	panic("Not Implemented - java/lang/Class.getName()Ljava/lang/String;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetRawAnnotations__desc____ret____arr__B() []byte {
+func (this *Java__lang__Class__Impl) Impl__GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance {
 	panic("Not Implemented - java/lang/Class.getRawAnnotations()[B")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetRawTypeAnnotations__desc____ret____arr__B() []byte {
+func (this *Java__lang__Class__Impl) Impl__GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance {
 	panic("Not Implemented - java/lang/Class.getRawTypeAnnotations()[B")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetSigners__desc____ret____arr____obj__Java__lang__Object() []Java__lang__Object__Instance {
+func (this *Java__lang__Class__Impl) Impl__GetSigners__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance {
 	panic("Not Implemented - java/lang/Class.getSigners()[Ljava/lang/Object;")
 }
 
@@ -1077,7 +1077,7 @@ func (this *Java__lang__Class__Impl) Impl__NewInstance__desc____ret____obj__Java
 	panic("Not Implemented - java/lang/Class.newInstance()Ljava/lang/Object;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0 []Java__lang__Object__Instance) {
+func (this *Java__lang__Class__Impl) Impl__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0 ObjectArray__Instance) {
 	panic("Not Implemented - java/lang/Class.setSigners([Ljava/lang/Object;)V")
 }
 
@@ -1087,6 +1087,64 @@ func (this *Java__lang__Class__Impl) Impl__ToGenericString__desc____ret____obj__
 
 func (this *Java__lang__Class__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
 	panic("Not Implemented - java/lang/Class.toString()Ljava/lang/String;")
+}
+
+type Java__lang__ClassCastException__Static struct{}
+
+var Java__lang__ClassCastException__Var Java__lang__ClassCastException__Static
+
+func Java__lang__ClassCastException() *Java__lang__ClassCastException__Static {
+	return &Java__lang__ClassCastException__Var
+}
+
+func (this *Java__lang__ClassCastException__Static) New() *Java__lang__ClassCastException__Impl {
+	v := &Java__lang__ClassCastException__Impl{
+		Java__lang__RuntimeException__Impl: Java__lang__RuntimeException().New(),
+	}
+	v.Java__lang__ClassCastException__InitDispatch(v)
+	return v
+}
+
+type Java__lang__ClassCastException__Dispatch interface {
+	Java__lang__RuntimeException__Dispatch
+}
+
+func (this *Java__lang__ClassCastException__Impl) Java__lang__ClassCastException__InitDispatch(v Java__lang__ClassCastException__Dispatch) {
+	this.Java__lang__RuntimeException__Impl.Java__lang__RuntimeException__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__ClassCastException__Instance interface {
+	AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	FillInStackTrace__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	Finalize__desc____ret__V()
+	GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetStackTraceDepth__desc____ret__I() int
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
+	HashCode__desc____ret__I() int
+	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	PrintStackTrace__desc____ret__V()
+	PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(Java__io__PrintStream__Instance)
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+}
+
+type Java__lang__ClassCastException__Impl struct {
+	*Java__lang__RuntimeException__Impl
+	_dispatch Java__lang__ClassCastException__Dispatch
+}
+
+func (this *Java__lang__ClassCastException__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	panic("Not Implemented - java/lang/ClassCastException.<init>(Ljava/lang/String;)V")
 }
 
 type Java__lang__Comparable__Instance interface {
@@ -1131,7 +1189,7 @@ type Java__lang__Error__Instance interface {
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetStackTraceDepth__desc____ret__I() int
-	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
 	Notify__desc____ret__V()
@@ -1207,7 +1265,7 @@ type Java__lang__Exception__Instance interface {
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetStackTraceDepth__desc____ret__I() int
-	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
 	Notify__desc____ret__V()
@@ -1273,7 +1331,7 @@ type Java__lang__NegativeArraySizeException__Instance interface {
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetStackTraceDepth__desc____ret__I() int
-	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
 	Notify__desc____ret__V()
@@ -1331,7 +1389,7 @@ type Java__lang__NullPointerException__Instance interface {
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetStackTraceDepth__desc____ret__I() int
-	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
 	Notify__desc____ret__V()
@@ -1371,7 +1429,7 @@ func (this *Java__lang__Object__Static) New() *Java__lang__Object__Impl {
 }
 
 func (this *Java__lang__Object__Static) Impl__Static_Init__desc____ret__V() {
-
+	
 }
 
 type Java__lang__Object__Dispatch interface {
@@ -1541,7 +1599,7 @@ type Java__lang__RuntimeException__Instance interface {
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetStackTraceDepth__desc____ret__I() int
-	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
 	Notify__desc____ret__V()
@@ -1599,38 +1657,38 @@ func (this *Java__lang__String__Static) New() *Java__lang__String__Impl {
 }
 
 func (this *Java__lang__String__Static) Impl__Static_Init__desc____ret__V() {
-
+	
 }
 
-func (this *Java__lang__String__Static) Impl__CopyValueOf__desc____arr__C__ret____obj__Java__lang__String(var0 []rune) Java__lang__String__Instance {
+func (this *Java__lang__String__Static) Impl__CopyValueOf__desc____arr__C__ret____obj__Java__lang__String(var0 CharArray__Instance) Java__lang__String__Instance {
 	panic("Not Implemented - java/lang/String.copyValueOf([C)Ljava/lang/String;")
 }
 
-func (this *Java__lang__String__Static) Impl__CopyValueOf__desc____arr__C__I__I__ret____obj__Java__lang__String(var0 []rune, var1 int, var2 int) Java__lang__String__Instance {
+func (this *Java__lang__String__Static) Impl__CopyValueOf__desc____arr__C__I__I__ret____obj__Java__lang__String(var0 CharArray__Instance, var1 int, var2 int) Java__lang__String__Instance {
 	panic("Not Implemented - java/lang/String.copyValueOf([CII)Ljava/lang/String;")
 }
 
-func (this *Java__lang__String__Static) Impl__Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 []Java__lang__Object__Instance) Java__lang__String__Instance {
+func (this *Java__lang__String__Static) Impl__Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 ObjectArray__Instance) Java__lang__String__Instance {
 	panic("Not Implemented - java/lang/String.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;")
 }
 
-func (this *Java__lang__String__Static) Impl__IndexOf__desc____arr__C__I__I____obj__Java__lang__String__I__ret__I(var0 []rune, var1 int, var2 int, var3 Java__lang__String__Instance, var4 int) int {
+func (this *Java__lang__String__Static) Impl__IndexOf__desc____arr__C__I__I____obj__Java__lang__String__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 Java__lang__String__Instance, var4 int) int {
 	panic("Not Implemented - java/lang/String.indexOf([CIILjava/lang/String;I)I")
 }
 
-func (this *Java__lang__String__Static) Impl__IndexOf__desc____arr__C__I__I____arr__C__I__I__I__ret__I(var0 []rune, var1 int, var2 int, var3 []rune, var4 int, var5 int, var6 int) int {
+func (this *Java__lang__String__Static) Impl__IndexOf__desc____arr__C__I__I____arr__C__I__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 CharArray__Instance, var4 int, var5 int, var6 int) int {
 	panic("Not Implemented - java/lang/String.indexOf([CII[CIII)I")
 }
 
-func (this *Java__lang__String__Static) Impl__Join__desc____obj__Java__lang__CharSequence____arr____obj__Java__lang__CharSequence__ret____obj__Java__lang__String(var0 Java__lang__CharSequence__Instance, var1 []Java__lang__CharSequence__Instance) Java__lang__String__Instance {
+func (this *Java__lang__String__Static) Impl__Join__desc____obj__Java__lang__CharSequence____arr____obj__Java__lang__CharSequence__ret____obj__Java__lang__String(var0 Java__lang__CharSequence__Instance, var1 ObjectArray__Instance) Java__lang__String__Instance {
 	panic("Not Implemented - java/lang/String.join(Ljava/lang/CharSequence;[Ljava/lang/CharSequence;)Ljava/lang/String;")
 }
 
-func (this *Java__lang__String__Static) Impl__LastIndexOf__desc____arr__C__I__I____obj__Java__lang__String__I__ret__I(var0 []rune, var1 int, var2 int, var3 Java__lang__String__Instance, var4 int) int {
+func (this *Java__lang__String__Static) Impl__LastIndexOf__desc____arr__C__I__I____obj__Java__lang__String__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 Java__lang__String__Instance, var4 int) int {
 	panic("Not Implemented - java/lang/String.lastIndexOf([CIILjava/lang/String;I)I")
 }
 
-func (this *Java__lang__String__Static) Impl__LastIndexOf__desc____arr__C__I__I____arr__C__I__I__I__ret__I(var0 []rune, var1 int, var2 int, var3 []rune, var4 int, var5 int, var6 int) int {
+func (this *Java__lang__String__Static) Impl__LastIndexOf__desc____arr__C__I__I____arr__C__I__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 CharArray__Instance, var4 int, var5 int, var6 int) int {
 	panic("Not Implemented - java/lang/String.lastIndexOf([CII[CIII)I")
 }
 
@@ -1662,11 +1720,11 @@ func (this *Java__lang__String__Static) Impl__ValueOf__desc__Z__ret____obj__Java
 	panic("Not Implemented - java/lang/String.valueOf(Z)Ljava/lang/String;")
 }
 
-func (this *Java__lang__String__Static) Impl__ValueOf__desc____arr__C__ret____obj__Java__lang__String(var0 []rune) Java__lang__String__Instance {
+func (this *Java__lang__String__Static) Impl__ValueOf__desc____arr__C__ret____obj__Java__lang__String(var0 CharArray__Instance) Java__lang__String__Instance {
 	panic("Not Implemented - java/lang/String.valueOf([C)Ljava/lang/String;")
 }
 
-func (this *Java__lang__String__Static) Impl__ValueOf__desc____arr__C__I__I__ret____obj__Java__lang__String(var0 []rune, var1 int, var2 int) Java__lang__String__Instance {
+func (this *Java__lang__String__Static) Impl__ValueOf__desc____arr__C__I__I__ret____obj__Java__lang__String(var0 CharArray__Instance, var1 int, var2 int) Java__lang__String__Instance {
 	panic("Not Implemented - java/lang/String.valueOf([CII)Ljava/lang/String;")
 }
 
@@ -1674,16 +1732,16 @@ type Java__lang__String__Dispatch interface {
 	Java__lang__Object__Dispatch
 	Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
 	Impl__Instance_Init__desc____obj__Java__lang__StringBuilder__ret__V(Java__lang__StringBuilder__Instance)
-	Impl__Instance_Init__desc____arr__B__ret__V([]byte)
-	Impl__Instance_Init__desc____arr__B__I__ret__V([]byte, int)
-	Impl__Instance_Init__desc____arr__B__I__I__ret__V([]byte, int, int)
-	Impl__Instance_Init__desc____arr__B__I__I__I__ret__V([]byte, int, int, int)
-	Impl__Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V([]byte, int, int, Java__lang__String__Instance)
-	Impl__Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V([]byte, Java__lang__String__Instance)
-	Impl__Instance_Init__desc____arr__C__ret__V([]rune)
-	Impl__Instance_Init__desc____arr__C__I__I__ret__V([]rune, int, int)
-	Impl__Instance_Init__desc____arr__C__Z__ret__V([]rune, bool)
-	Impl__Instance_Init__desc____arr__I__I__I__ret__V([]int, int, int)
+	Impl__Instance_Init__desc____arr__B__ret__V(ByteArray__Instance)
+	Impl__Instance_Init__desc____arr__B__I__ret__V(ByteArray__Instance, int)
+	Impl__Instance_Init__desc____arr__B__I__I__ret__V(ByteArray__Instance, int, int)
+	Impl__Instance_Init__desc____arr__B__I__I__I__ret__V(ByteArray__Instance, int, int, int)
+	Impl__Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V(ByteArray__Instance, int, int, Java__lang__String__Instance)
+	Impl__Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V(ByteArray__Instance, Java__lang__String__Instance)
+	Impl__Instance_Init__desc____arr__C__ret__V(CharArray__Instance)
+	Impl__Instance_Init__desc____arr__C__I__I__ret__V(CharArray__Instance, int, int)
+	Impl__Instance_Init__desc____arr__C__Z__ret__V(CharArray__Instance, bool)
+	Impl__Instance_Init__desc____arr__I__I__I__ret__V(IntArray__Instance, int, int)
 	Impl__CharAt__desc__I__ret__C(int) rune
 	Impl__CodePointAt__desc__I__ret__I(int) int
 	Impl__CodePointBefore__desc__I__ret__I(int) int
@@ -1696,11 +1754,11 @@ type Java__lang__String__Dispatch interface {
 	Impl__ContentEquals__desc____obj__Java__lang__CharSequence__ret__Z(Java__lang__CharSequence__Instance) bool
 	Impl__EndsWith__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
 	Impl__EqualsIgnoreCase__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
-	Impl__GetBytes__desc____ret____arr__B() []byte
-	Impl__GetBytes__desc__I__I____arr__B__I__ret__V(int, int, []byte, int)
-	Impl__GetBytes__desc____obj__Java__lang__String__ret____arr__B(Java__lang__String__Instance) []byte
-	Impl__GetChars__desc__I__I____arr__C__I__ret__V(int, int, []rune, int)
-	Impl__GetChars__desc____arr__C__I__ret__V([]rune, int)
+	Impl__GetBytes__desc____ret____arr__B() ByteArray__Instance
+	Impl__GetBytes__desc__I__I____arr__B__I__ret__V(int, int, ByteArray__Instance, int)
+	Impl__GetBytes__desc____obj__Java__lang__String__ret____arr__B(Java__lang__String__Instance) ByteArray__Instance
+	Impl__GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
+	Impl__GetChars__desc____arr__C__I__ret__V(CharArray__Instance, int)
 	Impl__IndexOf__desc__I__ret__I(int) int
 	Impl__IndexOf__desc__I__I__ret__I(int, int) int
 	Impl__IndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
@@ -1720,14 +1778,14 @@ type Java__lang__String__Dispatch interface {
 	Impl__Replace__desc____obj__Java__lang__CharSequence____obj__Java__lang__CharSequence__ret____obj__Java__lang__String(Java__lang__CharSequence__Instance, Java__lang__CharSequence__Instance) Java__lang__String__Instance
 	Impl__ReplaceAll__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(Java__lang__String__Instance, Java__lang__String__Instance) Java__lang__String__Instance
 	Impl__ReplaceFirst__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(Java__lang__String__Instance, Java__lang__String__Instance) Java__lang__String__Instance
-	Impl__Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(Java__lang__String__Instance) []Java__lang__String__Instance
-	Impl__Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(Java__lang__String__Instance, int) []Java__lang__String__Instance
+	Impl__Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(Java__lang__String__Instance) ObjectArray__Instance
+	Impl__Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(Java__lang__String__Instance, int) ObjectArray__Instance
 	Impl__StartsWith__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
 	Impl__StartsWith__desc____obj__Java__lang__String__I__ret__Z(Java__lang__String__Instance, int) bool
 	Impl__SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(int, int) Java__lang__CharSequence__Instance
 	Impl__Substring__desc__I__ret____obj__Java__lang__String(int) Java__lang__String__Instance
 	Impl__Substring__desc__I__I__ret____obj__Java__lang__String(int, int) Java__lang__String__Instance
-	Impl__ToCharArray__desc____ret____arr__C() []rune
+	Impl__ToCharArray__desc____ret____arr__C() CharArray__Instance
 	Impl__ToLowerCase__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Impl__ToUpperCase__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Impl__Trim__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
@@ -1746,43 +1804,43 @@ func (this *Java__lang__String__Impl) Instance_Init__desc____obj__Java__lang__St
 	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__StringBuilder__ret__V(var0)
 }
 
-func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B__ret__V(var0 []byte) {
+func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B__ret__V(var0 ByteArray__Instance) {
 	this._dispatch.Impl__Instance_Init__desc____arr__B__ret__V(var0)
 }
 
-func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B__I__ret__V(var0 []byte, var1 int) {
+func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B__I__ret__V(var0 ByteArray__Instance, var1 int) {
 	this._dispatch.Impl__Instance_Init__desc____arr__B__I__ret__V(var0, var1)
 }
 
-func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B__I__I__ret__V(var0 []byte, var1 int, var2 int) {
+func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B__I__I__ret__V(var0 ByteArray__Instance, var1 int, var2 int) {
 	this._dispatch.Impl__Instance_Init__desc____arr__B__I__I__ret__V(var0, var1, var2)
 }
 
-func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B__I__I__I__ret__V(var0 []byte, var1 int, var2 int, var3 int) {
+func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B__I__I__I__ret__V(var0 ByteArray__Instance, var1 int, var2 int, var3 int) {
 	this._dispatch.Impl__Instance_Init__desc____arr__B__I__I__I__ret__V(var0, var1, var2, var3)
 }
 
-func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V(var0 []byte, var1 int, var2 int, var3 Java__lang__String__Instance) {
+func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V(var0 ByteArray__Instance, var1 int, var2 int, var3 Java__lang__String__Instance) {
 	this._dispatch.Impl__Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V(var0, var1, var2, var3)
 }
 
-func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V(var0 []byte, var1 Java__lang__String__Instance) {
+func (this *Java__lang__String__Impl) Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V(var0 ByteArray__Instance, var1 Java__lang__String__Instance) {
 	this._dispatch.Impl__Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V(var0, var1)
 }
 
-func (this *Java__lang__String__Impl) Instance_Init__desc____arr__C__ret__V(var0 []rune) {
+func (this *Java__lang__String__Impl) Instance_Init__desc____arr__C__ret__V(var0 CharArray__Instance) {
 	this._dispatch.Impl__Instance_Init__desc____arr__C__ret__V(var0)
 }
 
-func (this *Java__lang__String__Impl) Instance_Init__desc____arr__C__I__I__ret__V(var0 []rune, var1 int, var2 int) {
+func (this *Java__lang__String__Impl) Instance_Init__desc____arr__C__I__I__ret__V(var0 CharArray__Instance, var1 int, var2 int) {
 	this._dispatch.Impl__Instance_Init__desc____arr__C__I__I__ret__V(var0, var1, var2)
 }
 
-func (this *Java__lang__String__Impl) Instance_Init__desc____arr__C__Z__ret__V(var0 []rune, var1 bool) {
+func (this *Java__lang__String__Impl) Instance_Init__desc____arr__C__Z__ret__V(var0 CharArray__Instance, var1 bool) {
 	this._dispatch.Impl__Instance_Init__desc____arr__C__Z__ret__V(var0, var1)
 }
 
-func (this *Java__lang__String__Impl) Instance_Init__desc____arr__I__I__I__ret__V(var0 []int, var1 int, var2 int) {
+func (this *Java__lang__String__Impl) Instance_Init__desc____arr__I__I__I__ret__V(var0 IntArray__Instance, var1 int, var2 int) {
 	this._dispatch.Impl__Instance_Init__desc____arr__I__I__I__ret__V(var0, var1, var2)
 }
 
@@ -1834,23 +1892,23 @@ func (this *Java__lang__String__Impl) EqualsIgnoreCase__desc____obj__Java__lang_
 	return this._dispatch.Impl__EqualsIgnoreCase__desc____obj__Java__lang__String__ret__Z(var0)
 }
 
-func (this *Java__lang__String__Impl) GetBytes__desc____ret____arr__B() []byte {
+func (this *Java__lang__String__Impl) GetBytes__desc____ret____arr__B() ByteArray__Instance {
 	return this._dispatch.Impl__GetBytes__desc____ret____arr__B()
 }
 
-func (this *Java__lang__String__Impl) GetBytes__desc__I__I____arr__B__I__ret__V(var0 int, var1 int, var2 []byte, var3 int) {
+func (this *Java__lang__String__Impl) GetBytes__desc__I__I____arr__B__I__ret__V(var0 int, var1 int, var2 ByteArray__Instance, var3 int) {
 	this._dispatch.Impl__GetBytes__desc__I__I____arr__B__I__ret__V(var0, var1, var2, var3)
 }
 
-func (this *Java__lang__String__Impl) GetBytes__desc____obj__Java__lang__String__ret____arr__B(var0 Java__lang__String__Instance) []byte {
+func (this *Java__lang__String__Impl) GetBytes__desc____obj__Java__lang__String__ret____arr__B(var0 Java__lang__String__Instance) ByteArray__Instance {
 	return this._dispatch.Impl__GetBytes__desc____obj__Java__lang__String__ret____arr__B(var0)
 }
 
-func (this *Java__lang__String__Impl) GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 []rune, var3 int) {
+func (this *Java__lang__String__Impl) GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 CharArray__Instance, var3 int) {
 	this._dispatch.Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0, var1, var2, var3)
 }
 
-func (this *Java__lang__String__Impl) GetChars__desc____arr__C__I__ret__V(var0 []rune, var1 int) {
+func (this *Java__lang__String__Impl) GetChars__desc____arr__C__I__ret__V(var0 CharArray__Instance, var1 int) {
 	this._dispatch.Impl__GetChars__desc____arr__C__I__ret__V(var0, var1)
 }
 
@@ -1930,11 +1988,11 @@ func (this *Java__lang__String__Impl) ReplaceFirst__desc____obj__Java__lang__Str
 	return this._dispatch.Impl__ReplaceFirst__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(var0, var1)
 }
 
-func (this *Java__lang__String__Impl) Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(var0 Java__lang__String__Instance) []Java__lang__String__Instance {
+func (this *Java__lang__String__Impl) Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(var0 Java__lang__String__Instance) ObjectArray__Instance {
 	return this._dispatch.Impl__Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(var0)
 }
 
-func (this *Java__lang__String__Impl) Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 int) []Java__lang__String__Instance {
+func (this *Java__lang__String__Impl) Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 int) ObjectArray__Instance {
 	return this._dispatch.Impl__Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(var0, var1)
 }
 
@@ -1958,7 +2016,7 @@ func (this *Java__lang__String__Impl) Substring__desc__I__I__ret____obj__Java__l
 	return this._dispatch.Impl__Substring__desc__I__I__ret____obj__Java__lang__String(var0, var1)
 }
 
-func (this *Java__lang__String__Impl) ToCharArray__desc____ret____arr__C() []rune {
+func (this *Java__lang__String__Impl) ToCharArray__desc____ret____arr__C() CharArray__Instance {
 	return this._dispatch.Impl__ToCharArray__desc____ret____arr__C()
 }
 
@@ -1990,11 +2048,11 @@ type Java__lang__String__Instance interface {
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
 	EqualsIgnoreCase__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
 	Finalize__desc____ret__V()
-	GetBytes__desc____ret____arr__B() []byte
-	GetBytes__desc__I__I____arr__B__I__ret__V(int, int, []byte, int)
-	GetBytes__desc____obj__Java__lang__String__ret____arr__B(Java__lang__String__Instance) []byte
-	GetChars__desc__I__I____arr__C__I__ret__V(int, int, []rune, int)
-	GetChars__desc____arr__C__I__ret__V([]rune, int)
+	GetBytes__desc____ret____arr__B() ByteArray__Instance
+	GetBytes__desc__I__I____arr__B__I__ret__V(int, int, ByteArray__Instance, int)
+	GetBytes__desc____obj__Java__lang__String__ret____arr__B(Java__lang__String__Instance) ByteArray__Instance
+	GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
+	GetChars__desc____arr__C__I__ret__V(CharArray__Instance, int)
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	HashCode__desc____ret__I() int
 	IndexOf__desc__I__ret__I(int) int
@@ -2018,14 +2076,14 @@ type Java__lang__String__Instance interface {
 	Replace__desc____obj__Java__lang__CharSequence____obj__Java__lang__CharSequence__ret____obj__Java__lang__String(Java__lang__CharSequence__Instance, Java__lang__CharSequence__Instance) Java__lang__String__Instance
 	ReplaceAll__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(Java__lang__String__Instance, Java__lang__String__Instance) Java__lang__String__Instance
 	ReplaceFirst__desc____obj__Java__lang__String____obj__Java__lang__String__ret____obj__Java__lang__String(Java__lang__String__Instance, Java__lang__String__Instance) Java__lang__String__Instance
-	Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(Java__lang__String__Instance) []Java__lang__String__Instance
-	Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(Java__lang__String__Instance, int) []Java__lang__String__Instance
+	Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(Java__lang__String__Instance) ObjectArray__Instance
+	Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(Java__lang__String__Instance, int) ObjectArray__Instance
 	StartsWith__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
 	StartsWith__desc____obj__Java__lang__String__I__ret__Z(Java__lang__String__Instance, int) bool
 	SubSequence__desc__I__I__ret____obj__Java__lang__CharSequence(int, int) Java__lang__CharSequence__Instance
 	Substring__desc__I__ret____obj__Java__lang__String(int) Java__lang__String__Instance
 	Substring__desc__I__I__ret____obj__Java__lang__String(int, int) Java__lang__String__Instance
-	ToCharArray__desc____ret____arr__C() []rune
+	ToCharArray__desc____ret____arr__C() CharArray__Instance
 	ToLowerCase__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	ToUpperCase__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
@@ -2053,43 +2111,43 @@ func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____obj__Java__la
 	panic("Not Implemented - java/lang/String.<init>(Ljava/lang/StringBuilder;)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__ret__V(var0 []byte) {
+func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__ret__V(var0 ByteArray__Instance) {
 	panic("Not Implemented - java/lang/String.<init>([B)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__ret__V(var0 []byte, var1 int) {
+func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__ret__V(var0 ByteArray__Instance, var1 int) {
 	panic("Not Implemented - java/lang/String.<init>([BI)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__I__ret__V(var0 []byte, var1 int, var2 int) {
+func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__I__ret__V(var0 ByteArray__Instance, var1 int, var2 int) {
 	panic("Not Implemented - java/lang/String.<init>([BII)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__I__I__ret__V(var0 []byte, var1 int, var2 int, var3 int) {
+func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__I__I__ret__V(var0 ByteArray__Instance, var1 int, var2 int, var3 int) {
 	panic("Not Implemented - java/lang/String.<init>([BIII)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V(var0 []byte, var1 int, var2 int, var3 Java__lang__String__Instance) {
+func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B__I__I____obj__Java__lang__String__ret__V(var0 ByteArray__Instance, var1 int, var2 int, var3 Java__lang__String__Instance) {
 	panic("Not Implemented - java/lang/String.<init>([BIILjava/lang/String;)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V(var0 []byte, var1 Java__lang__String__Instance) {
+func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__B____obj__Java__lang__String__ret__V(var0 ByteArray__Instance, var1 Java__lang__String__Instance) {
 	panic("Not Implemented - java/lang/String.<init>([BLjava/lang/String;)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__C__ret__V(var0 []rune) {
+func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__C__ret__V(var0 CharArray__Instance) {
 	panic("Not Implemented - java/lang/String.<init>([C)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__C__I__I__ret__V(var0 []rune, var1 int, var2 int) {
+func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__C__I__I__ret__V(var0 CharArray__Instance, var1 int, var2 int) {
 	panic("Not Implemented - java/lang/String.<init>([CII)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__C__Z__ret__V(var0 []rune, var1 bool) {
+func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__C__Z__ret__V(var0 CharArray__Instance, var1 bool) {
 	panic("Not Implemented - java/lang/String.<init>([CZ)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__I__I__I__ret__V(var0 []int, var1 int, var2 int) {
+func (this *Java__lang__String__Impl) Impl__Instance_Init__desc____arr__I__I__I__ret__V(var0 IntArray__Instance, var1 int, var2 int) {
 	panic("Not Implemented - java/lang/String.<init>([III)V")
 }
 
@@ -2145,23 +2203,23 @@ func (this *Java__lang__String__Impl) Impl__EqualsIgnoreCase__desc____obj__Java_
 	panic("Not Implemented - java/lang/String.equalsIgnoreCase(Ljava/lang/String;)Z")
 }
 
-func (this *Java__lang__String__Impl) Impl__GetBytes__desc____ret____arr__B() []byte {
+func (this *Java__lang__String__Impl) Impl__GetBytes__desc____ret____arr__B() ByteArray__Instance {
 	panic("Not Implemented - java/lang/String.getBytes()[B")
 }
 
-func (this *Java__lang__String__Impl) Impl__GetBytes__desc__I__I____arr__B__I__ret__V(var0 int, var1 int, var2 []byte, var3 int) {
+func (this *Java__lang__String__Impl) Impl__GetBytes__desc__I__I____arr__B__I__ret__V(var0 int, var1 int, var2 ByteArray__Instance, var3 int) {
 	panic("Not Implemented - java/lang/String.getBytes(II[BI)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__GetBytes__desc____obj__Java__lang__String__ret____arr__B(var0 Java__lang__String__Instance) []byte {
+func (this *Java__lang__String__Impl) Impl__GetBytes__desc____obj__Java__lang__String__ret____arr__B(var0 Java__lang__String__Instance) ByteArray__Instance {
 	panic("Not Implemented - java/lang/String.getBytes(Ljava/lang/String;)[B")
 }
 
-func (this *Java__lang__String__Impl) Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 []rune, var3 int) {
+func (this *Java__lang__String__Impl) Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 CharArray__Instance, var3 int) {
 	panic("Not Implemented - java/lang/String.getChars(II[CI)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__GetChars__desc____arr__C__I__ret__V(var0 []rune, var1 int) {
+func (this *Java__lang__String__Impl) Impl__GetChars__desc____arr__C__I__ret__V(var0 CharArray__Instance, var1 int) {
 	panic("Not Implemented - java/lang/String.getChars([CI)V")
 }
 
@@ -2245,11 +2303,11 @@ func (this *Java__lang__String__Impl) Impl__ReplaceFirst__desc____obj__Java__lan
 	panic("Not Implemented - java/lang/String.replaceFirst(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;")
 }
 
-func (this *Java__lang__String__Impl) Impl__Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(var0 Java__lang__String__Instance) []Java__lang__String__Instance {
+func (this *Java__lang__String__Impl) Impl__Split__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__String(var0 Java__lang__String__Instance) ObjectArray__Instance {
 	panic("Not Implemented - java/lang/String.split(Ljava/lang/String;)[Ljava/lang/String;")
 }
 
-func (this *Java__lang__String__Impl) Impl__Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 int) []Java__lang__String__Instance {
+func (this *Java__lang__String__Impl) Impl__Split__desc____obj__Java__lang__String__I__ret____arr____obj__Java__lang__String(var0 Java__lang__String__Instance, var1 int) ObjectArray__Instance {
 	panic("Not Implemented - java/lang/String.split(Ljava/lang/String;I)[Ljava/lang/String;")
 }
 
@@ -2273,7 +2331,7 @@ func (this *Java__lang__String__Impl) Impl__Substring__desc__I__I__ret____obj__J
 	panic("Not Implemented - java/lang/String.substring(II)Ljava/lang/String;")
 }
 
-func (this *Java__lang__String__Impl) Impl__ToCharArray__desc____ret____arr__C() []rune {
+func (this *Java__lang__String__Impl) Impl__ToCharArray__desc____ret____arr__C() CharArray__Instance {
 	panic("Not Implemented - java/lang/String.toCharArray()[C")
 }
 
@@ -2325,8 +2383,8 @@ type Java__lang__StringBuilder__Dispatch interface {
 	Impl__Append__desc____obj__Java__lang__Object__ret____obj__Java__lang__StringBuilder(Java__lang__Object__Instance) Java__lang__StringBuilder__Instance
 	Impl__Append__desc____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(Java__lang__String__Instance) Java__lang__StringBuilder__Instance
 	Impl__Append__desc__Z__ret____obj__Java__lang__StringBuilder(bool) Java__lang__StringBuilder__Instance
-	Impl__Append__desc____arr__C__ret____obj__Java__lang__StringBuilder([]rune) Java__lang__StringBuilder__Instance
-	Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder([]rune, int, int) Java__lang__StringBuilder__Instance
+	Impl__Append__desc____arr__C__ret____obj__Java__lang__StringBuilder(CharArray__Instance) Java__lang__StringBuilder__Instance
+	Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder(CharArray__Instance, int, int) Java__lang__StringBuilder__Instance
 	Impl__AppendCodePoint__desc__I__ret____obj__Java__lang__StringBuilder(int) Java__lang__StringBuilder__Instance
 	Impl__Delete__desc__I__I__ret____obj__Java__lang__StringBuilder(int, int) Java__lang__StringBuilder__Instance
 	Impl__DeleteCharAt__desc__I__ret____obj__Java__lang__StringBuilder(int) Java__lang__StringBuilder__Instance
@@ -2340,8 +2398,8 @@ type Java__lang__StringBuilder__Dispatch interface {
 	Impl__Insert__desc__I____obj__Java__lang__Object__ret____obj__Java__lang__StringBuilder(int, Java__lang__Object__Instance) Java__lang__StringBuilder__Instance
 	Impl__Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(int, Java__lang__String__Instance) Java__lang__StringBuilder__Instance
 	Impl__Insert__desc__I__Z__ret____obj__Java__lang__StringBuilder(int, bool) Java__lang__StringBuilder__Instance
-	Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(int, []rune) Java__lang__StringBuilder__Instance
-	Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(int, []rune, int, int) Java__lang__StringBuilder__Instance
+	Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(int, CharArray__Instance) Java__lang__StringBuilder__Instance
+	Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(int, CharArray__Instance, int, int) Java__lang__StringBuilder__Instance
 	Impl__Replace__desc__I__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(int, int, Java__lang__String__Instance) Java__lang__StringBuilder__Instance
 	Impl__Reverse__desc____ret____obj__Java__lang__StringBuilder() Java__lang__StringBuilder__Instance
 }
@@ -2399,11 +2457,11 @@ func (this *Java__lang__StringBuilder__Impl) Append__desc__Z__ret____obj__Java__
 	return this._dispatch.Impl__Append__desc__Z__ret____obj__Java__lang__StringBuilder(var0)
 }
 
-func (this *Java__lang__StringBuilder__Impl) Append__desc____arr__C__ret____obj__Java__lang__StringBuilder(var0 []rune) Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Append__desc____arr__C__ret____obj__Java__lang__StringBuilder(var0 CharArray__Instance) Java__lang__StringBuilder__Instance {
 	return this._dispatch.Impl__Append__desc____arr__C__ret____obj__Java__lang__StringBuilder(var0)
 }
 
-func (this *Java__lang__StringBuilder__Impl) Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0 []rune, var1 int, var2 int) Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0 CharArray__Instance, var1 int, var2 int) Java__lang__StringBuilder__Instance {
 	return this._dispatch.Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0, var1, var2)
 }
 
@@ -2459,11 +2517,11 @@ func (this *Java__lang__StringBuilder__Impl) Insert__desc__I__Z__ret____obj__Jav
 	return this._dispatch.Impl__Insert__desc__I__Z__ret____obj__Java__lang__StringBuilder(var0, var1)
 }
 
-func (this *Java__lang__StringBuilder__Impl) Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(var0 int, var1 []rune) Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(var0 int, var1 CharArray__Instance) Java__lang__StringBuilder__Instance {
 	return this._dispatch.Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(var0, var1)
 }
 
-func (this *Java__lang__StringBuilder__Impl) Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0 int, var1 []rune, var2 int, var3 int) Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0 int, var1 CharArray__Instance, var2 int, var3 int) Java__lang__StringBuilder__Instance {
 	return this._dispatch.Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0, var1, var2, var3)
 }
 
@@ -2500,10 +2558,10 @@ type Java__lang__StringBuilder__Instance interface {
 	Append__desc____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(Java__lang__String__Instance) Java__lang__StringBuilder__Instance
 	Append__desc__Z__ret____obj__Java__lang__AbstractStringBuilder(bool) Java__lang__AbstractStringBuilder__Instance
 	Append__desc__Z__ret____obj__Java__lang__StringBuilder(bool) Java__lang__StringBuilder__Instance
-	Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder([]rune) Java__lang__AbstractStringBuilder__Instance
-	Append__desc____arr__C__ret____obj__Java__lang__StringBuilder([]rune) Java__lang__StringBuilder__Instance
-	Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder([]rune, int, int) Java__lang__AbstractStringBuilder__Instance
-	Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder([]rune, int, int) Java__lang__StringBuilder__Instance
+	Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(CharArray__Instance) Java__lang__AbstractStringBuilder__Instance
+	Append__desc____arr__C__ret____obj__Java__lang__StringBuilder(CharArray__Instance) Java__lang__StringBuilder__Instance
+	Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(CharArray__Instance, int, int) Java__lang__AbstractStringBuilder__Instance
+	Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder(CharArray__Instance, int, int) Java__lang__StringBuilder__Instance
 	AppendCodePoint__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	AppendCodePoint__desc__I__ret____obj__Java__lang__StringBuilder(int) Java__lang__StringBuilder__Instance
 	Capacity__desc____ret__I() int
@@ -2520,9 +2578,9 @@ type Java__lang__StringBuilder__Instance interface {
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
 	ExpandCapacity__desc__I__ret__V(int)
 	Finalize__desc____ret__V()
-	GetChars__desc__I__I____arr__C__I__ret__V(int, int, []rune, int)
+	GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	GetValue__desc____ret____arr__C() []rune
+	GetValue__desc____ret____arr__C() CharArray__Instance
 	HashCode__desc____ret__I() int
 	IndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	IndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
@@ -2546,10 +2604,10 @@ type Java__lang__StringBuilder__Instance interface {
 	Insert__desc__I____obj__Java__lang__String__ret____obj__Java__lang__StringBuilder(int, Java__lang__String__Instance) Java__lang__StringBuilder__Instance
 	Insert__desc__I__Z__ret____obj__Java__lang__AbstractStringBuilder(int, bool) Java__lang__AbstractStringBuilder__Instance
 	Insert__desc__I__Z__ret____obj__Java__lang__StringBuilder(int, bool) Java__lang__StringBuilder__Instance
-	Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(int, []rune) Java__lang__AbstractStringBuilder__Instance
-	Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(int, []rune) Java__lang__StringBuilder__Instance
-	Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(int, []rune, int, int) Java__lang__AbstractStringBuilder__Instance
-	Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(int, []rune, int, int) Java__lang__StringBuilder__Instance
+	Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(int, CharArray__Instance) Java__lang__AbstractStringBuilder__Instance
+	Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(int, CharArray__Instance) Java__lang__StringBuilder__Instance
+	Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(int, CharArray__Instance, int, int) Java__lang__AbstractStringBuilder__Instance
+	Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(int, CharArray__Instance, int, int) Java__lang__StringBuilder__Instance
 	LastIndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	LastIndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
 	Length__desc____ret__I() int
@@ -2572,8 +2630,8 @@ type Java__lang__StringBuilder__Instance interface {
 	Wait__desc__J__I__ret__V(int64, int)
 	FieldGet__Java__lang__AbstractStringBuilder__Count() int
 	FieldSet__Java__lang__AbstractStringBuilder__Count(v int)
-	FieldGet__Java__lang__AbstractStringBuilder__Value() []rune
-	FieldSet__Java__lang__AbstractStringBuilder__Value(v []rune)
+	FieldGet__Java__lang__AbstractStringBuilder__Value() CharArray__Instance
+	FieldSet__Java__lang__AbstractStringBuilder__Value(v CharArray__Instance)
 }
 
 type Java__lang__StringBuilder__Impl struct {
@@ -2678,19 +2736,19 @@ func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc__Z__ret____obj__
 	panic("Not Implemented - java/lang/StringBuilder.append(Z)Ljava/lang/StringBuilder;")
 }
 
-func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 []rune) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 CharArray__Instance) Java__lang__AbstractStringBuilder__Instance {
 	panic("Not Implemented - java/lang/StringBuilder.append([C)Ljava/lang/AbstractStringBuilder;")
 }
 
-func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__ret____obj__Java__lang__StringBuilder(var0 []rune) Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__ret____obj__Java__lang__StringBuilder(var0 CharArray__Instance) Java__lang__StringBuilder__Instance {
 	panic("Not Implemented - java/lang/StringBuilder.append([C)Ljava/lang/StringBuilder;")
 }
 
-func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 []rune, var1 int, var2 int) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 CharArray__Instance, var1 int, var2 int) Java__lang__AbstractStringBuilder__Instance {
 	panic("Not Implemented - java/lang/StringBuilder.append([CII)Ljava/lang/AbstractStringBuilder;")
 }
 
-func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0 []rune, var1 int, var2 int) Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Impl__Append__desc____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0 CharArray__Instance, var1 int, var2 int) Java__lang__StringBuilder__Instance {
 	panic("Not Implemented - java/lang/StringBuilder.append([CII)Ljava/lang/StringBuilder;")
 }
 
@@ -2742,7 +2800,7 @@ func (this *Java__lang__StringBuilder__Impl) Impl__EnsureCapacity__desc__I__ret_
 	panic("Not Implemented - java/lang/StringBuilder.ensureCapacity(I)V")
 }
 
-func (this *Java__lang__StringBuilder__Impl) Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 []rune, var3 int) {
+func (this *Java__lang__StringBuilder__Impl) Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 CharArray__Instance, var3 int) {
 	panic("Not Implemented - java/lang/StringBuilder.getChars(II[CI)V")
 }
 
@@ -2834,19 +2892,19 @@ func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I__Z__ret____ob
 	panic("Not Implemented - java/lang/StringBuilder.insert(IZ)Ljava/lang/StringBuilder;")
 }
 
-func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 []rune) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 CharArray__Instance) Java__lang__AbstractStringBuilder__Instance {
 	panic("Not Implemented - java/lang/StringBuilder.insert(I[C)Ljava/lang/AbstractStringBuilder;")
 }
 
-func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(var0 int, var1 []rune) Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__ret____obj__Java__lang__StringBuilder(var0 int, var1 CharArray__Instance) Java__lang__StringBuilder__Instance {
 	panic("Not Implemented - java/lang/StringBuilder.insert(I[C)Ljava/lang/StringBuilder;")
 }
 
-func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 []rune, var2 int, var3 int) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__AbstractStringBuilder(var0 int, var1 CharArray__Instance, var2 int, var3 int) Java__lang__AbstractStringBuilder__Instance {
 	panic("Not Implemented - java/lang/StringBuilder.insert(I[CII)Ljava/lang/AbstractStringBuilder;")
 }
 
-func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0 int, var1 []rune, var2 int, var3 int) Java__lang__StringBuilder__Instance {
+func (this *Java__lang__StringBuilder__Impl) Impl__Insert__desc__I____arr__C__I__I__ret____obj__Java__lang__StringBuilder(var0 int, var1 CharArray__Instance, var2 int, var3 int) Java__lang__StringBuilder__Instance {
 	panic("Not Implemented - java/lang/StringBuilder.insert(I[CII)Ljava/lang/StringBuilder;")
 }
 
@@ -3052,7 +3110,7 @@ func (this *Java__lang__Throwable__Static) New() *Java__lang__Throwable__Impl {
 }
 
 func (this *Java__lang__Throwable__Static) Impl__Static_Init__desc____ret__V() {
-
+	
 }
 
 type Java__lang__Throwable__Dispatch interface {
@@ -3067,7 +3125,7 @@ type Java__lang__Throwable__Dispatch interface {
 	Impl__GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Impl__GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Impl__GetStackTraceDepth__desc____ret__I() int
-	Impl__GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	Impl__GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	Impl__InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
 	Impl__PrintStackTrace__desc____ret__V()
 	Impl__PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(Java__io__PrintStream__Instance)
@@ -3118,7 +3176,7 @@ func (this *Java__lang__Throwable__Impl) GetStackTraceDepth__desc____ret__I() in
 	return this._dispatch.Impl__GetStackTraceDepth__desc____ret__I()
 }
 
-func (this *Java__lang__Throwable__Impl) GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance {
+func (this *Java__lang__Throwable__Impl) GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance {
 	return this._dispatch.Impl__GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable()
 }
 
@@ -3145,7 +3203,7 @@ type Java__lang__Throwable__Instance interface {
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetStackTraceDepth__desc____ret__I() int
-	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
 	Notify__desc____ret__V()
@@ -3200,7 +3258,7 @@ func (this *Java__lang__Throwable__Impl) Impl__GetStackTraceDepth__desc____ret__
 	panic("Not Implemented - java/lang/Throwable.getStackTraceDepth()I")
 }
 
-func (this *Java__lang__Throwable__Impl) Impl__GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance {
+func (this *Java__lang__Throwable__Impl) Impl__GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance {
 	panic("Not Implemented - java/lang/Throwable.getSuppressed()[Ljava/lang/Throwable;")
 }
 
@@ -3256,7 +3314,7 @@ type Java__lang__VirtualMachineError__Instance interface {
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetStackTraceDepth__desc____ret__I() int
-	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
 	Notify__desc____ret__V()

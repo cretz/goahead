@@ -34,6 +34,7 @@ trait BuildRt extends Command {
       classes = Seq(
         "java.io.PrintStream",
         "java.lang.Class",
+        "java.lang.ClassCastException",
         "java.lang.Exception",
         "java.lang.NegativeArraySizeException",
         "java.lang.NullPointerException",
@@ -47,6 +48,7 @@ trait BuildRt extends Command {
         "java/io/PrintStream.println(I)V",
         "java/io/PrintStream.println(Ljava/lang/String;)V",
         "java/io/PrintStream.println(Z)V",
+        "java/lang/ClassCastException.<init>()V",
         "java/lang/Exception.<init>(Ljava/lang/String;)V",
         "java/lang/Exception.<init>(Ljava/lang/String;Ljava/lang/Throwable;)V",
         "java/lang/NegativeArraySizeException.<init>(Ljava/lang/String;)V",

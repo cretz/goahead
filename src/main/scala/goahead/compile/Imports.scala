@@ -17,6 +17,7 @@ case class Imports(
       val aliasTry = if (attempt == 0) alias else s"$alias$attempt"
       aliases.get(aliasTry) match {
         case Some(v) if v == dir => this -> aliasTry
+        case None if aliasTry.isEmpty => this -> aliasTry
         case None => copy(aliases = aliases + (aliasTry -> dir)) -> aliasTry
         case Some(_) => aliasForDir(attempt + 1)
       }

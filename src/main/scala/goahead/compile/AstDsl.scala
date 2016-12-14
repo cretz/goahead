@@ -11,6 +11,8 @@ object AstDsl extends Logger {
 
   def assignExisting(left: Expression, right: Expression) = left.assignExisting(right)
 
+  def assignExistingMultiple(left: Seq[Expression], right: Seq[Expression]) = AssignStatement(left, Token.Assign, right)
+
   def assignDefineMultiple(left: Seq[Expression], right: Seq[Expression]) = AssignStatement(left, Token.Define, right)
 
   def block(stmts: Seq[Statement]) = BlockStatement(stmts)

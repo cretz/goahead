@@ -82,17 +82,19 @@ object Helpers extends Logger {
         case Type.DOUBLE => ctx -> "float64".toIdent
         case Type.ARRAY => withRuntimeImportAlias.map { case (ctx, rtAlias) =>
           // If it's multidimensional, it's an object regardless
-          if (typ.getDimensions > 1) ctx -> rtAlias.toIdent.sel("ObjectArray__Instance") else {
+          @inline def rtQualified(v: String): Node.Expression =
+            if (rtAlias.isEmpty) v.toIdent else rtAlias.toIdent.sel(v)
+          if (typ.getDimensions > 1) ctx -> rtQualified("ObjectArray__Instance") else {
             typ.getElementType.getSort match {
-              case Type.BOOLEAN => ctx -> rtAlias.toIdent.sel("BoolArray__Instance")
-              case Type.CHAR => ctx -> rtAlias.toIdent.sel("CharArray__Instance")
-              case Type.BYTE => ctx -> rtAlias.toIdent.sel("ByteArray__Instance")
-              case Type.SHORT => ctx -> rtAlias.toIdent.sel("ShortArray__Instance")
-              case Type.INT => ctx -> rtAlias.toIdent.sel("IntArray__Instance")
-              case Type.LONG => ctx -> rtAlias.toIdent.sel("LongArray__Instance")
-              case Type.FLOAT => ctx -> rtAlias.toIdent.sel("FloatArray__Instance")
-              case Type.DOUBLE => ctx -> rtAlias.toIdent.sel("DoubleArray__Instance")
-              case Type.ARRAY | Type.OBJECT => ctx -> rtAlias.toIdent.sel("ObjectArray__Instance")
+              case Type.BOOLEAN => ctx -> rtQualified("BoolArray__Instance")
+              case Type.CHAR => ctx -> rtQualified("CharArray__Instance")
+              case Type.BYTE => ctx -> rtQualified("ByteArray__Instance")
+              case Type.SHORT => ctx -> rtQualified("ShortArray__Instance")
+              case Type.INT => ctx -> rtQualified("IntArray__Instance")
+              case Type.LONG => ctx -> rtQualified("LongArray__Instance")
+              case Type.FLOAT => ctx -> rtQualified("FloatArray__Instance")
+              case Type.DOUBLE => ctx -> rtQualified("DoubleArray__Instance")
+              case Type.ARRAY | Type.OBJECT => ctx -> rtQualified("ObjectArray__Instance")
               case sort => sys.error(s"Unrecognized array type $sort")
             }
           }

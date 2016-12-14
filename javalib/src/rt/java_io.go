@@ -51,8 +51,8 @@ type Java__io__FilterOutputStream__Instance interface {
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
 	Write__desc__I__ret__V(int)
-	Write__desc____arr__B__ret__V([]byte)
-	Write__desc____arr__B__I__I__ret__V([]byte, int, int)
+	Write__desc____arr__B__ret__V(ByteArray__Instance)
+	Write__desc____arr__B__I__I__ret__V(ByteArray__Instance, int, int)
 	FieldGet__Java__io__FilterOutputStream__Out() Java__io__OutputStream__Instance
 	FieldSet__Java__io__FilterOutputStream__Out(v Java__io__OutputStream__Instance)
 }
@@ -87,11 +87,11 @@ func (this *Java__io__FilterOutputStream__Impl) Impl__Write__desc__I__ret__V(var
 	panic("Not Implemented - java/io/FilterOutputStream.write(I)V")
 }
 
-func (this *Java__io__FilterOutputStream__Impl) Impl__Write__desc____arr__B__ret__V(var0 []byte) {
+func (this *Java__io__FilterOutputStream__Impl) Impl__Write__desc____arr__B__ret__V(var0 ByteArray__Instance) {
 	panic("Not Implemented - java/io/FilterOutputStream.write([B)V")
 }
 
-func (this *Java__io__FilterOutputStream__Impl) Impl__Write__desc____arr__B__I__I__ret__V(var0 []byte, var1 int, var2 int) {
+func (this *Java__io__FilterOutputStream__Impl) Impl__Write__desc____arr__B__I__I__ret__V(var0 ByteArray__Instance, var1 int, var2 int) {
 	panic("Not Implemented - java/io/FilterOutputStream.write([BII)V")
 }
 
@@ -120,8 +120,8 @@ type Java__io__OutputStream__Dispatch interface {
 	Impl__Close__desc____ret__V()
 	Impl__Flush__desc____ret__V()
 	Impl__Write__desc__I__ret__V(int)
-	Impl__Write__desc____arr__B__ret__V([]byte)
-	Impl__Write__desc____arr__B__I__I__ret__V([]byte, int, int)
+	Impl__Write__desc____arr__B__ret__V(ByteArray__Instance)
+	Impl__Write__desc____arr__B__I__I__ret__V(ByteArray__Instance, int, int)
 }
 
 func (this *Java__io__OutputStream__Impl) Java__io__OutputStream__InitDispatch(v Java__io__OutputStream__Dispatch) {
@@ -141,11 +141,11 @@ func (this *Java__io__OutputStream__Impl) Write__desc__I__ret__V(var0 int) {
 	this._dispatch.Impl__Write__desc__I__ret__V(var0)
 }
 
-func (this *Java__io__OutputStream__Impl) Write__desc____arr__B__ret__V(var0 []byte) {
+func (this *Java__io__OutputStream__Impl) Write__desc____arr__B__ret__V(var0 ByteArray__Instance) {
 	this._dispatch.Impl__Write__desc____arr__B__ret__V(var0)
 }
 
-func (this *Java__io__OutputStream__Impl) Write__desc____arr__B__I__I__ret__V(var0 []byte, var1 int, var2 int) {
+func (this *Java__io__OutputStream__Impl) Write__desc____arr__B__I__I__ret__V(var0 ByteArray__Instance, var1 int, var2 int) {
 	this._dispatch.Impl__Write__desc____arr__B__I__I__ret__V(var0, var1, var2)
 }
 
@@ -164,8 +164,8 @@ type Java__io__OutputStream__Instance interface {
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
 	Write__desc__I__ret__V(int)
-	Write__desc____arr__B__ret__V([]byte)
-	Write__desc____arr__B__I__I__ret__V([]byte, int, int)
+	Write__desc____arr__B__ret__V(ByteArray__Instance)
+	Write__desc____arr__B__I__I__ret__V(ByteArray__Instance, int, int)
 }
 
 type Java__io__OutputStream__Impl struct {
@@ -189,11 +189,11 @@ func (this *Java__io__OutputStream__Impl) Impl__Write__desc__I__ret__V(var0 int)
 	panic("Not Implemented - java/io/OutputStream.write(I)V")
 }
 
-func (this *Java__io__OutputStream__Impl) Impl__Write__desc____arr__B__ret__V(var0 []byte) {
+func (this *Java__io__OutputStream__Impl) Impl__Write__desc____arr__B__ret__V(var0 ByteArray__Instance) {
 	panic("Not Implemented - java/io/OutputStream.write([B)V")
 }
 
-func (this *Java__io__OutputStream__Impl) Impl__Write__desc____arr__B__I__I__ret__V(var0 []byte, var1 int, var2 int) {
+func (this *Java__io__OutputStream__Impl) Impl__Write__desc____arr__B__I__I__ret__V(var0 ByteArray__Instance, var1 int, var2 int) {
 	panic("Not Implemented - java/io/OutputStream.write([BII)V")
 }
 
@@ -227,7 +227,7 @@ type Java__io__PrintStream__Dispatch interface {
 	Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(Java__lang__CharSequence__Instance, int, int) Java__lang__Appendable__Instance
 	Impl__CheckError__desc____ret__Z() bool
 	Impl__ClearError__desc____ret__V()
-	Impl__Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(Java__lang__String__Instance, []Java__lang__Object__Instance) Java__io__PrintStream__Instance
+	Impl__Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(Java__lang__String__Instance, ObjectArray__Instance) Java__io__PrintStream__Instance
 	Impl__Print__desc__C__ret__V(rune)
 	Impl__Print__desc__D__ret__V(float64)
 	Impl__Print__desc__F__ret__V(float32)
@@ -236,8 +236,8 @@ type Java__io__PrintStream__Dispatch interface {
 	Impl__Print__desc____obj__Java__lang__Object__ret__V(Java__lang__Object__Instance)
 	Impl__Print__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
 	Impl__Print__desc__Z__ret__V(bool)
-	Impl__Print__desc____arr__C__ret__V([]rune)
-	Impl__Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(Java__lang__String__Instance, []Java__lang__Object__Instance) Java__io__PrintStream__Instance
+	Impl__Print__desc____arr__C__ret__V(CharArray__Instance)
+	Impl__Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(Java__lang__String__Instance, ObjectArray__Instance) Java__io__PrintStream__Instance
 	Impl__Println__desc____ret__V()
 	Impl__Println__desc__C__ret__V(rune)
 	Impl__Println__desc__D__ret__V(float64)
@@ -247,7 +247,7 @@ type Java__io__PrintStream__Dispatch interface {
 	Impl__Println__desc____obj__Java__lang__Object__ret__V(Java__lang__Object__Instance)
 	Impl__Println__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
 	Impl__Println__desc__Z__ret__V(bool)
-	Impl__Println__desc____arr__C__ret__V([]rune)
+	Impl__Println__desc____arr__C__ret__V(CharArray__Instance)
 	Impl__SetError__desc____ret__V()
 }
 
@@ -304,7 +304,7 @@ func (this *Java__io__PrintStream__Impl) ClearError__desc____ret__V() {
 	this._dispatch.Impl__ClearError__desc____ret__V()
 }
 
-func (this *Java__io__PrintStream__Impl) Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0 Java__lang__String__Instance, var1 []Java__lang__Object__Instance) Java__io__PrintStream__Instance {
+func (this *Java__io__PrintStream__Impl) Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0 Java__lang__String__Instance, var1 ObjectArray__Instance) Java__io__PrintStream__Instance {
 	return this._dispatch.Impl__Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0, var1)
 }
 
@@ -340,11 +340,11 @@ func (this *Java__io__PrintStream__Impl) Print__desc__Z__ret__V(var0 bool) {
 	this._dispatch.Impl__Print__desc__Z__ret__V(var0)
 }
 
-func (this *Java__io__PrintStream__Impl) Print__desc____arr__C__ret__V(var0 []rune) {
+func (this *Java__io__PrintStream__Impl) Print__desc____arr__C__ret__V(var0 CharArray__Instance) {
 	this._dispatch.Impl__Print__desc____arr__C__ret__V(var0)
 }
 
-func (this *Java__io__PrintStream__Impl) Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0 Java__lang__String__Instance, var1 []Java__lang__Object__Instance) Java__io__PrintStream__Instance {
+func (this *Java__io__PrintStream__Impl) Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0 Java__lang__String__Instance, var1 ObjectArray__Instance) Java__io__PrintStream__Instance {
 	return this._dispatch.Impl__Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0, var1)
 }
 
@@ -384,7 +384,7 @@ func (this *Java__io__PrintStream__Impl) Println__desc__Z__ret__V(var0 bool) {
 	this._dispatch.Impl__Println__desc__Z__ret__V(var0)
 }
 
-func (this *Java__io__PrintStream__Impl) Println__desc____arr__C__ret__V(var0 []rune) {
+func (this *Java__io__PrintStream__Impl) Println__desc____arr__C__ret__V(var0 CharArray__Instance) {
 	this._dispatch.Impl__Println__desc____arr__C__ret__V(var0)
 }
 
@@ -406,7 +406,7 @@ type Java__io__PrintStream__Instance interface {
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
 	Finalize__desc____ret__V()
 	Flush__desc____ret__V()
-	Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(Java__lang__String__Instance, []Java__lang__Object__Instance) Java__io__PrintStream__Instance
+	Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(Java__lang__String__Instance, ObjectArray__Instance) Java__io__PrintStream__Instance
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	HashCode__desc____ret__I() int
 	Notify__desc____ret__V()
@@ -419,8 +419,8 @@ type Java__io__PrintStream__Instance interface {
 	Print__desc____obj__Java__lang__Object__ret__V(Java__lang__Object__Instance)
 	Print__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
 	Print__desc__Z__ret__V(bool)
-	Print__desc____arr__C__ret__V([]rune)
-	Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(Java__lang__String__Instance, []Java__lang__Object__Instance) Java__io__PrintStream__Instance
+	Print__desc____arr__C__ret__V(CharArray__Instance)
+	Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(Java__lang__String__Instance, ObjectArray__Instance) Java__io__PrintStream__Instance
 	Println__desc____ret__V()
 	Println__desc__C__ret__V(rune)
 	Println__desc__D__ret__V(float64)
@@ -430,15 +430,15 @@ type Java__io__PrintStream__Instance interface {
 	Println__desc____obj__Java__lang__Object__ret__V(Java__lang__Object__Instance)
 	Println__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
 	Println__desc__Z__ret__V(bool)
-	Println__desc____arr__C__ret__V([]rune)
+	Println__desc____arr__C__ret__V(CharArray__Instance)
 	SetError__desc____ret__V()
 	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
 	Write__desc__I__ret__V(int)
-	Write__desc____arr__B__ret__V([]byte)
-	Write__desc____arr__B__I__I__ret__V([]byte, int, int)
+	Write__desc____arr__B__ret__V(ByteArray__Instance)
+	Write__desc____arr__B__I__I__ret__V(ByteArray__Instance, int, int)
 	FieldGet__Java__io__FilterOutputStream__Out() Java__io__OutputStream__Instance
 	FieldSet__Java__io__FilterOutputStream__Out(v Java__io__OutputStream__Instance)
 }
@@ -508,7 +508,7 @@ func (this *Java__io__PrintStream__Impl) Impl__Flush__desc____ret__V() {
 	panic("Not Implemented - java/io/PrintStream.flush()V")
 }
 
-func (this *Java__io__PrintStream__Impl) Impl__Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0 Java__lang__String__Instance, var1 []Java__lang__Object__Instance) Java__io__PrintStream__Instance {
+func (this *Java__io__PrintStream__Impl) Impl__Format__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0 Java__lang__String__Instance, var1 ObjectArray__Instance) Java__io__PrintStream__Instance {
 	panic("Not Implemented - java/io/PrintStream.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;")
 }
 
@@ -544,11 +544,11 @@ func (this *Java__io__PrintStream__Impl) Impl__Print__desc__Z__ret__V(var0 bool)
 	panic("Not Implemented - java/io/PrintStream.print(Z)V")
 }
 
-func (this *Java__io__PrintStream__Impl) Impl__Print__desc____arr__C__ret__V(var0 []rune) {
+func (this *Java__io__PrintStream__Impl) Impl__Print__desc____arr__C__ret__V(var0 CharArray__Instance) {
 	panic("Not Implemented - java/io/PrintStream.print([C)V")
 }
 
-func (this *Java__io__PrintStream__Impl) Impl__Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0 Java__lang__String__Instance, var1 []Java__lang__Object__Instance) Java__io__PrintStream__Instance {
+func (this *Java__io__PrintStream__Impl) Impl__Printf__desc____obj__Java__lang__String____arr____obj__Java__lang__Object__ret____obj__Java__io__PrintStream(var0 Java__lang__String__Instance, var1 ObjectArray__Instance) Java__io__PrintStream__Instance {
 	panic("Not Implemented - java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;")
 }
 
@@ -576,7 +576,7 @@ func (this *Java__io__PrintStream__Impl) Impl__Println__desc____obj__Java__lang_
 	panic("Not Implemented - java/io/PrintStream.println(Ljava/lang/Object;)V")
 }
 
-func (this *Java__io__PrintStream__Impl) Impl__Println__desc____arr__C__ret__V(var0 []rune) {
+func (this *Java__io__PrintStream__Impl) Impl__Println__desc____arr__C__ret__V(var0 CharArray__Instance) {
 	panic("Not Implemented - java/io/PrintStream.println([C)V")
 }
 
@@ -588,7 +588,7 @@ func (this *Java__io__PrintStream__Impl) Impl__Write__desc__I__ret__V(var0 int) 
 	panic("Not Implemented - java/io/PrintStream.write(I)V")
 }
 
-func (this *Java__io__PrintStream__Impl) Impl__Write__desc____arr__B__I__I__ret__V(var0 []byte, var1 int, var2 int) {
+func (this *Java__io__PrintStream__Impl) Impl__Write__desc____arr__B__I__I__ret__V(var0 ByteArray__Instance, var1 int, var2 int) {
 	panic("Not Implemented - java/io/PrintStream.write([BII)V")
 }
 

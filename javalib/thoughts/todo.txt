@@ -1,0 +1,5 @@
+
+* Rework local vars to have common base type and be reused properly with type assertions
+* Refactor:
+  * Type conversion stuff
+* Utilize some of jvm.go project's test classes

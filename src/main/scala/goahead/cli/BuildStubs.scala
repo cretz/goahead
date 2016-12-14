@@ -133,7 +133,6 @@ trait BuildStubs extends Command with Logger {
     logger.trace(s"Class entries: " + classEntries.mapValues(_.map(_.cls.name)))
 
     // Build the compiler
-    // (excludePatterns: Set[String], allClassNamesRefsToCheck: Set[String])
     val compiler = new BuildStubs.StubCompiler(
       excludePatterns = conf.excludePatterns.toSet,
       onlyIncludeClassRefs =

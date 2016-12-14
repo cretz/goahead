@@ -106,3 +106,9 @@ func PanicToThrowable(v interface{}) Java__lang__Throwable__Instance {
 		return ret
 	}
 }
+
+func NewClassCastEx() Java__lang__ClassCastException__Instance {
+	ret := Java__lang__ClassCastException().New()
+	ret.Instance_Init__desc____ret__V()
+	return ret
+}
