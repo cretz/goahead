@@ -16,14 +16,14 @@ trait MultiANewArrayInsnCompiler {
       // create the children if they are sized.
 
       val jvmType = IType.getObjectType(insn.desc)
-      ctx.getTempVar(jvmType).leftMap { case (ctx, tempVar) =>
+      ctx.getTempVar(jvmType).map { case (ctx, tempVar) =>
         val ctxAndForStmtOpt = if (counts.size <= 1) ctx -> None else {
-          createInnerSlice(ctx, tempVar.expr, counts.tail.map(_.expr), 0, jvmType).leftMap { case (ctx, stmt) =>
+          createInnerSlice(ctx, tempVar.expr, counts.tail.map(_.expr), 0, jvmType).map { case (ctx, stmt) =>
             ctx -> Some(stmt)
           }
         }
-        ctxAndForStmtOpt.leftMap { case (ctx, forStmtOpt) =>
-          jvmType.arrayNewFn(ctx).leftMap { case (ctx, arrayNewFn) =>
+        ctxAndForStmtOpt.map { case (ctx, forStmtOpt) =>
+          jvmType.arrayNewFn(ctx).map { case (ctx, arrayNewFn) =>
             ctx.stackPushed(tempVar) ->
               (Seq(tempVar.expr.assignExisting(arrayNewFn.call(Seq(counts.head.expr)))) ++ forStmtOpt)
           }
@@ -39,8 +39,8 @@ trait MultiANewArrayInsnCompiler {
     depth: Int,
     parentType: IType
   ): (Context, Node.Statement) = {
-    ctx.typeToGoType(parentType.elementType).leftMap { case (ctx, arrType) =>
-      parentType.elementType.arrayNewFn(ctx).leftMap { case (ctx, arrayNewFn) =>
+    ctx.typeToGoType(parentType.elementType).map { case (ctx, arrType) =>
+      parentType.elementType.arrayNewFn(ctx).map { case (ctx, arrayNewFn) =>
         val lhsAsserted = lhsPreIndex.typeAssert(arrType)
         val indexVar = s"i$depth".toIdent
         //val indexedVar = lhsPreIndex.indexed(indexVar)
@@ -48,12 +48,12 @@ trait MultiANewArrayInsnCompiler {
         val newStmt = lhsAsserted.sel("Set").call(Seq(indexVar, arrayNewFn.call(Seq(nextSizes.head)))).toStmt
         // More?
         val ctxAndInnerStmts = if (nextSizes.size == 1) ctx -> Seq(newStmt) else {
-          createInnerSlice(ctx, indexedVar, nextSizes.tail, depth + 1, parentType.elementType).leftMap {
+          createInnerSlice(ctx, indexedVar, nextSizes.tail, depth + 1, parentType.elementType).map {
             case (ctx, stmt) => ctx -> Seq(newStmt, stmt)
           }
         }
 
-        ctxAndInnerStmts.leftMap { case (ctx, innerStmts) =>
+        ctxAndInnerStmts.map { case (ctx, innerStmts) =>
           // Assemble the loop
           ctx -> lhsAsserted.sel("Raw").call().loopOver(
             key = Some(indexVar),

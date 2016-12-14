@@ -24,7 +24,7 @@ trait FieldInsnCompiler {
           ) -> Nil
         }
       case Opcodes.GETSTATIC =>
-        ctx.staticInstRefExpr(insn.owner).leftMap { case (ctx, expr) =>
+        ctx.staticInstRefExpr(insn.owner).map { case (ctx, expr) =>
           ctx.stackPushed(TypedExpression(
             expr = expr.sel(ctx.mangler.fieldName(insn.owner, insn.name)),
             typ = IType.getType(insn.desc),
@@ -34,15 +34,15 @@ trait FieldInsnCompiler {
       case Opcodes.PUTFIELD =>
         ctx.stackPopped(2, { case (ctx, Seq(objectRef, value)) =>
           val declarer = ctx.imports.classPath.getFieldDeclarer(insn.owner, insn.name, static = false)
-          value.toExprNode(ctx, IType.getType(insn.desc)).leftMap { case (ctx, value) =>
+          value.toExprNode(ctx, IType.getType(insn.desc)).map { case (ctx, value) =>
             ctx -> objectRef.expr.sel(ctx.mangler.fieldSetterName(declarer.cls.name, insn.name)).
               call(Seq(value)).toStmt.singleSeq
           }
         })
       case Opcodes.PUTSTATIC =>
-        ctx.staticInstRefExpr(insn.owner).leftMap { case (ctx, expr) =>
+        ctx.staticInstRefExpr(insn.owner).map { case (ctx, expr) =>
           ctx.stackPopped { case (ctx, value) =>
-            value.toExprNode(ctx, IType.getType(insn.desc)).leftMap { case (ctx, value) =>
+            value.toExprNode(ctx, IType.getType(insn.desc)).map { case (ctx, value) =>
               ctx -> expr.sel(ctx.mangler.fieldName(insn.owner, insn.name)).assignExisting(value).singleSeq
             }
           }

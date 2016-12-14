@@ -14,8 +14,8 @@ trait MainCompiler {
     classPath: ClassPath,
     mangler: Mangler
   ): Node.File = {
-    val (mports, javaPkgAlias, rtAlias) = Imports(classPath).withImportAlias(importPath).leftMap {
-      case (mports, javaPkgAlias) => mports.withRuntimeImportAlias.leftMap {
+    val (mports, javaPkgAlias, rtAlias) = Imports(classPath).withImportAlias(importPath).map {
+      case (mports, javaPkgAlias) => mports.withRuntimeImportAlias.map {
         case (mports, rtAlias) => (mports, javaPkgAlias.toIdent, rtAlias.toIdent)
       }
     }

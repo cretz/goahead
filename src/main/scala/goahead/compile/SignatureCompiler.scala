@@ -15,9 +15,9 @@ trait SignatureCompiler {
       if (method.access.isAccessStatic) ctx.staticInstTypeExpr(ctx.cls.name)
       else ctx.implTypeExpr(ctx.cls.name)
 
-    ctxAndRecTyp.leftMap { case (ctx, recTyp) =>
+    ctxAndRecTyp.map { case (ctx, recTyp) =>
 
-      buildFuncType(ctx, method, includeParamNames = true).leftMap { case (ctx, funcType) =>
+      buildFuncType(ctx, method, includeParamNames = true).map { case (ctx, funcType) =>
 
         ctx -> funcDecl(
           rec = Some(field("this", recTyp)),
@@ -37,24 +37,24 @@ trait SignatureCompiler {
     val ctxWithParams =
       IType.getArgumentTypes(method.desc).zipWithIndex.foldLeft(ctx -> Seq.empty[Node.Field]) {
         case ((ctx, params), (argType, argIndex)) =>
-          ctx.typeToGoType(argType).leftMap { case (ctx, typ) =>
+          ctx.typeToGoType(argType).map { case (ctx, typ) =>
             val param = if (includeParamNames) field(s"var$argIndex", typ) else typ.namelessField
             ctx -> (params :+ param)
           }
       }
 
-    ctxWithParams.leftMap { case (ctx, params) =>
+    ctxWithParams.map { case (ctx, params) =>
       val ctxWithResultTypOpt = IType.getReturnType(method.desc) match {
         case IType.VoidType => ctx -> None
-        case retTyp => ctx.typeToGoType(retTyp).leftMap { case (ctx, typ) => ctx -> Some(typ) }
+        case retTyp => ctx.typeToGoType(retTyp).map { case (ctx, typ) => ctx -> Some(typ) }
       }
 
-      ctxWithResultTypOpt.leftMap { case (ctx, resultTypOpt) => ctx -> funcTypeWithFields(params, resultTypOpt) }
+      ctxWithResultTypOpt.map { case (ctx, resultTypOpt) => ctx -> funcTypeWithFields(params, resultTypOpt) }
     }
   }
 
   def buildFieldGetterFuncType[T <: Contextual[T]](ctx: T, field: Field): (T, Node.FunctionType) = {
-    ctx.typeToGoType(IType.getType(field.desc)).leftMap { case (ctx, fieldType) =>
+    ctx.typeToGoType(IType.getType(field.desc)).map { case (ctx, fieldType) =>
       ctx -> funcType(params = Nil, result = Some(fieldType))
     }
   }
@@ -64,7 +64,7 @@ trait SignatureCompiler {
     field: Field,
     includeParamNames: Boolean
   ): (T, Node.FunctionType) = {
-    ctx.typeToGoType(IType.getType(field.desc)).leftMap { case (ctx, fieldType) =>
+    ctx.typeToGoType(IType.getType(field.desc)).map { case (ctx, fieldType) =>
       ctx -> funcType(params = Seq("v" -> fieldType), result = None)
     }
   }

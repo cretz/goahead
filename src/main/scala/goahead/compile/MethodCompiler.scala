@@ -21,9 +21,9 @@ trait MethodCompiler extends Logger {
     logger.trace("ASM:\n    " + method.asmString.replace("\n", "\n    "))
     // Compile the sets
     val ctx = initContext(cls, method, imports, mangler, getLabelSets(method))
-    compileLabelSets(ctx).leftMap { case (ctx, compiledStmts) =>
-      postProcessStatements(ctx, compiledStmts).leftMap { case (ctx, stmts) =>
-        signatureCompiler.buildFuncDecl(ctx, method, stmts).leftMap { case (ctx, funcDecl) =>
+    compileLabelSets(ctx).map { case (ctx, compiledStmts) =>
+      postProcessStatements(ctx, compiledStmts).map { case (ctx, stmts) =>
+        signatureCompiler.buildFuncDecl(ctx, method, stmts).map { case (ctx, funcDecl) =>
           ctx.imports -> funcDecl
         }
       }
@@ -72,7 +72,7 @@ trait MethodCompiler extends Logger {
 
   protected def compileLabelSets(ctx: Context): (Context, Seq[Node.Statement]) = {
     ctx.sets.foldLeft(ctx -> Seq.empty[Node.Statement]) { case ((ctx, stmts), labelSet) =>
-      compileLabelSet(ctx, labelSet).leftMap { case (ctx, labeledStatement) =>
+      compileLabelSet(ctx, labelSet).map { case (ctx, labeledStatement) =>
         ctx -> (stmts :+ labeledStatement)
       }
     }
@@ -84,10 +84,10 @@ trait MethodCompiler extends Logger {
     setupLabel(ctx, labelSet).map { ctx =>
       // Build the code
       logger.trace(s"Context after setup of ${labelSet.pretty}: ${ctx.prettyAppend}")
-      insnCompiler.compile(ctx, labelSet.insns).leftMap { case (ctx, stmts) =>
+      insnCompiler.compile(ctx, labelSet.insns).map { case (ctx, stmts) =>
         // Post process it
         logger.trace(s"Context after compile of ${labelSet.pretty}: ${ctx.prettyAppend}")
-        postProcessLabel(ctx, labelSet, stmts).leftMap { case (ctx, labelStmt) =>
+        postProcessLabel(ctx, labelSet, stmts).map { case (ctx, labelStmt) =>
           logger.trace(s"Context after post process of ${labelSet.pretty}: ${ctx.prettyAppend}")
           ctx -> labelStmt
         }
@@ -140,10 +140,10 @@ trait MethodCompiler extends Logger {
     // Make local decls out of ones not on stack and not already in function vars
     val ctxAndVarDecl =
       if (tempVarsNotOnStack.isEmpty) ctx -> None
-      else ctx.createVarDecl(tempVarsNotOnStack.filterNot(ctx.functionVars.contains)).leftMap(_ -> Some(_))
+      else ctx.createVarDecl(tempVarsNotOnStack.filterNot(ctx.functionVars.contains)).map(_ -> Some(_))
 
     // Leave the existing ones on the stack and in the temp set and add them to func-level vars
-    ctxAndVarDecl.leftMap { case (ctx, maybeDecl) =>
+    ctxAndVarDecl.map { case (ctx, maybeDecl) =>
 
       // If the last insn of the label is not an unconditional jump, we need to prepare to
       // fall through
@@ -153,7 +153,7 @@ trait MethodCompiler extends Logger {
         case _ => ctx -> Nil
       }
 
-      ctxAndAddOnStmts.leftMap { case (ctx, addOnStmts) =>
+      ctxAndAddOnStmts.map { case (ctx, addOnStmts) =>
         ctx.copy(localTempVars = tempVarsOnStack, functionVars = ctx.functionVars ++ tempVarsOnStack) ->
           labeled(labelSet.label.getLabel.toString, maybeDecl.toSeq ++ stmts ++ addOnStmts)
       }

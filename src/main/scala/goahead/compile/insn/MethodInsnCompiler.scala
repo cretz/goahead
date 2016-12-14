@@ -20,11 +20,11 @@ trait MethodInsnCompiler {
       val isThis = subject.isThis
       val isSuperCall = isThis && ctx.method.name == insn.name &&
         (insn.name == "<init>" || ctx.method.desc == insn.desc) && insn.owner != ctx.cls.name
-      subject.toExprNode(ctx, IType.getObjectType(insn.owner), noCasting = isSuperCall).leftMap { case (ctx, subject) =>
+      subject.toExprNode(ctx, IType.getObjectType(insn.owner), noCasting = isSuperCall).map { case (ctx, subject) =>
         if (!isSuperCall && insn.name == "<init>" && !isThis) {
           // Init methods are not on the inst interface, so we type assert first
           // (the isThis check is because we can call init on ourselves)
-          ctx.implTypeExpr(insn.owner).leftMap { case (ctx, implType) =>
+          ctx.implTypeExpr(insn.owner).map { case (ctx, implType) =>
             ctx -> subject.typeAssert(implType).sel(ctx.mangler.forwardMethodName(insn.name, insn.desc))
           }
         } else if (!isSuperCall) {
@@ -41,14 +41,14 @@ trait MethodInsnCompiler {
       require(args.length == argTypes.length, "Length mismatch between caller and target")
       args.zip(argTypes).foldLeft(ctx -> Seq.empty[Node.Expression]) {
         case ((ctx, prevExprs), (typedExpr, typ)) =>
-          typedExpr.toExprNode(ctx, typ).leftMap { case (ctx, newExpr) =>
+          typedExpr.toExprNode(ctx, typ).map { case (ctx, newExpr) =>
             ctx -> (prevExprs :+ newExpr)
           }
       }
     }
 
     def invoke(ctx: Context, method: Node.Expression, args: Seq[TypedExpression]): (Context, Seq[Node.Statement]) = {
-      argExprs(ctx, args).leftMap { case (ctx, args) =>
+      argExprs(ctx, args).map { case (ctx, args) =>
         val call = method.call(args)
         // Put it on the stack if not void
         if (retType == IType.VoidType) ctx -> call.toStmt.singleSeq
@@ -58,7 +58,7 @@ trait MethodInsnCompiler {
 
     insn.byOpcode {
       case Opcodes.INVOKESTATIC =>
-        ctx.staticInstRefExpr(insn.owner).leftMap { case (ctx, staticInstExpr) =>
+        ctx.staticInstRefExpr(insn.owner).map { case (ctx, staticInstExpr) =>
           ctx.stackPopped(argTypes.length, { case (ctx, args) =>
             invoke(ctx, staticInstExpr.sel(ctx.mangler.implMethodName(insn.name, insn.desc)), args)
           })
@@ -66,7 +66,7 @@ trait MethodInsnCompiler {
       case Opcodes.INVOKEINTERFACE | Opcodes.INVOKESPECIAL | Opcodes.INVOKEVIRTUAL =>
         // Note: we let null pointer exceptions cause a panic instead of checking them
         ctx.stackPopped(argTypes.length + 1, { case (ctx, subject +: args) =>
-          subjectMethod(ctx, subject).leftMap { case (ctx, subjectMethod) =>
+          subjectMethod(ctx, subject).map { case (ctx, subjectMethod) =>
             invoke(ctx, subjectMethod, args)
           }
         })

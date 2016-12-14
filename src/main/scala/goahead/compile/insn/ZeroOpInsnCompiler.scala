@@ -17,7 +17,7 @@ trait ZeroOpInsnCompiler {
         ctx.stackPushed(TypedExpression(NilExpr, IType.NullType, cheapRef = true)) -> Nil
       case Opcodes.ARRAYLENGTH =>
         ctx.stackPopped { case (ctx, arrayRef) =>
-          arrayRef.toGeneralArray(ctx).leftMap { case (ctx, arrayRef) =>
+          arrayRef.toGeneralArray(ctx).map { case (ctx, arrayRef) =>
             ctx.stackPushed(TypedExpression(
               arrayRef.sel("Len").call(),
               IType.IntType,
@@ -27,7 +27,7 @@ trait ZeroOpInsnCompiler {
         }
       case Opcodes.ARETURN =>
         ctx.stackPopped { case (ctx, item) =>
-          item.toExprNode(ctx, IType.getReturnType(ctx.method.desc)).leftMap { case (ctx, item) =>
+          item.toExprNode(ctx, IType.getReturnType(ctx.method.desc)).map { case (ctx, item) =>
             ctx -> item.ret.singleSeq
           }
         }
@@ -45,7 +45,7 @@ trait ZeroOpInsnCompiler {
           val (newCtx, entry, stmtOpt) =
             if (item.cheapRef) (ctx, item, None)
             else {
-              ctx.getTempVar(item.typ).leftMap { case (ctx, tempVar) =>
+              ctx.getTempVar(item.typ).map { case (ctx, tempVar) =>
                 (ctx, tempVar, Some(tempVar.name.toIdent.assignExisting(item.expr)))
               }
             }
@@ -54,7 +54,7 @@ trait ZeroOpInsnCompiler {
         }
       case Opcodes.F2D =>
         ctx.stackPopped { case (ctx, item) =>
-          item.toExprNode(ctx, IType.DoubleType).leftMap { case (ctx, convertedItem) =>
+          item.toExprNode(ctx, IType.DoubleType).map { case (ctx, convertedItem) =>
             ctx.stackPushed(TypedExpression(convertedItem, IType.DoubleType, cheapRef = true)) -> Nil
           }
         }
@@ -96,7 +96,7 @@ trait ZeroOpInsnCompiler {
     ctx.stackPopped(3, { case (ctx, Seq(arrayRef, index, value)) =>
       opcode match {
         case Opcodes.BASTORE =>
-          ctx.withRuntimeImportAlias.leftMap { case (ctx, rtAlias) =>
+          ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
             ctx -> rtAlias.toIdent.sel("SetBoolOrByte").call(Seq(
               arrayRef.expr, index.expr, value.expr
             )).toStmt.singleSeq
@@ -111,8 +111,8 @@ trait ZeroOpInsnCompiler {
             case Opcodes.CASTORE => IType.CharType.asArray
             case Opcodes.SASTORE => IType.ShortType.asArray
           }
-          value.toExprNode(ctx, jvmType.elementType).leftMap { case (ctx, typedValue) =>
-            arrayRef.toExprNode(ctx, jvmType).leftMap { case (ctx, convArrayRef) =>
+          value.toExprNode(ctx, jvmType.elementType).map { case (ctx, typedValue) =>
+            arrayRef.toExprNode(ctx, jvmType).map { case (ctx, convArrayRef) =>
               ctx -> convArrayRef.sel("Set").call(Seq(index.expr, typedValue)).toStmt.singleSeq
             }
           }
@@ -125,7 +125,7 @@ trait ZeroOpInsnCompiler {
       // Convert to byte or bool array if necessary
       opcode match {
         case Opcodes.BALOAD =>
-          ctx.withRuntimeImportAlias.leftMap { case (ctx, rtAlias) =>
+          ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
             ctx.stackPushed(TypedExpression(
               rtAlias.toIdent.sel("GetBoolOrByte").call(Seq(arrayRef.expr, index.expr)),
               IType.IntType,
@@ -142,7 +142,7 @@ trait ZeroOpInsnCompiler {
             case Opcodes.CALOAD => IType.CharType.asArray
             case Opcodes.SALOAD => IType.ShortType.asArray
           }
-          arrayRef.toExprNode(ctx, jvmType).leftMap { case (ctx, convArrayRef) =>
+          arrayRef.toExprNode(ctx, jvmType).map { case (ctx, convArrayRef) =>
             ctx.stackPushed(TypedExpression(
               convArrayRef.sel("Get").call(Seq(index.expr)),
               jvmType.elementType,
@@ -158,7 +158,7 @@ trait ZeroOpInsnCompiler {
     methodName: String,
     additionalArg: Option[Node.Expression] = None
   ): (Context, Seq[Node.Statement]) = {
-    ctx.withRuntimeImportAlias.leftMap { case (ctx, rtAlias) =>
+    ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
       ctx.stackPopped(2, { case (ctx, Seq(val1, val2)) =>
         ctx.stackPushed(TypedExpression(
           rtAlias.toIdent.sel(methodName).call(Seq(val1.expr, val2.expr) ++ additionalArg),

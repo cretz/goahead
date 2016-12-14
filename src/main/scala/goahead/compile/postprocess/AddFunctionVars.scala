@@ -13,7 +13,7 @@ trait AddFunctionVars extends PostProcessor {
     require(ctx.functionVars.size >= argTypeCount)
     val varsToDecl = ctx.functionVars.drop(argTypeCount)
     if (varsToDecl.isEmpty) ctx -> stmts
-    else ctx.createVarDecl(varsToDecl).leftMap { case (ctx, declStmt) => ctx -> (declStmt +: stmts) }
+    else ctx.createVarDecl(varsToDecl).map { case (ctx, declStmt) => ctx -> (declStmt +: stmts) }
   }
 }
 

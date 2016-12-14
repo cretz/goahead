@@ -16,7 +16,7 @@ trait JumpInsnCompiler {
 
       @inline
       def ifStmt(ctx: Context, left: Node.Expression, token: Node.Token, right: Node.Expression) =
-        ctx.prepareToGotoLabel(insn.label).leftMap { case (ctx, stmts) =>
+        ctx.prepareToGotoLabel(insn.label).map { case (ctx, stmts) =>
           ctx -> iff(None, left, token, right, stmts :+ goto(label)).singleSeq
         }
 
@@ -32,7 +32,7 @@ trait JumpInsnCompiler {
 
       insn.byOpcode {
         case Opcodes.GOTO =>
-          ctx.prepareToGotoLabel(insn.label).leftMap { case (ctx, stmts) => ctx -> (stmts :+ goto(label)) }
+          ctx.prepareToGotoLabel(insn.label).map { case (ctx, stmts) => ctx -> (stmts :+ goto(label)) }
         case Opcodes.IFEQ =>
           ifZero(ctx, Node.Token.Eql)
         case Opcodes.IFGE =>

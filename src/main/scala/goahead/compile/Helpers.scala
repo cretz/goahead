@@ -56,7 +56,7 @@ object Helpers extends Logger {
     }
 
     def newString(v: String): (T, Node.CallExpression) = {
-      withRuntimeImportAlias.leftMap { case (ctx, alias) =>
+      withRuntimeImportAlias.map { case (ctx, alias) =>
         ctx -> alias.toIdent.sel("NewString").call(v.toLit.singleSeq)
       }
     }
@@ -80,7 +80,7 @@ object Helpers extends Logger {
         case Type.LONG => ctx -> "int64".toIdent
         case Type.FLOAT => ctx -> "float32".toIdent
         case Type.DOUBLE => ctx -> "float64".toIdent
-        case Type.ARRAY => withRuntimeImportAlias.leftMap { case (ctx, rtAlias) =>
+        case Type.ARRAY => withRuntimeImportAlias.map { case (ctx, rtAlias) =>
           // If it's multidimensional, it's an object regardless
           if (typ.getDimensions > 1) ctx -> rtAlias.toIdent.sel("ObjectArray__Instance") else {
             typ.getElementType.getSort match {
@@ -110,26 +110,26 @@ object Helpers extends Logger {
         case mCtx: MethodCompiler.Context if mCtx.cls.name == internalName && mCtx.method.name == "<clinit>" =>
           ctx -> "this".toIdent
         case _ =>
-          importQualifiedName(internalName, ctx.mangler.staticAccessorName(internalName)).leftMap { case (ctx, expr) =>
+          importQualifiedName(internalName, ctx.mangler.staticAccessorName(internalName)).map { case (ctx, expr) =>
             ctx -> expr.call()
           }
       }
     }
 
     def staticNewExpr(internalName: String): (T, Node.CallExpression) = {
-      staticInstRefExpr(internalName).leftMap { case (ctx, staticRef) =>
+      staticInstRefExpr(internalName).map { case (ctx, staticRef) =>
         ctx -> staticRef.sel("New").call()
       }
     }
 
     def staticInstTypeExpr(internalName: String): (T, Node.Expression) = {
-      importQualifiedName(internalName, ctx.mangler.staticObjectName(internalName)).leftMap { case (ctx, typ) =>
+      importQualifiedName(internalName, ctx.mangler.staticObjectName(internalName)).map { case (ctx, typ) =>
         ctx -> typ.star
       }
     }
 
     def implTypeExpr(internalName: String): (T, Node.Expression) = {
-      importQualifiedName(internalName, ctx.mangler.implObjectName(internalName)).leftMap { case (ctx, typ) =>
+      importQualifiedName(internalName, ctx.mangler.implObjectName(internalName)).map { case (ctx, typ) =>
         ctx -> typ.star
       }
     }
@@ -157,12 +157,12 @@ object Helpers extends Logger {
             case IType.Undefined =>
               ctx -> prevNamedTypes
             case _ =>
-              ctx.typeToGoType(localVar.typ).leftMap { case (ctx, typ) =>
+              ctx.typeToGoType(localVar.typ).map { case (ctx, typ) =>
                 ctx -> (prevNamedTypes :+ (localVar.name -> typ))
               }
           }
       }
-      ctxAndNamedTypes.leftMap { case (ctx, namedTypes) =>
+      ctxAndNamedTypes.map { case (ctx, namedTypes) =>
         ctx -> varDecls(namedTypes: _*).toStmt
       }
     }
@@ -345,7 +345,7 @@ object Helpers extends Logger {
 
   implicit class RichTuple[A, B](val tuple: (A, B)) extends AnyVal {
     @inline
-    def leftMap[C](f: (A, B) => C): C = f.tupled(tuple)
+    def map[C](f: (A, B) => C): C = f.tupled(tuple)
   }
 
   implicit class RichIType(val typ: IType) extends AnyVal {
@@ -372,7 +372,7 @@ object Helpers extends Logger {
           case IType.LongType => "NewLongArray"
           case eTyp => sys.error(s"Unrecognized element type: $eTyp")
         }
-        ctx.withRuntimeImportAlias.leftMap { case (ctx, rtAlias) =>
+        ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
           ctx -> rtAlias.toIdent.sel(fnName)
         }
       case _ => sys.error(s"Expected array type, got: $typ")
@@ -384,7 +384,7 @@ object Helpers extends Logger {
     def isThis = expr.maybeName.contains("this")
 
     def toGeneralArray[T <: Contextual[T]](ctx: T): (T, Node.Expression) = {
-      ctx.withRuntimeImportAlias.leftMap { case (ctx, rtAlias) =>
+      ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
         ctx -> expr.expr.typeAssert(rtAlias.toIdent.sel("Array__Instance"))
       }
     }
@@ -410,12 +410,12 @@ object Helpers extends Logger {
           ctx -> expr.expr
         // Null type to object requires type assert
         case (IType.NullType, newTyp: IType.Simple) if newTyp.isObject =>
-          ctx.typeToGoType(newTyp).leftMap { case (ctx, newTyp) =>
+          ctx.typeToGoType(newTyp).map { case (ctx, newTyp) =>
             ctx -> expr.expr.typeAssert(newTyp)
           }
         // Null type to slice requires type cast
         case (IType.NullType, newTyp: IType.Simple) if newTyp.isArray =>
-          ctx.typeToGoType(newTyp).leftMap { case (ctx, newTyp) =>
+          ctx.typeToGoType(newTyp).map { case (ctx, newTyp) =>
             ctx -> newTyp.call(Seq(NilExpr))
           }
         case (oldTyp, newTyp: IType.Simple)
@@ -426,7 +426,7 @@ object Helpers extends Logger {
           // Needs to be cheap ref since we check for nil
           if (oldTyp.isObject || oldTyp.isArray) && (newTyp.isObject || newTyp.isArray) && expr.cheapRef =>
             // Type assertion which sadly means anon function to be inline to handle possible nil
-            ctx.typeToGoType(newTyp).leftMap { case (ctx, newTyp) =>
+            ctx.typeToGoType(newTyp).map { case (ctx, newTyp) =>
               ctx -> funcType(
                 params = Nil,
                 result = Some(newTyp)

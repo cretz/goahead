@@ -13,7 +13,7 @@ trait ApplyTryCatch extends PostProcessor {
     val blocks = ctx.method.tryCatchBlocks
     // No try catch blocks means no change
     if (blocks.isEmpty) ctx -> stmts else {
-      addCurrentLabelAssign(ctx, stmts).leftMap { case (ctx, stmts) =>
+      addCurrentLabelAssign(ctx, stmts).map { case (ctx, stmts) =>
         wrapEntireBody(ctx, stmts)
       }
     }
@@ -31,10 +31,10 @@ trait ApplyTryCatch extends PostProcessor {
 
   protected def wrapEntireBody(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
     // Need the defer statement to catch the panic
-    deferStmt(ctx).leftMap { case (ctx, deferStmt) =>
-      currentExIfStmt(ctx).leftMap { case (ctx, exIfStmt) =>
-        wrapAndInvokeStmts(ctx, Seq(deferStmt, exIfStmt) ++ stmts).leftMap { case (ctx, stmts) =>
-          handleAfterInvoke(ctx, stmts).leftMap { case (ctx, stmts) =>
+    deferStmt(ctx).map { case (ctx, deferStmt) =>
+      currentExIfStmt(ctx).map { case (ctx, exIfStmt) =>
+        wrapAndInvokeStmts(ctx, Seq(deferStmt, exIfStmt) ++ stmts).map { case (ctx, stmts) =>
+          handleAfterInvoke(ctx, stmts).map { case (ctx, stmts) =>
             addCurrentVars(ctx, stmts)
           }
         }
@@ -43,7 +43,7 @@ trait ApplyTryCatch extends PostProcessor {
   }
 
   protected def deferStmt(ctx: Context): (Context, Node.Statement) = {
-    ctx.withRuntimeImportAlias.leftMap { case (ctx, rt) =>
+    ctx.withRuntimeImportAlias.map { case (ctx, rt) =>
       val recoverStmt = iff(
         init = Some("r".toIdent.assignDefine("recover".toIdent.call())),
         lhs = "r".toIdent,
@@ -61,7 +61,7 @@ trait ApplyTryCatch extends PostProcessor {
   }
 
   protected def currentExIfStmt(ctx: Context): (Context, Node.IfStatement) = {
-    handlerIfElseStmt(ctx).leftMap { case (ctx, handlerIfElseStmt) =>
+    handlerIfElseStmt(ctx).map { case (ctx, handlerIfElseStmt) =>
       ctx -> iff(
         init = None,
         lhs = "currentEx".toIdent,
@@ -90,7 +90,7 @@ trait ApplyTryCatch extends PostProcessor {
         // Do type assertion if necessary
         val ctxAndCondWithInitOpt = Option(tryCatchBlock.`type`) match {
           case None => ctx -> (labelCond -> None)
-          case Some(exType) => ctx.typeToGoType(IType.getObjectType(exType)).leftMap { case (ctx, exType) =>
+          case Some(exType) => ctx.typeToGoType(IType.getObjectType(exType)).map { case (ctx, exType) =>
             val init = assignDefineMultiple(
               Seq("ex".toIdent, "ok".toIdent),
               Seq("currentEx".toIdent.typeAssert(exType))
@@ -100,7 +100,7 @@ trait ApplyTryCatch extends PostProcessor {
           }
         }
 
-        ctxAndCondWithInitOpt.leftMap { case (ctx, (cond, initOpt)) =>
+        ctxAndCondWithInitOpt.map { case (ctx, (cond, initOpt)) =>
           // Need to set stack var and then goto handler label
           val exIdent = if (initOpt.isDefined) "ex".toIdent else "currentEx".toIdent
           val labelStr = tryCatchBlock.handler.getLabel.toString
@@ -113,7 +113,7 @@ trait ApplyTryCatch extends PostProcessor {
     }
 
     // Now combine the if statements w/ a panic on the last else
-    ctxAndIfStmts.leftMap { case (ctx, ifStmts) =>
+    ctxAndIfStmts.map { case (ctx, ifStmts) =>
       val panicStmt: Node.Statement = block("panic".toIdent.call(Seq("currentEx".toIdent)).toStmt.singleSeq)
       ctx -> ifStmts.foldRight(panicStmt) { case (ifStmt, prevStmt) => ifStmt.copy(elseStatement = Some(prevStmt)) }
     }

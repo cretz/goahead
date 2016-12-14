@@ -20,7 +20,7 @@ trait LdcInsnCompiler {
       case v: java.lang.Long =>
         ctx.stackPushed(TypedExpression(v.toLong.toLit, IType.LongType, cheapRef = true)) -> Nil
       case v: String =>
-        ctx.newString(v).leftMap { case (ctx, str) =>
+        ctx.newString(v).map { case (ctx, str) =>
           ctx.stackPushed(TypedExpression(str, StringType, cheapRef = true)) -> Nil
         }
       case cst =>

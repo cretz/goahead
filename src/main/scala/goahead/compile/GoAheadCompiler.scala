@@ -35,7 +35,7 @@ trait GoAheadCompiler extends Logger {
     // TODO: parallelize at some point?
     val (imports, decls) = classes.foldLeft(Imports(classPath) -> Seq.empty[Node.Declaration]) {
       case ((imports, prevDecls), cls) =>
-        classCompiler.compile(cls, imports, mangler).leftMap { case (imports, decls) =>
+        classCompiler.compile(cls, imports, mangler).map { case (imports, decls) =>
           imports -> (prevDecls ++ decls)
         }
     }

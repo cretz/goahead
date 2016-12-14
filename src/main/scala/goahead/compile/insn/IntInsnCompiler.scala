@@ -16,7 +16,7 @@ trait IntInsnCompiler {
         ctx.stackPushed(insn.operand.toTypedLit) -> Nil
       case Opcodes.NEWARRAY =>
         ctx.stackPopped { case (ctx, sizeTypeExpr) =>
-          sizeTypeExpr.toExprNode(ctx, IType.IntType).leftMap { case (ctx, sizeExpr) =>
+          sizeTypeExpr.toExprNode(ctx, IType.IntType).map { case (ctx, sizeExpr) =>
             // Create new slice and push on the stack
             val jvmType = insn.operand match {
               case Opcodes.T_BOOLEAN => IType.BooleanType.asArray
@@ -29,8 +29,8 @@ trait IntInsnCompiler {
               case Opcodes.T_LONG => IType.LongType.asArray
               case other => sys.error(s"Unrecognized operand: $other")
             }
-            jvmType.arrayNewFn(ctx).leftMap { case (ctx, arrayNewFn) =>
-              ctx.typeToGoType(jvmType).leftMap { case (ctx, goType) =>
+            jvmType.arrayNewFn(ctx).map { case (ctx, arrayNewFn) =>
+              ctx.typeToGoType(jvmType).map { case (ctx, goType) =>
                 ctx.stackPushed {
                   TypedExpression(
                     arrayNewFn.call(Seq(sizeExpr)),
