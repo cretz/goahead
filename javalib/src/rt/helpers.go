@@ -1,17 +1,17 @@
 package rt
 
 import (
+	"fmt"
+	"math"
 	"os"
 	"runtime"
-	"fmt"
 	"strings"
-	"math"
 )
 
-func OSArgs() []Java__lang__String__Instance {
-	ret := make([]Java__lang__String__Instance, len(os.Args) - 1)
+func OSArgs() ObjectArray__Instance {
+	ret := NewObjectArray(len(os.Args) - 1)
 	for i, v := range os.Args[1:] {
-		ret[i] = NewString(v)
+		ret.Set(i, NewString(v))
 	}
 	return ret
 }
@@ -85,6 +85,11 @@ func PanicToThrowable(v interface{}) Java__lang__Throwable__Instance {
 			(strings.HasPrefix(errStr, "interface conversion: ") && strings.Contains(errStr, " is nil, not "))
 		if isNpe {
 			ret := Java__lang__NullPointerException().New()
+			ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(v.Error()))
+			return ret
+		}
+		if errStr == "makeslice: len out of range" {
+			ret := Java__lang__NegativeArraySizeException().New()
 			ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(v.Error()))
 			return ret
 		}

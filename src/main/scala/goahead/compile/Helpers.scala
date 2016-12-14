@@ -80,12 +80,23 @@ object Helpers extends Logger {
         case Type.LONG => ctx -> "int64".toIdent
         case Type.FLOAT => ctx -> "float32".toIdent
         case Type.DOUBLE => ctx -> "float64".toIdent
-        case Type.ARRAY =>
-          @inline
-          def arrayTypeFromGoType(typ: (T, Node.Expression)) = typ._1 -> Node.ArrayType(typ._2)
-          1.until(typ.getDimensions).foldLeft(arrayTypeFromGoType(asmTypeToGoType(typ.getElementType))) {
-            case (v, _) => arrayTypeFromGoType(v)
+        case Type.ARRAY => withRuntimeImportAlias.leftMap { case (ctx, rtAlias) =>
+          // If it's multidimensional, it's an object regardless
+          if (typ.getDimensions > 1) ctx -> rtAlias.toIdent.sel("ObjectArray__Instance") else {
+            typ.getElementType.getSort match {
+              case Type.BOOLEAN => ctx -> rtAlias.toIdent.sel("BoolArray__Instance")
+              case Type.CHAR => ctx -> rtAlias.toIdent.sel("CharArray__Instance")
+              case Type.BYTE => ctx -> rtAlias.toIdent.sel("ByteArray__Instance")
+              case Type.SHORT => ctx -> rtAlias.toIdent.sel("ShortArray__Instance")
+              case Type.INT => ctx -> rtAlias.toIdent.sel("IntArray__Instance")
+              case Type.LONG => ctx -> rtAlias.toIdent.sel("LongArray__Instance")
+              case Type.FLOAT => ctx -> rtAlias.toIdent.sel("FloatArray__Instance")
+              case Type.DOUBLE => ctx -> rtAlias.toIdent.sel("DoubleArray__Instance")
+              case Type.ARRAY | Type.OBJECT => ctx -> rtAlias.toIdent.sel("ObjectArray__Instance")
+              case sort => sys.error(s"Unrecognized array type $sort")
+            }
           }
+        }
         case Type.OBJECT =>
           importQualifiedName(typ.getInternalName, ctx.mangler.instanceInterfaceName(typ.getInternalName))
         case sort => sys.error(s"Unrecognized type $sort")
@@ -207,11 +218,28 @@ object Helpers extends Logger {
       f.tupled(stackPop(amount))
     }
 
-    def getLocalVar(index: Int, desc: String): (MethodCompiler.Context, TypedExpression) = {
-      getLocalVar(index, IType.getType(desc))
+    def nextUnusedLocalVarName = {
+      val varIndices = ctx.functionVars.flatMap(_.maybeName).collect {
+        case name if name.startsWith("var") => name.substring(3).toInt
+      }
+      val maxIndex = if (varIndices.isEmpty) -1 else varIndices.max
+      "var" + (maxIndex + 1)
     }
 
-    def getLocalVar(index: Int, typ: IType): (MethodCompiler.Context, TypedExpression) = {
+    def shouldOverrideLocalVarType(existing: IType, updated: IType) = {
+      existing -> updated match {
+        case (e: IType.Simple, u: IType.Simple) =>
+          (e.isRef || u.isRef) && !e.isAssignableFrom(ctx.imports.classPath, u)
+        case _ =>
+          false
+      }
+    }
+
+    def getLocalVar(
+      index: Int,
+      typ: IType,
+      overrideTypeIfNecessary: Boolean
+    ): (MethodCompiler.Context, TypedExpression) = {
       val static = ctx.method.access.isAccessStatic
       if (index == 0 && !static) {
         ctx -> TypedExpression.namedVar("this", IType.getObjectType(ctx.cls.name))
@@ -220,18 +248,25 @@ object Helpers extends Logger {
         val seqIndex = if (static) index else index - 1
         if (ctx.localVars.size > seqIndex) {
           // TODO: try to make it more specific if we can
-          ctx -> ctx.localVars(seqIndex)
+          val existing = ctx.localVars(seqIndex)
+          // If the existing and current types are objects, but the existing is not assignable from
+          // the new type, we need to replace the local var to a new thing
+          if (overrideTypeIfNecessary && shouldOverrideLocalVarType(existing.typ, typ)) {
+            // Replace it with our different type
+            val replacedLocalVar = TypedExpression.namedVar(nextUnusedLocalVarName, typ)
+            logger.debug(s"Existing local var type ${existing.typ} at index $seqIndex is not assignable from wanted " +
+              s"type $typ, creating new local var ${replacedLocalVar.name} to store it")
+            ctx.copy(
+              localVars = ctx.localVars.updated(seqIndex, replacedLocalVar),
+              functionVars = ctx.functionVars :+ replacedLocalVar
+            ) -> replacedLocalVar
+          } else ctx -> existing
         } else {
           // Fill in with uninitialized...
           Range(ctx.localVars.size, seqIndex).foldLeft(ctx)({ case (ctx, index) =>
-            getLocalVar(index, IType.Undefined)._1
+            getLocalVar(index, IType.Undefined, overrideTypeIfNecessary = false)._1
           }).map { ctx =>
-            // Append a new one, first find the max existing index
-            val varIndices = ctx.functionVars.flatMap(_.maybeName).collect {
-              case name if name.startsWith("var") => name.substring(3).toInt
-            }
-            val maxIndex = if (varIndices.isEmpty) -1 else varIndices.max
-            val localVar = TypedExpression.namedVar("var" + (maxIndex + 1), typ)
+            val localVar = TypedExpression.namedVar(nextUnusedLocalVarName, typ)
             ctx.copy(localVars = ctx.localVars :+ localVar, functionVars = ctx.functionVars :+ localVar) -> localVar
           }
         }
@@ -239,8 +274,8 @@ object Helpers extends Logger {
     }
 
     def appendLocalVar(typ: IType): (MethodCompiler.Context, TypedExpression) = {
-      if (ctx.method.access.isAccessStatic) getLocalVar(ctx.localVars.size, typ)
-      else getLocalVar(ctx.localVars.size + 1, typ)
+      if (ctx.method.access.isAccessStatic) getLocalVar(ctx.localVars.size, typ, overrideTypeIfNecessary = false)
+      else getLocalVar(ctx.localVars.size + 1, typ, overrideTypeIfNecessary = false)
     }
 
     def getTempVar(typ: IType) = {
@@ -322,15 +357,43 @@ object Helpers extends Logger {
       case IType.CharType => "rune".toIdent.call(Seq(0.toLit))
       case _ => sys.error(s"Unrecognized type to get zero val for: $typ")
     }
+
+    def arrayNewFn[T <: Contextual[T]](ctx: T) = typ match {
+      case typ: IType.Simple if typ.isArray =>
+        val fnName = typ.elementType match {
+          case eTyp: IType.Simple if eTyp.isObject || eTyp.isArray => "NewObjectArray"
+          case IType.BooleanType => "NewBoolArray"
+          case IType.CharType => "NewCharArray"
+          case IType.FloatType => "NewFloatArray"
+          case IType.DoubleType => "NewDoubleArray"
+          case IType.ByteType => "NewByteArray"
+          case IType.ShortType => "NewShortArray"
+          case IType.IntType => "NewIntArray"
+          case IType.LongType => "NewLongArray"
+          case eTyp => sys.error(s"Unrecognized element type: $eTyp")
+        }
+        ctx.withRuntimeImportAlias.leftMap { case (ctx, rtAlias) =>
+          ctx -> rtAlias.toIdent.sel(fnName)
+        }
+      case _ => sys.error(s"Expected array type, got: $typ")
+    }
   }
 
   implicit class RichTypedExpression(val expr: TypedExpression) extends AnyVal {
 
     def isThis = expr.maybeName.contains("this")
 
+    def toGeneralArray[T <: Contextual[T]](ctx: T): (T, Node.Expression) = {
+      ctx.withRuntimeImportAlias.leftMap { case (ctx, rtAlias) =>
+        ctx -> expr.expr.typeAssert(rtAlias.toIdent.sel("Array__Instance"))
+      }
+    }
+
     def toExprNode[T <: Contextual[T]](ctx: T, newTyp: IType, noCasting: Boolean = false): (T, Node.Expression) = {
       logger.trace(s"Converting from '${expr.typ.pretty}' to '${newTyp.pretty}'")
       expr.typ -> newTyp match {
+        case (oldTyp, newTyp) if oldTyp == newTyp =>
+          ctx -> expr.expr
         case (IType.FloatType, IType.DoubleType) =>
           ctx -> "float64".toIdent.call(Seq(expr.expr))
         case (IType.IntType, IType.BooleanType) =>
@@ -345,15 +408,33 @@ object Helpers extends Logger {
           ctx -> "int16".toIdent.call(Seq(expr.expr))
         case (oldTyp, newTyp) if oldTyp == newTyp =>
           ctx -> expr.expr
-        // Null type to object requires type cast
+        // Null type to object requires type assert
         case (IType.NullType, newTyp: IType.Simple) if newTyp.isObject =>
           ctx.typeToGoType(newTyp).leftMap { case (ctx, newTyp) =>
             ctx -> expr.expr.typeAssert(newTyp)
           }
+        // Null type to slice requires type cast
+        case (IType.NullType, newTyp: IType.Simple) if newTyp.isArray =>
+          ctx.typeToGoType(newTyp).leftMap { case (ctx, newTyp) =>
+            ctx -> newTyp.call(Seq(NilExpr))
+          }
         case (oldTyp, newTyp: IType.Simple)
-          if newTyp.isObject && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp) =>
+          if (newTyp.isObject || newTyp.isArray) && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp) =>
             ctx -> expr.expr
         // TODO: support primitives
+        case (oldTyp: IType.Simple, newTyp: IType.Simple)
+          // Needs to be cheap ref since we check for nil
+          if (oldTyp.isObject || oldTyp.isArray) && (newTyp.isObject || newTyp.isArray) && expr.cheapRef =>
+            // Type assertion which sadly means anon function to be inline to handle possible nil
+            ctx.typeToGoType(newTyp).leftMap { case (ctx, newTyp) =>
+              ctx -> funcType(
+                params = Nil,
+                result = Some(newTyp)
+              ).toFuncLit(Seq(
+                iff(None, expr.expr, Node.Token.Eql, NilExpr, Seq(NilExpr.ret)),
+                expr.expr.typeAssert(newTyp).ret
+              )).call()
+            }
         case (oldTyp, newTyp) =>
           sys.error(s"Unable to assign types: $oldTyp -> $newTyp")
       }

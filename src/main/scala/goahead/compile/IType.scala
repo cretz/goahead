@@ -6,13 +6,15 @@ import org.objectweb.asm.{Label, Opcodes, Type}
 sealed trait IType {
   def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType
 
+  // "this" = "other" (but not necessarily the inverse)
   def isAssignableFrom(classPath: ClassPath, other: IType): Boolean
 
   def pretty: String
 
-  def asArray(dimensions: Int = 1): IType
+  // If already an array, just adds another dimension
+  def asArray: IType
 
-  // Fails is not array
+  // If multidimensional, just takes off a dimension
   def elementType: IType
 }
 object IType extends Logger {
@@ -61,8 +63,14 @@ object IType extends Logger {
 
     override def isAssignableFrom(classPath: ClassPath, other: IType) = {
       other match {
-        case Simple(otherTyp) if otherTyp.getSort == Type.OBJECT =>
-          classPath.classImplementsOrExtends(otherTyp.getInternalName, typ.getInternalName)
+        // Arrays can be assigned to objects
+        case other: Simple if other.isArray && typ.getInternalName == "java/lang/Object" =>
+          true
+        case other: Simple if isObject && other.isObject =>
+          classPath.classImplementsOrExtends(other.typ.getInternalName, typ.getInternalName)
+        // Arrays are covariant
+        case other: Simple if isArray && other.isArray && typ.getDimensions == other.typ.getDimensions =>
+          elementType.isAssignableFrom(classPath, other.elementType)
         // Nulls can be assigned to this type if this type is an object
         case NullType if isObject =>
           true
@@ -74,19 +82,19 @@ object IType extends Logger {
 
     def isInterface(classPath: ClassPath): Boolean = isObject && classPath.isInterface(typ.getInternalName)
 
+    def isRef: Boolean = isObject || isArray
     def isObject: Boolean = typ.getSort == Type.OBJECT
     def isArray: Boolean = typ.getSort == Type.ARRAY
 
     override def pretty: String = typ.toString
 
-    override def asArray(dimensions: Int = 1): IType = {
-      val baseType = if (isArray) typ.getElementType else typ
-      Simple(Type.getType(("[" * dimensions) + baseType.getDescriptor))
+    override def asArray: IType = {
+      Simple(Type.getType('[' + typ.getDescriptor))
     }
 
     override def elementType: IType = {
       require(isArray, "Not array")
-      Simple(typ.getElementType)
+      Simple(Type.getType(("[" * (typ.getDimensions - 1)) + typ.getElementType.getDescriptor))
     }
   }
 
@@ -94,7 +102,7 @@ object IType extends Logger {
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = other
     override def isAssignableFrom(classPath: ClassPath, other: IType) = other == this
     override def pretty: String = "null"
-    override def asArray(dimensions: Int = 1): IType = sys.error("Cannot make array of null type")
+    override def asArray: IType = sys.error("Cannot make array of null type")
     override def elementType: IType = sys.error("No element type of null type")
   }
 
@@ -102,7 +110,7 @@ object IType extends Logger {
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = other
     override def isAssignableFrom(classPath: ClassPath, other: IType) = other == this
     override def pretty: String = "<undefined>"
-    override def asArray(dimensions: Int = 1): IType = sys.error("Cannot make array of undefined type")
+    override def asArray: IType = sys.error("Cannot make array of undefined type")
     override def elementType: IType = sys.error("No element type of undefined type")
   }
 
@@ -110,7 +118,7 @@ object IType extends Logger {
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = other
     override def isAssignableFrom(classPath: ClassPath, other: IType) = other == this
     override def pretty: String = s"<undefined on $label>"
-    override def asArray(dimensions: Int = 1): IType = sys.error("Cannot make array of undefined label type")
+    override def asArray: IType = sys.error("Cannot make array of undefined label type")
     override def elementType: IType = sys.error("No element type of undefined label type")
   }
 }

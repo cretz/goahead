@@ -14,6 +14,7 @@ trait InsnCompiler extends Logger with
   JumpInsnCompiler with
   LdcInsnCompiler with
   MethodInsnCompiler with
+  MultiANewArrayInsnCompiler with
   TypeInsnCompiler with
   VarInsnCompiler with
   ZeroOpInsnCompiler
@@ -43,6 +44,7 @@ trait InsnCompiler extends Logger with
           case i: JumpInsnNode => compile(ctx, i)
           case i: LdcInsnNode => compile(ctx, i)
           case i: MethodInsnNode => compile(ctx, i)
+          case i: MultiANewArrayInsnNode => compile(ctx, i)
           case i: TypeInsnNode => compile(ctx, i)
           case i: VarInsnNode => compile(ctx, i)
           case node => sys.error(s"Unrecognized node type: $node")

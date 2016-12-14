@@ -15,6 +15,16 @@ trait ZeroOpInsnCompiler {
     insn.byOpcode {
       case Opcodes.ACONST_NULL =>
         ctx.stackPushed(TypedExpression(NilExpr, IType.NullType, cheapRef = true)) -> Nil
+      case Opcodes.ARRAYLENGTH =>
+        ctx.stackPopped { case (ctx, arrayRef) =>
+          arrayRef.toGeneralArray(ctx).leftMap { case (ctx, arrayRef) =>
+            ctx.stackPushed(TypedExpression(
+              arrayRef.sel("Len").call(),
+              IType.IntType,
+              cheapRef = false
+            )) -> Nil
+          }
+        }
       case Opcodes.ARETURN =>
         ctx.stackPopped { case (ctx, item) =>
           item.toExprNode(ctx, IType.getReturnType(ctx.method.desc)).leftMap { case (ctx, item) =>
@@ -59,17 +69,10 @@ trait ZeroOpInsnCompiler {
         })
       case Opcodes.IALOAD | Opcodes.LALOAD | Opcodes.FALOAD | Opcodes.DALOAD |
            Opcodes.AALOAD | Opcodes.BALOAD | Opcodes.CALOAD | Opcodes.SALOAD =>
-        // TODO: check aaload
-        ctx.stackPopped(2, { case (ctx, Seq(arrayRef, index)) =>
-          ctx.stackPushed(TypedExpression(
-            arrayRef.expr.indexed(index.expr),
-            arrayRef.typ.elementType,
-            cheapRef = true
-          )) -> Nil
-        })
+        aload(ctx, insn.getOpcode)
       case Opcodes.IASTORE | Opcodes.LASTORE | Opcodes.FASTORE | Opcodes.DASTORE |
            Opcodes.AASTORE | Opcodes.BASTORE | Opcodes.CASTORE | Opcodes.SASTORE =>
-        astore(ctx)
+        astore(ctx, insn.getOpcode)
       case Opcodes.ICONST_0 | Opcodes.ICONST_1 | Opcodes.ICONST_2 | Opcodes.ICONST_3 |
            Opcodes.ICONST_4 | Opcodes.ICONST_5 | Opcodes.ICONST_M1 =>
         iconst(ctx, insn.getOpcode)
@@ -89,10 +92,63 @@ trait ZeroOpInsnCompiler {
     }
   }
 
-  protected def astore(ctx: Context): (Context, Seq[Node.Statement]) = {
+  protected def astore(ctx: Context, opcode: Int): (Context, Seq[Node.Statement]) = {
     ctx.stackPopped(3, { case (ctx, Seq(arrayRef, index, value)) =>
-      value.toExprNode(ctx, arrayRef.typ.elementType).leftMap { case (ctx, typedValue) =>
-        ctx -> arrayRef.expr.indexed(index.expr).assignExisting(typedValue).singleSeq
+      opcode match {
+        case Opcodes.BASTORE =>
+          ctx.withRuntimeImportAlias.leftMap { case (ctx, rtAlias) =>
+            ctx -> rtAlias.toIdent.sel("SetBoolOrByte").call(Seq(
+              arrayRef.expr, index.expr, value.expr
+            )).toStmt.singleSeq
+          }
+        case _ =>
+          val jvmType = opcode match {
+            case Opcodes.IASTORE => IType.IntType.asArray
+            case Opcodes.LASTORE => IType.LongType.asArray
+            case Opcodes.FASTORE => IType.FloatType.asArray
+            case Opcodes.DASTORE => IType.DoubleType.asArray
+            case Opcodes.AASTORE => IType.getObjectType("java/lang/Object").asArray
+            case Opcodes.CASTORE => IType.CharType.asArray
+            case Opcodes.SASTORE => IType.ShortType.asArray
+          }
+          value.toExprNode(ctx, jvmType.elementType).leftMap { case (ctx, typedValue) =>
+            arrayRef.toExprNode(ctx, jvmType).leftMap { case (ctx, convArrayRef) =>
+              ctx -> convArrayRef.sel("Set").call(Seq(index.expr, typedValue)).toStmt.singleSeq
+            }
+          }
+      }
+    })
+  }
+
+  protected def aload(ctx: Context, opcode: Int): (Context, Seq[Node.Statement]) = {
+    ctx.stackPopped(2, { case (ctx, Seq(arrayRef, index)) =>
+      // Convert to byte or bool array if necessary
+      opcode match {
+        case Opcodes.BALOAD =>
+          ctx.withRuntimeImportAlias.leftMap { case (ctx, rtAlias) =>
+            ctx.stackPushed(TypedExpression(
+              rtAlias.toIdent.sel("GetBoolOrByte").call(Seq(arrayRef.expr, index.expr)),
+              IType.IntType,
+              cheapRef = true
+            )) -> Nil
+          }
+        case _ =>
+          val jvmType = opcode match {
+            case Opcodes.IALOAD => IType.IntType.asArray
+            case Opcodes.LALOAD => IType.LongType.asArray
+            case Opcodes.FALOAD => IType.FloatType.asArray
+            case Opcodes.DALOAD => IType.DoubleType.asArray
+            case Opcodes.AALOAD => IType.getObjectType("java/lang/Object").asArray
+            case Opcodes.CALOAD => IType.CharType.asArray
+            case Opcodes.SALOAD => IType.ShortType.asArray
+          }
+          arrayRef.toExprNode(ctx, jvmType).leftMap { case (ctx, convArrayRef) =>
+            ctx.stackPushed(TypedExpression(
+              convArrayRef.sel("Get").call(Seq(index.expr)),
+              jvmType.elementType,
+              cheapRef = true
+            )) -> Nil
+          }
       }
     })
   }

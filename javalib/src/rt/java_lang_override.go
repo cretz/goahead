@@ -11,6 +11,10 @@ func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____obj__Java_
 	this.Java__lang__Throwable__Impl.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
 }
 
+func (this *Java__lang__NegativeArraySizeException__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	this.Java__lang__Throwable__Impl.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
+}
+
 func (this *Java__lang__NullPointerException__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
 	this.Java__lang__Throwable__Impl.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
 }

@@ -185,6 +185,7 @@ class NodeWriter {
     case i: IndexExpression => appendIndexExpression(i)
     case i: InterfaceType => appendInterfaceType(i)
     case k: KeyValueExpression => appendKeyValueExpression(k, None)
+    case l: LateBoundDynamicExpression => appendExpression(l.expr)
     case m: MapType => appendMapType(m)
     case p: ParenthesizedExpression => appendParenthesizedExpression(p)
     case s: SelectorExpression => appendSelectorExpression(s)
@@ -345,7 +346,17 @@ class NodeWriter {
     append('(').appendExpression(expr.expression).append(')')
   }
 
-  def appendRangeStatement(stmt: RangeStatement): this.type = __TODO__
+  def appendRangeStatement(stmt: RangeStatement): this.type = {
+    require(stmt.token.exists(_.string.isDefined), "Token with string required for now...")
+    append("for ")
+    stmt.key match {
+      case None => append('_')
+      case Some(key) => appendExpression(key)
+    }
+    stmt.value.foreach(v => append(", ").appendExpression(v))
+    append(' ').append(stmt.token.get.string.get).append(" range ").
+      appendExpression(stmt.expression).append(' ').appendBlockStatement(stmt.body)
+  }
 
   def appendReturnStatement(stmt: ReturnStatement): this.type = {
     append("return")

@@ -19,24 +19,26 @@ trait IntInsnCompiler {
           sizeTypeExpr.toExprNode(ctx, IType.IntType).leftMap { case (ctx, sizeExpr) =>
             // Create new slice and push on the stack
             val jvmType = insn.operand match {
-              case Opcodes.T_BOOLEAN => IType.BooleanType.asArray()
-              case Opcodes.T_CHAR => IType.CharType.asArray()
-              case Opcodes.T_FLOAT => IType.FloatType.asArray()
-              case Opcodes.T_DOUBLE => IType.DoubleType.asArray()
-              case Opcodes.T_BYTE => IType.ByteType.asArray()
-              case Opcodes.T_SHORT => IType.ShortType.asArray()
-              case Opcodes.T_INT => IType.IntType.asArray()
-              case Opcodes.T_LONG => IType.LongType.asArray()
+              case Opcodes.T_BOOLEAN => IType.BooleanType.asArray
+              case Opcodes.T_CHAR => IType.CharType.asArray
+              case Opcodes.T_FLOAT => IType.FloatType.asArray
+              case Opcodes.T_DOUBLE => IType.DoubleType.asArray
+              case Opcodes.T_BYTE => IType.ByteType.asArray
+              case Opcodes.T_SHORT => IType.ShortType.asArray
+              case Opcodes.T_INT => IType.IntType.asArray
+              case Opcodes.T_LONG => IType.LongType.asArray
               case other => sys.error(s"Unrecognized operand: $other")
             }
-            ctx.typeToGoType(jvmType).leftMap { case (ctx, goType) =>
-              ctx.stackPushed {
-                TypedExpression(
-                  "make".toIdent.call(Seq(goType, sizeExpr)),
-                  jvmType,
-                  cheapRef = false
-                )
-              } -> Nil
+            jvmType.arrayNewFn(ctx).leftMap { case (ctx, arrayNewFn) =>
+              ctx.typeToGoType(jvmType).leftMap { case (ctx, goType) =>
+                ctx.stackPushed {
+                  TypedExpression(
+                    arrayNewFn.call(Seq(sizeExpr)),
+                    jvmType,
+                    cheapRef = false
+                  )
+                } -> Nil
+              }
             }
           }
         }

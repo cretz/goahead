@@ -7,6 +7,8 @@ object AstDsl extends Logger {
 
   // TODO: check all of these later to see if they are used
 
+  def arrayType(typ: Expression, length: Option[Expression] = None) = ArrayType(typ, length)
+
   def assignExisting(left: Expression, right: Expression) = left.assignExisting(right)
 
   def assignDefineMultiple(left: Seq[Expression], right: Seq[Expression]) = AssignStatement(left, Token.Define, right)
@@ -154,6 +156,13 @@ object AstDsl extends Logger {
     def inParens = ParenthesizedExpression(expr)
 
     def indexed(index: Expression) = IndexExpression(expr, index)
+
+    def loopOver(
+      key: Option[Expression],
+      value: Option[Expression],
+      stmts: Seq[Statement],
+      token: Option[Token] = Some(Token.Define)
+    ) = RangeStatement(key, value, token, expr, block(stmts))
 
     def namelessField = Field(Nil, expr)
 

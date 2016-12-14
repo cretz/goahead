@@ -120,6 +120,11 @@ object Node {
     value: Expression
   ) extends Expression
 
+  // We had to concede some mutability here for ease of development
+  trait LateBoundDynamicExpression extends Expression {
+    def expr: Expression
+  }
+
   sealed trait Statement extends Node
 
   case class DeclarationStatement(declaration: Declaration) extends Statement

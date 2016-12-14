@@ -664,7 +664,7 @@ func (this *Java__lang__Class__Static) New() *Java__lang__Class__Impl {
 }
 
 func (this *Java__lang__Class__Static) Impl__Static_Init__desc____ret__V() {
-	
+
 }
 
 func (this *Java__lang__Class__Static) Impl__Access__dollar__300__desc____arr____obj__Java__lang__Object____arr____obj__Java__lang__Object__ret__Z(var0 []Java__lang__Object__Instance, var1 []Java__lang__Object__Instance) bool {
@@ -1237,6 +1237,64 @@ func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____obj__Java_
 	panic("Not Implemented - java/lang/Exception.<init>(Ljava/lang/Throwable;)V")
 }
 
+type Java__lang__NegativeArraySizeException__Static struct{}
+
+var Java__lang__NegativeArraySizeException__Var Java__lang__NegativeArraySizeException__Static
+
+func Java__lang__NegativeArraySizeException() *Java__lang__NegativeArraySizeException__Static {
+	return &Java__lang__NegativeArraySizeException__Var
+}
+
+func (this *Java__lang__NegativeArraySizeException__Static) New() *Java__lang__NegativeArraySizeException__Impl {
+	v := &Java__lang__NegativeArraySizeException__Impl{
+		Java__lang__RuntimeException__Impl: Java__lang__RuntimeException().New(),
+	}
+	v.Java__lang__NegativeArraySizeException__InitDispatch(v)
+	return v
+}
+
+type Java__lang__NegativeArraySizeException__Dispatch interface {
+	Java__lang__RuntimeException__Dispatch
+}
+
+func (this *Java__lang__NegativeArraySizeException__Impl) Java__lang__NegativeArraySizeException__InitDispatch(v Java__lang__NegativeArraySizeException__Dispatch) {
+	this.Java__lang__RuntimeException__Impl.Java__lang__RuntimeException__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__NegativeArraySizeException__Instance interface {
+	AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	FillInStackTrace__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	Finalize__desc____ret__V()
+	GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetStackTraceDepth__desc____ret__I() int
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() []Java__lang__Throwable__Instance
+	HashCode__desc____ret__I() int
+	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	PrintStackTrace__desc____ret__V()
+	PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(Java__io__PrintStream__Instance)
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+}
+
+type Java__lang__NegativeArraySizeException__Impl struct {
+	*Java__lang__RuntimeException__Impl
+	_dispatch Java__lang__NegativeArraySizeException__Dispatch
+}
+
+func (this *Java__lang__NegativeArraySizeException__Impl) Impl__Instance_Init__desc____ret__V() {
+	panic("Not Implemented - java/lang/NegativeArraySizeException.<init>()V")
+}
+
 type Java__lang__NullPointerException__Static struct{}
 
 var Java__lang__NullPointerException__Var Java__lang__NullPointerException__Static
@@ -1313,7 +1371,7 @@ func (this *Java__lang__Object__Static) New() *Java__lang__Object__Impl {
 }
 
 func (this *Java__lang__Object__Static) Impl__Static_Init__desc____ret__V() {
-	
+
 }
 
 type Java__lang__Object__Dispatch interface {
@@ -1541,7 +1599,7 @@ func (this *Java__lang__String__Static) New() *Java__lang__String__Impl {
 }
 
 func (this *Java__lang__String__Static) Impl__Static_Init__desc____ret__V() {
-	
+
 }
 
 func (this *Java__lang__String__Static) Impl__CopyValueOf__desc____arr__C__ret____obj__Java__lang__String(var0 []rune) Java__lang__String__Instance {
@@ -2994,7 +3052,7 @@ func (this *Java__lang__Throwable__Static) New() *Java__lang__Throwable__Impl {
 }
 
 func (this *Java__lang__Throwable__Static) Impl__Static_Init__desc____ret__V() {
-	
+
 }
 
 type Java__lang__Throwable__Dispatch interface {

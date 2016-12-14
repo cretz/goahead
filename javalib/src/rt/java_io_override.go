@@ -14,7 +14,11 @@ func newline() {
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__Println__desc____obj__Java__lang__String__ret__V(var1 Java__lang__String__Instance) {
-	print(var1.(*Java__lang__String__Impl).Underlying)
+	if var1 == nil {
+		print("null")
+	} else {
+		print(var1.(*Java__lang__String__Impl).Underlying)
+	}
 	newline()
 }
 
