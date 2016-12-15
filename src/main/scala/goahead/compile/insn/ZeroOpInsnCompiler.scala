@@ -100,6 +100,8 @@ trait ZeroOpInsnCompiler {
       case Opcodes.ISHL | Opcodes.ISHR | Opcodes.IUSHR |
            Opcodes.LSHL | Opcodes.LSHR | Opcodes.LUSHR =>
         sh(ctx, insn.getOpcode)
+      case Opcodes.IXOR | Opcodes.LXOR =>
+        xor(ctx, insn.getOpcode)
       case Opcodes.POP =>
         // We need to just take what is on the stack and make it a statement as this
         // is often just an ignored return value or something
@@ -423,6 +425,13 @@ trait ZeroOpInsnCompiler {
       case Opcodes.FSUB => IType.FloatType
       case Opcodes.ISUB => IType.IntType
       case Opcodes.LSUB => IType.LongType
+    })
+  }
+
+  protected def xor(ctx: Context, opcode: Int): (Context, Seq[Node.Statement]) = {
+    binary(ctx, Node.Token.Xor, opcode match {
+      case Opcodes.IXOR => IType.IntType
+      case Opcodes.LXOR => IType.LongType
     })
   }
 }

@@ -60,6 +60,7 @@ public class Primitives {
         System.out.println(-a << 3);
         System.out.println(-a >> 3);
         System.out.println(-a >>> 3);
+        System.out.println(a ^ 7);
         return d % f;
     }
 
@@ -81,6 +82,7 @@ public class Primitives {
         System.out.println(-a << 3);
         System.out.println(-a >> 3);
         System.out.println(-a >>> 3);
+        System.out.println(a ^ 7);
         return d % f;
     }
 }
