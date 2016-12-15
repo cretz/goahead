@@ -10,6 +10,7 @@ import scala.util.control.NonFatal
 
 trait InsnCompiler extends Logger with
   FieldInsnCompiler with
+  IincInsnCompiler with
   IntInsnCompiler with
   JumpInsnCompiler with
   LdcInsnCompiler with
@@ -39,6 +40,7 @@ trait InsnCompiler extends Logger with
       val ctxAndStmts = try {
         insns.head match {
           case i: FieldInsnNode => compile(ctx, i)
+          case i: IincInsnNode => compile(ctx, i)
           case i: InsnNode => compile(ctx, i)
           case i: IntInsnNode => compile(ctx, i)
           case i: JumpInsnNode => compile(ctx, i)

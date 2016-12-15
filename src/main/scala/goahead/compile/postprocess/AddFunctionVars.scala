@@ -8,10 +8,10 @@ trait AddFunctionVars extends PostProcessor {
   import Helpers._
 
   override def apply(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
-    // Add all function vars not part of the arg list
+    // Add all local vars not part of the args
     val argTypeCount = IType.getArgumentTypes(ctx.method.desc).length
-    require(ctx.functionVars.size >= argTypeCount)
-    val varsToDecl = ctx.functionVars.drop(argTypeCount)
+    require(ctx.localVars.allTimeVars.size >= argTypeCount)
+    val varsToDecl = ctx.functionVars ++ ctx.localVars.allTimeVars.drop(argTypeCount)
     if (varsToDecl.isEmpty) ctx -> stmts
     else ctx.createVarDecl(varsToDecl).map { case (ctx, declStmt) => ctx -> (declStmt +: stmts) }
   }

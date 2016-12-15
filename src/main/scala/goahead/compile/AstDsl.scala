@@ -141,7 +141,7 @@ object AstDsl extends Logger {
   }
 
   implicit class RichExpression(val expr: Expression) extends AnyVal {
-    def `+`(right: Expression) = BinaryExpression(expr, Token.Add, right)
+    def `+`(right: Expression) = binary(Token.Add, right)
 
     def addressOf = unary(Token.And)
 
@@ -150,6 +150,8 @@ object AstDsl extends Logger {
     def assignExisting(right: Expression) = AssignStatement(Seq(expr), Token.Assign, Seq(right))
 
     def assignDefine(right: Expression) = AssignStatement(Seq(expr), Token.Define, Seq(right))
+
+    def binary(tok: Token, right: Expression) = BinaryExpression(expr, tok, right)
 
     def call(args: Seq[Expression] = Nil) = CallExpression(expr, args)
 

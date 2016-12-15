@@ -45,7 +45,11 @@ trait BuildRt extends Command {
       ),
       // Things we are handling ourselves for now
       excludePatterns = Seq(
+        "java/io/PrintStream.println(C)V",
+        "java/io/PrintStream.println(D)V",
+        "java/io/PrintStream.println(F)V",
         "java/io/PrintStream.println(I)V",
+        "java/io/PrintStream.println(J)V",
         "java/io/PrintStream.println(Ljava/lang/String;)V",
         "java/io/PrintStream.println(Z)V",
         "java/lang/ClassCastException.<init>()V",

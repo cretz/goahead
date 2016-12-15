@@ -220,70 +220,30 @@ object Helpers extends Logger {
       f.tupled(stackPop(amount))
     }
 
-    def nextUnusedLocalVarName = {
-      val varIndices = ctx.functionVars.flatMap(_.maybeName).collect {
-        case name if name.startsWith("var") => name.substring(3).toInt
-      }
-      val maxIndex = if (varIndices.isEmpty) -1 else varIndices.max
-      "var" + (maxIndex + 1)
-    }
-
-    def shouldOverrideLocalVarType(existing: IType, updated: IType) = {
-      existing -> updated match {
-        case (e: IType.Simple, u: IType.Simple) =>
-          (e.isRef || u.isRef) && !e.isAssignableFrom(ctx.imports.classPath, u)
-        case _ =>
-          false
-      }
-    }
-
-    def getLocalVar(
-      index: Int,
-      typ: IType,
-      overrideTypeIfNecessary: Boolean
-    ): (MethodCompiler.Context, TypedExpression) = {
-      val static = ctx.method.access.isAccessStatic
-      if (index == 0 && !static) {
-        ctx -> TypedExpression.namedVar("this", IType.getObjectType(ctx.cls.name))
-      } else {
-        // Index 1 for non-static is actually 0 in the seq
-        val seqIndex = if (static) index else index - 1
-        if (ctx.localVars.size > seqIndex) {
-          // TODO: try to make it more specific if we can
-          val existing = ctx.localVars(seqIndex)
-          // If the existing and current types are objects, but the existing is not assignable from
-          // the new type, we need to replace the local var to a new thing
-          if (overrideTypeIfNecessary && shouldOverrideLocalVarType(existing.typ, typ)) {
-            // Replace it with our different type
-            val replacedLocalVar = TypedExpression.namedVar(nextUnusedLocalVarName, typ)
-            logger.debug(s"Existing local var type ${existing.typ} at index $seqIndex is not assignable from wanted " +
-              s"type $typ, creating new local var ${replacedLocalVar.name} to store it")
-            ctx.copy(
-              localVars = ctx.localVars.updated(seqIndex, replacedLocalVar),
-              functionVars = ctx.functionVars :+ replacedLocalVar
-            ) -> replacedLocalVar
-          } else ctx -> existing
-        } else {
-          // Fill in with uninitialized...
-          Range(ctx.localVars.size, seqIndex).foldLeft(ctx)({ case (ctx, index) =>
-            getLocalVar(index, IType.Undefined, overrideTypeIfNecessary = false)._1
-          }).map { ctx =>
-            val localVar = TypedExpression.namedVar(nextUnusedLocalVarName, typ)
-            ctx.copy(localVars = ctx.localVars :+ localVar, functionVars = ctx.functionVars :+ localVar) -> localVar
-          }
-        }
+    def getLocalVar(index: Int, typ: IType, forWriting: Boolean): (MethodCompiler.Context, TypedExpression) = {
+      ctx.localVars.getLocalVar(ctx, index, typ, forWriting).map { case (localVars, localVar) =>
+        ctx.copy(localVars = localVars) -> localVar
       }
     }
 
     def appendLocalVar(typ: IType): (MethodCompiler.Context, TypedExpression) = {
-      if (ctx.method.access.isAccessStatic) getLocalVar(ctx.localVars.size, typ, overrideTypeIfNecessary = false)
-      else getLocalVar(ctx.localVars.size + 1, typ, overrideTypeIfNecessary = false)
+      ctx.localVars.appendLocalVar(ctx, typ).map { case (localVars, localVar) =>
+        ctx.copy(localVars = localVars) -> localVar
+      }
+    }
+
+    def dropLocalVars(amount: Int): MethodCompiler.Context = {
+      ctx.copy(localVars = ctx.localVars.dropRight(amount))
+    }
+
+    def takeLocalVars(amount: Int): MethodCompiler.Context = {
+      ctx.copy(localVars = ctx.localVars.take(amount))
     }
 
     def getTempVar(typ: IType) = {
       // Try to find one not in use, otherwise create
       val possibleTempVars = ctx.functionVars ++ ctx.localTempVars
-      possibleTempVars.find(t => t.typ == typ && !ctx.stack.items.contains(t)) match {
+      possibleTempVars.find(t => t.typ == typ && !ctx.stack.items.contains(t) && t.name.startsWith("temp")) match {
         case Some(tempVar) => ctx -> tempVar
         case None =>
           // Since temp vars can be removed after frames, just keep trying names
@@ -396,8 +356,14 @@ object Helpers extends Logger {
       expr.typ -> newTyp match {
         case (oldTyp, newTyp) if oldTyp == newTyp =>
           ctx -> expr.expr
-        case (IType.FloatType, IType.DoubleType) =>
+        case (oldTyp: IType.Simple, IType.DoubleType) if oldTyp.isPrimitive =>
           ctx -> "float64".toIdent.call(Seq(expr.expr))
+        case (oldTyp: IType.Simple, IType.FloatType) if oldTyp.isPrimitive =>
+          ctx -> "float32".toIdent.call(Seq(expr.expr))
+        case (oldTyp: IType.Simple, IType.IntType) if oldTyp.isPrimitive =>
+          ctx -> "int".toIdent.call(Seq(expr.expr))
+        case (oldTyp: IType.Simple, IType.LongType) if oldTyp.isPrimitive =>
+          ctx -> "int64".toIdent.call(Seq(expr.expr))
         case (IType.IntType, IType.BooleanType) =>
           // A simple x != 0
           // TODO: should parenthesize?

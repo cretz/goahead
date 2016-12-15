@@ -21,7 +21,7 @@ trait VarInsnCompiler {
 
   protected def load(ctx: Context, index: Int, opcode: Int): (Context, Seq[Node.Statement]) = {
     @inline
-    def doLoad(typ: IType) = ctx.getLocalVar(index, typ, overrideTypeIfNecessary = false).map { case (ctx, local) =>
+    def doLoad(typ: IType) = ctx.getLocalVar(index, typ, forWriting = false).map { case (ctx, local) =>
       ctx.stackPushed(local) -> Seq.empty[Node.Statement]
     }
     opcode match {
@@ -38,7 +38,7 @@ trait VarInsnCompiler {
     def doStore(typ: IType) = ctx.stackPopped { case (ctx, value) =>
       // We need to use the value type if it's already a simple type, otherwise make our own
       val localVarTyp = if (value.typ.isInstanceOf[IType.Simple]) value.typ else typ.asArray
-      ctx.getLocalVar(index, localVarTyp, overrideTypeIfNecessary = true).map { case (ctx, local) =>
+      ctx.getLocalVar(index, localVarTyp, forWriting = true).map { case (ctx, local) =>
         value.toExprNode(ctx, local.typ).map { case (ctx, value) =>
           ctx -> local.expr.assignExisting(value).singleSeq
         }

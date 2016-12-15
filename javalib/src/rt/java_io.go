@@ -556,22 +556,6 @@ func (this *Java__io__PrintStream__Impl) Impl__Println__desc____ret__V() {
 	panic("Not Implemented - java/io/PrintStream.println()V")
 }
 
-func (this *Java__io__PrintStream__Impl) Impl__Println__desc__C__ret__V(var0 rune) {
-	panic("Not Implemented - java/io/PrintStream.println(C)V")
-}
-
-func (this *Java__io__PrintStream__Impl) Impl__Println__desc__D__ret__V(var0 float64) {
-	panic("Not Implemented - java/io/PrintStream.println(D)V")
-}
-
-func (this *Java__io__PrintStream__Impl) Impl__Println__desc__F__ret__V(var0 float32) {
-	panic("Not Implemented - java/io/PrintStream.println(F)V")
-}
-
-func (this *Java__io__PrintStream__Impl) Impl__Println__desc__J__ret__V(var0 int64) {
-	panic("Not Implemented - java/io/PrintStream.println(J)V")
-}
-
 func (this *Java__io__PrintStream__Impl) Impl__Println__desc____obj__Java__lang__Object__ret__V(var0 Java__lang__Object__Instance) {
 	panic("Not Implemented - java/io/PrintStream.println(Ljava/lang/Object;)V")
 }

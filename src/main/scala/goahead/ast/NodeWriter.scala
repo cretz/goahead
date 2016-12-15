@@ -7,7 +7,6 @@ object NodeWriter {
 }
 
 class NodeWriter {
-
   val builder = new StringBuilder()
   var indention = 0
 
@@ -106,9 +105,10 @@ class NodeWriter {
   def appendBasicLiteral(lit: BasicLiteral): this.type = append(lit.value)
 
   def appendBinaryExpression(expr: BinaryExpression): this.type = {
+    // TODO: follow binary space rules as described at
+    // https://github.com/golang/go/blob/96414ca39f4a63d04ddc5cea6d4c63237f2a5fd4/src/go/printer/nodes.go#L598
     require(expr.operator.string != null)
-    appendExpression(expr.left).append(' ').append(expr.operator.string.get).append(' ')
-    appendExpression(expr.right)
+    appendExpression(expr.left).append(' ').append(expr.operator.string.get).append(' ').appendExpression(expr.right)
   }
 
   def appendBlockStatement(stmt: BlockStatement): this.type = {

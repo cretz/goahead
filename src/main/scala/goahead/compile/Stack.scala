@@ -8,6 +8,11 @@ case class Stack(items: Seq[TypedExpression]) {
     copy(items = items.init) -> items.last
   }
 
+  def peek() = {
+    require(items.nonEmpty, "Trying to peek an empty stack")
+    items.last
+  }
+
   def pop(amount: Int) = {
     val (leftover, popped) = items.splitAt(items.length - amount)
     require(popped.size == amount, s"Not enough on stack, expected $amount, got ${popped.size}")

@@ -116,12 +116,12 @@ trait MethodCompiler extends Logger {
               ctx.appendLocalVar(localType)._1
             }
           case Opcodes.F_CHOP =>
-            ctx.copy(localVars = ctx.localVars.dropRight(ctx.frameLocals(frame).size))
+            ctx.dropLocalVars(ctx.frameLocals(frame).size)
           case Opcodes.F_FULL =>
             val locals = ctx.frameLocals(frame)
-            if (locals.length == ctx.localVars.length) ctx
-            else if (locals.length < ctx.localVars.length) ctx.copy(localVars = ctx.localVars.take(locals.length))
-            else locals.drop(ctx.localVars.length).foldLeft(ctx) { case (ctx, localType) =>
+            if (locals.length == ctx.localVars.size) ctx
+            else if (locals.length < ctx.localVars.size) ctx.takeLocalVars(locals.length)
+            else locals.drop(ctx.localVars.size).foldLeft(ctx) { case (ctx, localType) =>
               ctx.appendLocalVar(localType)._1
             }
         }
@@ -196,20 +196,37 @@ object MethodCompiler extends MethodCompiler {
     imports: Imports,
     mangler: Mangler,
     sets: Seq[LabelSet],
+    localVars: LocalVars,
     usedLabels: Set[String] = Set.empty,
     labelsAsFunctions: Map[String, Node.FunctionType] = Map.empty,
     stack: Stack = Stack.empty,
     localTempVars: IndexedSeq[TypedExpression] = IndexedSeq.empty,
-    localVars: IndexedSeq[TypedExpression] = IndexedSeq.empty,
     functionVars: Seq[TypedExpression] = IndexedSeq.empty
   ) extends Contextual[Context] {
     override def updatedImports(mports: Imports) = copy(imports = mports)
 
     def prettyLines: Seq[String] = {
-      Seq("Context:") ++ stack.prettyLines.map("  " + _) ++ Seq("  Locals:") ++
-        localVars.zipWithIndex.map { case (v, i) => s"    $i: ${v.pretty}" }
+      Seq("Context:") ++
+        stack.prettyLines.map("  " + _) ++
+        localVars.prettyLines.map("  " + _)
     }
 
     def prettyAppend: String = prettyLines.mkString("\n  ", "\n  ", "")
+  }
+
+  object Context {
+    def apply(
+      cls: Cls,
+      method: Method,
+      imports: Imports,
+      mangler: Mangler,
+      sets: Seq[LabelSet]
+    ): Context = {
+      Context(cls, method, imports, mangler, sets, LocalVars(
+        thisVar = if (method.access.isAccessStatic) None else Some(
+          TypedExpression.namedVar("this", IType.getObjectType(cls.name))
+        )
+      ))
+    }
   }
 }

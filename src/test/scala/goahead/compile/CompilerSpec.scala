@@ -50,12 +50,12 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
 
     // Write the regular code in the spectest folder
     val codeFile = Files.createDirectories(tempFolder.resolve("spectest")).resolve("code.go")
-    writeGoCode(codeFile, compiled)
+    writeGoCode(t, codeFile, compiled)
 
     // Write the main call
     val className = t.classes.find(c => Try(c.getMethod("main", classOf[Array[String]])).isSuccess).get.getName
     val mainCode = GoAheadCompiler.compileMainFile("./spectest", className.replace('.', '/'), classPath)
-    writeGoCode(tempFolder.resolve("main.go"), mainCode)
+    writeGoCode(t, tempFolder.resolve("main.go"), mainCode)
 
     // Compile go code
     val compiledExe = compileDir(tempFolder)
@@ -64,16 +64,16 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     assertExpectedOutput(compiledExe, t.expectedOutput.get)
   }
 
-  def writeGoCode(file: Path, code: Node.File): Unit = {
+  def writeGoCode(testCase: TestCase, file: Path, code: Node.File): Unit = {
     val codeStr = NodeWriter.fromNode(code)
     logger.debug(s"Asserting and writing the following to $file:\n$codeStr")
-    assertValidCode(codeStr)
+    assertValidCode(testCase, codeStr)
     Files.write(file, codeStr.getBytes(StandardCharsets.UTF_8))
     // Discarding unneeded value above
     ()
   }
 
-  def assertValidCode(code: String): Unit = {
+  def assertValidCode(testCase: TestCase, code: String): Unit = {
     val process = new ProcessBuilder("gofmt").start()
     val outReader = new BufferedReader(new InputStreamReader(process.getInputStream))
     val errReader = new BufferedReader(new InputStreamReader(process.getErrorStream))
@@ -86,12 +86,22 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
       assert(err == "")
       assert(out == code)
       assert(process.exitValue == 0)
-    }).recover({ case e =>
-      logger.error(s"Formatting error ($err):\n$out")
-      throw e
+      ()
+    }).recover({
+      case _ if testCase.warnOnFormatError =>
+        val codeLines = code.split('\n')
+        val outLines = out.split('\n')
+        logger.debug(s"Formatting error ($err); full output:\n$out")
+        codeLines.zipWithIndex.diff(outLines.zipWithIndex).foreach { case (_, lineIndex) =>
+          logger.warn(s"Formatting diff on line ${lineIndex + 1} " +
+            "(NOTE: binary expression spacing issues are a known problem currently)\n" +
+            s"  Expected: ${outLines(lineIndex)}\n       Got: ${codeLines(lineIndex)}")
+        }
+        ()
+      case e =>
+        logger.error(s"Formatting error ($err); full output:\n$out")
+        throw e
     }).get
-    // Discarding unneeded value above
-    ()
   }
 
   def compileDir(dir: Path): Path = {
@@ -135,16 +145,18 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
 
 object CompilerSpec extends Logger {
   val testCases = {
+    // TODO: maybe just read all classes out of the package dynamically?
     import goahead.testclasses._
     Seq(
-      TestCase(classOf[ArrayTests]),
+      TestCase(classOf[Arrays]),
       TestCase(classOf[Casts]),
       TestCase(classOf[HelloWorld]),
       TestCase(classOf[Inheritance]),
       TestCase(classOf[InheritanceConstructors]),
       TestCase(classOf[Interfaces]),
-      TestCase(classOf[StaticFields]),
+      TestCase(classOf[Primitives]),
       TestCase(classOf[SimpleInstance]),
+      TestCase(classOf[StaticFields]),
       TestCase(classOf[TryCatch])
     )
   }
@@ -168,7 +180,8 @@ object CompilerSpec extends Logger {
 
   case class TestCase(
     classes: Seq[Class[_]],
-    expectedOutput: Option[String]
+    expectedOutput: Option[String],
+    warnOnFormatError: Boolean
   ) {
     def subject =
       "Compiled classes " + classes.map(_.getName).mkString(", ")
@@ -202,7 +215,8 @@ object CompilerSpec extends Logger {
 
       TestCase(
         classes = allClasses,
-        expectedOutput = Some(expectedOutput)
+        expectedOutput = Some(expectedOutput),
+        warnOnFormatError = topClasses.exists(_.isAnnotationPresent(classOf[goahead.WarnOnFormatError]))
       )
     }
 

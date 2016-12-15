@@ -1,6 +1,6 @@
 package goahead.testclasses;
 
-public class ArrayTests {
+public class Arrays {
     public static void main(String[] args) {
         booleans();
         bytes();

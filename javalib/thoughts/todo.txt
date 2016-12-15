@@ -3,3 +3,5 @@
 * Refactor:
   * Type conversion stuff
 * Utilize some of jvm.go project's test classes
+* Unused local var elision
+* Consider int32 instead of int for JVM int type

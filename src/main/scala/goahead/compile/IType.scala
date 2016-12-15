@@ -85,6 +85,8 @@ object IType extends Logger {
     def isRef: Boolean = isObject || isArray
     def isObject: Boolean = typ.getSort == Type.OBJECT
     def isArray: Boolean = typ.getSort == Type.ARRAY
+    def isMethod: Boolean = typ.getSort == Type.METHOD
+    def isPrimitive: Boolean = !isObject && !isArray && !isMethod
 
     override def pretty: String = typ.toString
 
