@@ -1,3 +1,0 @@
-[submodule "third-party/jvm.go"]
-	path = third-party/jvm.go
-	url = https://github.com/zxh0/jvm.go.git
