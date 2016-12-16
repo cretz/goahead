@@ -184,6 +184,16 @@ object AstDsl extends Logger {
 
     def star = StarExpression(expr)
 
+    def switchOn(cases: Seq[(Expression, Seq[Statement])], default: Option[Seq[Statement]]) =
+      SwitchStatement(
+        init = None,
+        tag = Some(expr),
+        body = block(
+          cases.map(c => CaseClause(c._1.singleSeq, block(c._2))) ++
+          default.map(c => CaseClause(Nil, block(c)))
+        )
+      )
+
     def typeAssert(right: Expression) = TypeAssertExpression(expr, Some(right))
 
     def unary(tok: Token) = UnaryExpression(tok, expr)

@@ -241,18 +241,15 @@ object Helpers extends Logger {
     }
 
     def getTempVar(typ: IType) = {
-      // Try to find one not in use, otherwise create
-      val possibleTempVars = ctx.functionVars ++ ctx.localTempVars
-      possibleTempVars.find(t => t.typ == typ && !ctx.stack.items.contains(t) && t.name.startsWith("temp")) match {
-        case Some(tempVar) => ctx -> tempVar
-        case None =>
-          // Since temp vars can be removed after frames, just keep trying names
-          val name = Iterator.from(0).map("temp" + _).find({ name =>
-            !possibleTempVars.exists(_.name == name)
-          }).get
-          val tempVar = TypedExpression.namedVar(name, typ)
-          ctx.copy(localTempVars = ctx.localTempVars :+ tempVar) -> tempVar
-      }
+      // Previously we tried to find one not in use, but unfortunately it is very difficult
+      // to tell whether one is in use. Can't just check the top level of the stack, but would
+      // have to walk all stack expressions. Instead, just create a new temp var and live with
+      // the consequences which should be minimal because frames don't usually last long.
+      // We just check for existing names to know the next we are able to create.
+      val existingVars = ctx.functionVars ++ ctx.localTempVars
+      val name = Iterator.from(0).map("temp" + _).find(name => !existingVars.exists(_.name == name)).get
+      val tempVar = TypedExpression.namedVar(name, typ)
+      ctx.copy(localTempVars = ctx.localTempVars :+ tempVar) -> tempVar
     }
 
     def withTempVar[T](typ: IType, f: (MethodCompiler.Context, TypedExpression) => T) = {
@@ -392,7 +389,7 @@ object Helpers extends Logger {
         // TODO: support primitives
         case (oldTyp: IType.Simple, newTyp: IType.Simple)
           // Needs to be cheap ref since we check for nil
-          if (oldTyp.isObject || oldTyp.isArray) && (newTyp.isObject || newTyp.isArray) && expr.cheapRef =>
+          if (oldTyp.isObject || oldTyp.isArray) && (newTyp.isObject || newTyp.isArray) =>
             // Type assertion which sadly means anon function to be inline to handle possible nil
             ctx.typeToGoType(newTyp).map { case (ctx, newTyp) =>
               ctx -> funcType(

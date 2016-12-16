@@ -36,7 +36,6 @@ trait BuildJvmStubs extends Command with Logger {
 
   override def run(conf: Conf): Unit = {
     val pkg = GoPath().loadPackage(conf.importPath)
-    println("YAY: " + pkg)
     ()
   }
 }

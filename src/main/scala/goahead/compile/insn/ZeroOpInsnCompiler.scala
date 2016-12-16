@@ -58,9 +58,9 @@ trait ZeroOpInsnCompiler {
       case Opcodes.DUP =>
         dup(ctx, 1)(s => s ++ s)
       case Opcodes.DUP_X1 =>
-        dup(ctx, 2)(s => s :+ s.head)
+        dup(ctx, 2)(s => s.last +: s)
       case Opcodes.DUP_X2 =>
-        dup(ctx, 3)(s => s :+ s.head)
+        dup(ctx, 3)(s => s.last +: s)
       case Opcodes.DUP2 =>
         ctx.stack.peek().typ match {
           case IType.LongType | IType.DoubleType => dup(ctx, 1)(s => s ++ s)
@@ -68,13 +68,13 @@ trait ZeroOpInsnCompiler {
         }
       case Opcodes.DUP2_X1 =>
         ctx.stack.peek().typ match {
-          case IType.LongType | IType.DoubleType => dup(ctx, 2)(s => s :+ s.head)
-          case _ => dup(ctx, 3)(s => s ++ s.take(2))
+          case IType.LongType | IType.DoubleType => dup(ctx, 2)(s => s.last +: s)
+          case _ => dup(ctx, 3)(s => s.takeRight(2) ++ s)
         }
       case Opcodes.DUP2_X2 =>
         ctx.stack.peek().typ match {
-          case IType.LongType | IType.DoubleType => dup(ctx, 3)(s => s :+ s.head)
-          case _ => dup(ctx, 4)(s => s ++ s.take(2))
+          case IType.LongType | IType.DoubleType => dup(ctx, 3)(s => s.last +: s)
+          case _ => dup(ctx, 4)(s => s.takeRight(2) ++ s)
         }
       case Opcodes.FCMPG | Opcodes.FCMPL =>
         fcmp(ctx, insn.getOpcode == Opcodes.FCMPG)
@@ -149,7 +149,7 @@ trait ZeroOpInsnCompiler {
             ctx.stackPushed(TypedExpression(
               convArrayRef.sel("Get").call(Seq(index.expr)),
               jvmType.elementType,
-              cheapRef = true
+              cheapRef = false
             )) -> Nil
           }
       }

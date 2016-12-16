@@ -22,6 +22,8 @@ public class Primitives {
         System.out.println((int) (a + b / c * -d - e));
         System.out.println(0d);
         System.out.println(1d);
+        System.out.println(a < b);
+        System.out.println(a > b);
         return d % f;
     }
 
@@ -34,6 +36,8 @@ public class Primitives {
         System.out.println(0f);
         System.out.println(1f);
         System.out.println(2f);
+        System.out.println(a < b);
+        System.out.println(a > b);
         return d % f;
     }
 
@@ -83,6 +87,7 @@ public class Primitives {
         System.out.println(-a >> 3);
         System.out.println(-a >>> 3);
         System.out.println(a ^ 7);
+        System.out.println(a < b);
         return d % f;
     }
 }

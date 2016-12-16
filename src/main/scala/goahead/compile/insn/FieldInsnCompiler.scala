@@ -19,7 +19,7 @@ trait FieldInsnCompiler {
             TypedExpression(
               expr = item.expr.sel(ctx.mangler.fieldGetterName(declarer.cls.name, insn.name)).call(),
               typ = IType.getType(insn.desc),
-              cheapRef = true
+              cheapRef = false
             )
           ) -> Nil
         }
@@ -28,7 +28,7 @@ trait FieldInsnCompiler {
           ctx.stackPushed(TypedExpression(
             expr = expr.sel(ctx.mangler.fieldName(insn.owner, insn.name)),
             typ = IType.getType(insn.desc),
-            cheapRef = true
+            cheapRef = false
           )) -> Nil
         }
       case Opcodes.PUTFIELD =>

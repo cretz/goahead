@@ -15,6 +15,12 @@ trait JumpInsnCompiler {
     ctx.copy(usedLabels = ctx.usedLabels + label).map { ctx =>
 
       @inline
+      def ifCondStmt(ctx: Context, cond: Node.Expression) =
+        ctx.prepareToGotoLabel(insn.label).map { case (ctx, stmts) =>
+          ctx -> iff(None, cond, stmts :+ goto(label)).singleSeq
+        }
+
+      @inline
       def ifStmt(ctx: Context, left: Node.Expression, token: Node.Token, right: Node.Expression) =
         ctx.prepareToGotoLabel(insn.label).map { case (ctx, stmts) =>
           ctx -> iff(None, left, token, right, stmts :+ goto(label)).singleSeq
@@ -45,6 +51,18 @@ trait JumpInsnCompiler {
           ifZero(ctx, Node.Token.Lss)
         case Opcodes.IFNE =>
           ifZero(ctx, Node.Token.Neq)
+        case Opcodes.IFNONNULL | Opcodes.IFNULL =>
+          ctx.stackPopped { case (ctx, ref) =>
+            val tok = if (insn.getOpcode == Opcodes.IFNONNULL) Node.Token.Neq else Node.Token.Eql
+            ifStmt(ctx, ref.expr, tok, NilExpr)
+          }
+        case Opcodes.IF_ACMPEQ | Opcodes.IF_ACMPNE =>
+          ctx.stackPopped(2, { case (ctx, Seq(lhs, rhs)) =>
+            ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
+              val cond = rtAlias.toIdent.sel("SameIdentity").call(Seq(lhs.expr, rhs.expr))
+              ifCondStmt(ctx, if (insn.getOpcode == Opcodes.IF_ACMPEQ) cond else cond.unary(Node.Token.Not))
+            }
+          })
         case Opcodes.IF_ICMPEQ =>
           ifInt(ctx, Node.Token.Eql)
         case Opcodes.IF_ICMPGE =>

@@ -6,6 +6,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"reflect"
 )
 
 func OSArgs() ObjectArray__Instance {
@@ -111,4 +112,9 @@ func NewClassCastEx() Java__lang__ClassCastException__Instance {
 	ret := Java__lang__ClassCastException().New()
 	ret.Instance_Init__desc____ret__V()
 	return ret
+}
+
+func SameIdentity(val1, val2 Java__lang__Object__Instance) bool {
+	return (val1 == nil && val2 == nil) ||
+		(val1 != nil && val2 != nil && reflect.ValueOf(val1).Pointer() == reflect.ValueOf(val2).Pointer())
 }

@@ -8,7 +8,8 @@ object Main extends Logger {
   val commands = Seq[Command](
     BuildJvmStubs,
     BuildStubs,
-    BuildRt
+    BuildRt,
+    FindOpcode
   )
 
   val usage = s"""

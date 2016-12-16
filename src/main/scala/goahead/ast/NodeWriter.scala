@@ -30,6 +30,12 @@ class NodeWriter {
     this
   }
 
+  def removeLastIndent(): this.type = {
+    // We need to remove one level of indention which is really just the last \t char
+    builder.deleteCharAt(builder.length - 1)
+    this
+  }
+
   override def toString: String = builder.toString()
 
   def __TODO__ : this.type = ???
@@ -132,7 +138,14 @@ class NodeWriter {
       commaSeparated(expr.args, appendExpression).append(')')
   }
 
-  def appendCaseClause(stmt: CaseClause): this.type = __TODO__
+  def appendCaseClause(stmt: CaseClause): this.type = {
+    // The case part is one indent back, and we leave the rest indented
+    removeLastIndent()
+    if (stmt.expressions.isEmpty) append("default:")
+    else append("case ").commaSeparated(stmt.expressions, appendExpression).append(':')
+    stmt.body.statements.foreach { newline().appendStatement(_) }
+    this
+  }
 
   def appendChannelType(expr: ChannelType): this.type = __TODO__
 
@@ -315,10 +328,8 @@ class NodeWriter {
   }
 
   def appendLabeledStatement(stmt: LabeledStatement): this.type = {
-    // Remove all characters back to last newline
-    // builder.delete(builder.lastIndexOf("\n") + 1, builder.length)
-    // Actually, We need to remove one level of indention which is really just the last \t char
-    builder.deleteCharAt(builder.length - 1)
+    // Labels need to be one back
+    removeLastIndent()
     appendIdentifier(stmt.label).append(':').newline().appendStatement(stmt.statement)
   }
 
@@ -417,7 +428,12 @@ class NodeWriter {
     }
   }
 
-  def appendSwitchStatement(stmt: SwitchStatement): this.type = __TODO__
+  def appendSwitchStatement(stmt: SwitchStatement): this.type = {
+    append("switch ")
+    stmt.init.foreach { appendStatement(_).append("; ") }
+    stmt.tag.foreach { appendExpression(_).append(' ') }
+    appendBlockStatement(stmt.body)
+  }
 
   def appendTypeAssertExpression(expr: TypeAssertExpression): this.type = {
     require(expr.typ.isDefined, "Type for assertion required")

@@ -136,6 +136,8 @@ trait MethodCompiler extends Logger {
     // All temp vars that are in the temp var section but are not on the stack are removed
     // from the temp var section and decld. If they are on the stack and not already in
     // functionVars, they get added to function vars
+    // TODO: this can be dangerous if they are embedded in expressions that are used after the frame
+    // but that does not seem to happen in practice
     val (tempVarsOnStack, tempVarsNotOnStack) = ctx.localTempVars.partition(ctx.stack.items.contains)
     // Make local decls out of ones not on stack and not already in function vars
     val ctxAndVarDecl =

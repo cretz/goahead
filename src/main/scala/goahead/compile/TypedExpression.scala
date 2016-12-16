@@ -23,6 +23,7 @@ sealed trait TypedExpression {
 }
 
 object TypedExpression {
+  // cheapRef should probably be called canClone or something
   def apply(expr: Node.Expression, typ: IType, cheapRef: Boolean): TypedExpression =
     Simple(expr, typ, cheapRef)
 

@@ -3,14 +3,14 @@ package goahead.compile
 import java.io._
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path}
-import java.util.concurrent.TimeUnit
 
 import com.google.common.io.CharStreams
+import goahead._
 import goahead.ast.{Node, NodeWriter}
-import goahead.{BaseSpec, ExpectedOutput, Logger}
 import org.objectweb.asm.util.Printer
 import org.scalatest.BeforeAndAfterAll
 
+import scala.concurrent.duration._
 import scala.io.Source
 import scala.util.Try
 
@@ -21,9 +21,12 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   // Create this entry for the "rt" classes and close at the end
   val javaRuntimeEntry = ClassPath.Entry.fromJarFile(
     ClassPath.Entry.javaRuntimeJarPath,
-    //"rt"
     "github.com/cretz/goahead/javalib/src/rt"
   )
+
+  val goFormatTimeout = 20.seconds
+  val goBuildTimeout = 20.seconds
+  val exeRunTimeout = 20.seconds
 
   override protected def afterAll() = {
     javaRuntimeEntry.close()
@@ -40,7 +43,10 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     val classPath = ClassPath(testClasses :+ javaRuntimeEntry)
     val testClassNames = testClasses.map(_.cls.name)
 
-    addUsedOpcodes(testClassNames, classPath)
+    val opcodes = getOpcodes(testClassNames, classPath)
+    val missingOpcodes = t.expectedOpcodes.diff(opcodes)
+    assert(missingOpcodes.isEmpty, s"Missing opcodes: ${opcodesToString(missingOpcodes)}")
+    addUsedOpcodes(opcodes)
 
     // Compile to one big file
     val compiled = GoAheadCompiler.compile(
@@ -79,9 +85,21 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     val errReader = new BufferedReader(new InputStreamReader(process.getErrorStream))
     val writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream))
     try { writer.write(code); writer.flush() } finally { writer.close() }
-    process.waitFor(4, TimeUnit.SECONDS)
+    process.waitFor(goFormatTimeout.length, goFormatTimeout.unit)
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
     val err = try { CharStreams.toString(errReader) } finally { errReader.close() }
+    @inline
+    def showFormattingError(): Unit = {
+      val codeLines = code.split('\n')
+      val outLines = out.split('\n')
+      logger.debug(s"Formatting error ($err); full output:\n$out")
+      codeLines.zipWithIndex.diff(outLines.zipWithIndex).foreach { case (_, lineIndex) =>
+        logger.warn(s"Formatting diff on line ${lineIndex + 1} " +
+          "(NOTE: binary expression spacing issues are a known problem currently)\n" +
+          s"  Expected: ${outLines(lineIndex)}\n       Got: ${codeLines(lineIndex)}")
+      }
+      ()
+    }
     Try({
       assert(err == "")
       assert(out == code)
@@ -89,17 +107,9 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
       ()
     }).recover({
       case _ if testCase.warnOnFormatError =>
-        val codeLines = code.split('\n')
-        val outLines = out.split('\n')
-        logger.debug(s"Formatting error ($err); full output:\n$out")
-        codeLines.zipWithIndex.diff(outLines.zipWithIndex).foreach { case (_, lineIndex) =>
-          logger.warn(s"Formatting diff on line ${lineIndex + 1} " +
-            "(NOTE: binary expression spacing issues are a known problem currently)\n" +
-            s"  Expected: ${outLines(lineIndex)}\n       Got: ${codeLines(lineIndex)}")
-        }
-        ()
+        showFormattingError()
       case e =>
-        logger.error(s"Formatting error ($err); full output:\n$out")
+        showFormattingError()
         throw e
     }).get
   }
@@ -115,7 +125,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     val outReader = new BufferedReader(
       new InputStreamReader(new SequenceInputStream(process.getInputStream, process.getErrorStream))
     )
-    assert(process.waitFor(5, TimeUnit.SECONDS))
+    assert(process.waitFor(goBuildTimeout.length, goBuildTimeout.unit))
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
     Try({
       assert(out == "")
@@ -132,7 +142,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     val outReader = new BufferedReader(
       new InputStreamReader(new SequenceInputStream(process.getInputStream, process.getErrorStream))
     )
-    assert(process.waitFor(5, TimeUnit.SECONDS))
+    assert(process.waitFor(exeRunTimeout.length, exeRunTimeout.unit))
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
     Try(assert(out == expected)).recover({ case e =>
       logger.error(s"Did not match expected output. Got:\n$out\n\nExpected:\n$expected")
@@ -150,13 +160,16 @@ object CompilerSpec extends Logger {
     Seq(
       TestCase(classOf[Arrays]),
       TestCase(classOf[Casts]),
+      TestCase(classOf[Conditionals]),
       TestCase(classOf[HelloWorld]),
       TestCase(classOf[Inheritance]),
       TestCase(classOf[InheritanceConstructors]),
       TestCase(classOf[Interfaces]),
       TestCase(classOf[Primitives]),
       TestCase(classOf[SimpleInstance]),
+      TestCase(classOf[StackManips]),
       TestCase(classOf[StaticFields]),
+      TestCase(classOf[Switches]),
       TestCase(classOf[TryCatch])
     )
   }
@@ -165,17 +178,22 @@ object CompilerSpec extends Logger {
     collect({ case (str, opcode) if str != null && str.nonEmpty => opcode -> str }).toMap
   var usedOpcodes = Set.empty[Int]
 
-  def addUsedOpcodes(internalClassNames: Seq[String], classPath: ClassPath) = synchronized {
-    usedOpcodes ++= internalClassNames.flatMap { className =>
+  def opcodesToString(opcodes: Set[Int]) =
+    opcodes.map(knownOpcodes.apply).toSeq.sorted.mkString(",")
+
+  def getOpcodes(internalClassNames: Seq[String], classPath: ClassPath) = {
+    internalClassNames.flatMap({ className =>
       classPath.getFirstClass(className).cls.methods.flatMap(_.instructions.map(_.getOpcode).toSet).toSet
-    }
+    }).toSet
+  }
+
+  def addUsedOpcodes(opcodes: Set[Int]) = synchronized {
+    usedOpcodes ++= opcodes
   }
 
   def showUsedOpcodes(): Unit = {
     logger.info(s"Tested ${usedOpcodes.size} of ${knownOpcodes.size} opcodes")
-    logger.info(
-      "Opcodes untested: " + knownOpcodes.keySet.diff(usedOpcodes).map(knownOpcodes.apply).toSeq.sorted.mkString(",")
-    )
+    logger.info("Opcodes untested: " + opcodesToString(knownOpcodes.keySet.diff(usedOpcodes)))
   }
 
   case class TestCase(
@@ -197,6 +215,10 @@ object CompilerSpec extends Logger {
         val trimmed = if (flattened.length > 40) flattened.substring(0, 39) + "..." else flattened
         '"' + trimmed + '"'
     }
+
+    lazy val expectedOpcodes = {
+      classes.flatMap(c => Option(c.getAnnotation(classOf[ExpectOpcodes]))).flatMap(_.value()).toSet
+    }
   }
 
   object TestCase {
@@ -216,7 +238,7 @@ object CompilerSpec extends Logger {
       TestCase(
         classes = allClasses,
         expectedOutput = Some(expectedOutput),
-        warnOnFormatError = topClasses.exists(_.isAnnotationPresent(classOf[goahead.WarnOnFormatError]))
+        warnOnFormatError = topClasses.exists(_.isAnnotationPresent(classOf[WarnOnFormatError]))
       )
     }
 
