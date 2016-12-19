@@ -1295,6 +1295,64 @@ func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____obj__Java_
 	panic("Not Implemented - java/lang/Exception.<init>(Ljava/lang/Throwable;)V")
 }
 
+type Java__lang__IllegalMonitorStateException__Static struct{}
+
+var Java__lang__IllegalMonitorStateException__Var Java__lang__IllegalMonitorStateException__Static
+
+func Java__lang__IllegalMonitorStateException() *Java__lang__IllegalMonitorStateException__Static {
+	return &Java__lang__IllegalMonitorStateException__Var
+}
+
+func (this *Java__lang__IllegalMonitorStateException__Static) New() *Java__lang__IllegalMonitorStateException__Impl {
+	v := &Java__lang__IllegalMonitorStateException__Impl{
+		Java__lang__RuntimeException__Impl: Java__lang__RuntimeException().New(),
+	}
+	v.Java__lang__IllegalMonitorStateException__InitDispatch(v)
+	return v
+}
+
+type Java__lang__IllegalMonitorStateException__Dispatch interface {
+	Java__lang__RuntimeException__Dispatch
+}
+
+func (this *Java__lang__IllegalMonitorStateException__Impl) Java__lang__IllegalMonitorStateException__InitDispatch(v Java__lang__IllegalMonitorStateException__Dispatch) {
+	this.Java__lang__RuntimeException__Impl.Java__lang__RuntimeException__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__IllegalMonitorStateException__Instance interface {
+	AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	FillInStackTrace__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	Finalize__desc____ret__V()
+	GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetStackTraceDepth__desc____ret__I() int
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
+	HashCode__desc____ret__I() int
+	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	PrintStackTrace__desc____ret__V()
+	PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(Java__io__PrintStream__Instance)
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+}
+
+type Java__lang__IllegalMonitorStateException__Impl struct {
+	*Java__lang__RuntimeException__Impl
+	_dispatch Java__lang__IllegalMonitorStateException__Dispatch
+}
+
+func (this *Java__lang__IllegalMonitorStateException__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	panic("Not Implemented - java/lang/IllegalMonitorStateException.<init>(Ljava/lang/String;)V")
+}
+
 type Java__lang__NegativeArraySizeException__Static struct{}
 
 var Java__lang__NegativeArraySizeException__Var Java__lang__NegativeArraySizeException__Static
@@ -1531,10 +1589,6 @@ func (this *Java__lang__Object__Impl) Impl__Finalize__desc____ret__V() {
 
 func (this *Java__lang__Object__Impl) Impl__GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
 	panic("Not Implemented - java/lang/Object.getClass()Ljava/lang/Class;")
-}
-
-func (this *Java__lang__Object__Impl) Impl__HashCode__desc____ret__I() int {
-	panic("Not Implemented - java/lang/Object.hashCode()I")
 }
 
 func (this *Java__lang__Object__Impl) Impl__Notify__desc____ret__V() {
@@ -3015,10 +3069,6 @@ func (this *Java__lang__System__Static) Impl__GetProperty__desc____obj__Java__la
 
 func (this *Java__lang__System__Static) Impl__Getenv__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance) Java__lang__String__Instance {
 	panic("Not Implemented - java/lang/System.getenv(Ljava/lang/String;)Ljava/lang/String;")
-}
-
-func (this *Java__lang__System__Static) Impl__IdentityHashCode__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
-	panic("Not Implemented - java/lang/System.identityHashCode(Ljava/lang/Object;)I")
 }
 
 func (this *Java__lang__System__Static) Impl__LineSeparator__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {

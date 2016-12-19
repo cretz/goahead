@@ -1,58 +1,109 @@
 package goahead.ast
 
-sealed trait Node
+sealed trait Node { self =>
+  def walk(w: NodeWalker): Node
+}
 
 object Node {
-  case class Comment(text: String) extends Node
+  case class Comment(text: String) extends Node {
+    def walk(w: NodeWalker) = this
+  }
 
   case class Field(
     names: Seq[Identifier],
     typ: Expression,
     tag: Option[BasicLiteral] = None
-  ) extends Node
+  ) extends Node {
+    def walk(w: NodeWalker) = copy(
+      names = w.applyAll(names),
+      typ = w.applyGet(typ),
+      tag = w.applyOpt(tag)
+    )
+  }
 
   case class File(
     packageName: Identifier,
     declarations: Seq[Declaration]
-  ) extends Node
+  ) extends Node {
+    def walk(w: NodeWalker) = copy(
+      packageName = w.applyGet(packageName),
+      declarations = w.applyAll(declarations)
+    )
+  }
 
   case class Package(
     name: String,
     files: Seq[File]
-  ) extends Node
+  ) extends Node {
+    def walk(w: NodeWalker) = copy(
+      files = w.applyAll(files)
+    )
+  }
 
   sealed trait Expression extends Node
 
-  case class Identifier(name: String) extends Expression
+  case class Identifier(name: String) extends Expression {
+    def walk(w: NodeWalker) = this
+  }
 
-  case class Ellipsis(elementType: Option[Expression]) extends Expression
+  case class Ellipsis(elementType: Option[Expression]) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      elementType = w.applyOpt(elementType)
+    )
+  }
 
   case class BasicLiteral(
     token: Token,
     value: String
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = this
+  }
 
   case class FunctionLiteral(
     typ: FunctionType,
     body: BlockStatement
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      typ = w.applyGet(typ),
+      body = w.applyGet(body)
+    )
+  }
 
   case class CompositeLiteral(
     typ: Option[Expression],
     elements: Seq[Expression]
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      typ = w.applyOpt(typ),
+      elements = w.applyAll(elements)
+    )
+  }
 
-  case class ParenthesizedExpression(expression: Expression) extends Expression
+  case class ParenthesizedExpression(expression: Expression) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      expression = w.applyGet(expression)
+    )
+  }
 
   case class SelectorExpression(
     expression: Expression,
     selector: Identifier
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      expression = w.applyGet(expression),
+      selector = w.applyGet(selector)
+    )
+  }
 
   case class IndexExpression(
     expression: Expression,
     index: Expression
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      expression = w.applyGet(expression),
+      index = w.applyGet(index)
+    )
+  }
 
   case class SliceExpression(
     expression: Expression,
@@ -60,54 +111,112 @@ object Node {
     high: Option[Expression],
     max: Option[Expression],
     slice3: Boolean
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      expression = w.applyGet(expression),
+      low = w.applyOpt(low),
+      high = w.applyOpt(high),
+      max = w.applyOpt(max)
+    )
+  }
 
   case class TypeAssertExpression(
     expression: Expression,
     typ: Option[Expression]
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      expression = w.applyGet(expression),
+      typ = w.applyOpt(typ)
+    )
+  }
 
   case class CallExpression(
     function: Expression,
     args: Seq[Expression] = Seq.empty
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      function = w.applyGet(function),
+      args = w.applyAll(args)
+    )
+  }
 
-  case class StarExpression(expression: Expression) extends Expression
+  case class StarExpression(expression: Expression) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      expression = w.applyGet(expression)
+    )
+  }
 
   case class UnaryExpression(
     operator: Token,
     operand: Expression
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      operand = w.applyGet(operand)
+    )
+  }
 
   case class BinaryExpression(
     left: Expression,
     operator: Token,
     right: Expression
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      left = w.applyGet(left),
+      right = w.applyGet(right)
+    )
+  }
 
   case class KeyValueExpression(
     key: Expression,
     value: Expression
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      key = w.applyGet(key),
+      value = w.applyGet(value)
+    )
+  }
 
   case class ArrayType(
     typ: Expression,
     length: Option[Expression] = None
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      typ = w.applyGet(typ),
+      length = w.applyOpt(length)
+    )
+  }
 
-  case class StructType(fields: Seq[Field]) extends Expression
+  case class StructType(fields: Seq[Field]) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      fields = w.applyAll(fields)
+    )
+  }
 
   case class FunctionType(
     parameters: Seq[Field],
     results: Seq[Field]
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      parameters = w.applyAll(parameters),
+      results = w.applyAll(results)
+    )
+  }
 
-  case class InterfaceType(methods: Seq[Field]) extends Expression
+  case class InterfaceType(methods: Seq[Field]) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      methods = w.applyAll(methods)
+    )
+  }
 
   case class MapType(
     key: Expression,
     value: Expression
-  ) extends Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      key = w.applyGet(key),
+      value = w.applyGet(value)
+    )
+  }
 
   sealed trait ChannelDirection
   object ChannelDirection {
@@ -118,86 +227,168 @@ object Node {
   case class ChannelType(
     direction: ChannelDirection,
     value: Expression
-  ) extends Expression
-
-  // We had to concede some mutability here for ease of development
-  trait LateBoundDynamicExpression extends Expression {
-    def expr: Expression
+  ) extends Expression {
+    def walk(w: NodeWalker) = copy(
+      value = w.applyGet(value)
+    )
   }
 
   sealed trait Statement extends Node
 
-  case class DeclarationStatement(declaration: Declaration) extends Statement
+  case class DeclarationStatement(declaration: Declaration) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      declaration = w.applyGet(declaration)
+    )
+  }
 
-  case object EmptyStatement extends Statement
+  case object EmptyStatement extends Statement {
+    def walk(w: NodeWalker) = this
+  }
 
   case class LabeledStatement(
     label: Identifier,
     statement: Statement
-  ) extends Statement
+  ) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      label = w.applyGet(label),
+      statement = w.applyGet(statement)
+    )
+  }
 
-  case class ExpressionStatement(expression: Expression) extends Statement
+  case class ExpressionStatement(expression: Expression) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      expression = w.applyGet(expression)
+    )
+  }
 
   case class SendStatement(
     channel: Expression,
     value: Expression
-  ) extends Statement
+  ) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      channel = w.applyGet(channel),
+      value = w.applyGet(value)
+    )
+  }
 
   case class IncrementDecrementStatement(
     expression: Expression,
     token: Token
-  ) extends Statement
+  ) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      expression = w.applyGet(expression)
+    )
+  }
 
   case class AssignStatement(
     left: Seq[Expression],
     token: Token,
     right: Seq[Expression]
-  ) extends Statement
+  ) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      left = w.applyAll(left),
+      right = w.applyAll(right)
+    )
+  }
 
-  case class GoStatement(call: CallExpression) extends Statement
+  case class GoStatement(call: CallExpression) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      call = w.applyGet(call)
+    )
+  }
 
-  case class DeferStatement(call: CallExpression) extends Statement
+  case class DeferStatement(call: CallExpression) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      call = w.applyGet(call)
+    )
+  }
 
-  case class ReturnStatement(results: Seq[Expression]) extends Statement
+  case class ReturnStatement(results: Seq[Expression]) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      results = w.applyAll(results)
+    )
+  }
 
   case class BranchStatement(
     token: Token,
     label: Option[Identifier]
-  ) extends Statement
+  ) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      label = w.applyOpt(label)
+    )
+  }
 
-  case class BlockStatement(statements: Seq[Statement]) extends Statement
+  case class BlockStatement(statements: Seq[Statement]) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      statements = w.applyAll(statements)
+    )
+  }
 
   case class IfStatement(
     init: Option[Statement] = None,
     condition: Expression,
     body: BlockStatement,
     elseStatement: Option[Statement] = None
-  ) extends Statement
+  ) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      init = w.applyOpt(init),
+      condition = w.applyGet(condition),
+      body = w.applyGet(body),
+      elseStatement = w.applyOpt(elseStatement)
+    )
+  }
 
   case class CaseClause(
     expressions: Seq[Expression],
     body: BlockStatement
-  ) extends Statement
+  ) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      expressions = w.applyAll(expressions),
+      body = w.applyGet(body)
+    )
+  }
 
   case class SwitchStatement(
     init: Option[Statement],
     tag: Option[Expression],
     body: BlockStatement
-  ) extends Statement
+  ) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      init = w.applyOpt(init),
+      tag = w.applyOpt(tag),
+      body = w.applyGet(body)
+    )
+  }
 
   case class CommClause(
     comm: Option[Statement],
     body: Seq[Statement]
-  ) extends Statement
+  ) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      comm = w.applyOpt(comm),
+      body = w.applyAll(body)
+    )
+  }
 
-  case class SelectStatement(body: BlockStatement) extends Statement
+  case class SelectStatement(body: BlockStatement) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      body = w.applyGet(body)
+    )
+  }
 
   case class ForStatement(
     init: Option[Statement],
     condition: Option[Statement],
     post: Option[Statement],
     body: BlockStatement
-  ) extends Statement
+  ) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      init = w.applyOpt(init),
+      condition = w.applyOpt(condition),
+      post = w.applyOpt(post),
+      body = w.applyGet(body)
+    )
+  }
 
   case class RangeStatement(
     key: Option[Expression],
@@ -205,39 +396,73 @@ object Node {
     token: Option[Token],
     expression: Expression,
     body: BlockStatement
-  ) extends Statement
+  ) extends Statement {
+    def walk(w: NodeWalker) = copy(
+      key = w.applyOpt(key),
+      value = w.applyOpt(value),
+      expression = w.applyGet(expression),
+      body = w.applyGet(body)
+    )
+  }
 
   sealed trait Specification extends Node
 
   case class ImportSpecification(
     name: Option[Identifier],
     path: BasicLiteral
-  ) extends Specification
+  ) extends Specification {
+    def walk(w: NodeWalker) = copy(
+      name = w.applyOpt(name),
+      path = w.applyGet(path)
+    )
+  }
 
   case class ValueSpecification(
     names: Seq[Identifier],
     typ: Option[Expression],
     values: Seq[Identifier]
-  ) extends Specification
+  ) extends Specification {
+    def walk(w: NodeWalker) = copy(
+      names = w.applyAll(names),
+      typ = w.applyOpt(typ),
+      values = w.applyAll(values)
+    )
+  }
 
   case class TypeSpecification(
     name: Identifier,
     typ: Expression
-  ) extends Specification
+  ) extends Specification {
+    def walk(w: NodeWalker) = copy(
+      name = w.applyGet(name),
+      typ = w.applyGet(typ)
+    )
+  }
 
   sealed trait Declaration extends Node
 
   case class GenericDeclaration(
     token: Token,
     specifications: Seq[Specification]
-  ) extends Declaration
+  ) extends Declaration {
+    def walk(w: NodeWalker) = copy(
+      specifications = w.applyAll(specifications)
+    )
+  }
 
   case class FunctionDeclaration(
     receivers: Seq[Field],
     name: Identifier,
     typ: FunctionType,
     body: Option[BlockStatement]
-  ) extends Declaration
+  ) extends Declaration {
+    def walk(w: NodeWalker) = copy(
+      receivers = w.applyAll(receivers),
+      name = w.applyGet(name),
+      typ = w.applyGet(typ),
+      body = w.applyOpt(body)
+    )
+  }
 
   sealed abstract class Token(val string: Option[String] = None)
   object Token {

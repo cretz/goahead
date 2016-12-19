@@ -6,9 +6,12 @@ import org.objectweb.asm.tree.{AbstractInsnNode, LocalVariableNode, MethodNode, 
 import org.objectweb.asm.util.{Textifier, TraceMethodVisitor}
 
 sealed trait Method {
+  def cls: Cls
   def access: Int
   def name: String
   def desc: String
+  def argTypes: Seq[IType]
+  def returnType: IType
   def instructions: Seq[AbstractInsnNode]
   def debugLocalVars: Seq[LocalVariableNode]
   def asmString: String
@@ -16,9 +19,9 @@ sealed trait Method {
 }
 
 object Method {
-  def apply(node: MethodNode): Method = Asm(node)
+  def apply(cls: Cls, node: MethodNode): Method = Asm(cls, node)
 
-  case class Asm(node: MethodNode) extends Method {
+  case class Asm(override val cls: Cls, node: MethodNode) extends Method {
     @inline
     override def access = node.access
 
@@ -27,6 +30,9 @@ object Method {
 
     @inline
     override def desc = node.desc
+
+    override lazy val argTypes = IType.getArgumentTypes(node.desc)
+    override lazy val returnType = IType.getReturnType(node.desc)
 
     override def instructions = {
       import scala.collection.JavaConverters._

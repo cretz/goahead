@@ -2,7 +2,16 @@
 * Rework local vars to have common base type and be reused properly with type assertions
 * Refactor:
   * Type conversion stuff
-* Utilize some of jvm.go project's test classes
-* Unused local var elision
+* Unused local var elision - DONE
 * Consider int32 instead of int for JVM int type
+  * Also test overflows/underflows...for now we will fail, but we need overflow-safe operators
 * Boxed primitives
+* Using .super to jump over certain invocations while inheriting - DONE
+* Covariant overridden return types - DONE
+* Override resetting method to abstract that was concrete
+* Package private override of protected or similar?
+* Private methods w/ name ambiguity
+* Constructor inheritance skipping a parent or two
+* Interface calls of an object method
+* Object methods on array types
+* Local var reuse which goes from obj, to array, back to obj of completely different types

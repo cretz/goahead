@@ -10,6 +10,7 @@ trait ClassCompiler extends Logger {
 
   def compile(cls: Cls, imports: Imports, mangler: Mangler): (Imports, Seq[Node.Declaration]) = {
     logger.debug(s"Compiling class: ${cls.name}")
+    // TODO: limit major version to 1.6+ to avoid issues with JSR/RET deprecation?
     val ctx = initContext(cls, imports, mangler)
     (if (cls.access.isAccessInterface) compileInterface(ctx) else compileClass(ctx)).map { case (ctx, decls) =>
       ctx.imports -> decls
@@ -24,7 +25,9 @@ trait ClassCompiler extends Logger {
 
   protected def compileInterface(ctx: Context): (Context, Seq[Node.Declaration]) = {
     compileInstInterface(ctx).map { case (ctx, instIfaceDecl) =>
-      ctx -> instIfaceDecl.singleSeq
+      compileInterfaceDefaultMethods(ctx).map { case (ctx, ifaceDefaultDecls) =>
+        ctx -> (instIfaceDecl +: ifaceDefaultDecls)
+      }
     }
   }
 
@@ -125,7 +128,8 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileStaticMethods(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
-    compileMethods(ctx, clsMethods(ctx, forDispatch = false).filter(_.access.isAccessStatic)).map {
+    val methods = methodSetManager.staticMethods(ctx.classPath, ctx.cls).methodsWithCovariantReturnDuplicates
+    compileMethods(ctx, methods).map {
       case (ctx, funcs) =>
 
         // As a special case, we have to combine all static inits, so we'll do it with anon
@@ -147,8 +151,8 @@ trait ClassCompiler extends Logger {
 
   protected def compileInstInterface(ctx: Context): (Context, Node.Declaration) = {
     // Only non-private, non-init methods including parents
-    val methods = clsMethods(ctx, forDispatch = true, includeParentInstMethodsOnClass = true).
-      filterNot(m => m.access.isAccessStatic || m.access.isAccessPrivate || m.name == "<init>")
+    // Note, the set of methods also includes covariant returns
+    val methods = methodSetManager.instInterfaceMethods(ctx.classPath, ctx.cls).methodsWithCovariantReturnDuplicates
     val ctxAndMethodSigs = methods.foldLeft(ctx -> Seq.empty[Node.Field]) {
       case ((ctx, methodSigs), method) =>
         signatureCompiler.buildFuncType(ctx, method, includeParamNames = false).map {
@@ -179,10 +183,16 @@ trait ClassCompiler extends Logger {
     }
   }
 
+  protected def compileInterfaceDefaultMethods(ctx: Context): (Context, Seq[Node.Declaration]) = {
+    compileMethods(ctx, ctx.cls.methods.filter(m => !m.access.isAccessStatic && !m.access.isAccessAbstract))
+  }
+
   protected def compileImpl(ctx: Context): (Context, Seq[Node.Declaration]) = {
-    compileImplStruct(ctx).map { case(ctx, struct) =>
-      compileImplMethods(ctx).map { case(ctx, methods) =>
-        ctx -> (struct +: methods)
+    compileImplStruct(ctx).map { case (ctx, struct) =>
+      compileImplMethods(ctx).map { case (ctx, methods) =>
+        compileImplDefaultMethodForwarders(ctx).map { case (ctx, defaultForwarders) =>
+          ctx -> (struct +: (methods ++ defaultForwarders))
+        }
       }
     }
   }
@@ -197,9 +207,51 @@ trait ClassCompiler extends Logger {
 
   protected def compileImplMethods(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
     compileImplFieldAccessors(ctx).map { case (ctx, accessorDecls) =>
-      compileMethods(ctx, clsMethods(ctx, forDispatch = false).filterNot(_.access.isAccessStatic)).map {
-        case (ctx, methodDecls) => ctx -> (accessorDecls ++ methodDecls)
+      val methodSet = methodSetManager.implMethods(ctx.classPath, ctx.cls)
+      compileMethods(ctx, methodSet.methods).map { case (ctx, methodDecls) =>
+        compileImplCovariantReturnDuplicateForwarders(ctx, methodSet.covariantReturnDuplicates).map {
+          case (ctx, covariantMethodDecls) =>
+            ctx -> (accessorDecls ++ methodDecls ++ covariantMethodDecls)
+        }
       }
+    }
+  }
+
+  protected def compileImplCovariantReturnDuplicateForwarders(
+    ctx: Context,
+    methods: Seq[(Method, Seq[Method])]
+  ): (Context, Seq[Node.FunctionDeclaration]) = {
+    methods.foldLeft(ctx -> Seq.empty[Node.FunctionDeclaration]) { case ((ctx, funcDecls), (target, dupes)) =>
+      dupes.foldLeft(ctx -> funcDecls) { case ((ctx, funcDecls), dupe) =>
+        val call = "this".toIdent.sel(ctx.mangler.implMethodName(target.name, target.desc)).
+          call(IType.getArgumentTypes(target.desc).indices.map(i => s"var$i".toIdent))
+        signatureCompiler.buildFuncDecl(ctx, dupe, Seq(call.ret)).map { case (ctx, funcDecl) =>
+          ctx -> (funcDecls :+ funcDecl)
+        }
+      }
+    }
+  }
+
+  protected def compileImplDefaultMethodForwarders(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
+    val methods = methodSetManager.implDefaultForwarderMethods(ctx.classPath, ctx.cls).methods
+    methods.foldLeft(ctx -> Seq.empty[Node.FunctionDeclaration]) {
+      case ((ctx, funcDecls), defaultMethod) =>
+        val defName = ctx.mangler.interfaceDefaultMethodName(
+          defaultMethod.cls.name, defaultMethod.name, defaultMethod.desc
+        )
+        ctx.importQualifiedName(defaultMethod.cls.name, defName).map { case (ctx, defName) =>
+          val forwardCall = defName.call("this".toIdent +:
+            IType.getArgumentTypes(defaultMethod.desc).indices.map(i => s"var$i".toIdent))
+          val forwardStmts = Seq(
+            IType.getReturnType(defaultMethod.desc) match {
+              case IType.VoidType => forwardCall.toStmt
+              case _ => forwardCall.ret
+            }
+          )
+          signatureCompiler.buildFuncDecl(ctx, defaultMethod, forwardStmts).map { case (ctx, funcDecl) =>
+            ctx -> (funcDecls :+ funcDecl)
+          }
+        }
     }
   }
 
@@ -295,13 +347,8 @@ trait ClassCompiler extends Logger {
       }
     }
     ctxAndSuperDispatchRefs.map { case (ctx, superDispatchRefs) =>
-      val dispatchMethodNodes = clsMethods(ctx, forDispatch = true).filter { method =>
-        // No static
-        if (method.access.isAccessStatic) false else {
-          // No methods that are also defined in a super interface
-          !allSuperTypes.exists(_.cls.methods.exists(m => m.name == method.name && m.desc == method.desc))
-        }
-      }
+      val dispatchMethodNodes =
+        methodSetManager.dispatchInterfaceMethods(ctx.classPath, ctx.cls).methodsWithCovariantReturnDuplicates
       val ctxAndDispatchMethods = dispatchMethodNodes.foldLeft(ctx -> Seq.empty[Node.Field]) {
         case ((ctx, fields), methodNode) =>
           signatureCompiler.buildFuncType(ctx, methodNode, includeParamNames = false).map {
@@ -348,10 +395,11 @@ trait ClassCompiler extends Logger {
   protected def compileDispatchForwardMethods(ctx: Context): (Context, Seq[Node.Declaration]) = {
     // No dispatch methods for interfaces
     if (ctx.cls.access.isAccessInterface) ctx -> Nil else {
-      dispatchMethodsForForwarding(ctx).foldLeft(ctx -> Seq.empty[Node.Declaration]) { case ((ctx, methods), method) =>
+      val methods = methodSetManager.dispatchForwardingMethods(ctx.classPath, ctx.cls).methods
+      methods.foldLeft(ctx -> Seq.empty[Node.Declaration]) { case ((ctx, methods), method) =>
         val call = "this".toIdent.sel("_dispatch").sel(ctx.mangler.implMethodName(method.name, method.desc)).call(
-            IType.getArgumentTypes(method.desc).zipWithIndex.map("var" + _._2).map(_.toIdent)
-          )
+          IType.getArgumentTypes(method.desc).zipWithIndex.map("var" + _._2).map(_.toIdent)
+        )
         val stmt = if (IType.getReturnType(method.desc) == IType.VoidType) call.toStmt else call.ret
         signatureCompiler.buildFuncDecl(
           ctx = ctx,
@@ -365,25 +413,6 @@ trait ClassCompiler extends Logger {
     }
   }
 
-  protected def dispatchMethodsForForwarding(
-    ctx: Context,
-    // Only applies for non-interface class nodes
-    alsoExcludeMethodsInSuperInterfaces: Boolean = false
-  ): Seq[Method] = {
-    // We build dispatch methods ONLY for methods we declare the first time
-    val superTypes =
-      if (ctx.cls.access.isAccessInterface) ctx.imports.classPath.allInterfaceTypes(ctx.cls.name)
-      else if (alsoExcludeMethodsInSuperInterfaces) ctx.imports.classPath.allSuperAndImplementingTypes(ctx.cls.name)
-      else ctx.imports.classPath.allSuperTypes(ctx.cls.name)
-    clsMethods(ctx, forDispatch = true).filter { method =>
-      // No static
-      if (method.access.isAccessStatic) false else {
-        // No methods that are also defined in a super interface
-        !superTypes.exists(_.cls.methods.exists(m => m.name == method.name && m.desc == method.desc))
-      }
-    }
-  }
-
   // TODO: slow
   protected def clsFields(ctx: Context, includeParentFields: Boolean = false): Seq[Field] = {
     if (!includeParentFields || ctx.cls.access.isAccessInterface) {
@@ -393,22 +422,7 @@ trait ClassCompiler extends Logger {
     }
   }
 
-  // TODO: slow
-  protected def clsMethods(
-    ctx: Context,
-    forDispatch: Boolean,
-    // Does not apply to interface
-    includeParentInstMethodsOnClass: Boolean = false
-  ): Seq[Method] = {
-    if (!includeParentInstMethodsOnClass || ctx.cls.access.isAccessInterface) {
-      ctx.cls.methods.sortBy(m => m.name -> m.desc)
-    } else {
-      val methods = ctx.cls.methods ++
-        ctx.imports.classPath.allSuperTypes(ctx.cls.name).flatMap(_.cls.methods).filterNot(_.access.isAccessStatic)
-      // Make them distinct by name and desc
-      methods.groupBy(m => m.name -> m.desc).map(_._2.head).toSeq.sortBy(m => m.name -> m.desc)
-    }
-  }
+  protected def methodSetManager: MethodSetManager = MethodSetManager
 
   protected def signatureCompiler: SignatureCompiler = SignatureCompiler
 }

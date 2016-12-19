@@ -5,7 +5,8 @@ import goahead.WarnOnFormatError;
 import org.objectweb.asm.Opcodes;
 
 @WarnOnFormatError
-@ExpectOpcodes({ Opcodes.DUP_X1, Opcodes.DUP_X2, Opcodes.DUP2, Opcodes.DUP2_X1, Opcodes.DUP2_X2 })
+@ExpectOpcodes({ Opcodes.DUP_X1, Opcodes.DUP_X2, Opcodes.DUP2, Opcodes.DUP2_X1,
+        Opcodes.DUP2_X2, Opcodes.POP, Opcodes.POP2 })
 public class StackManips {
     public static void main(String[] args) {
         new Tester().dupx1();
@@ -14,7 +15,12 @@ public class StackManips {
         new Tester().dup2x1Longs();
         dup2x2Longs();
         // TODO: can't find DUP2_X1 and DUP2_X2 not relating to longs/doubles
-        // TODO: pops
+        // TODO: can't find NOP
+        new Tester().pop();
+        new Tester().pop2Long();
+        // TODO: can't find POP2 not relating to longs/doubles
+        // TODO: still looking for suitable JSR/RET example, probably deprecated in 1.8
+        // TODO: can't find a good SWAP example
     }
 
     static class Tester {
@@ -27,6 +33,25 @@ public class StackManips {
 
         void dup2x1Longs() {
             System.out.println(c = d = 0);
+        }
+
+        int incrementB() {
+            return b++;
+        }
+
+        void pop() {
+            incrementB();
+            System.out.println(b);
+        }
+
+        long incrementCBy(long v) {
+            return c += v;
+        }
+
+        void pop2Long() {
+            long a = 5;
+            incrementCBy(a);
+            System.out.println(c);
         }
     }
 

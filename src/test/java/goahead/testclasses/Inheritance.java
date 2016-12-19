@@ -21,6 +21,18 @@ public class Inheritance {
         }
     }
 
+    static class GrandChild extends Child {
+
+        @Override
+        public String getMyName() {
+            return "GrandChild";
+        }
+
+        public String parentName() {
+            return super.getMyName();
+        }
+    }
+
     public static void print(Parent parent) {
         System.out.println(parent.id);
         System.out.println(parent.getMyName());
@@ -29,5 +41,6 @@ public class Inheritance {
     public static void main(String[] args) {
         print(new Parent());
         print(new Child());
+        System.out.println(new GrandChild().parentName());
     }
 }

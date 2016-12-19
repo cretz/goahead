@@ -23,7 +23,7 @@ trait MethodCompiler extends Logger {
     val ctx = initContext(cls, method, imports, mangler, getLabelSets(method))
     compileLabelSets(ctx).map { case (ctx, compiledStmts) =>
       postProcessStatements(ctx, compiledStmts).map { case (ctx, stmts) =>
-        signatureCompiler.buildFuncDecl(ctx, method, stmts).map { case (ctx, funcDecl) =>
+        buildFuncDecl(ctx, stmts).map { case (ctx, funcDecl) =>
           ctx.imports -> funcDecl
         }
       }
@@ -171,6 +171,23 @@ trait MethodCompiler extends Logger {
   protected def postProcessStatements(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
     statementPostProcessors.foldLeft(ctx -> stmts) {
       case (ret, postProcessor) => postProcessor.tupled(ret)
+    }
+  }
+
+  protected def buildFuncDecl(ctx: Context, stmts: Seq[Node.Statement]): (Context, Node.FunctionDeclaration) = {
+    signatureCompiler.buildFuncDecl(ctx, ctx.method, stmts).map { case (ctx, funcDecl) =>
+      // As a special case, default interface functions have the receiver removed, "this" set as
+      // the first param instead, and the name changed to the default version
+      if (!ctx.cls.access.isAccessInterface || ctx.method.access.isAccessStatic) ctx -> funcDecl else {
+        ctx -> funcDecl.copy(
+          name = ctx.mangler.interfaceDefaultMethodName(ctx.cls.name, ctx.method.name, ctx.method.desc).toIdent,
+          receivers = Nil,
+          typ = funcDecl.typ.copy(
+            parameters =
+              field("this", ctx.mangler.instanceInterfaceName(ctx.cls.name).toIdent) +: funcDecl.typ.parameters
+          )
+        )
+      }
     }
   }
 

@@ -198,7 +198,6 @@ class NodeWriter {
     case i: IndexExpression => appendIndexExpression(i)
     case i: InterfaceType => appendInterfaceType(i)
     case k: KeyValueExpression => appendKeyValueExpression(k, None)
-    case l: LateBoundDynamicExpression => appendExpression(l.expr)
     case m: MapType => appendMapType(m)
     case p: ParenthesizedExpression => appendParenthesizedExpression(p)
     case s: SelectorExpression => appendSelectorExpression(s)

@@ -16,6 +16,9 @@ trait VarInsnCompiler {
         load(ctx, insn.`var`, insn.getOpcode)
       case Opcodes.ASTORE | Opcodes.DSTORE | Opcodes.FSTORE | Opcodes.ISTORE | Opcodes.LSTORE =>
         store(ctx, insn.`var`, insn.getOpcode)
+      case Opcodes.RET =>
+        // TODO: confirm deprecation
+        sys.error("Opcode RET not supported")
     }
   }
 
@@ -37,7 +40,7 @@ trait VarInsnCompiler {
     @inline
     def doStore(typ: IType) = ctx.stackPopped { case (ctx, value) =>
       // We need to use the value type if it's already a simple type, otherwise make our own
-      val localVarTyp = if (value.typ.isInstanceOf[IType.Simple]) value.typ else typ.asArray
+      val localVarTyp = if (value.typ.isInstanceOf[IType.Simple]) value.typ else typ
       ctx.getLocalVar(index, localVarTyp, forWriting = true).map { case (ctx, local) =>
         value.toExprNode(ctx, local.typ).map { case (ctx, value) =>
           ctx -> local.expr.assignExisting(value).singleSeq

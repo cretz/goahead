@@ -11,6 +11,7 @@ trait Mangler {
   def dispatchInterfaceName(internalName: String): String
   def instanceInterfaceName(internalName: String): String
   def forwardMethodName(name: String, desc: String): String
+  def interfaceDefaultMethodName(owner: String, name: String, desc: String): String
   def dispatchInitMethodName(classInternalName: String): String
   def staticAccessorName(internalName: String): String
   def staticObjectName(internalName: String): String
@@ -36,6 +37,9 @@ object Mangler {
 
     override def forwardMethodName(name: String, desc: String): String =
       methodName(name, desc)
+
+    override def interfaceDefaultMethodName(owner: String, name: String, desc: String): String =
+      objectNamePrefix(owner) + "__defaultmethod__" + methodName(name, desc)
 
     override def dispatchInitMethodName(classInternalName: String): String =
       objectNamePrefix(classInternalName) + "__InitDispatch"

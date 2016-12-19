@@ -43,7 +43,9 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
   }
 
   def allSuperAndImplementingTypes(classInternalName: String): Seq[ClassPath.ClassDetails] = {
-    (allSuperTypes(classInternalName) ++ allInterfaceTypes(classInternalName)).distinct
+    val superTypes = allSuperTypes(classInternalName)
+    (allInterfaceTypes(classInternalName) ++ superTypes
+      ++ superTypes.flatMap(c => allInterfaceTypes(c.cls.name))).distinct
   }
 
   def classImplementsOrExtends(childInternalName: String, parentInternalName: String): Boolean = {

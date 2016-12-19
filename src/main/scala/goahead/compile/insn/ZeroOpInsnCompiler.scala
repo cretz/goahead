@@ -102,15 +102,18 @@ trait ZeroOpInsnCompiler {
         sh(ctx, insn.getOpcode)
       case Opcodes.IXOR | Opcodes.LXOR =>
         xor(ctx, insn.getOpcode)
-      case Opcodes.POP =>
-        // We need to just take what is on the stack and make it a statement as this
-        // is often just an ignored return value or something
-        // TODO: ignore cheap refs?
-        ctx.stackPopped { case (ctx, item) =>
-          ctx -> item.expr.toStmt.singleSeq
-        }
+      case Opcodes.MONITORENTER | Opcodes.MONITOREXIT =>
+        monitor(ctx, insn.getOpcode)
+      case Opcodes.NOP =>
+        ctx -> Nil
+      case Opcodes.POP | Opcodes.POP2 =>
+        pop(ctx, insn.getOpcode)
       case Opcodes.RETURN =>
         ctx -> emptyReturn.singleSeq
+      case Opcodes.SWAP =>
+        ctx.stackPopped(2, { case (ctx, Seq(first, second)) =>
+          ctx.stackPushed(second).stackPushed(first) -> Nil
+        })
     }
   }
 
@@ -313,6 +316,15 @@ trait ZeroOpInsnCompiler {
     }
   }
 
+  protected def monitor(ctx: Context, opcode: Int): (Context, Seq[Node.Statement]) = {
+    val func = if (opcode == Opcodes.MONITORENTER) "MonitorEnter" else "MonitorExit"
+    ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
+      ctx.stackPopped { case (ctx, ref) =>
+        ctx -> rtAlias.toIdent.sel(func).call(Seq(ref.expr)).toStmt.singleSeq
+      }
+    }
+  }
+
   protected def mul(ctx: Context, opcode: Int): (Context, Seq[Node.Statement]) = {
     binary(ctx, Node.Token.Mul, opcode match {
       case Opcodes.DMUL => IType.DoubleType
@@ -342,6 +354,22 @@ trait ZeroOpInsnCompiler {
     binary(ctx, Node.Token.Or, opcode match {
       case Opcodes.IOR => IType.IntType
       case Opcodes.LOR => IType.LongType
+    })
+  }
+
+  protected def pop(ctx: Context, opcode: Int): (Context, Seq[Node.Statement]) = {
+    // We need to just take what is on the stack and make it a statement as this
+    // is often just an ignored return value or something
+    // TODO: ignore cheap refs or somehow otherwise check that this is "statementable"?
+    val amountToPop = opcode match {
+      case Opcodes.POP => 1
+      case Opcodes.POP2 => ctx.stack.peek().typ match {
+        case IType.LongType | IType.DoubleType => 1
+        case _ => 2
+      }
+    }
+    ctx.stackPopped(amountToPop, { case (ctx, items) =>
+      ctx -> items.map(_.expr.toStmt)
     })
   }
 

@@ -75,6 +75,9 @@ trait JumpInsnCompiler {
           ifInt(ctx, Node.Token.Lss)
         case Opcodes.IF_ICMPNE =>
           ifInt(ctx, Node.Token.Neq)
+        case Opcodes.JSR =>
+          // TODO: confirm deprecation
+          sys.error("Opcode JSR not supported")
       }
     }
   }

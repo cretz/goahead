@@ -27,6 +27,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   val goFormatTimeout = 20.seconds
   val goBuildTimeout = 20.seconds
   val exeRunTimeout = 20.seconds
+  val checkFormatting = false
 
   override protected def afterAll() = {
     javaRuntimeEntry.close()
@@ -71,9 +72,11 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   }
 
   def writeGoCode(testCase: TestCase, file: Path, code: Node.File): Unit = {
+    def withLineNumbers(str: String) =
+      str.split('\n').zipWithIndex.map(si => (si._2 + 1).toString.padTo(8, ' ') + si._1).mkString("\n")
     val codeStr = NodeWriter.fromNode(code)
-    logger.debug(s"Asserting and writing the following to $file:\n$codeStr")
-    assertValidCode(testCase, codeStr)
+    logger.debug(s"Asserting and writing the following to $file:\n${withLineNumbers(codeStr)}")
+    if (checkFormatting) assertValidCode(testCase, codeStr)
     Files.write(file, codeStr.getBytes(StandardCharsets.UTF_8))
     // Discarding unneeded value above
     ()
@@ -161,16 +164,19 @@ object CompilerSpec extends Logger {
       TestCase(classOf[Arrays]),
       TestCase(classOf[Casts]),
       TestCase(classOf[Conditionals]),
+      TestCase(classOf[CovariantReturn]),
       TestCase(classOf[HelloWorld]),
       TestCase(classOf[Inheritance]),
       TestCase(classOf[InheritanceConstructors]),
+      TestCase(classOf[InterfaceDefaults]),
       TestCase(classOf[Interfaces]),
       TestCase(classOf[Primitives]),
       TestCase(classOf[SimpleInstance]),
       TestCase(classOf[StackManips]),
       TestCase(classOf[StaticFields]),
       TestCase(classOf[Switches]),
-      TestCase(classOf[TryCatch])
+      TestCase(classOf[TryCatch]),
+      TestCase(classOf[UnusedLocalVar])
     )
   }
 

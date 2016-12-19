@@ -4,7 +4,8 @@ case class LocalVars(
   thisVar: Option[TypedExpression],
   vars: collection.SortedMap[Int, TypedExpression] = collection.SortedMap.empty,
   removedVars: Seq[TypedExpression] = Seq.empty,
-  nameCounter: Int = 0
+  nameCounter: Int = 0,
+  usedVarNames: Set[String] = Set.empty
 ) {
   import Helpers._
 
@@ -35,13 +36,15 @@ case class LocalVars(
 
   def allTimeVars = vars.values ++ removedVars
 
+  def isUsedVar(v: TypedExpression) = usedVarNames.contains(v.name)
+
   def getLocalVar(
     ctx: Contextual[_],
     index: Int,
     typ: IType,
     forWriting: Boolean
   ): (LocalVars, TypedExpression) = {
-    if (index == 0 && thisVar.isDefined) this -> thisVar.get else {
+    val localVarsAndExpr = if (index == 0 && thisVar.isDefined) this -> thisVar.get else {
       vars.get(index) match {
         case None =>
           // Need to create a new local var
@@ -53,6 +56,11 @@ case class LocalVars(
             addOrReplaceLocalVar(index, typ)
           } else this -> existing
       }
+    }
+    localVarsAndExpr.map { case (localVars, typedExpr) =>
+      // If it's for reading, we need to mark it as used
+      if (forWriting) localVars -> typedExpr
+      else localVars.copy(usedVarNames = localVars.usedVarNames + typedExpr.name) -> typedExpr
     }
   }
 

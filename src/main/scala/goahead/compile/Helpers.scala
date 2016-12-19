@@ -185,6 +185,7 @@ object Helpers extends Logger {
   implicit class RichInt(val int: Int) extends AnyVal {
     @inline
     def isAccess(access: Int) = (int & access) == access
+    def isAccessAbstract = isAccess(Opcodes.ACC_ABSTRACT)
     def isAccessInterface = isAccess(Opcodes.ACC_INTERFACE)
     def isAccessNative = isAccess(Opcodes.ACC_NATIVE)
     def isAccessPrivate = isAccess(Opcodes.ACC_PRIVATE)
@@ -336,6 +337,11 @@ object Helpers extends Logger {
         }
       case _ => sys.error(s"Expected array type, got: $typ")
     }
+
+    def internalName = typ match {
+      case s: IType.Simple if s.isRef => s.typ.getInternalName
+      case _ => sys.error("Unexpected type to get internal name from")
+    }
   }
 
   implicit class RichTypedExpression(val expr: TypedExpression) extends AnyVal {
@@ -373,11 +379,9 @@ object Helpers extends Logger {
           ctx -> "int16".toIdent.call(Seq(expr.expr))
         case (oldTyp, newTyp) if oldTyp == newTyp =>
           ctx -> expr.expr
-        // Null type to object requires type assert
+        // Null type to object can be set simply
         case (IType.NullType, newTyp: IType.Simple) if newTyp.isObject =>
-          ctx.typeToGoType(newTyp).map { case (ctx, newTyp) =>
-            ctx -> expr.expr.typeAssert(newTyp)
-          }
+          ctx -> expr.expr
         // Null type to slice requires type cast
         case (IType.NullType, newTyp: IType.Simple) if newTyp.isArray =>
           ctx.typeToGoType(newTyp).map { case (ctx, newTyp) =>
