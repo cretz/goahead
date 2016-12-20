@@ -88,7 +88,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     val errReader = new BufferedReader(new InputStreamReader(process.getErrorStream))
     val writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream))
     try { writer.write(code); writer.flush() } finally { writer.close() }
-    process.waitFor(goFormatTimeout.length, goFormatTimeout.unit)
+    processWaitSuccess(process, goFormatTimeout)
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
     val err = try { CharStreams.toString(errReader) } finally { errReader.close() }
     @inline
@@ -128,7 +128,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     val outReader = new BufferedReader(
       new InputStreamReader(new SequenceInputStream(process.getInputStream, process.getErrorStream))
     )
-    assert(process.waitFor(goBuildTimeout.length, goBuildTimeout.unit))
+    processWaitSuccess(process, goBuildTimeout)
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
     Try({
       assert(out == "")
@@ -145,7 +145,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     val outReader = new BufferedReader(
       new InputStreamReader(new SequenceInputStream(process.getInputStream, process.getErrorStream))
     )
-    assert(process.waitFor(exeRunTimeout.length, exeRunTimeout.unit))
+    processWaitSuccess(process, exeRunTimeout)
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
     Try(assert(out == expected)).recover({ case e =>
       logger.error(s"Did not match expected output. Got:\n$out\n\nExpected:\n$expected")
@@ -154,6 +154,13 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     // Discarding unneeded value above
     ()
   }
+
+  def processWaitSuccess(p: Process, timeout: FiniteDuration): Unit = {
+    if (!p.waitFor(timeout.length, timeout.unit)) {
+      p.destroyForcibly()
+      fail("Timeout")
+    }
+  }
 }
 
 object CompilerSpec extends Logger {
@@ -161,6 +168,8 @@ object CompilerSpec extends Logger {
     // TODO: maybe just read all classes out of the package dynamically?
     import goahead.testclasses._
     Seq(
+      TestCase(classOf[Abstracts]),
+      TestCase(classOf[AccessModifiers]),
       TestCase(classOf[Arrays]),
       TestCase(classOf[Casts]),
       TestCase(classOf[Conditionals]),
@@ -170,6 +179,8 @@ object CompilerSpec extends Logger {
       TestCase(classOf[InheritanceConstructors]),
       TestCase(classOf[InterfaceDefaults]),
       TestCase(classOf[Interfaces]),
+      TestCase(classOf[LocalVarReuse]),
+      TestCase(classOf[NonStaticInnerClasses]),
       TestCase(classOf[Primitives]),
       TestCase(classOf[SimpleInstance]),
       TestCase(classOf[StackManips]),

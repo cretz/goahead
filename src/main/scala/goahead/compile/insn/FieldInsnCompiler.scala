@@ -14,14 +14,18 @@ trait FieldInsnCompiler {
     insn.byOpcode {
       case Opcodes.GETFIELD =>
         ctx.stackPopped { case (ctx, item) =>
-          val declarer = ctx.imports.classPath.getFieldDeclarer(insn.owner, insn.name, static = false)
-          ctx.stackPushed(
-            TypedExpression(
-              expr = item.expr.sel(ctx.mangler.fieldGetterName(declarer.cls.name, insn.name)).call(),
-              typ = IType.getType(insn.desc),
-              cheapRef = false
-            )
-          ) -> Nil
+          val field = ctx.classPath.findFieldOnDeclarer(insn.owner, insn.name, static = false)
+          // If the field is private, we have to cast the instance to its impl
+          val ctxAndSubject = if (!field.access.isAccessPrivate) ctx -> item.expr else ctx.instToImpl(item, insn.owner)
+          ctxAndSubject.map { case (ctx, subject) =>
+            ctx.stackPushed(
+              TypedExpression(
+                expr = subject.sel(ctx.mangler.fieldGetterName(field.cls.name, insn.name)).call(),
+                typ = IType.getType(insn.desc),
+                cheapRef = false
+              )
+            ) -> Nil
+          }
         }
       case Opcodes.GETSTATIC =>
         ctx.staticInstRefExpr(insn.owner).map { case (ctx, expr) =>
@@ -33,10 +37,17 @@ trait FieldInsnCompiler {
         }
       case Opcodes.PUTFIELD =>
         ctx.stackPopped(2, { case (ctx, Seq(objectRef, value)) =>
-          val declarer = ctx.imports.classPath.getFieldDeclarer(insn.owner, insn.name, static = false)
-          value.toExprNode(ctx, IType.getType(insn.desc)).map { case (ctx, value) =>
-            ctx -> objectRef.expr.sel(ctx.mangler.fieldSetterName(declarer.cls.name, insn.name)).
-              call(Seq(value)).toStmt.singleSeq
+          // If the field is private, we have to cast the instance to its impl
+          val field = ctx.classPath.findFieldOnDeclarer(insn.owner, insn.name, static = false)
+          // If the field is private, we have to cast the instance to its impl
+          val ctxAndSubject =
+            if (!field.access.isAccessPrivate) ctx -> objectRef.expr
+            else ctx.instToImpl(objectRef, insn.owner)
+          ctxAndSubject.map { case (ctx, subject) =>
+            value.toExprNode(ctx, IType.getType(insn.desc)).map { case (ctx, value) =>
+              ctx -> subject.sel(ctx.mangler.fieldSetterName(field.cls.name, insn.name)).
+                call(Seq(value)).toStmt.singleSeq
+            }
           }
         })
       case Opcodes.PUTSTATIC =>

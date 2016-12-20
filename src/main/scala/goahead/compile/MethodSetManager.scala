@@ -5,63 +5,107 @@ import Helpers._
 trait MethodSetManager {
   import MethodSetManager._
 
-  // All super interfaces and types
-  protected def allSuperMethods(classPath: ClassPath, classes: Cls*): MethodSet = {
-    val supers = classes.flatMap(c => classPath.allSuperAndImplementingTypes(c.name).map(_.cls))
-    MethodSet(classPath, supers.flatMap(_.methods))
-  }
-
-  protected def allMyMethods(classPath: ClassPath, classes: Cls*): MethodSet = {
-    MethodSet(classPath, classes.flatMap(_.methods))
-  }
-
-  // All super interfaces and types starting with the direct parent
-  protected def allParentMethods(classPath: ClassPath, classes: Cls*): MethodSet = {
-    allMethods(classPath, classes.flatMap(_.parent.map(classPath.getFirstClass(_).cls)):_*)
-  }
-
-  protected def allMethods(classPath: ClassPath, classes: Cls*): MethodSet = {
-    allMyMethods(classPath, classes:_*) ++ allSuperMethods(classPath, classes:_*)
-  }
-
-  def dispatchInterfaceMethods(classPath: ClassPath, cls: Cls): MethodSet = {
-    // Includes default forwarder methods
-    val defaultForwarders = implDefaultForwarderMethods(classPath, cls)
-    // All methods not in parent classes and not static
-    val parentDispatchInterfaces = classPath.allSuperTypes(cls.name).foldLeft(MethodSet(classPath, Nil)) {
-      case (set, clsDet) => set ++ dispatchInterfaceMethods(classPath, clsDet.cls)
-    }
-    (allMethods(classPath, cls).filterNot(_.access.isAccessStatic) ++ defaultForwarders) -- parentDispatchInterfaces
-  }
-
-  def dispatchForwardingMethods(classPath: ClassPath, cls: Cls): MethodSet = {
-    // Only my new methods and default forwarders
-    allMyMethods(classPath, cls).filterNot(_.access.isAccessStatic) ++ implDefaultForwarderMethods(classPath, cls)
-  }
-
-  def staticMethods(classPath: ClassPath, cls: Cls): MethodSet = {
-    allMyMethods(classPath, cls).filter(_.access.isAccessStatic)
-  }
-
-  def instInterfaceMethods(classPath: ClassPath, cls: Cls): MethodSet = {
-    // Non-private, non-init, non-static including parents
-    allMethods(classPath, cls).filterNot(m => m.access.isAccessPrivate || m.name == "<init>" || m.access.isAccessStatic)
-  }
-
-  def implMethods(classPath: ClassPath, cls: Cls): MethodSet = {
-    // Only mine, non-static
-    allMyMethods(classPath, cls).filterNot(_.access.isAccessStatic)
-  }
-
-  def implDefaultForwarderMethods(classPath: ClassPath, cls: Cls): MethodSet = {
-    // All interface defaults that my parent doesn't implement in any way
-    val allInterfaceDefaults = MethodSet(classPath, classPath.allInterfaceTypes(cls.name).flatMap(_.cls.methods).
-      filterNot(m => m.access.isAccessStatic || m.access.isAccessAbstract))
-    allInterfaceDefaults -- allParentMethods(classPath, cls)
-  }
+  def dispatchInterfaceMethods(classPath: ClassPath, cls: Cls): MethodSet
+  def dispatchForwardingMethods(classPath: ClassPath, cls: Cls): MethodSet
+  def staticMethods(classPath: ClassPath, cls: Cls): MethodSet
+  def instInterfaceMethods(classPath: ClassPath, cls: Cls): MethodSet
+  def instInterfaceDefaultMethods(classPath: ClassPath, cls: Cls): MethodSet
+  def implMethods(classPath: ClassPath, cls: Cls): MethodSet
+  def implDefaultForwarderMethods(classPath: ClassPath, cls: Cls): MethodSet
 }
 
-object MethodSetManager extends MethodSetManager {
+object MethodSetManager {
+
+  object Default extends Default
+  trait Default extends MethodSetManager {
+    // All super interfaces and types
+    protected def allSuperMethods(classPath: ClassPath, classes: Cls*): MethodSet = {
+      val supers = classes.flatMap(c => classPath.allSuperAndImplementingTypes(c.name).map(_.cls))
+      MethodSet(classPath, supers.flatMap(_.methods))
+    }
+
+    protected def allMyMethods(classPath: ClassPath, classes: Cls*): MethodSet = {
+      MethodSet(classPath, classes.flatMap(_.methods))
+    }
+
+    // All super interfaces and types starting with the direct parent
+    protected def allParentMethods(classPath: ClassPath, classes: Cls*): MethodSet = {
+      allMethods(classPath, classes.flatMap(_.parent.map(classPath.getFirstClass(_).cls)):_*)
+    }
+
+    protected def allMethods(classPath: ClassPath, classes: Cls*): MethodSet = {
+      allMyMethods(classPath, classes:_*) ++ allSuperMethods(classPath, classes:_*)
+    }
+
+    protected def dispatchMethods(classPath: ClassPath, cls: Cls): MethodSet = {
+      // Includes default forwarder methods
+      val defaultForwarders = defaultForwarderMethods(classPath, cls)
+      // All methods not in parent classes and not static and not private
+      val parentDispatchInterfaces = classPath.allSuperTypes(cls.name).foldLeft(MethodSet(classPath, Nil)) {
+        case (set, clsDet) => set ++ dispatchMethods(classPath, clsDet.cls)
+      }
+      (allMethods(classPath, cls).filterNot(m => m.access.isAccessStatic || m.access.isAccessPrivate) ++
+        defaultForwarders) -- parentDispatchInterfaces
+    }
+
+    override def dispatchInterfaceMethods(classPath: ClassPath, cls: Cls): MethodSet = {
+      dispatchMethods(classPath, cls)
+    }
+
+    override def dispatchForwardingMethods(classPath: ClassPath, cls: Cls): MethodSet = {
+      dispatchMethods(classPath, cls)
+    }
+
+    override def staticMethods(classPath: ClassPath, cls: Cls): MethodSet = {
+      allMyMethods(classPath, cls).filter(_.access.isAccessStatic)
+    }
+
+    override def instInterfaceMethods(classPath: ClassPath, cls: Cls): MethodSet = {
+      // Non-private, non-init, non-static including parents
+      allMethods(classPath, cls).
+        filterNot(m => m.access.isAccessPrivate || m.name == "<init>" || m.access.isAccessStatic)
+    }
+
+    override def instInterfaceDefaultMethods(classPath: ClassPath, cls: Cls): MethodSet = {
+      MethodSet(classPath, cls.methods.filter(m => !m.access.isAccessStatic && !m.access.isAccessAbstract))
+    }
+
+    override def implMethods(classPath: ClassPath, cls: Cls): MethodSet = {
+      // Only mine, non-static
+      allMyMethods(classPath, cls).filterNot(_.access.isAccessStatic)
+    }
+
+    protected def defaultForwarderMethods(classPath: ClassPath, cls: Cls): MethodSet = {
+      // All interface defaults that neither I nor my parent doesn't implement in any way
+      val allInterfaceDefaults = MethodSet(classPath, classPath.allInterfaceTypes(cls.name).flatMap(_.cls.methods).
+        filterNot(m => m.access.isAccessStatic || m.access.isAccessAbstract))
+      allInterfaceDefaults -- (allMyMethods(classPath, cls) ++ allParentMethods(classPath, cls))
+    }
+
+    override def implDefaultForwarderMethods(classPath: ClassPath, cls: Cls): MethodSet = {
+      defaultForwarderMethods(classPath, cls)
+    }
+  }
+
+  abstract class Filtered(underlying: MethodSetManager = Default) extends MethodSetManager {
+
+    def filter(method: Method, forImpl: Boolean): Boolean
+
+    def dispatchInterfaceMethods(classPath: ClassPath, cls: Cls): MethodSet =
+      underlying.dispatchInterfaceMethods(classPath, cls).filter(filter(_, forImpl = false))
+    def dispatchForwardingMethods(classPath: ClassPath, cls: Cls): MethodSet =
+      underlying.dispatchForwardingMethods(classPath, cls).filter(filter(_, forImpl = false))
+    def staticMethods(classPath: ClassPath, cls: Cls): MethodSet =
+      underlying.staticMethods(classPath, cls).filter(filter(_, forImpl = true))
+    def instInterfaceMethods(classPath: ClassPath, cls: Cls): MethodSet =
+      underlying.instInterfaceMethods(classPath, cls).filter(filter(_, forImpl = false))
+    def instInterfaceDefaultMethods(classPath: ClassPath, cls: Cls): MethodSet =
+      underlying.instInterfaceDefaultMethods(classPath, cls).filter(filter(_, forImpl = false))
+    def implMethods(classPath: ClassPath, cls: Cls): MethodSet =
+      underlying.implMethods(classPath, cls).filter(filter(_, forImpl = true))
+    def implDefaultForwarderMethods(classPath: ClassPath, cls: Cls): MethodSet =
+      underlying.implDefaultForwarderMethods(classPath, cls).filter(filter(_, forImpl = false))
+  }
 
   case class MethodSet private(
     private val classPath: ClassPath,

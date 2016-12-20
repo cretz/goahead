@@ -136,6 +136,17 @@ object Helpers extends Logger {
       }
     }
 
+    def instToImpl(inst: TypedExpression, implOf: String): (T, Node.Expression) = {
+      inst.toExprNode(ctx, IType.getObjectType(implOf)).map { case (ctx, expr) =>
+        ctx.instToImpl(expr, implOf)
+      }
+    }
+
+    def instToImpl(inst: Node.Expression, implOf: String): (T, Node.Expression) = {
+      // Just call the raw pointer func
+      ctx -> inst.sel(ctx.mangler.instanceRawPointerMethodName(implOf)).call()
+    }
+
     def frameStack(frame: FrameNode): Seq[IType] = Option(frame.stack) match {
       case None => Nil
       case Some(stack) =>

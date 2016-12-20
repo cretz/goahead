@@ -8,10 +8,12 @@
 * Boxed primitives
 * Using .super to jump over certain invocations while inheriting - DONE
 * Covariant overridden return types - DONE
-* Override resetting method to abstract that was concrete
-* Package private override of protected or similar?
-* Private methods w/ name ambiguity
-* Constructor inheritance skipping a parent or two
+* Override resetting method to abstract that was concrete - DONE
+* Private methods w/ name ambiguity - DONE
 * Interface calls of an object method
 * Object methods on array types
-* Local var reuse which goes from obj, to array, back to obj of completely different types
+* Local var reuse which goes from obj, to array, back to obj of completely different types - Done
+* Enums
+* non-static inner classes
+* private fields
+* static and instance inits

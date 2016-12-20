@@ -33,7 +33,7 @@ object Cls {
 
     override lazy val fields = {
       import scala.collection.JavaConverters._
-      node.fields.asScala.asInstanceOf[Seq[FieldNode]].map(Field(node.name, _))
+      node.fields.asScala.asInstanceOf[Seq[FieldNode]].map(Field(this, _))
     }
 
     override lazy val methods = {

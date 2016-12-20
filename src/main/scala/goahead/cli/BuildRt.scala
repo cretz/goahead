@@ -60,6 +60,7 @@ trait BuildRt extends Command {
         "java/lang/NegativeArraySizeException.<init>(Ljava/lang/String;)V",
         "java/lang/NullPointerException.<init>(Ljava/lang/String;)V",
         "java/lang/Object.<init>()V",
+        "java/lang/Object.getClass()Ljava/lang/Class;",
         "java/lang/Object.hashCode()I",
         "java/lang/StringBuilder.<init>()V",
         "java/lang/StringBuilder.append(I)Ljava/lang/StringBuilder;",

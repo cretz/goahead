@@ -3,7 +3,7 @@ package goahead.compile
 import org.objectweb.asm.tree.FieldNode
 
 sealed trait Field {
-  def owner: String
+  def cls: Cls
   def name: String
   def desc: String
   def access: Int
@@ -11,9 +11,9 @@ sealed trait Field {
 
 object Field {
 
-  def apply(owner: String, node: FieldNode): Field = Asm(owner, node)
+  def apply(cls: Cls, node: FieldNode): Field = Asm(cls, node)
 
-  case class Asm(owner: String, node: FieldNode) extends Field {
+  case class Asm(override val cls: Cls, node: FieldNode) extends Field {
     @inline
     override def name = node.name
 

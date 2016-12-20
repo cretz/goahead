@@ -170,8 +170,8 @@ trait ClassCompiler extends Logger {
           signatureCompiler.buildFieldSetterFuncType(ctx, node, includeParamNames = false).map {
             case (ctx, setterType) =>
               ctx -> (fields ++ Seq(
-                field(ctx.mangler.fieldGetterName(node.owner, node.name), getterType),
-                field(ctx.mangler.fieldSetterName(node.owner, node.name), setterType)
+                field(ctx.mangler.fieldGetterName(node.cls.name, node.name), getterType),
+                field(ctx.mangler.fieldSetterName(node.cls.name, node.name), setterType)
               ))
           }
         }
@@ -179,12 +179,29 @@ trait ClassCompiler extends Logger {
     }
 
     ctxAndAllFields.map { case (ctx, fields) =>
-      ctx -> interface(name = ctx.mangler.instanceInterfaceName(ctx.cls.name), fields = fields)
+      compileInstInterfaceRawPointerMethodSigs(ctx).map { case (ctx, rawSigs) =>
+        ctx -> interface(name = ctx.mangler.instanceInterfaceName(ctx.cls.name), fields = fields ++ rawSigs)
+      }
+    }
+  }
+
+  protected def compileInstInterfaceRawPointerMethodSigs(ctx: Context): (Context, Seq[Node.Field]) = {
+    if (ctx.cls.access.isAccessInterface) ctx -> Nil else {
+      // Gotta do it for all parents
+      val allClasses = ctx.cls.name +: ctx.classPath.allSuperTypes(ctx.cls.name).map(_.cls.name)
+      allClasses.foldLeft(ctx -> Seq.empty[Node.Field]) { case ((ctx, fields), clsName) =>
+        ctx.implTypeExpr(clsName).map { case (ctx, typPtr) =>
+          ctx -> (fields :+ field(
+            str = ctx.mangler.instanceRawPointerMethodName(clsName),
+            typ = funcType(Nil, Some(typPtr))
+          ))
+        }
+      }
     }
   }
 
   protected def compileInterfaceDefaultMethods(ctx: Context): (Context, Seq[Node.Declaration]) = {
-    compileMethods(ctx, ctx.cls.methods.filter(m => !m.access.isAccessStatic && !m.access.isAccessAbstract))
+    compileMethods(ctx, methodSetManager.instInterfaceDefaultMethods(ctx.classPath, ctx.cls).methods)
   }
 
   protected def compileImpl(ctx: Context): (Context, Seq[Node.Declaration]) = {
@@ -209,9 +226,11 @@ trait ClassCompiler extends Logger {
     compileImplFieldAccessors(ctx).map { case (ctx, accessorDecls) =>
       val methodSet = methodSetManager.implMethods(ctx.classPath, ctx.cls)
       compileMethods(ctx, methodSet.methods).map { case (ctx, methodDecls) =>
-        compileImplCovariantReturnDuplicateForwarders(ctx, methodSet.covariantReturnDuplicates).map {
-          case (ctx, covariantMethodDecls) =>
-            ctx -> (accessorDecls ++ methodDecls ++ covariantMethodDecls)
+        compileImplRawPointerMethod(ctx).map { case (ctx, rawPointerMethod) =>
+          compileImplCovariantReturnDuplicateForwarders(ctx, methodSet.covariantReturnDuplicates).map {
+            case (ctx, covariantMethodDecls) =>
+              ctx -> (accessorDecls ++ methodDecls ++ covariantMethodDecls :+ rawPointerMethod)
+          }
         }
       }
     }
@@ -230,6 +249,16 @@ trait ClassCompiler extends Logger {
         }
       }
     }
+  }
+
+  protected def compileImplRawPointerMethod(ctx: Context): (Context, Node.FunctionDeclaration) = {
+    ctx -> funcDecl(
+      rec = Some("this" -> ctx.mangler.implObjectName(ctx.cls.name).toIdent.star),
+      name = ctx.mangler.instanceRawPointerMethodName(ctx.cls.name),
+      params = Nil,
+      results = Some(ctx.mangler.implObjectName(ctx.cls.name).toIdent.star),
+      stmts = "this".toIdent.ret.singleSeq
+    )
   }
 
   protected def compileImplDefaultMethodForwarders(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
@@ -292,13 +321,13 @@ trait ClassCompiler extends Logger {
             case (ctx, setterType) => ctx -> (decls ++ Seq(
               funcDecl(
                 rec = Some(field("this", thisType)),
-                name = ctx.mangler.fieldGetterName(node.owner, node.name),
+                name = ctx.mangler.fieldGetterName(node.cls.name, node.name),
                 funcType = getterType,
                 stmts = "this".toIdent.sel(ctx.mangler.fieldName(ctx.cls.name, node.name)).ret.singleSeq
               ),
               funcDecl(
                 rec = Some(field("this", thisType)),
-                name = ctx.mangler.fieldSetterName(node.owner, node.name),
+                name = ctx.mangler.fieldSetterName(node.cls.name, node.name),
                 funcType = setterType,
                 stmts = "this".toIdent.sel(ctx.mangler.fieldName(ctx.cls.name, node.name)).
                   assignExisting("v".toIdent).singleSeq
@@ -395,7 +424,9 @@ trait ClassCompiler extends Logger {
   protected def compileDispatchForwardMethods(ctx: Context): (Context, Seq[Node.Declaration]) = {
     // No dispatch methods for interfaces
     if (ctx.cls.access.isAccessInterface) ctx -> Nil else {
-      val methods = methodSetManager.dispatchForwardingMethods(ctx.classPath, ctx.cls).methods
+      // We need regular methods AND all covariant return methods that are on an interface
+      val methodSet = methodSetManager.dispatchForwardingMethods(ctx.classPath, ctx.cls)
+      val methods = methodSet.methodsWithCovariantReturnDuplicates
       methods.foldLeft(ctx -> Seq.empty[Node.Declaration]) { case ((ctx, methods), method) =>
         val call = "this".toIdent.sel("_dispatch").sel(ctx.mangler.implMethodName(method.name, method.desc)).call(
           IType.getArgumentTypes(method.desc).zipWithIndex.map("var" + _._2).map(_.toIdent)
@@ -422,7 +453,7 @@ trait ClassCompiler extends Logger {
     }
   }
 
-  protected def methodSetManager: MethodSetManager = MethodSetManager
+  protected def methodSetManager: MethodSetManager = MethodSetManager.Default
 
   protected def signatureCompiler: SignatureCompiler = SignatureCompiler
 }

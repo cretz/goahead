@@ -82,14 +82,14 @@ func PanicToThrowable(v interface{}) Java__lang__Throwable__Instance {
 		return v
 	case runtime.Error:
 		errStr := v.Error()
-		isNpe := errStr == "invalid memory address or nil pointer dereference" ||
+		isNpe := strings.HasSuffix(errStr, "invalid memory address or nil pointer dereference") ||
 			(strings.HasPrefix(errStr, "interface conversion: ") && strings.Contains(errStr, " is nil, not "))
 		if isNpe {
 			ret := Java__lang__NullPointerException().New()
 			ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(v.Error()))
 			return ret
 		}
-		if errStr == "makeslice: len out of range" {
+		if strings.HasSuffix(errStr, "makeslice: len out of range") {
 			ret := Java__lang__NegativeArraySizeException().New()
 			ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(v.Error()))
 			return ret

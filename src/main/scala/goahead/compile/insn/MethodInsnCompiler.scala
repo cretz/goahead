@@ -64,7 +64,8 @@ trait MethodInsnCompiler {
     retType: IType
   ): (Context, Seq[Node.Statement]) = {
     val ownerName =
-      if (insn.name != "<init>" && !insn.itf) ctx.cls.parent.getOrElse(sys.error("Expected parent"))
+      if (insn.name != "<init>" && !insn.itf && insn.owner != ctx.cls.name)
+        ctx.cls.parent.getOrElse(sys.error("Expected parent"))
       else insn.owner
     invokeInstance(ctx, insn, subject, args, retType, ownerName)
   }
@@ -109,14 +110,12 @@ trait MethodInsnCompiler {
         ctx.importQualifiedName(method.cls.name, defName).map { case (ctx, defName) =>
           invoke(ctx, defName, subjectExpr +: args, retType)
         }
-//      } else if (subject.isThis && ctx.method.name == insn.name && ctx.cls.name != method.cls.name &&
-//          (ctx.method.name == "<init>" || ctx.method.desc == insn.desc)) {
-      } else if (subject.isThis && ctx.cls.name != method.cls.name) {
-        // If we are calling on ourselves and inside the same method, we do it on the specific impl
-        val m = subjectExpr.sel(ctx.mangler.implObjectName(method.cls.name)).sel(
-          ctx.mangler.implMethodName(insn.name, insn.desc)
-        )
-        invoke(ctx, m, args, retType)
+      } else if (method.access.isAccessPrivate || (subject.isThis && ctx.cls.name != method.cls.name)) {
+        // Private or calling ourselves but on a different class means we target
+        // the method directly, no dispatch
+        ctx.instToImpl(subjectExpr, method.cls.name).map { case (ctx, impl) =>
+          invoke(ctx, impl.sel(ctx.mangler.implMethodName(insn.name, insn.desc)), args, retType)
+        }
       } else {
         invoke(ctx, subjectExpr.sel(ctx.mangler.forwardMethodName(insn.name, insn.desc)), args, retType)
       }

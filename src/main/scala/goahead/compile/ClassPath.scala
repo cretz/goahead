@@ -71,18 +71,18 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
     }
 
   @tailrec
-  final def getFieldDeclarer(
+  final def findFieldOnDeclarer(
     startAtClassInternalName: String,
     fieldName: String,
     static: Boolean
-  ): ClassPath.ClassDetails = {
+  ): Field = {
     // We don't check permissions yet...
     val clsDet = getFirstClass(startAtClassInternalName)
     clsDet.cls.fields.find(f => f.access.isAccessStatic == static && f.name == fieldName) match {
-      case Some(field) => clsDet
+      case Some(field) => field
       case None => clsDet.cls.parent match {
         case None => sys.error(s"Cannot find field $fieldName")
-        case Some(parent) => getFieldDeclarer(parent, fieldName, static)
+        case Some(parent) => findFieldOnDeclarer(parent, fieldName, static)
       }
     }
 

@@ -34,6 +34,12 @@ func (this *Java__lang__Object__Impl) Impl__Instance_Init__desc____ret__V() {
 
 }
 
+func (this *Java__lang__Object__Impl) Impl__GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	// TODO: just a placeholder since javac injects this call for simple null checks
+	this.Impl__HashCode__desc____ret__I();
+	return nil
+}
+
 func (this *Java__lang__Object__Impl) Impl__HashCode__desc____ret__I() int {
 	return Java__lang__System().Impl__IdentityHashCode__desc____obj__Java__lang__Object__ret__I(this)
 }

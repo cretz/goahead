@@ -206,10 +206,11 @@ object BuildStubs extends BuildStubs {
   class StubCompiler(excludePatterns: Set[String], onlyIncludeClassRefs: Set[String]) extends GoAheadCompiler {
     override val classCompiler = new ClassCompiler {
 
-      override protected val methodSetManager = new MethodSetManager {
-        def filterFn(method: Method): Boolean = {
+      override protected val methodSetManager = new MethodSetManager.Filtered() {
+        override def filter(method: Method, forImpl: Boolean) = {
+          val exclusions = if (forImpl) excludePatterns else Set.empty[String]
           if (method.access.isAccessPrivate ||
-            excludePatterns.contains(method.cls.name + "." + method.name + method.desc)) false
+            exclusions.contains(method.cls.name + "." + method.name + method.desc)) false
           else if (onlyIncludeClassRefs.isEmpty) true
           else {
             // We need to make sure neither the params nor the
@@ -220,43 +221,7 @@ object BuildStubs extends BuildStubs {
             !hasNonIncludedClassRef
           }
         }
-
-        override def staticMethods(classPath: ClassPath, cls: Cls) =
-          super.staticMethods(classPath, cls).filter(filterFn)
-        override def instInterfaceMethods(classPath: ClassPath, cls: Cls) =
-          super.instInterfaceMethods(classPath, cls).filter(filterFn)
-        override def implMethods(classPath: ClassPath, cls: Cls) =
-          super.implMethods(classPath, cls).filter(filterFn)
-        override def implDefaultForwarderMethods(classPath: ClassPath, cls: Cls) =
-          super.implDefaultForwarderMethods(classPath, cls).filter(filterFn)
       }
-
-//      override protected def clsMethods(
-//        ctx: ClassCompiler.Context,
-//        forDispatch: Boolean,
-//        includeParentInstMethodsOnClass: Boolean = false,
-//        includeUnimplementedDefaults: Boolean = false
-//      ): Seq[Method] = {
-//        val exclusions = if (forDispatch) Set.empty[String] else excludePatterns
-//        super.clsMethods(
-//          ctx,
-//          forDispatch,
-//          includeParentInstMethodsOnClass,
-//          includeUnimplementedDefaults
-//        ).filter { method =>
-//          if (method.access.isAccessPrivate ||
-//            exclusions.contains(ctx.cls.name + "." + method.name + method.desc)) false
-//          else if (onlyIncludeClassRefs.isEmpty) true
-//          else {
-//            // We need to make sure neither the params nor the
-//            val objectTypes = Type.getArgumentTypes(method.desc).flatMap(getObjectType) ++
-//              getObjectType(Type.getReturnType(method.desc))
-//            // Needs to be true if no object types exists that isn't in the only include
-//            val hasNonIncludedClassRef = objectTypes.exists(t => !onlyIncludeClassRefs.contains(t))
-//            !hasNonIncludedClassRef
-//          }
-//        }
-//      }
 
       override protected def clsFields(
         ctx: ClassCompiler.Context,

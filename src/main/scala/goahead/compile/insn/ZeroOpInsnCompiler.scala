@@ -369,7 +369,13 @@ trait ZeroOpInsnCompiler {
       }
     }
     ctx.stackPopped(amountToPop, { case (ctx, items) =>
-      ctx -> items.map(_.expr.toStmt)
+      ctx -> items.map { item =>
+        // If there is a type, we just assign to a non-existent var, otherwise just run
+        item.typ match {
+          case t: IType.Simple if t != IType.VoidType => "_".toIdent.assignExisting(item.expr)
+          case _ => item.expr.toStmt
+        }
+      }
     })
   }
 

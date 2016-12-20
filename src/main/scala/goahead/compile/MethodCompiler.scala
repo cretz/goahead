@@ -21,11 +21,9 @@ trait MethodCompiler extends Logger {
     logger.trace("ASM:\n    " + method.asmString.replace("\n", "\n    "))
     // Compile the sets
     val ctx = initContext(cls, method, imports, mangler, getLabelSets(method))
-    compileLabelSets(ctx).map { case (ctx, compiledStmts) =>
-      postProcessStatements(ctx, compiledStmts).map { case (ctx, stmts) =>
-        buildFuncDecl(ctx, stmts).map { case (ctx, funcDecl) =>
-          ctx.imports -> funcDecl
-        }
+    buildStmts(ctx).map { case (ctx, stmts) =>
+      buildFuncDecl(ctx, stmts).map { case (ctx, funcDecl) =>
+        ctx.imports -> funcDecl
       }
     }
   }
@@ -43,29 +41,40 @@ trait MethodCompiler extends Logger {
     }
   }
 
+  protected def buildStmts(ctx: Context): (Context, Seq[Node.Statement]) = {
+    // Abstract methods just need a panic
+    if (ctx.method.access.isAccessAbstract) ctx -> "panic".toIdent.call(Seq("Abstract".toLit)).toStmt.singleSeq else {
+      compileLabelSets(ctx).map { case (ctx, compiledStmts) =>
+        postProcessStatements(ctx, compiledStmts)
+      }
+    }
+  }
+
   protected def insnCompiler: InsnCompiler = InsnCompiler
 
   protected def getLabelSets(node: Method): Seq[LabelSet] = {
-    val insns = node.instructions
-    require(insns.headOption.exists(_.isInstanceOf[LabelNode]), "Expected label to be first insn")
-    val initial = LabelSet(insns.head.asInstanceOf[LabelNode])
-    insns.foldLeft(Seq(initial)) { case (labelSets, insn) =>
-      insn match {
-        case n: FrameNode =>
-          require(labelSets.last.newFrame.isEmpty, "Expected label to not have two frames")
-          labelSets.init :+ labelSets.last.copy(newFrame = Some(n))
-        case n: LineNumberNode =>
-          if (n.start.getLabel != labelSets.last.label.getLabel) labelSets
-          else labelSets.init :+ labelSets.last.copy(line = Some(n.line))
-        case n: LabelNode =>
-          labelSets.init :+ labelSets.last.copy(nextLabel = Some(n)) :+ LabelSet(
-            label = n,
-            exceptionType = node.tryCatchBlocks.find(_.handler.getLabel == n).map { block =>
-              Option(block.`type`).getOrElse("java/lang/Throwable")
-            }
-          )
-        case n =>
-          labelSets.init :+ labelSets.last.copy(insns = labelSets.last.insns :+ n)
+    if (node.access.isAccessAbstract) Seq.empty else {
+      val insns = node.instructions
+      require(insns.headOption.exists(_.isInstanceOf[LabelNode]), "Expected label to be first insn")
+      val initial = LabelSet(insns.head.asInstanceOf[LabelNode])
+      insns.foldLeft(Seq(initial)) { case (labelSets, insn) =>
+        insn match {
+          case n: FrameNode =>
+            require(labelSets.last.newFrame.isEmpty, "Expected label to not have two frames")
+            labelSets.init :+ labelSets.last.copy(newFrame = Some(n))
+          case n: LineNumberNode =>
+            if (n.start.getLabel != labelSets.last.label.getLabel) labelSets
+            else labelSets.init :+ labelSets.last.copy(line = Some(n.line))
+          case n: LabelNode =>
+            labelSets.init :+ labelSets.last.copy(nextLabel = Some(n)) :+ LabelSet(
+              label = n,
+              exceptionType = node.tryCatchBlocks.find(_.handler.getLabel == n).map { block =>
+                Option(block.`type`).getOrElse("java/lang/Throwable")
+              }
+            )
+          case n =>
+            labelSets.init :+ labelSets.last.copy(insns = labelSets.last.insns :+ n)
+        }
       }
     }
   }

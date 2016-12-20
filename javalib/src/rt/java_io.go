@@ -3,7 +3,18 @@
 package rt
 
 type Java__io__Closeable__Instance interface {
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Close__desc____ret__V()
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 }
 
 type Java__io__FilterOutputStream__Static struct{}
@@ -55,6 +66,9 @@ type Java__io__FilterOutputStream__Instance interface {
 	Write__desc____arr__B__I__I__ret__V(ByteArray__Instance, int, int)
 	FieldGet__Java__io__FilterOutputStream__Out() Java__io__OutputStream__Instance
 	FieldSet__Java__io__FilterOutputStream__Out(v Java__io__OutputStream__Instance)
+	RawPtr__Java__io__FilterOutputStream() *Java__io__FilterOutputStream__Impl
+	RawPtr__Java__io__OutputStream() *Java__io__OutputStream__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 type Java__io__FilterOutputStream__Impl struct {
@@ -95,8 +109,23 @@ func (this *Java__io__FilterOutputStream__Impl) Impl__Write__desc____arr__B__I__
 	panic("Not Implemented - java/io/FilterOutputStream.write([BII)V")
 }
 
+func (this *Java__io__FilterOutputStream__Impl) RawPtr__Java__io__FilterOutputStream() *Java__io__FilterOutputStream__Impl {
+	return this
+}
+
 type Java__io__Flushable__Instance interface {
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
 	Flush__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
 }
 
 type Java__io__OutputStream__Static struct{}
@@ -166,6 +195,8 @@ type Java__io__OutputStream__Instance interface {
 	Write__desc__I__ret__V(int)
 	Write__desc____arr__B__ret__V(ByteArray__Instance)
 	Write__desc____arr__B__I__I__ret__V(ByteArray__Instance, int, int)
+	RawPtr__Java__io__OutputStream() *Java__io__OutputStream__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 type Java__io__OutputStream__Impl struct {
@@ -186,7 +217,7 @@ func (this *Java__io__OutputStream__Impl) Impl__Flush__desc____ret__V() {
 }
 
 func (this *Java__io__OutputStream__Impl) Impl__Write__desc__I__ret__V(var0 int) {
-	panic("Not Implemented - java/io/OutputStream.write(I)V")
+	panic("Abstract")
 }
 
 func (this *Java__io__OutputStream__Impl) Impl__Write__desc____arr__B__ret__V(var0 ByteArray__Instance) {
@@ -195,6 +226,10 @@ func (this *Java__io__OutputStream__Impl) Impl__Write__desc____arr__B__ret__V(va
 
 func (this *Java__io__OutputStream__Impl) Impl__Write__desc____arr__B__I__I__ret__V(var0 ByteArray__Instance, var1 int, var2 int) {
 	panic("Not Implemented - java/io/OutputStream.write([BII)V")
+}
+
+func (this *Java__io__OutputStream__Impl) RawPtr__Java__io__OutputStream() *Java__io__OutputStream__Impl {
+	return this
 }
 
 type Java__io__PrintStream__Static struct{}
@@ -441,6 +476,10 @@ type Java__io__PrintStream__Instance interface {
 	Write__desc____arr__B__I__I__ret__V(ByteArray__Instance, int, int)
 	FieldGet__Java__io__FilterOutputStream__Out() Java__io__OutputStream__Instance
 	FieldSet__Java__io__FilterOutputStream__Out(v Java__io__OutputStream__Instance)
+	RawPtr__Java__io__PrintStream() *Java__io__PrintStream__Impl
+	RawPtr__Java__io__FilterOutputStream() *Java__io__FilterOutputStream__Impl
+	RawPtr__Java__io__OutputStream() *Java__io__OutputStream__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 type Java__io__PrintStream__Impl struct {
@@ -472,24 +511,12 @@ func (this *Java__io__PrintStream__Impl) Impl__Append__desc__C__ret____obj__Java
 	panic("Not Implemented - java/io/PrintStream.append(C)Ljava/io/PrintStream;")
 }
 
-func (this *Java__io__PrintStream__Impl) Impl__Append__desc__C__ret____obj__Java__lang__Appendable(var0 rune) Java__lang__Appendable__Instance {
-	panic("Not Implemented - java/io/PrintStream.append(C)Ljava/lang/Appendable;")
-}
-
 func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__io__PrintStream(var0 Java__lang__CharSequence__Instance) Java__io__PrintStream__Instance {
 	panic("Not Implemented - java/io/PrintStream.append(Ljava/lang/CharSequence;)Ljava/io/PrintStream;")
 }
 
-func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(var0 Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance {
-	panic("Not Implemented - java/io/PrintStream.append(Ljava/lang/CharSequence;)Ljava/lang/Appendable;")
-}
-
 func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__io__PrintStream(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) Java__io__PrintStream__Instance {
 	panic("Not Implemented - java/io/PrintStream.append(Ljava/lang/CharSequence;II)Ljava/io/PrintStream;")
-}
-
-func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) Java__lang__Appendable__Instance {
-	panic("Not Implemented - java/io/PrintStream.append(Ljava/lang/CharSequence;II)Ljava/lang/Appendable;")
 }
 
 func (this *Java__io__PrintStream__Impl) Impl__CheckError__desc____ret__Z() bool {
@@ -576,4 +603,32 @@ func (this *Java__io__PrintStream__Impl) Impl__Write__desc____arr__B__I__I__ret_
 	panic("Not Implemented - java/io/PrintStream.write([BII)V")
 }
 
-type Java__io__Serializable__Instance interface{}
+func (this *Java__io__PrintStream__Impl) Impl__Append__desc__C__ret____obj__Java__lang__Appendable(var0 rune) Java__lang__Appendable__Instance {
+	return this.Impl__Append__desc__C__ret____obj__Java__io__PrintStream(var0)
+}
+
+func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(var0 Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance {
+	return this.Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__io__PrintStream(var0)
+}
+
+func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__Appendable(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) Java__lang__Appendable__Instance {
+	return this.Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__io__PrintStream(var0, var1, var2)
+}
+
+func (this *Java__io__PrintStream__Impl) RawPtr__Java__io__PrintStream() *Java__io__PrintStream__Impl {
+	return this
+}
+
+type Java__io__Serializable__Instance interface {
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+}

@@ -10,6 +10,7 @@ trait Mangler {
   def implMethodName(name: String, desc: String): String
   def dispatchInterfaceName(internalName: String): String
   def instanceInterfaceName(internalName: String): String
+  def instanceRawPointerMethodName(internalName: String): String
   def forwardMethodName(name: String, desc: String): String
   def interfaceDefaultMethodName(owner: String, name: String, desc: String): String
   def dispatchInitMethodName(classInternalName: String): String
@@ -34,6 +35,9 @@ object Mangler {
 
     override def instanceInterfaceName(internalName: String): String =
       objectNamePrefix(internalName) + "__Instance"
+
+    override def instanceRawPointerMethodName(internalName: String): String =
+      "RawPtr__" + objectNamePrefix(internalName)
 
     override def forwardMethodName(name: String, desc: String): String =
       methodName(name, desc)
