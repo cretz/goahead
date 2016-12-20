@@ -1,19 +1,26 @@
+Code:
 
-* Rework local vars to have common base type and be reused properly with type assertions
-* Refactor:
-  * Type conversion stuff
-* Unused local var elision - DONE
 * Consider int32 instead of int for JVM int type
   * Also test overflows/underflows...for now we will fail, but we need overflow-safe operators
-* Boxed primitives
-* Using .super to jump over certain invocations while inheriting - DONE
+* Refactor:
+  * Type conversion stuff
+
+Compliance pre-stdlib:
+
+* Unused local var elision - DONE
 * Covariant overridden return types - DONE
 * Override resetting method to abstract that was concrete - DONE
 * Private methods w/ name ambiguity - DONE
+* Using .super to jump over certain invocations while inheriting - DONE
+* Local var reuse which goes from obj, to array, back to obj of completely different types - DONE
+* non-static inner classes - DONE
+* private fields - DONE
+* static and instance inits - DONE
+
+Compliance post-stdlib:
+
+* Boxed primitives
 * Interface calls of an object method
 * Object methods on array types
-* Local var reuse which goes from obj, to array, back to obj of completely different types - Done
 * Enums
-* non-static inner classes
-* private fields
-* static and instance inits
+* Lambdas
