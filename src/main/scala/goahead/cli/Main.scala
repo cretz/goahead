@@ -9,6 +9,7 @@ object Main extends Logger {
     BuildJvmStubs,
     BuildStubs,
     BuildRt,
+    Compile,
     FindOpcode
   )
 

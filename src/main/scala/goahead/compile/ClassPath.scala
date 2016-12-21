@@ -1,7 +1,9 @@
 package goahead.compile
 
 import java.io.File
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.attribute.BasicFileAttributes
+import java.nio.file._
+import java.util.function.BiPredicate
 import java.util.jar.JarFile
 import java.util.zip.ZipEntry
 
@@ -16,7 +18,7 @@ import scala.util.Try
 // Guaranteed thread safe
 case class ClassPath(entries: Seq[ClassPath.Entry]) {
 
-  def runtimeRelativeCompiledDir = getFirstClass("java/lang/Object").relativeCompiledDir
+//  def runtimeRelativeCompiledDir = getFirstClass("java/lang/Object").relativeCompiledDir
 
   def findClassRelativeCompiledDir(classInternalName: String): Option[String] = {
     findFirstClass(classInternalName).map(_.relativeCompiledDir)
@@ -88,6 +90,8 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
 
   }
 
+  def allClassNames(): Iterable[String] = entries.flatMap(_.allClassNames())
+
   def close(): Unit = entries.foreach(e => swallowException(e.close()))
 }
 
@@ -115,6 +119,7 @@ object ClassPath {
   // Must be thread safe!
   sealed trait Entry {
     def findClass(internalClassName: String): Option[ClassDetails]
+    def allClassNames(): Iterable[String]
     def close(): Unit
   }
 
@@ -186,6 +191,8 @@ object ClassPath {
       override def findClass(internalClassName: String): Option[ClassDetails] =
         entries.collectFirst(Function.unlift(_.findClass(internalClassName)))
 
+      override def allClassNames(): Iterable[String] = entries.flatMap(_.allClassNames())
+
       override def close(): Unit = entries.foreach(_.close())
     }
 
@@ -203,6 +210,16 @@ object ClassPath {
           cache += internalClassName -> detailsOpt
           detailsOpt
         })
+      }
+
+      override def allClassNames(): Iterable[String] = {
+        import scala.collection.JavaConverters._
+        val onlyClassPred = new BiPredicate[Path, BasicFileAttributes] {
+          override def test(t: Path, u: BasicFileAttributes) = t.endsWith(".class")
+        }
+
+        Files.find(dir, Int.MaxValue, onlyClassPred).iterator().asScala.toIterable.
+          map(_.toString.dropRight(6).replace(FileSystems.getDefault.getSeparator, "/"))
       }
 
       override def close() = ()
@@ -227,12 +244,21 @@ object ClassPath {
         try { ByteStreams.toByteArray(is) } finally { swallowException(is.close()) }
       }
 
+      override def allClassNames(): Iterable[String] = {
+        import scala.collection.JavaConverters._
+        jar.stream().iterator().asScala.toIterable.collect {
+          case e if e.getName.endsWith(".class") => e.getName.dropRight(6)
+        }
+      }
+
       override def close() = synchronized(swallowException(jar.close()))
     }
 
     case class SingleClassEntry(cls: Cls, relativeCompiledDir: String) extends Entry with ClassDetails {
       override def findClass(internalClassName: String): Option[ClassDetails] =
         if (cls.name == internalClassName) Some(this) else None
+
+      override def allClassNames(): Iterable[String] = Iterable(cls.name)
 
       override def close() = ()
     }

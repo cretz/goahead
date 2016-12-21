@@ -131,9 +131,9 @@ trait ZeroOpInsnCompiler {
       // Convert to byte or bool array if necessary
       opcode match {
         case Opcodes.BALOAD =>
-          ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
+          ctx.importRuntimeQualifiedName("GetBoolOrByte").map { case (ctx, getBoolOrByte) =>
             ctx.stackPushed(TypedExpression(
-              rtAlias.toIdent.sel("GetBoolOrByte").call(Seq(arrayRef.expr, index.expr)),
+              getBoolOrByte.call(Seq(arrayRef.expr, index.expr)),
               IType.IntType,
               cheapRef = true
             )) -> Nil
@@ -170,10 +170,8 @@ trait ZeroOpInsnCompiler {
     ctx.stackPopped(3, { case (ctx, Seq(arrayRef, index, value)) =>
       opcode match {
         case Opcodes.BASTORE =>
-          ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
-            ctx -> rtAlias.toIdent.sel("SetBoolOrByte").call(Seq(
-              arrayRef.expr, index.expr, value.expr
-            )).toStmt.singleSeq
+          ctx.importRuntimeQualifiedName("SetBoolOrByte").map { case (ctx, setBoolOrByte) =>
+            ctx -> setBoolOrByte.call(Seq(arrayRef.expr, index.expr, value.expr)).toStmt.singleSeq
           }
         case _ =>
           val jvmType = opcode match {
@@ -209,10 +207,10 @@ trait ZeroOpInsnCompiler {
     methodName: String,
     additionalArg: Option[Node.Expression] = None
   ): (Context, Seq[Node.Statement]) = {
-    ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
+    ctx.importRuntimeQualifiedName(methodName).map { case (ctx, cmpMethod) =>
       ctx.stackPopped(2, { case (ctx, Seq(val1, val2)) =>
         ctx.stackPushed(TypedExpression(
-          rtAlias.toIdent.sel(methodName).call(Seq(val1.expr, val2.expr) ++ additionalArg),
+          cmpMethod.call(Seq(val1.expr, val2.expr) ++ additionalArg),
           IType.IntType,
           cheapRef = false
         )) -> Nil
@@ -318,9 +316,9 @@ trait ZeroOpInsnCompiler {
 
   protected def monitor(ctx: Context, opcode: Int): (Context, Seq[Node.Statement]) = {
     val func = if (opcode == Opcodes.MONITORENTER) "MonitorEnter" else "MonitorExit"
-    ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
+    ctx.importRuntimeQualifiedName(func).map { case (ctx, monitorFunc) =>
       ctx.stackPopped { case (ctx, ref) =>
-        ctx -> rtAlias.toIdent.sel(func).call(Seq(ref.expr)).toStmt.singleSeq
+        ctx -> monitorFunc.call(Seq(ref.expr)).toStmt.singleSeq
       }
     }
   }

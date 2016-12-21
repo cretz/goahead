@@ -43,15 +43,13 @@ trait ApplyTryCatch extends PostProcessor {
   }
 
   protected def deferStmt(ctx: Context): (Context, Node.Statement) = {
-    ctx.withRuntimeImportAlias.map { case (ctx, rt) =>
+    ctx.importRuntimeQualifiedName("PanicToThrowable").map { case (ctx, panicToThrowable) =>
       val recoverStmt = iff(
         init = Some("r".toIdent.assignDefine("recover".toIdent.call())),
         lhs = "r".toIdent,
         op = Node.Token.Neq,
         rhs = NilExpr,
-        body = Seq(
-          "currentEx".toIdent.assignExisting(rt.toIdent.sel("PanicToThrowable").call(Seq("r".toIdent)))
-        )
+        body = Seq("currentEx".toIdent.assignExisting(panicToThrowable.call(Seq("r".toIdent))))
       )
       ctx -> funcType(Nil, None).toFuncLit(Seq(
         "currentEx".toIdent.assignExisting(NilExpr),

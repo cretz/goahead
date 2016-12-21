@@ -58,8 +58,8 @@ trait JumpInsnCompiler {
           }
         case Opcodes.IF_ACMPEQ | Opcodes.IF_ACMPNE =>
           ctx.stackPopped(2, { case (ctx, Seq(lhs, rhs)) =>
-            ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
-              val cond = rtAlias.toIdent.sel("SameIdentity").call(Seq(lhs.expr, rhs.expr))
+            ctx.importRuntimeQualifiedName("SameIdentity").map { case (ctx, sameIdent) =>
+              val cond = sameIdent.call(Seq(lhs.expr, rhs.expr))
               ifCondStmt(ctx, if (insn.getOpcode == Opcodes.IF_ACMPEQ) cond else cond.unary(Node.Token.Not))
             }
           })

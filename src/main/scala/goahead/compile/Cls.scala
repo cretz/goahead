@@ -1,6 +1,6 @@
 package goahead.compile
 
-import org.objectweb.asm.tree.{ClassNode, FieldNode, MethodNode}
+import org.objectweb.asm.tree.{ClassNode, FieldNode, InnerClassNode, MethodNode}
 
 sealed trait Cls {
   def version: Int
@@ -13,6 +13,7 @@ sealed trait Cls {
   def methods: Seq[Method]
   def interfaces: Seq[String]
   def parent: Option[String]
+  def innerClasses: Seq[String]
 }
 
 object Cls {
@@ -47,5 +48,10 @@ object Cls {
     }
 
     override lazy val parent = Option(node.superName)
+
+    override def innerClasses = {
+      import scala.collection.JavaConverters._
+      node.innerClasses.asScala.asInstanceOf[Seq[InnerClassNode]].map(_.name)
+    }
   }
 }

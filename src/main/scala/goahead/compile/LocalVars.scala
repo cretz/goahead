@@ -17,7 +17,7 @@ case class LocalVars(
         case (index, _) => index + 1
       }
     }
-    getLocalVar(ctx, index, typ, forWriting = false)
+    getLocalVar(ctx, index, typ, forWriting = false, markUsed = false)
   }
 
   @inline def size = vars.size
@@ -34,7 +34,7 @@ case class LocalVars(
     copy(vars = savedVars, removedVars = removedVars ++ lostVars.values)
   }
 
-  def allTimeVars = vars.values ++ removedVars
+  def allTimeVars = vars.values.toSeq ++ removedVars
 
   def isUsedVar(v: TypedExpression) = usedVarNames.contains(v.name)
 
@@ -43,6 +43,14 @@ case class LocalVars(
     index: Int,
     typ: IType,
     forWriting: Boolean
+  ): (LocalVars, TypedExpression) = getLocalVar(ctx, index, typ, forWriting, !forWriting)
+
+  def getLocalVar(
+    ctx: Contextual[_],
+    index: Int,
+    typ: IType,
+    forWriting: Boolean,
+    markUsed: Boolean
   ): (LocalVars, TypedExpression) = {
     val localVarsAndExpr = if (index == 0 && thisVar.isDefined) this -> thisVar.get else {
       vars.get(index) match {
@@ -54,12 +62,16 @@ case class LocalVars(
           // the new type, we need to replace the local var to a new thing
           if (forWriting && shouldReplaceExistingVar(ctx, existing.typ, typ)) {
             addOrReplaceLocalVar(index, typ)
+          } else if (existing.typ.isUnknown && !typ.isUnknown) {
+            // If the current type is unknown but the new one is, change to use that
+            val updatedVar = existing.withUpdatedType(typ)
+            copy(vars = vars + (index -> updatedVar)) -> updatedVar
           } else this -> existing
       }
     }
     localVarsAndExpr.map { case (localVars, typedExpr) =>
       // If it's for reading, we need to mark it as used
-      if (forWriting) localVars -> typedExpr
+      if (!markUsed) localVars -> typedExpr
       else localVars.copy(usedVarNames = localVars.usedVarNames + typedExpr.name) -> typedExpr
     }
   }
@@ -88,5 +100,8 @@ case class LocalVars(
     }
   }
 
-  def prettyLines: Seq[String] = "Locals: " +: vars.values.map("  " + _.pretty).toSeq
+  def prettyLines: Seq[String] = "Locals: " +: (
+    vars.values.map("  " + _.pretty).toSeq ++
+    removedVars.map("  " + _.pretty + " (unused)")
+  )
 }

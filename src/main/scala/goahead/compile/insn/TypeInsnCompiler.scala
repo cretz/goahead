@@ -40,7 +40,7 @@ trait TypeInsnCompiler {
             }
           ctxAndTypedExprWithAssignStmtOpt.map { case (ctx, (typedExpr, tempAssignStmtOpt)) =>
             ctx.typeToGoType(IType.getObjectType(insn.desc)).map { case (ctx, goType) =>
-              ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
+              ctx.importRuntimeQualifiedName("NewClassCastEx").map { case (ctx, classCastEx) =>
                 // Create conditional first to make sure it's not nil, then inside to do the type check
                 val ifStmt = iff(init = None, lhs = typedExpr.expr, op = Node.Token.Neq, rhs = NilExpr, body = Seq(iff(
                   init = Some(assignDefineMultiple(
@@ -48,7 +48,7 @@ trait TypeInsnCompiler {
                     right = typedExpr.expr.typeAssert(goType).singleSeq
                   )),
                   cond = "castOk".toIdent.unary(Node.Token.Not),
-                  body = "panic".toIdent.call(Seq(rtAlias.toIdent.sel("NewClassCastEx").call())).toStmt.singleSeq
+                  body = "panic".toIdent.call(Seq(classCastEx.call())).toStmt.singleSeq
                 )))
                 ctx.stackPushed(typedExpr) -> (tempAssignStmtOpt.toSeq :+ ifStmt)
               }

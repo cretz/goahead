@@ -12,6 +12,7 @@ trait InsnCompiler extends Logger with
   FieldInsnCompiler with
   IincInsnCompiler with
   IntInsnCompiler with
+  InvokeDynamicInsnCompiler with
   JumpInsnCompiler with
   LdcInsnCompiler with
   MethodInsnCompiler with
@@ -44,6 +45,7 @@ trait InsnCompiler extends Logger with
           case i: IincInsnNode => compile(ctx, i)
           case i: InsnNode => compile(ctx, i)
           case i: IntInsnNode => compile(ctx, i)
+          case i: InvokeDynamicInsnNode => compile(ctx, i)
           case i: JumpInsnNode => compile(ctx, i)
           case i: LdcInsnNode => compile(ctx, i)
           case i: LookupSwitchInsnNode => compile(ctx, i)

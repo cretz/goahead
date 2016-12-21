@@ -84,7 +84,9 @@ trait MethodInsnCompiler {
       cls.methods.find(m => m.name == insn.name && m.desc == insn.desc).
         orElse(cls.parent.flatMap(findMethodFromParent))
     }
-    val method = findMethodFromParent(resolutionStartType).getOrElse {
+    // If the start type is an array, we expect it to mean object
+    val properStartType = if (resolutionStartType.startsWith("[")) "java/lang/Object" else resolutionStartType
+    val method = findMethodFromParent(properStartType).getOrElse {
       // Find any non-static, non-abstract impl in any interface...we trust javac didn't let them compile
       // one w/ ambiguity
       ctx.classPath.allSuperAndImplementingTypes(resolutionStartType).view.

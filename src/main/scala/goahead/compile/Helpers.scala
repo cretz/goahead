@@ -30,14 +30,13 @@ object Helpers extends Logger {
     @inline
     def map[U](f: T => U): U = f(ctx)
 
-    def withRuntimeImportAlias: (T, String) = {
-      val (newImports, alias) = ctx.imports.withRuntimeImportAlias
-      ctx.updatedImports(newImports) -> alias
-    }
-
     def withImportAlias(dir: String): (T, String) = {
       val (newImports, alias) = ctx.imports.withImportAlias(dir)
       ctx.updatedImports(newImports) -> alias
+    }
+
+    def importRuntimeQualifiedName(ident: String): (T, Node.Expression) = {
+      importQualifiedName("java/lang/Object", ident)
     }
 
     def importQualifiedName(
@@ -56,15 +55,15 @@ object Helpers extends Logger {
     }
 
     def newString(v: String): (T, Node.CallExpression) = {
-      withRuntimeImportAlias.map { case (ctx, alias) =>
-        ctx -> alias.toIdent.sel("NewString").call(v.toLit.singleSeq)
+      importRuntimeQualifiedName("NewString").map { case (ctx, newString) =>
+        ctx -> newString.call(v.toLit.singleSeq)
       }
     }
 
     def typeToGoType(typ: IType): (T, Node.Expression) = {
       typ match {
         case IType.Simple(typ) => asmTypeToGoType(typ)
-        case IType.NullType | IType.Undefined | _: IType.UndefinedLabelInitialized => ctx -> emptyInterface
+        case _ => ctx -> emptyInterface
       }
     }
 
@@ -80,25 +79,21 @@ object Helpers extends Logger {
         case Type.LONG => ctx -> "int64".toIdent
         case Type.FLOAT => ctx -> "float32".toIdent
         case Type.DOUBLE => ctx -> "float64".toIdent
-        case Type.ARRAY => withRuntimeImportAlias.map { case (ctx, rtAlias) =>
-          // If it's multidimensional, it's an object regardless
-          @inline def rtQualified(v: String): Node.Expression =
-            if (rtAlias.isEmpty) v.toIdent else rtAlias.toIdent.sel(v)
-          if (typ.getDimensions > 1) ctx -> rtQualified("ObjectArray__Instance") else {
+        case Type.ARRAY =>
+          if (typ.getDimensions > 1) ctx.importRuntimeQualifiedName("ObjectArray__Instance") else {
             typ.getElementType.getSort match {
-              case Type.BOOLEAN => ctx -> rtQualified("BoolArray__Instance")
-              case Type.CHAR => ctx -> rtQualified("CharArray__Instance")
-              case Type.BYTE => ctx -> rtQualified("ByteArray__Instance")
-              case Type.SHORT => ctx -> rtQualified("ShortArray__Instance")
-              case Type.INT => ctx -> rtQualified("IntArray__Instance")
-              case Type.LONG => ctx -> rtQualified("LongArray__Instance")
-              case Type.FLOAT => ctx -> rtQualified("FloatArray__Instance")
-              case Type.DOUBLE => ctx -> rtQualified("DoubleArray__Instance")
-              case Type.ARRAY | Type.OBJECT => ctx -> rtQualified("ObjectArray__Instance")
+              case Type.BOOLEAN => ctx.importRuntimeQualifiedName("BoolArray__Instance")
+              case Type.CHAR => ctx.importRuntimeQualifiedName("CharArray__Instance")
+              case Type.BYTE => ctx.importRuntimeQualifiedName("ByteArray__Instance")
+              case Type.SHORT => ctx.importRuntimeQualifiedName("ShortArray__Instance")
+              case Type.INT => ctx.importRuntimeQualifiedName("IntArray__Instance")
+              case Type.LONG => ctx.importRuntimeQualifiedName("LongArray__Instance")
+              case Type.FLOAT => ctx.importRuntimeQualifiedName("FloatArray__Instance")
+              case Type.DOUBLE => ctx.importRuntimeQualifiedName("DoubleArray__Instance")
+              case Type.ARRAY | Type.OBJECT => ctx.importRuntimeQualifiedName("ObjectArray__Instance")
               case sort => sys.error(s"Unrecognized array type $sort")
             }
           }
-        }
         case Type.OBJECT =>
           importQualifiedName(typ.getInternalName, ctx.mangler.instanceInterfaceName(typ.getInternalName))
         case sort => sys.error(s"Unrecognized type $sort")
@@ -166,13 +161,8 @@ object Helpers extends Logger {
       val ctxAndNamedTypes = vars.foldLeft(ctx -> Seq.empty[(String, Node.Expression)]) {
         case ((ctx, prevNamedTypes), localVar) =>
           // We ignore undefined types here...
-          localVar.typ match {
-            case IType.Undefined =>
-              ctx -> prevNamedTypes
-            case _ =>
-              ctx.typeToGoType(localVar.typ).map { case (ctx, typ) =>
-                ctx -> (prevNamedTypes :+ (localVar.name -> typ))
-              }
+          ctx.typeToGoType(localVar.typ).map { case (ctx, typ) =>
+            ctx -> (prevNamedTypes :+ (localVar.name -> typ))
           }
       }
       ctxAndNamedTypes.map { case (ctx, namedTypes) =>
@@ -343,15 +333,19 @@ object Helpers extends Logger {
           case IType.LongType => "NewLongArray"
           case eTyp => sys.error(s"Unrecognized element type: $eTyp")
         }
-        ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
-          ctx -> rtAlias.toIdent.sel(fnName)
-        }
+        ctx.importRuntimeQualifiedName(fnName)
       case _ => sys.error(s"Expected array type, got: $typ")
     }
 
     def internalName = typ match {
       case s: IType.Simple if s.isRef => s.typ.getInternalName
       case _ => sys.error("Unexpected type to get internal name from")
+    }
+
+    def isNumeric = typ match {
+      case IType.IntType | IType.FloatType | IType.DoubleType | IType.LongType |
+           IType.ShortType | IType.ByteType | IType.CharType => true
+      case _ => false
     }
   }
 
@@ -360,8 +354,8 @@ object Helpers extends Logger {
     def isThis = expr.maybeName.contains("this")
 
     def toGeneralArray[T <: Contextual[T]](ctx: T): (T, Node.Expression) = {
-      ctx.withRuntimeImportAlias.map { case (ctx, rtAlias) =>
-        ctx -> expr.expr.typeAssert(rtAlias.toIdent.sel("Array__Instance"))
+      ctx.importRuntimeQualifiedName("Array__Instance").map { case (ctx, arrayInst) =>
+        ctx -> expr.expr.typeAssert(arrayInst)
       }
     }
 
@@ -370,23 +364,23 @@ object Helpers extends Logger {
       expr.typ -> newTyp match {
         case (oldTyp, newTyp) if oldTyp == newTyp =>
           ctx -> expr.expr
-        case (oldTyp: IType.Simple, IType.DoubleType) if oldTyp.isPrimitive =>
+        case (o, IType.DoubleType) if o.isNumeric =>
           ctx -> "float64".toIdent.call(Seq(expr.expr))
-        case (oldTyp: IType.Simple, IType.FloatType) if oldTyp.isPrimitive =>
+        case (o, IType.FloatType) if o.isNumeric =>
           ctx -> "float32".toIdent.call(Seq(expr.expr))
-        case (oldTyp: IType.Simple, IType.IntType) if oldTyp.isPrimitive =>
+        case (o, IType.IntType) if o.isNumeric =>
           ctx -> "int".toIdent.call(Seq(expr.expr))
-        case (oldTyp: IType.Simple, IType.LongType) if oldTyp.isPrimitive =>
+        case (o, IType.LongType) if o.isNumeric =>
           ctx -> "int64".toIdent.call(Seq(expr.expr))
-        case (IType.IntType, IType.BooleanType) =>
+        case (o, IType.BooleanType) if o.isNumeric =>
           // A simple x != 0
           // TODO: should parenthesize?
           ctx -> expr.expr.neq(0.toLit)
-        case (IType.IntType, IType.ByteType) =>
+        case (o, IType.ByteType) if o.isNumeric =>
           ctx -> "byte".toIdent.call(Seq(expr.expr))
-        case (IType.IntType, IType.CharType) =>
+        case (o, IType.CharType) if o.isNumeric =>
           ctx -> "rune".toIdent.call(Seq(expr.expr))
-        case (IType.IntType, IType.ShortType) =>
+        case (o, IType.ShortType) if o.isNumeric =>
           ctx -> "int16".toIdent.call(Seq(expr.expr))
         case (oldTyp, newTyp) if oldTyp == newTyp =>
           ctx -> expr.expr
@@ -402,21 +396,28 @@ object Helpers extends Logger {
           if (newTyp.isObject || newTyp.isArray) && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp) =>
             ctx -> expr.expr
         // TODO: support primitives
-        case (oldTyp: IType.Simple, newTyp: IType.Simple)
-          // Needs to be cheap ref since we check for nil
-          if (oldTyp.isObject || oldTyp.isArray) && (newTyp.isObject || newTyp.isArray) =>
-            // Type assertion which sadly means anon function to be inline to handle possible nil
-            ctx.typeToGoType(newTyp).map { case (ctx, newTyp) =>
-              ctx -> funcType(
-                params = Nil,
-                result = Some(newTyp)
-              ).toFuncLit(Seq(
-                iff(None, expr.expr, Node.Token.Eql, NilExpr, Seq(NilExpr.ret)),
-                expr.expr.typeAssert(newTyp).ret
-              )).call()
-            }
+        case (oldTyp: IType.Simple, newTyp: IType.Simple) if oldTyp.isRef && newTyp.isRef =>
+          nullSafeTypeAssert(ctx, newTyp)
+        // Unknown source means we do a null-safe cast
+        case (oldTyp, newTyp: IType.Simple) if oldTyp.isUnknown && newTyp.isRef =>
+          nullSafeTypeAssert(ctx, newTyp)
+        // Unknown target types just means use the old type
+        case (_, newTyp) if newTyp.isUnknown =>
+          ctx -> expr.expr
         case (oldTyp, newTyp) =>
           sys.error(s"Unable to assign types: $oldTyp -> $newTyp")
+      }
+    }
+
+    protected def nullSafeTypeAssert[T <: Contextual[T]](ctx: T, newTyp: IType): (T, Node.Expression) = {
+      ctx.typeToGoType(newTyp).map { case (ctx, newTyp) =>
+        ctx -> funcType(
+          params = Nil,
+          result = Some(newTyp)
+        ).toFuncLit(Seq(
+          iff(None, expr.expr, Node.Token.Eql, NilExpr, Seq(NilExpr.ret)),
+          expr.expr.typeAssert(newTyp).ret
+        )).call()
       }
     }
   }

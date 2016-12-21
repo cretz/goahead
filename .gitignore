@@ -1,3 +1,5 @@
 /target
 /.idea
 /project
+/javalib/rt/*
+!/javalib/rt/aaa*

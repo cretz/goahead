@@ -43,5 +43,8 @@ testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oDF")
 // Add the jvm.go test classes
 unmanagedSourceDirectories in Test += baseDirectory.value / "third-party/jvm.go/testclasses/src/main/java"
 
+lazy val buildTestRt = taskKey[Unit]("Build the test RT lib")
+fullRunTask(buildTestRt, Runtime, "goahead.cli.Main", "build-rt", "-vv", "-o", "javalib/src/rt")
+
 lazy val buildRt = taskKey[Unit]("Build the RT lib")
-fullRunTask(buildRt, Runtime, "goahead.cli.Main", "build-rt", "-vv", "-o", "javalib/src/rt")
+fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "javalib/rt-compile.conf")

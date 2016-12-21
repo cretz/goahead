@@ -1,7 +1,8 @@
 package goahead.compile
 
 import goahead.Logger
-import org.objectweb.asm.{Label, Opcodes, Type}
+import org.objectweb.asm.tree.LabelNode
+import org.objectweb.asm.{Opcodes, Type}
 
 sealed trait IType {
   def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType
@@ -16,6 +17,8 @@ sealed trait IType {
 
   // If multidimensional, just takes off a dimension
   def elementType: IType
+
+  def isUnknown: Boolean
 }
 object IType extends Logger {
   def apply(typ: Type): IType = Simple(typ)
@@ -50,21 +53,22 @@ object IType extends Logger {
     case Opcodes.UNINITIALIZED_THIS => IType(Type.getObjectType(thisNode.name))
     case ref: String => IType(Type.getObjectType(ref))
     // TODO: investigate more... we need to come back and fix this type once we see the label
-    case l: Label => UndefinedLabelInitialized(l)
+    case l: LabelNode => UndefinedLabelInitialized(l)
     case v => sys.error(s"Unrecognized frame var type $v")
   }
 
   case class Simple(typ: Type) extends IType {
-    // TODO: check this deeper to get subclasses and what not
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = {
-      if (isAssignableFrom(classPath, other)) other
-      else this
+      if (isAssignableFrom(classPath, other)) {
+        logger.trace(s"Making type $pretty to more specific version ${other.pretty}")
+        other
+      } else this
     }
 
     override def isAssignableFrom(classPath: ClassPath, other: IType) = {
       other match {
         // Arrays can be assigned to objects
-        case other: Simple if other.isArray && typ.getInternalName == "java/lang/Object" =>
+        case other: Simple if other.isArray && isObject && typ.getInternalName == "java/lang/Object" =>
           true
         case other: Simple if isObject && other.isObject =>
           classPath.classImplementsOrExtends(other.typ.getInternalName, typ.getInternalName)
@@ -98,6 +102,8 @@ object IType extends Logger {
       require(isArray, "Not array")
       Simple(Type.getType(("[" * (typ.getDimensions - 1)) + typ.getElementType.getDescriptor))
     }
+
+    override def isUnknown = false
   }
 
   case object NullType extends IType {
@@ -106,6 +112,7 @@ object IType extends Logger {
     override def pretty: String = "null"
     override def asArray: IType = sys.error("Cannot make array of null type")
     override def elementType: IType = sys.error("No element type of null type")
+    override def isUnknown = true
   }
 
   case object Undefined extends IType {
@@ -114,13 +121,15 @@ object IType extends Logger {
     override def pretty: String = "<undefined>"
     override def asArray: IType = sys.error("Cannot make array of undefined type")
     override def elementType: IType = sys.error("No element type of undefined type")
+    override def isUnknown = true
   }
 
-  case class UndefinedLabelInitialized(label: Label) extends IType {
+  case class UndefinedLabelInitialized(label: LabelNode) extends IType {
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = other
     override def isAssignableFrom(classPath: ClassPath, other: IType) = other == this
-    override def pretty: String = s"<undefined on $label>"
+    override def pretty: String = s"<undefined on ${label.getLabel.toString}>"
     override def asArray: IType = sys.error("Cannot make array of undefined label type")
     override def elementType: IType = sys.error("No element type of undefined label type")
+    override def isUnknown = true
   }
 }

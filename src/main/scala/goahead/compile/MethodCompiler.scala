@@ -125,7 +125,7 @@ trait MethodCompiler extends Logger {
               ctx.appendLocalVar(localType)._1
             }
           case Opcodes.F_CHOP =>
-            ctx.dropLocalVars(ctx.frameLocals(frame).size)
+            ctx.dropLocalVars(frame.local.size())
           case Opcodes.F_FULL =>
             val locals = ctx.frameLocals(frame)
             if (locals.length == ctx.localVars.size) ctx
@@ -149,9 +149,10 @@ trait MethodCompiler extends Logger {
     // but that does not seem to happen in practice
     val (tempVarsOnStack, tempVarsNotOnStack) = ctx.localTempVars.partition(ctx.stack.items.contains)
     // Make local decls out of ones not on stack and not already in function vars
+    val tempVarsNotOnStackAndNotAtFuncLevel = tempVarsNotOnStack.filterNot(ctx.functionVars.contains)
     val ctxAndVarDecl =
-      if (tempVarsNotOnStack.isEmpty) ctx -> None
-      else ctx.createVarDecl(tempVarsNotOnStack.filterNot(ctx.functionVars.contains)).map(_ -> Some(_))
+      if (tempVarsNotOnStackAndNotAtFuncLevel.isEmpty) ctx -> None
+      else ctx.createVarDecl(tempVarsNotOnStackAndNotAtFuncLevel).map(_ -> Some(_))
 
     // Leave the existing ones on the stack and in the temp set and add them to func-level vars
     ctxAndVarDecl.map { case (ctx, maybeDecl) =>

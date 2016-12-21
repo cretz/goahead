@@ -19,7 +19,7 @@ func OSArgs() ObjectArray__Instance {
 
 func NewString(str string) Java__lang__String__Instance {
 	v := Java__lang__String().New()
-	v.Underlying = str
+	v.Instance_Init__desc____arr__C__I__I__ret__V(CharArray__Impl([]rune(str)))
 	return v
 }
 

@@ -7,7 +7,9 @@ case class Imports(
   aliases: Map[String, String] = Map.empty
 ) {
 
-  def withRuntimeImportAlias: (Imports, String) = withImportAlias(classPath.runtimeRelativeCompiledDir)
+  def withRuntimeImportAlias: (Imports, String) =
+    withImportAlias(classPath.findClassRelativeCompiledDir("java/lang/Object")
+      .getOrElse(sys.error("Can't find Object")))
 
   def withImportAlias(dir: String): (Imports, String) = {
     // Get the alias and keep adding 1 to it until it's not in the map

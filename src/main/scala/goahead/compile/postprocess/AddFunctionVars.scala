@@ -20,9 +20,15 @@ trait AddFunctionVars extends PostProcessor {
     // We have to remove the name for all unused local vars
     if (localVarsUnused.isEmpty) ctxAndStmts else ctxAndStmts.map { case (ctx, stmts) =>
       val localVarNames = localVarsUnused.map(_.name).toSet
-      ctx -> NodeWalker.mapAllNonRecursive(stmts) {
+      ctx -> NodeWalker.flatMapAllNonRecursive(stmts) {
         case s @ Node.AssignStatement(Seq(Node.Identifier(name)), _, _) if localVarNames.contains(name) =>
-          s.copy(left = "_".toIdent.singleSeq)
+          // If right is a NilExpr, we elide it to prevent "use of untyped nil"
+          s.right match {
+            case Seq(NilExpr) =>
+              None
+            case _ =>
+              Some(s.copy(left = "_".toIdent.singleSeq))
+          }
       }
     }
   }
