@@ -2,7 +2,7 @@ package goahead.compile
 
 import java.io.{PrintWriter, StringWriter}
 
-import org.objectweb.asm.tree.{AbstractInsnNode, LocalVariableNode, MethodNode, TryCatchBlockNode}
+import org.objectweb.asm.tree._
 import org.objectweb.asm.util.{Textifier, TraceMethodVisitor}
 
 sealed trait Method {
@@ -16,6 +16,10 @@ sealed trait Method {
   def debugLocalVars: Seq[LocalVariableNode]
   def asmString: String
   def tryCatchBlocks: Seq[TryCatchBlockNode]
+  def isSignaturePolymorphic: Boolean
+  def visibleAnnotations: Seq[Annotation]
+  def invisibleAnnotations: Seq[Annotation]
+  def isCallerSpecific: Boolean
 }
 
 object Method {
@@ -56,6 +60,27 @@ object Method {
     override def tryCatchBlocks: Seq[TryCatchBlockNode] = {
       import scala.collection.JavaConverters._
       node.tryCatchBlocks.iterator.asScala.asInstanceOf[Iterator[TryCatchBlockNode]].toSeq
+    }
+
+    override def isSignaturePolymorphic: Boolean = {
+      import Helpers._
+      cls.name == "java/lang/invoke/MethodHandle" && desc == "([Ljava/lang/Object;)Ljava/lang/Object;" &&
+        access.isAccessNative && access.isAccessVarargs
+    }
+
+    override lazy val visibleAnnotations: Seq[Annotation] = {
+      import scala.collection.JavaConverters._
+      Option(node.visibleAnnotations).toSeq.flatMap(_.asScala.asInstanceOf[Seq[AnnotationNode]].map(Annotation.apply))
+    }
+
+    override lazy val invisibleAnnotations: Seq[Annotation] = {
+      import scala.collection.JavaConverters._
+      Option(node.invisibleAnnotations).toSeq.flatMap(_.asScala.asInstanceOf[Seq[AnnotationNode]].map(Annotation.apply))
+    }
+
+    override lazy val isCallerSpecific = {
+      visibleAnnotations.exists(_.desc == "Lsun/reflect/CallerSensitive") ||
+        invisibleAnnotations.exists(_.desc == "Lsun/reflect/CallerSensitive")
     }
   }
 }

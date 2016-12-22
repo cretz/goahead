@@ -35,12 +35,25 @@ trait SignatureCompiler {
     includeParamNames: Boolean
   ): (T, Node.FunctionType) = {
     val ctxWithParams =
-      IType.getArgumentTypes(method.desc).zipWithIndex.foldLeft(ctx -> Seq.empty[Node.Field]) {
-        case ((ctx, params), (argType, argIndex)) =>
-          ctx.typeToGoType(argType).map { case (ctx, typ) =>
-            val param = if (includeParamNames) field(s"var$argIndex", typ) else typ.namelessField
-            ctx -> (params :+ param)
+      // Signature polymorphic should be varargs
+      if (method.isSignaturePolymorphic) {
+        ctx.typeToGoType(IType.getObjectType("java/lang/Object")).map { case (ctx, typ) =>
+          ctx -> Seq(field("var0", emptyInterface.ellipsis))
+        }
+      } else {
+        // As a special case, if the method is caller specific, it's first param is the caller class name
+        val initialCtxAndFields = if (!method.isCallerSpecific) ctx -> Nil else {
+          ctx.typeToGoType(IType.getObjectType("java/lang/String")).map { case (ctx, strTyp) =>
+            ctx -> Seq(field("callerClass", strTyp))
           }
+        }
+        IType.getArgumentTypes(method.desc).zipWithIndex.foldLeft(initialCtxAndFields) {
+          case ((ctx, params), (argType, argIndex)) =>
+            ctx.typeToGoType(argType).map { case (ctx, typ) =>
+              val param = if (includeParamNames) field(s"var$argIndex", typ) else typ.namelessField
+              ctx -> (params :+ param)
+            }
+        }
       }
 
     ctxWithParams.map { case (ctx, params) =>

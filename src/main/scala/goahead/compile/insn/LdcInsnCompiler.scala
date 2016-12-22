@@ -8,7 +8,6 @@ import org.objectweb.asm.tree.LdcInsnNode
 trait LdcInsnCompiler {
   import Helpers._
   import MethodCompiler._
-  import AstDsl._
 
   def compile(ctx: Context, insn: LdcInsnNode): (Context, Seq[Node.Statement]) = {
     // TODO: check Type for class lits and method types and handles
@@ -26,16 +25,8 @@ trait LdcInsnCompiler {
           ctx.stackPushed(TypedExpression(str, StringType, cheapRef = true)) -> Nil
         }
       case v: Type => v.getSort match {
-        case Type.OBJECT =>
-          ctx.staticInstRefExpr("java/lang/Class").map { case (ctx, staticInstExpr) =>
-            ctx.stackPushed(TypedExpression(
-              expr = staticInstExpr.sel(
-                ctx.mangler.implMethodName("forName", "(Ljava/lang/String;)Ljava/lang/Class;")
-              ).call(Seq(v.getClassName.toLit)),
-              typ = IType.getObjectType("java/lang/Class"),
-              cheapRef = true
-            )) -> Nil
-          }
+        case Type.OBJECT | Type.ARRAY =>
+          ctx.typedTypeLit(IType(v)).map(_.stackPushed(_) -> Nil)
         case _ =>
           sys.error(s"Unsupported LDC type: $v")
       }

@@ -2,12 +2,31 @@ package goahead.testclasses;
 
 public class Casts {
 
-    static class Temp {
+    static class Temp implements Foo, Bar {
         String text = "text";
+
+        @Override
+        public String foo() {
+            return "Foo";
+        }
+
+        @Override
+        public String bar() {
+            return "Bar";
+        }
+    }
+
+    interface Foo {
+        String foo();
+    }
+
+    interface Bar {
+        String bar();
     }
 
     public static void main(String[] args) {
         checkCast();
+        checkInterfaceCast();
         checkInstanceOf();
     }
 
@@ -20,6 +39,12 @@ public class Casts {
             System.out.println("EX!");
         }
         // TODO: Check for nulls and array covariance
+    }
+
+    public static void checkInterfaceCast() {
+        Foo foo = new Temp();
+        System.out.println(foo.foo());
+        System.out.println(((Bar) foo).bar());
     }
 
     public static void checkInstanceOf() {

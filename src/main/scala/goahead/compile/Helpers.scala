@@ -14,9 +14,11 @@ object Helpers extends Logger {
 
   import AstDsl._
 
+  val ClassType = IType.getType(classOf[Class[_]])
   val ObjectType = IType.getType(classOf[Object])
   val StringType = IType.getType(classOf[String])
   val NilExpr = "nil".toIdent
+  val NilTypedExpr = TypedExpression(expr = NilExpr, IType.NullType, cheapRef = true)
 
   @inline
   def swallowException[T](f: => T): Unit = { f; () }
@@ -58,6 +60,10 @@ object Helpers extends Logger {
       importRuntimeQualifiedName("NewString").map { case (ctx, newString) =>
         ctx -> newString.call(v.toLit.singleSeq)
       }
+    }
+
+    def newTypedString(v: String): (T, TypedExpression) = {
+      newString(v).map { case (ctx, newStr) => ctx -> TypedExpression(newStr, StringType, cheapRef = true) }
     }
 
     def typeToGoType(typ: IType): (T, Node.Expression) = {
@@ -177,10 +183,12 @@ object Helpers extends Logger {
 
   implicit class RichDouble(val double: Double) extends AnyVal {
     def toLit: Node.BasicLiteral = Node.BasicLiteral(Node.Token.Float, double.toString)
+    def toTypedLit = TypedExpression(toLit, IType.DoubleType, cheapRef = true)
   }
 
   implicit class RichFloat(val float: Float) extends AnyVal {
     def toLit: Node.BasicLiteral = Node.BasicLiteral(Node.Token.Float, float.toString)
+    def toTypedLit = TypedExpression(toLit, IType.FloatType, cheapRef = true)
   }
 
   implicit class RichInt(val int: Int) extends AnyVal {
@@ -192,6 +200,7 @@ object Helpers extends Logger {
     def isAccessPrivate = isAccess(Opcodes.ACC_PRIVATE)
     def isAccessStatic = isAccess(Opcodes.ACC_STATIC)
     def isAccessSuper = isAccess(Opcodes.ACC_SUPER)
+    def isAccessVarargs = isAccess(Opcodes.ACC_VARARGS)
 
     def toLit: Node.BasicLiteral = Node.BasicLiteral(Node.Token.Int, int.toString)
     def toTypedLit = TypedExpression(toLit, IType.IntType, cheapRef = true)
@@ -199,9 +208,15 @@ object Helpers extends Logger {
 
   implicit class RichLong(val long: Long) extends AnyVal {
     def toLit: Node.BasicLiteral = Node.BasicLiteral(Node.Token.Int, long.toString)
+    def toTypedLit = TypedExpression(toLit, IType.LongType, cheapRef = true)
   }
 
   implicit class RichMethodContext(val ctx: MethodCompiler.Context) extends AnyVal {
+
+    def pushString(v: String) = ctx.newTypedString(v).map(_.stackPushed(_))
+
+    def pushTypeLit(typ: IType) = typedTypeLit(typ).map(_.stackPushed(_))
+
     def stackPop() = {
       val (newStack, item) = ctx.stack.pop()
       ctx.copy(stack = newStack) -> item
@@ -271,6 +286,22 @@ object Helpers extends Logger {
               }
           }
       }
+    }
+
+    def typeLit(typ: IType): (MethodCompiler.Context, Node.Expression) = {
+      ctx.staticInstRefExpr("java/lang/Class").map { case (ctx, staticInstExpr) =>
+        ctx.newString(ctx.cls.name).map { case (ctx, callerName) =>
+          ctx.newString(typ.className).map { case (ctx, className) =>
+            ctx -> staticInstExpr.sel(
+              ctx.mangler.implMethodName("forName", "(Ljava/lang/String;)Ljava/lang/Class;")
+            ).call(Seq(callerName, className))
+          }
+        }
+      }
+    }
+
+    def typedTypeLit(typ: IType): (MethodCompiler.Context, TypedExpression) = {
+      typeLit(typ).map { case (ctx, lit) => ctx -> TypedExpression(lit, ClassType, cheapRef = true) }
     }
   }
 
@@ -370,6 +401,10 @@ object Helpers extends Logger {
           ctx -> "float32".toIdent.call(Seq(expr.expr))
         case (o, IType.IntType) if o.isNumeric =>
           ctx -> "int".toIdent.call(Seq(expr.expr))
+        case (IType.BooleanType, IType.IntType) =>
+          ctx.importRuntimeQualifiedName("BoolToInt").map { case (ctx, boolToInt) =>
+            ctx -> boolToInt.call(Seq(expr.expr))
+          }
         case (o, IType.LongType) if o.isNumeric =>
           ctx -> "int64".toIdent.call(Seq(expr.expr))
         case (o, IType.BooleanType) if o.isNumeric =>

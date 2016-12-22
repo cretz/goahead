@@ -8,7 +8,7 @@ public class Lambdas {
 
     public static void main(String[] args) {
         // TODO:
-        // Test test = () -> "Yay";
-        // System.out.println(test.test());
+         Test test = () -> "Yay";
+         System.out.println(test.test());
     }
 }

@@ -180,7 +180,11 @@ class NodeWriter {
     append("defer ").appendCallExpression(stmt.call)
   }
 
-  def appendEllipsis(expr: Ellipsis): this.type = __TODO__
+  def appendEllipsis(expr: Ellipsis): this.type = {
+    append("...")
+    expr.elementType.foreach(appendExpression)
+    this
+  }
 
   def appendEmptyStatement(): this.type = this
 

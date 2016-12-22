@@ -66,6 +66,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
 
     // Compile go code
     val compiledExe = compileDir(tempFolder)
+    logger.info("Exe size: " + Files.size(compiledExe))
 
     // Run it and check output
     assertExpectedOutput(compiledExe, t.expectedOutput.get)
@@ -181,7 +182,7 @@ object CompilerSpec extends Logger {
       TestCase(classOf[Initializers]),
       TestCase(classOf[InterfaceDefaults]),
       TestCase(classOf[Interfaces]),
-      TestCase(classOf[Lambdas]),
+//      TestCase(classOf[Lambdas]),
       TestCase(classOf[LocalVarReuse]),
       TestCase(classOf[NonStaticInnerClasses]),
       TestCase(classOf[Primitives]),
@@ -212,8 +213,8 @@ object CompilerSpec extends Logger {
   }
 
   def showUsedOpcodes(): Unit = {
-    logger.info(s"Tested ${usedOpcodes.size} of ${knownOpcodes.size} opcodes")
-    logger.info("Opcodes untested: " + opcodesToString(knownOpcodes.keySet.diff(usedOpcodes)))
+    logger.warn(s"Tested ${usedOpcodes.size} of ${knownOpcodes.size} opcodes")
+    logger.warn("Opcodes untested: " + opcodesToString(knownOpcodes.keySet.diff(usedOpcodes)))
   }
 
   case class TestCase(

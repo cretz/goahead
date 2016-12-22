@@ -19,6 +19,9 @@ sealed trait IType {
   def elementType: IType
 
   def isUnknown: Boolean
+
+  // Matches what comes out of Class.getName
+  def className: String
 }
 object IType extends Logger {
   def apply(typ: Type): IType = Simple(typ)
@@ -104,6 +107,13 @@ object IType extends Logger {
     }
 
     override def isUnknown = false
+
+    override def className = {
+      if (!isArray) typ.getClassName else ("[" * typ.getDimensions) + (typ.getElementType.getSort match {
+        case Type.OBJECT => typ.getElementType.getClassName + ";"
+        case _ => typ.getElementType.getDescriptor
+      })
+    }
   }
 
   case object NullType extends IType {
@@ -113,6 +123,7 @@ object IType extends Logger {
     override def asArray: IType = sys.error("Cannot make array of null type")
     override def elementType: IType = sys.error("No element type of null type")
     override def isUnknown = true
+    override def className = sys.error("No class name for null type")
   }
 
   case object Undefined extends IType {
@@ -122,6 +133,7 @@ object IType extends Logger {
     override def asArray: IType = sys.error("Cannot make array of undefined type")
     override def elementType: IType = sys.error("No element type of undefined type")
     override def isUnknown = true
+    override def className = sys.error("No class name for undefined type")
   }
 
   case class UndefinedLabelInitialized(label: LabelNode) extends IType {
@@ -131,5 +143,6 @@ object IType extends Logger {
     override def asArray: IType = sys.error("Cannot make array of undefined label type")
     override def elementType: IType = sys.error("No element type of undefined label type")
     override def isUnknown = true
+    override def className = sys.error("No class name for undefined label type")
   }
 }

@@ -28,6 +28,7 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
     getFirstClass(classInternalName).cls.access.isAccessInterface
   }
 
+  // Guaranteed to start with given type and recurse up and return in order
   def allSuperTypes(classInternalName: String): Seq[ClassPath.ClassDetails] = {
     // Not deep enough to rework for @tailrec
     getFirstClass(classInternalName).cls.parent.toSeq.flatMap({ superInternalName =>
@@ -36,6 +37,7 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
     }).distinct
   }
 
+  // Guaranteed to start with given type and recurse up and return in order
   def allInterfaceTypes(classInternalName: String): Seq[ClassPath.ClassDetails] = {
     // Not deep enough to rework for @tailrec
     getFirstClass(classInternalName).cls.interfaces.flatMap({ interfaceInternalName =>
@@ -44,6 +46,7 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
     }).distinct
   }
 
+  // Guaranteed to start with given type and recurse up and return in order
   def allSuperAndImplementingTypes(classInternalName: String): Seq[ClassPath.ClassDetails] = {
     val superTypes = allSuperTypes(classInternalName)
     (allInterfaceTypes(classInternalName) ++ superTypes

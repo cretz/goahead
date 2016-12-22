@@ -1,0 +1,30 @@
+Notes:
+* Since lambdas can only be for a single function, we use Go's first class functions
+* There needs to be a type alias to the single function type
+  * Should I develop this eagerly for every single-abstract-function type?
+* The type alias has to implement everything in the interface or abstract class
+
+Example:
+
+package main
+
+import (
+	"fmt"
+)
+
+type FnIface interface {
+	Test() string
+}
+
+type FnIfaceDyn func() string
+
+func (this FnIfaceDyn) Test() string { return this() }
+
+func main() {
+	dyn := FnIfaceDyn(myOtherFunc)
+	fmt.Println(dyn.Test())
+}
+
+func myOtherFunc() string {
+	return "My other func"
+}

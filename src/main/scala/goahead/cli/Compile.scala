@@ -129,7 +129,8 @@ trait Compile extends Command with Logger {
         // TODO: make this non-required but instead accept entire JARs or something
         required = true,
         desc = "The fully qualified class names on the class path to build stubs for. If it ends in an asterisk, it " +
-          "checks for all classes that start with the value sans asterisk."
+          "checks for all classes that start with the value sans asterisk. If it ends in a question mark, it is the " +
+          "smae as an asterisk but won't include anything in a deeper package (i.e. having another dot)"
       ).get
     )
   }
@@ -194,6 +195,9 @@ trait Compile extends Command with Logger {
     mangler: Mangler
   ): Map[String, Seq[ClassDetails]] = {
     val classInternalNames = conf.classes.map(_.replace('.', '/')).flatMap({
+      case str if str.endsWith("?") =>
+        val prefix = str.dropRight(1)
+        classPath.allClassNames().filter { str => str.lastIndexOf('.') < prefix.length && str.startsWith(prefix) }
       case str if str.endsWith("*") =>
         val prefix = str.dropRight(1)
         classPath.allClassNames().filter(_.startsWith(prefix))

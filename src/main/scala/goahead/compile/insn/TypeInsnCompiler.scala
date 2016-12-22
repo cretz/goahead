@@ -28,29 +28,24 @@ trait TypeInsnCompiler {
           }
         }
       case Opcodes.CHECKCAST =>
-        // Check the stack entry is not null and not of a certain type
+        // We are going to make a temp var of the new type. Then we are either going to assign nil to it or we are
+        // going to do a type assertion.
         ctx.stackPopped { case (ctx, item) =>
-          // As with DUP, we need a temp var if it's not a cheap ref
-          val ctxAndTypedExprWithAssignStmtOpt =
-            if (item.cheapRef) ctx -> (item -> None)
-            else {
-              ctx.getTempVar(item.typ).map { case (ctx, tempVar) =>
-                ctx -> (tempVar -> Some(tempVar.name.toIdent.assignExisting(item.expr)))
-              }
-            }
-          ctxAndTypedExprWithAssignStmtOpt.map { case (ctx, (typedExpr, tempAssignStmtOpt)) =>
-            ctx.typeToGoType(IType.getObjectType(insn.desc)).map { case (ctx, goType) =>
+          val typ = IType.getObjectType(insn.desc)
+          ctx.getTempVar(typ).map { case (ctx, tempVar) =>
+            ctx.typeToGoType(typ).map { case (ctx, goType) =>
               ctx.importRuntimeQualifiedName("NewClassCastEx").map { case (ctx, classCastEx) =>
-                // Create conditional first to make sure it's not nil, then inside to do the type check
-                val ifStmt = iff(init = None, lhs = typedExpr.expr, op = Node.Token.Neq, rhs = NilExpr, body = Seq(iff(
-                  init = Some(assignDefineMultiple(
-                    left = Seq("_".toIdent, "castOk".toIdent),
-                    right = typedExpr.expr.typeAssert(goType).singleSeq
-                  )),
-                  cond = "castOk".toIdent.unary(Node.Token.Not),
-                  body = "panic".toIdent.call(Seq(classCastEx.call())).toStmt.singleSeq
-                )))
-                ctx.stackPushed(typedExpr) -> (tempAssignStmtOpt.toSeq :+ ifStmt)
+                ctx.stackPushed(tempVar) ->
+                  iff(init = None, lhs = item.expr, op = Node.Token.Eql, rhs = NilExpr, body = Seq(
+                    tempVar.expr.assignExisting(NilExpr)
+                  )).els(iff(
+                    init = Some(assignDefineMultiple(
+                      left = Seq("casted".toIdent, "castOk".toIdent),
+                      right = item.expr.typeAssert(goType).singleSeq
+                    )),
+                    cond = "castOk".toIdent.unary(Node.Token.Not),
+                    body = "panic".toIdent.call(Seq(classCastEx.call())).toStmt.singleSeq
+                  ).els(tempVar.expr.assignExisting("casted".toIdent))).singleSeq
               }
             }
           }

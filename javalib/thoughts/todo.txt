@@ -4,6 +4,9 @@ Code:
   * Also test overflows/underflows...for now we will fail, but we need overflow-safe operators
 * Refactor:
   * Type conversion stuff
+  * Method and class resolution stuff to all use streams (or other lazy approaches)
+  * Get rid of all the constant strings embedded everywhere
+* Support Java 9 modules too as a solution to circular imports
 
 Compliance pre-stdlib:
 
@@ -24,3 +27,4 @@ Compliance post-stdlib:
 * Object methods on array types
 * Enums
 * Lambdas
+* Monitors and synchronized methods

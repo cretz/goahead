@@ -157,6 +157,8 @@ object AstDsl extends Logger {
 
     def eql(right: Expression) = BinaryExpression(expr, Token.Eql, right)
 
+    def ellipsis = Ellipsis(Some(expr))
+
     def inParens = ParenthesizedExpression(expr)
 
     def indexed(index: Expression) = IndexExpression(expr, index)
@@ -208,6 +210,10 @@ object AstDsl extends Logger {
       parameters = fnType.parameters.map(_.copy(names = Nil)),
       results = fnType.results.map(_.copy(names = Nil))
     )
+  }
+
+  implicit class RichIfStatement(val ifStmt: IfStatement) extends AnyVal {
+    def els(stmts: Statement*) = ifStmt.copy(elseStatement = Some(block(stmts)))
   }
 
   implicit class RichNode[T <: goahead.ast.Node](val node: T) extends AnyVal {

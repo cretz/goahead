@@ -3,6 +3,8 @@ package goahead.compile
 import goahead.Logger
 import goahead.ast.Node
 
+import scala.util.control.NonFatal
+
 trait ClassCompiler extends Logger {
   import AstDsl._
   import ClassCompiler._
@@ -10,11 +12,13 @@ trait ClassCompiler extends Logger {
 
   def compile(cls: Cls, imports: Imports, mangler: Mangler): (Imports, Seq[Node.Declaration]) = {
     logger.debug(s"Compiling class: ${cls.name}")
-    // TODO: limit major version to 1.6+ to avoid issues with JSR/RET deprecation?
-    val ctx = initContext(cls, imports, mangler)
-    (if (cls.access.isAccessInterface) compileInterface(ctx) else compileClass(ctx)).map { case (ctx, decls) =>
-      ctx.imports -> decls
-    }
+    try {
+      // TODO: limit major version to 1.6+ to avoid issues with JSR/RET deprecation?
+      val ctx = initContext(cls, imports, mangler)
+      (if (cls.access.isAccessInterface) compileInterface(ctx) else compileClass(ctx)).map { case (ctx, decls) =>
+        ctx.imports -> decls
+      }
+    } catch { case NonFatal(e) => throw new Exception(s"Unable to compile class ${cls.name}", e) }
   }
 
   protected def initContext(
