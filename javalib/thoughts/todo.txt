@@ -19,6 +19,7 @@ Compliance pre-stdlib:
 * non-static inner classes - DONE
 * private fields - DONE
 * static and instance inits - DONE
+* Local classes
 
 Compliance post-stdlib:
 

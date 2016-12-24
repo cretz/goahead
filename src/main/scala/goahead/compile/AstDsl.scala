@@ -113,7 +113,7 @@ object AstDsl extends Logger {
     specifications = Seq(TypeSpecification(name.toIdent, StructType(fields)))
   )
 
-  def varDecl(name: String, typ: Expression, value: Option[Identifier] = None) = GenericDeclaration(
+  def varDecl(name: String, typ: Expression, value: Option[Expression] = None) = GenericDeclaration(
     token = Token.Var,
     specifications = Seq(ValueSpecification(names = Seq(name.toIdent), typ = Some(typ), values = value.toSeq))
   )

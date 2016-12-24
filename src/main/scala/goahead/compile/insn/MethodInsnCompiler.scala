@@ -25,89 +25,110 @@ trait MethodInsnCompiler {
 
     insn.byOpcode {
       case Opcodes.INVOKESTATIC =>
-        ctx.staticInstRefExpr(insn.owner).map { case (ctx, staticInstExpr) =>
-          ctx.stackPopped(argTypes.length, { case (ctx, args) =>
-            argExprs(ctx, args).map { case (ctx, args) =>
-              val method = ctx.classPath.getFirstClass(insn.owner).cls.methods.
-                find(m => m.name == insn.name && m.desc == insn.desc).
-                getOrElse(sys.error(s"Unable to find static method ${insn.name}${insn.desc} on ${insn.owner}"))
-              val methodExpr = staticInstExpr.sel(ctx.mangler.implMethodName(insn.name, insn.desc))
+        ctx.stackPopped(argTypes.length, { case (ctx, args) =>
+          argExprs(ctx, args).map { case (ctx, args) =>
+            resolveStaticMethodRef(ctx, insn.name, insn.desc, insn.owner).map { case (ctx, (method, methodExpr)) =>
               invokeStmt(ctx, method, methodExpr, args, retType)
             }
-          })
-        }
-      case Opcodes.INVOKEINTERFACE | Opcodes.INVOKESPECIAL | Opcodes.INVOKEVIRTUAL =>
-        // Note: we let null pointer exceptions cause a panic instead of checking them
+          }
+        })
+      case Opcodes.INVOKEINTERFACE | Opcodes.INVOKEVIRTUAL | Opcodes.INVOKESPECIAL =>
         ctx.stackPopped(argTypes.length + 1, { case (ctx, subject +: args) =>
           argExprs(ctx, args).map { case (ctx, args) =>
-            if (insn.getOpcode == Opcodes.INVOKESPECIAL) invokeSpecial(ctx, insn, subject, args, retType)
-            else invokeInterfaceOrVirtual(ctx, insn, subject, args, retType)
+            val resolved =
+              if (insn.getOpcode == Opcodes.INVOKESPECIAL)
+                resolveSpecialMethodRef(ctx, insn.name, insn.desc, subject, insn.itf, insn.owner)
+              else
+                resolveInterfaceOrVirtualMethodRef(ctx, insn.name, insn.desc, subject, insn.owner)
+            resolved.map {
+              // Default methods include the subject in the call
+              case (ctx, (method, methodExpr)) if method.isDefault =>
+                subject.toExprNode(ctx, IType.getObjectType(method.cls.name)).map { case (ctx, subjectExpr) =>
+                  invokeStmt(ctx, method, methodExpr, subjectExpr +: args, retType)
+                }
+              case (ctx, (method, methodExpr)) =>
+                invokeStmt(ctx, method, methodExpr, args, retType)
+            }
           }
         })
     }
   }
 
-  protected def invokeInterfaceOrVirtual(
+  protected def resolveStaticMethodRef(
     ctx: Context,
-    insn: MethodInsnNode,
+    name: String,
+    desc: String,
+    owner: String
+  ): (Context, (Method, Node.Expression)) = {
+    ctx.staticInstRefExpr(owner).map { case (ctx, staticInstExpr) =>
+      val method = ctx.classPath.getFirstClass(owner).cls.methods.
+        find(m => m.name == name && m.desc == desc).
+        getOrElse(sys.error(s"Unable to find static method $name$desc on $owner"))
+      ctx -> (method -> staticInstExpr.sel(ctx.mangler.implMethodName(name, desc)))
+    }
+  }
+
+  protected def resolveInterfaceOrVirtualMethodRef(
+    ctx: Context,
+    name: String,
+    desc: String,
     subject: TypedExpression,
-    args: Seq[Node.Expression],
-    retType: IType
-  ): (Context, Seq[Node.Statement]) = {
+    owner: String
+  ): (Context, (Method, Node.Expression)) = {
     // TODO: we need the actual object ref type please, not just the typed expression version of
     // subject since it can be wrong when local vars are reused
-    val typName = subject.typ.maybeMakeMoreSpecific(ctx.classPath, IType.getObjectType(insn.owner)).internalName
-    invokeInstance(ctx, insn, subject, args, retType, typName)
+    val typName = subject.typ.maybeMakeMoreSpecific(ctx.classPath, IType.getObjectType(owner)).internalName
+    resolveInstanceMethodRef(ctx, name, desc, subject, typName)
   }
 
-  protected def invokeSpecial(
+  protected def resolveSpecialMethodRef(
     ctx: Context,
-    insn: MethodInsnNode,
+    name: String,
+    desc: String,
     subject: TypedExpression,
-    args: Seq[Node.Expression],
-    retType: IType
-  ): (Context, Seq[Node.Statement]) = {
+    itf: Boolean,
+    owner: String
+  ): (Context, (Method, Node.Expression)) = {
     val ownerName =
-      if (insn.name != "<init>" && !insn.itf && insn.owner != ctx.cls.name)
+      if (name != "<init>" && !itf && owner != ctx.cls.name)
         ctx.cls.parent.getOrElse(sys.error("Expected parent"))
-      else insn.owner
-    invokeInstance(ctx, insn, subject, args, retType, ownerName)
+      else owner
+    resolveInstanceMethodRef(ctx, name, desc, subject, ownerName)
   }
 
-    protected def invokeInstance(
+  protected def resolveInstanceMethodRef(
     ctx: Context,
-    insn: MethodInsnNode,
+    name: String,
+    desc: String,
     subject: TypedExpression,
-    args: Seq[Node.Expression],
-    retType: IType,
     resolutionStartType: String
-  ): (Context, Seq[Node.Statement]) = {
+  ): (Context, (Method, Node.Expression)) = {
     // If the start type is an array, we expect it to mean object
     val properStartType = if (resolutionStartType.startsWith("[")) "java/lang/Object" else resolutionStartType
-    val method = resolveInstanceMethod(ctx, insn.name, insn.desc, properStartType)
+    val method = resolveInstanceMethod(ctx, name, desc, properStartType)
     subject.toExprNode(ctx, IType.getObjectType(method.cls.name)).map { case (ctx, subjectExpr) =>
       if (method.name == "<init>" && !subject.isThis) {
         // If it's an init call, but not on "this", then we have to type assert since we don't
         // put init methods on inst ifaces. We check it's not "this" to prevent calling it on ourselves
         ctx.implTypeExpr(method.cls.name).map { case (ctx, implType) =>
-          val m = subjectExpr.typeAssert(implType).sel(ctx.mangler.forwardMethodName(method.name, method.desc))
-          invokeStmt(ctx, method, m, args, retType)
+          ctx -> (
+            method -> subjectExpr.typeAssert(implType).sel(ctx.mangler.forwardMethodName(method.name, method.desc))
+          )
         }
-      } else if (method.cls.access.isAccessInterface &&
-          !method.access.isAccessStatic && !method.access.isAccessAbstract) {
+      } else if (method.isDefault) {
         // For default interface impls, we invoke statically
         val defName = ctx.mangler.interfaceDefaultMethodName(method.cls.name, method.name, method.desc)
         ctx.importQualifiedName(method.cls.name, defName).map { case (ctx, defName) =>
-          invokeStmt(ctx, method, defName, subjectExpr +: args, retType)
+          ctx -> (method -> defName)
         }
       } else if (method.access.isAccessPrivate || (subject.isThis && ctx.cls.name != method.cls.name)) {
         // Private or calling ourselves but on a different class means we target
         // the method directly, no dispatch
         ctx.instToImpl(subjectExpr, method.cls.name).map { case (ctx, impl) =>
-          invokeStmt(ctx, method, impl.sel(ctx.mangler.implMethodName(insn.name, insn.desc)), args, retType)
+          ctx -> (method -> impl.sel(ctx.mangler.implMethodName(name, desc)))
         }
       } else {
-        invokeStmt(ctx, method, subjectExpr.sel(ctx.mangler.forwardMethodName(insn.name, insn.desc)), args, retType)
+        ctx -> (method -> subjectExpr.sel(ctx.mangler.forwardMethodName(name, desc)))
       }
     }
   }

@@ -171,6 +171,7 @@ trait Compile extends Command with Logger {
       import goahead.compile.AstDsl._
       futFn {
         val code = compiler.compile(
+          conf = Config(),
           internalClassNames = classes.map(_.cls.name),
           classPath = classPath,
           mangler = conf.manglerInst
@@ -265,14 +266,14 @@ object Compile extends Compile {
       }
 
       override val methodCompiler = new MethodCompiler {
-        override def compile(cls: Cls, method: Method, mports: Imports, mangler: Mangler) = {
+        override def compile(conf: Config, cls: Cls, method: Method, mports: Imports, mangler: Mangler) = {
           import AstDsl._
           // Special handling for native methods
-          if (!method.access.isAccessNative) super.compile(cls, method, mports, mangler) else {
+          if (!method.access.isAccessNative) super.compile(conf, cls, method, mports, mangler) else {
             val methodStr = s"${cls.name}.${method.name}${method.desc}"
             logger.debug(s"Skipping native method $methodStr")
             buildFuncDecl(
-              ctx = initContext(cls, method, mports, mangler, Nil),
+              ctx = initContext(conf, cls, method, mports, mangler, Nil),
               stmts = Seq("panic".toIdent.call(s"Native method not implemented - $methodStr".toLit.singleSeq).toStmt)
             ).map { case (ctx, funcDecl) => ctx.imports -> funcDecl }
           }

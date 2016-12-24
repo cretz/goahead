@@ -175,6 +175,13 @@ object Helpers extends Logger {
         ctx -> varDecls(namedTypes: _*).toStmt
       }
     }
+
+    def isOptimizable(insn: InvokeDynamicInsnNode): Boolean = {
+      ctx.conf.optimizeRecognizedInvokeDynamic &&
+        insn.bsm.getTag == Opcodes.H_INVOKESTATIC &&
+        insn.bsm.getOwner == "java/lang/invoke/LambdaMetafactory" &&
+        insn.bsm.getName == "metafactory"
+    }
   }
 
   implicit class RichCls(val cls: Cls) extends AnyVal {

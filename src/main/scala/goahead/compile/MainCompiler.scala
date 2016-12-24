@@ -9,6 +9,7 @@ trait MainCompiler {
   import Helpers._
 
   def compile(
+    conf: Config,
     importPath: String,
     internalClassName: String,
     classPath: ClassPath,

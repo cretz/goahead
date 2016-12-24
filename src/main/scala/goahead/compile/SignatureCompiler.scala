@@ -34,27 +34,36 @@ trait SignatureCompiler {
     method: Method,
     includeParamNames: Boolean
   ): (T, Node.FunctionType) = {
-    val ctxWithParams =
-      // Signature polymorphic should be varargs empty interface
-      if (method.isSignaturePolymorphic) {
-        ctx -> Seq(field("var0", emptyInterface.ellipsis))
-      } else {
-        IType.getArgumentTypes(method.desc).zipWithIndex.foldLeft(ctx -> Seq.empty[Node.Field]) {
-          case ((ctx, params), (argType, argIndex)) =>
-            ctx.typeToGoType(argType).map { case (ctx, typ) =>
-              val param = if (includeParamNames) field(s"var$argIndex", typ) else typ.namelessField
-              ctx -> (params :+ param)
-            }
+    // Signature polymorphic should be varargs empty interface
+    if (method.isSignaturePolymorphic) {
+      ctx -> funcTypeWithFields(
+        params = Seq(
+          if (includeParamNames) field("var0", emptyInterface.ellipsis)
+          else emptyInterface.ellipsis.namelessField
+        ),
+        result = Some(emptyInterface)
+      )
+    } else buildFuncType(ctx, method.desc, includeParamNames)
+  }
+
+  def buildFuncType[T <: Contextual[T]](
+    ctx: T,
+    methodDesc: String,
+    includeParamNames: Boolean
+  ): (T, Node.FunctionType) = {
+    val ctxWithParams = IType.getArgumentTypes(methodDesc).zipWithIndex.foldLeft(ctx -> Seq.empty[Node.Field]) {
+      case ((ctx, params), (argType, argIndex)) =>
+        ctx.typeToGoType(argType).map { case (ctx, typ) =>
+          val param = if (includeParamNames) field(s"var$argIndex", typ) else typ.namelessField
+          ctx -> (params :+ param)
         }
-      }
+    }
 
     ctxWithParams.map { case (ctx, params) =>
-      val ctxWithResultTypOpt =
-        if (method.isSignaturePolymorphic) ctx -> Some(emptyInterface)
-        else IType.getReturnType(method.desc) match {
-          case IType.VoidType => ctx -> None
-          case retTyp => ctx.typeToGoType(retTyp).map { case (ctx, typ) => ctx -> Some(typ) }
-        }
+      val ctxWithResultTypOpt = IType.getReturnType(methodDesc) match {
+        case IType.VoidType => ctx -> None
+        case retTyp => ctx.typeToGoType(retTyp).map { case (ctx, typ) => ctx -> Some(typ) }
+      }
 
       ctxWithResultTypOpt.map { case (ctx, resultTypOpt) => ctx -> funcTypeWithFields(params, resultTypOpt) }
     }

@@ -51,6 +51,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
 
     // Compile to one big file
     val compiled = GoAheadCompiler.compile(
+      t.conf,
       testClassNames,
       classPath
     ).copy(packageName = "spectest".toIdent)
@@ -61,7 +62,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
 
     // Write the main call
     val className = t.classes.find(c => Try(c.getMethod("main", classOf[Array[String]])).isSuccess).get.getName
-    val mainCode = GoAheadCompiler.compileMainFile("./spectest", className.replace('.', '/'), classPath)
+    val mainCode = GoAheadCompiler.compileMainFile(t.conf, "./spectest", className.replace('.', '/'), classPath)
     writeGoCode(t, tempFolder.resolve("main.go"), mainCode)
 
     // Compile go code
@@ -182,7 +183,7 @@ object CompilerSpec extends Logger {
       TestCase(classOf[Initializers]),
       TestCase(classOf[InterfaceDefaults]),
       TestCase(classOf[Interfaces]),
-//      TestCase(classOf[Lambdas]),
+      TestCase(classOf[Lambdas]), // TODO: test without optimization too
       TestCase(classOf[LocalVarReuse]),
       TestCase(classOf[NonStaticInnerClasses]),
       TestCase(classOf[Primitives]),
@@ -218,6 +219,7 @@ object CompilerSpec extends Logger {
   }
 
   case class TestCase(
+    conf: Config,
     classes: Seq[Class[_]],
     expectedOutput: Option[String],
     warnOnFormatError: Boolean
@@ -257,6 +259,7 @@ object CompilerSpec extends Logger {
       }
 
       TestCase(
+        conf = Config(),
         classes = allClasses,
         expectedOutput = Some(expectedOutput),
         warnOnFormatError = topClasses.exists(_.isAnnotationPresent(classOf[WarnOnFormatError]))

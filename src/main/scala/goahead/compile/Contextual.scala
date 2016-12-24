@@ -1,6 +1,7 @@
 package goahead.compile
 
 trait Contextual[T <: Contextual[T]] {
+  def conf: Config
   def cls: Cls
   def imports: Imports
   def mangler: Mangler

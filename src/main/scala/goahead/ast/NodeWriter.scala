@@ -461,7 +461,7 @@ class NodeWriter {
     commaSeparated(spec.names, appendIdentifier)
     padLeftTo.foreach(appendPaddingFromFirstNonWhitespace)
     spec.typ.foreach { append(' ').appendExpression(_) }
-    if (spec.values.nonEmpty) append(" = ").commaSeparated(spec.values, appendIdentifier)
+    if (spec.values.nonEmpty) append(" = ").commaSeparated(spec.values, appendExpression)
     this
   }
 }

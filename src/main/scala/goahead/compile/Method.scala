@@ -20,6 +20,7 @@ sealed trait Method {
   def visibleAnnotations: Seq[Annotation]
   def invisibleAnnotations: Seq[Annotation]
   def isCallerSensitive: Boolean
+  def isDefault: Boolean
 }
 
 object Method {
@@ -81,6 +82,11 @@ object Method {
     override lazy val isCallerSensitive = {
       visibleAnnotations.exists(_.desc == "Lsun/reflect/CallerSensitive;") ||
         invisibleAnnotations.exists(_.desc == "Lsun/reflect/CallerSensitive;")
+    }
+
+    override def isDefault = {
+      import Helpers._
+      cls.access.isAccessInterface && !access.isAccessStatic && !access.isAccessAbstract
     }
   }
 }

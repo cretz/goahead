@@ -68,8 +68,6 @@ type Java__io__Closeable__dynproxy____Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
-	FieldGet__Java__io__Closeable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance
-	FieldSet__Java__io__Closeable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance)
 	RawPtr__Java__io__Closeable__dynproxy__() *Java__io__Closeable__dynproxy____Impl
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
@@ -77,25 +75,17 @@ type Java__io__Closeable__dynproxy____Instance interface {
 type Java__io__Closeable__dynproxy____Impl struct {
 	*Java__lang__Object__Impl
 	_dispatch Java__io__Closeable__dynproxy____Dispatch
-	CallSite  Java__lang__invoke__CallSite__Instance
-}
-
-func (this *Java__io__Closeable__dynproxy____Impl) FieldGet__Java__io__Closeable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance {
-	return this.CallSite
-}
-
-func (this *Java__io__Closeable__dynproxy____Impl) FieldSet__Java__io__Closeable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance) {
-	this.CallSite = v
+	fn        func()
 }
 
 func (this *Java__io__Closeable__dynproxy____Impl) RawPtr__Java__io__Closeable__dynproxy__() *Java__io__Closeable__dynproxy____Impl {
 	return this
 }
 
-func (_ *Java__io__Closeable__Static) DynProxy_Create(cs Java__lang__invoke__CallSite__Instance) Java__io__Closeable__Instance {
+func (_ *Java__io__Closeable__Static) DynProxy_Create(fn func()) Java__io__Closeable__Instance {
 	v := &Java__io__Closeable__dynproxy____Impl{
 		Java__lang__Object__Impl: Java__lang__Object().New(),
-		CallSite:                 cs,
+		fn:                       fn,
 	}
 	v.Java__io__Closeable__dynproxy____InitDispatch(v)
 	v.Java__lang__Object__Impl.Impl__Instance_Init__desc____ret__V()
@@ -103,7 +93,7 @@ func (_ *Java__io__Closeable__Static) DynProxy_Create(cs Java__lang__invoke__Cal
 }
 
 func (this *Java__io__Closeable__dynproxy____Impl) Impl__Close__desc____ret__V() {
-	this.CallSite.DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle().Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object()
+	this.fn()
 }
 
 type Java__io__FilterOutputStream__Static struct{}
@@ -268,8 +258,6 @@ type Java__io__Flushable__dynproxy____Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
-	FieldGet__Java__io__Flushable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance
-	FieldSet__Java__io__Flushable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance)
 	RawPtr__Java__io__Flushable__dynproxy__() *Java__io__Flushable__dynproxy____Impl
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
@@ -277,25 +265,17 @@ type Java__io__Flushable__dynproxy____Instance interface {
 type Java__io__Flushable__dynproxy____Impl struct {
 	*Java__lang__Object__Impl
 	_dispatch Java__io__Flushable__dynproxy____Dispatch
-	CallSite  Java__lang__invoke__CallSite__Instance
-}
-
-func (this *Java__io__Flushable__dynproxy____Impl) FieldGet__Java__io__Flushable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance {
-	return this.CallSite
-}
-
-func (this *Java__io__Flushable__dynproxy____Impl) FieldSet__Java__io__Flushable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance) {
-	this.CallSite = v
+	fn        func()
 }
 
 func (this *Java__io__Flushable__dynproxy____Impl) RawPtr__Java__io__Flushable__dynproxy__() *Java__io__Flushable__dynproxy____Impl {
 	return this
 }
 
-func (_ *Java__io__Flushable__Static) DynProxy_Create(cs Java__lang__invoke__CallSite__Instance) Java__io__Flushable__Instance {
+func (_ *Java__io__Flushable__Static) DynProxy_Create(fn func()) Java__io__Flushable__Instance {
 	v := &Java__io__Flushable__dynproxy____Impl{
 		Java__lang__Object__Impl: Java__lang__Object().New(),
-		CallSite:                 cs,
+		fn:                       fn,
 	}
 	v.Java__io__Flushable__dynproxy____InitDispatch(v)
 	v.Java__lang__Object__Impl.Impl__Instance_Init__desc____ret__V()
@@ -303,7 +283,7 @@ func (_ *Java__io__Flushable__Static) DynProxy_Create(cs Java__lang__invoke__Cal
 }
 
 func (this *Java__io__Flushable__dynproxy____Impl) Impl__Flush__desc____ret__V() {
-	this.CallSite.DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle().Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object()
+	this.fn()
 }
 
 type Java__io__OutputStream__Static struct{}

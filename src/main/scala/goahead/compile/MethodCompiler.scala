@@ -12,6 +12,7 @@ trait MethodCompiler extends Logger {
   import MethodCompiler._
 
   def compile(
+    conf: Config,
     cls: Cls,
     method: Method,
     imports: Imports,
@@ -20,7 +21,7 @@ trait MethodCompiler extends Logger {
     logger.debug(s"Compiling method: ${cls.name}.${method.name}${method.desc}")
     logger.trace("ASM:\n    " + method.asmString.replace("\n", "\n    "))
     // Compile the sets
-    val ctx = initContext(cls, method, imports, mangler, getLabelSets(method))
+    val ctx = initContext(conf, cls, method, imports, mangler, getLabelSets(method))
     buildStmts(ctx).map { case (ctx, stmts) =>
       buildFuncDecl(ctx, stmts).map { case (ctx, funcDecl) =>
         ctx.imports -> funcDecl
@@ -29,6 +30,7 @@ trait MethodCompiler extends Logger {
   }
 
   protected def initContext(
+    conf: Config,
     cls: Cls,
     method: Method,
     imports: Imports,
@@ -36,7 +38,7 @@ trait MethodCompiler extends Logger {
     sets: Seq[LabelSet]
   ) = {
     // For every argument type, we have to pre-add a local var
-    IType.getArgumentTypes(method.desc).foldLeft(Context(cls, method, imports, mangler, sets)) {
+    IType.getArgumentTypes(method.desc).foldLeft(Context(conf, cls, method, imports, mangler, sets)) {
       case (ctx, argType) => ctx.appendLocalVar(argType)._1
     }
   }
@@ -220,6 +222,7 @@ object MethodCompiler extends MethodCompiler {
   }
 
   case class Context(
+    conf: Config,
     cls: Cls,
     method: Method,
     imports: Imports,
@@ -245,13 +248,14 @@ object MethodCompiler extends MethodCompiler {
 
   object Context {
     def apply(
+      conf: Config,
       cls: Cls,
       method: Method,
       imports: Imports,
       mangler: Mangler,
       sets: Seq[LabelSet]
     ): Context = {
-      Context(cls, method, imports, mangler, sets, LocalVars(
+      Context(conf, cls, method, imports, mangler, sets, LocalVars(
         thisVar = if (method.access.isAccessStatic) None else Some(
           TypedExpression.namedVar("this", IType.getObjectType(cls.name))
         )

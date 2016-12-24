@@ -320,9 +320,9 @@ type Java__lang__invoke__MethodHandle__Dispatch interface {
 	Impl__InternalCallerClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	Impl__InternalProperties__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Impl__InternalValues__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Impl__Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{}
-	Impl__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{}
-	Impl__InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{}
+	Impl__Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
+	Impl__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
+	Impl__InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
 	Impl__InvokeWithArguments__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(ObjectArray__Instance) Java__lang__Object__Instance
 	Impl__IsInvokeSpecial__desc____ret__Z() bool
 	Impl__IsVarargsCollector__desc____ret__Z() bool
@@ -448,9 +448,9 @@ type Java__lang__invoke__MethodHandle__Instance interface {
 	InternalCallerClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	InternalProperties__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	InternalValues__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{}
-	InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{}
-	InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{}
+	Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
+	InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
+	InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
 	InvokeWithArguments__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(ObjectArray__Instance) Java__lang__Object__Instance
 	IsInvokeSpecial__desc____ret__Z() bool
 	IsVarargsCollector__desc____ret__Z() bool

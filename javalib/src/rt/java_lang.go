@@ -724,8 +724,6 @@ type Java__lang__AutoCloseable__dynproxy____Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
-	FieldGet__Java__lang__AutoCloseable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance
-	FieldSet__Java__lang__AutoCloseable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance)
 	RawPtr__Java__lang__AutoCloseable__dynproxy__() *Java__lang__AutoCloseable__dynproxy____Impl
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
@@ -733,25 +731,17 @@ type Java__lang__AutoCloseable__dynproxy____Instance interface {
 type Java__lang__AutoCloseable__dynproxy____Impl struct {
 	*Java__lang__Object__Impl
 	_dispatch Java__lang__AutoCloseable__dynproxy____Dispatch
-	CallSite  Java__lang__invoke__CallSite__Instance
-}
-
-func (this *Java__lang__AutoCloseable__dynproxy____Impl) FieldGet__Java__lang__AutoCloseable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance {
-	return this.CallSite
-}
-
-func (this *Java__lang__AutoCloseable__dynproxy____Impl) FieldSet__Java__lang__AutoCloseable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance) {
-	this.CallSite = v
+	fn        func()
 }
 
 func (this *Java__lang__AutoCloseable__dynproxy____Impl) RawPtr__Java__lang__AutoCloseable__dynproxy__() *Java__lang__AutoCloseable__dynproxy____Impl {
 	return this
 }
 
-func (_ *Java__lang__AutoCloseable__Static) DynProxy_Create(cs Java__lang__invoke__CallSite__Instance) Java__lang__AutoCloseable__Instance {
+func (_ *Java__lang__AutoCloseable__Static) DynProxy_Create(fn func()) Java__lang__AutoCloseable__Instance {
 	v := &Java__lang__AutoCloseable__dynproxy____Impl{
 		Java__lang__Object__Impl: Java__lang__Object().New(),
-		CallSite:                 cs,
+		fn:                       fn,
 	}
 	v.Java__lang__AutoCloseable__dynproxy____InitDispatch(v)
 	v.Java__lang__Object__Impl.Impl__Instance_Init__desc____ret__V()
@@ -759,7 +749,7 @@ func (_ *Java__lang__AutoCloseable__Static) DynProxy_Create(cs Java__lang__invok
 }
 
 func (this *Java__lang__AutoCloseable__dynproxy____Impl) Impl__Close__desc____ret__V() {
-	this.CallSite.DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle().Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object()
+	this.fn()
 }
 
 type Java__lang__CharSequence__Static struct{}
@@ -1690,8 +1680,6 @@ type Java__lang__Comparable__dynproxy____Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
-	FieldGet__Java__lang__Comparable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance
-	FieldSet__Java__lang__Comparable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance)
 	RawPtr__Java__lang__Comparable__dynproxy__() *Java__lang__Comparable__dynproxy____Impl
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
@@ -1699,25 +1687,17 @@ type Java__lang__Comparable__dynproxy____Instance interface {
 type Java__lang__Comparable__dynproxy____Impl struct {
 	*Java__lang__Object__Impl
 	_dispatch Java__lang__Comparable__dynproxy____Dispatch
-	CallSite  Java__lang__invoke__CallSite__Instance
-}
-
-func (this *Java__lang__Comparable__dynproxy____Impl) FieldGet__Java__lang__Comparable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance {
-	return this.CallSite
-}
-
-func (this *Java__lang__Comparable__dynproxy____Impl) FieldSet__Java__lang__Comparable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance) {
-	this.CallSite = v
+	fn        func(Java__lang__Object__Instance) int
 }
 
 func (this *Java__lang__Comparable__dynproxy____Impl) RawPtr__Java__lang__Comparable__dynproxy__() *Java__lang__Comparable__dynproxy____Impl {
 	return this
 }
 
-func (_ *Java__lang__Comparable__Static) DynProxy_Create(cs Java__lang__invoke__CallSite__Instance) Java__lang__Comparable__Instance {
+func (_ *Java__lang__Comparable__Static) DynProxy_Create(fn func(Java__lang__Object__Instance) int) Java__lang__Comparable__Instance {
 	v := &Java__lang__Comparable__dynproxy____Impl{
 		Java__lang__Object__Impl: Java__lang__Object().New(),
-		CallSite:                 cs,
+		fn:                       fn,
 	}
 	v.Java__lang__Comparable__dynproxy____InitDispatch(v)
 	v.Java__lang__Object__Impl.Impl__Instance_Init__desc____ret__V()
@@ -1725,7 +1705,7 @@ func (_ *Java__lang__Comparable__Static) DynProxy_Create(cs Java__lang__invoke__
 }
 
 func (this *Java__lang__Comparable__dynproxy____Impl) Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
-	return this.CallSite.DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle().Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0).(int)
+	return this.fn(var0)
 }
 
 type Java__lang__Error__Static struct {

@@ -149,6 +149,7 @@ trait BuildStubs extends Command with Logger {
       import goahead.compile.AstDsl._
       futFn {
         val code = compiler.compile(
+          conf = Config(),
           internalClassNames = classes.map(_.cls.name),
           classPath = classPath,
           mangler = conf.manglerInst

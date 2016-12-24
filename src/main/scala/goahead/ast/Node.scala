@@ -420,7 +420,7 @@ object Node {
   case class ValueSpecification(
     names: Seq[Identifier],
     typ: Option[Expression],
-    values: Seq[Identifier]
+    values: Seq[Expression]
   ) extends Specification {
     def walk(w: NodeWalker) = copy(
       names = w.applyAll(names),

@@ -7,13 +7,185 @@ import org.objectweb.asm.{Handle, Opcodes, Type}
 import org.objectweb.asm.tree.{InvokeDynamicInsnNode, MethodInsnNode}
 import org.objectweb.asm.util.Printer
 
-trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler =>
+trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with FieldInsnCompiler =>
   import AstDsl._
   import MethodCompiler._
   import Helpers._
 
   def compile(ctx: Context, insn: InvokeDynamicInsnNode): (Context, Seq[Node.Statement]) = {
-    pushBootstrappedCallSite(ctx, insn)
+    if (ctx.isOptimizable(insn)) pushDirectProxy(ctx, insn)
+    else pushInvokedCallSite(ctx, insn)
+  }
+
+  protected def pushDirectProxy(ctx: Context, insn: InvokeDynamicInsnNode): (Context, Seq[Node.Statement]) = {
+    val handle = insn.bsmArgs(1).asInstanceOf[Handle]
+    val ctxAndFuncRef = handle.getTag match {
+      case Opcodes.H_GETFIELD =>
+        ctx.stackPopped { case (ctx, subject) =>
+          instanceFieldAccessorRef(ctx, handle.getName, handle.getDesc, handle.getOwner, subject, getter = true)
+        }
+      case Opcodes.H_GETSTATIC =>
+        staticFieldRef(ctx, handle.getName, handle.getDesc, handle.getOwner).map { case (ctx, ref) =>
+          ctx.typeToGoType(IType.getType(handle.getDesc)).map { case (ctx, retTyp) =>
+            ctx -> funcType(Nil, Some(retTyp)).toFuncLit(Seq(ref.ret))
+          }
+        }
+      case Opcodes.H_PUTFIELD =>
+        ctx.stackPopped { case (ctx, subject) =>
+          instanceFieldAccessorRef(ctx, handle.getName, handle.getDesc, handle.getOwner, subject, getter = false)
+        }
+      case Opcodes.H_PUTSTATIC =>
+        staticFieldRef(ctx, handle.getName, handle.getDesc, handle.getOwner).map { case (ctx, ref) =>
+          ctx.typeToGoType(IType.getType(handle.getDesc)).map { case (ctx, paramTyp) =>
+            ctx -> funcType(Seq("v" -> paramTyp)).toFuncLit(Seq(ref.assignExisting("v".toIdent)))
+          }
+        }
+      case Opcodes.H_INVOKEVIRTUAL | Opcodes.H_INVOKEINTERFACE | Opcodes.H_INVOKESPECIAL =>
+        ctx.stackPopped { case (ctx, subject) =>
+          val resolved =
+            if (handle.getTag == Opcodes.H_INVOKESPECIAL)
+              resolveSpecialMethodRef(ctx, handle.getName, handle.getDesc, subject, handle.isInterface, handle.getOwner)
+            else
+              resolveInterfaceOrVirtualMethodRef(ctx, handle.getName, handle.getDesc, subject, handle.getOwner)
+          resolved.map {
+            // Default includes the subject as an arg which means we need a new func lit
+            case (ctx, (method, methodRef)) if method.isDefault =>
+              signatureCompiler.buildFuncType(ctx, method, includeParamNames = true).map { case (ctx, funcTyp) =>
+                val call = methodRef.call(subject.expr +: method.argTypes.indices.map(i => s"var$i".toIdent))
+                val callStmt = method.returnType match {
+                  case IType.VoidType => call.toStmt
+                  case _ => call.ret
+                }
+                ctx -> funcTyp.toFuncLit(Seq(callStmt))
+              }
+            case (ctx, (_, methodRef)) =>
+              ctx -> methodRef
+          }
+        }
+      case Opcodes.H_INVOKESTATIC =>
+        resolveStaticMethodRef(ctx, handle.getName, handle.getDesc, handle.getOwner).map {
+          case (ctx, (_, methodRef)) => ctx -> methodRef
+        }
+      case Opcodes.H_NEWINVOKESPECIAL =>
+        ctx.staticNewExpr(handle.getOwner).map { case (ctx, newExpr) =>
+          val retTyp = IType.getObjectType(handle.getOwner)
+          val newTyped = TypedExpression.namedVar("v", retTyp)
+          resolveSpecialMethodRef(ctx, handle.getName, handle.getDesc, newTyped, handle.isInterface, handle.getOwner).
+            map { case (ctx, (_, initRef)) =>
+              val ctxAndArgTypes = IType.getArgumentTypes(handle.getDesc).foldLeft(ctx -> Seq.empty[Node.Expression]) {
+                case ((ctx, argTypes), argTyp) =>
+                  ctx.typeToGoType(argTyp).map { case (ctx, typ) => ctx -> (argTypes :+ typ) }
+              }
+              ctxAndArgTypes.map { case (ctx, argTypes) =>
+                ctx.typeToGoType(retTyp).map { case (ctx, retTypExpr) =>
+                  ctx -> funcType(
+                    params = argTypes.zipWithIndex.map { case (arg, index) => s"var$index" -> arg },
+                    result = Some(retTypExpr)
+                  ).toFuncLit(Seq(
+                    varDecl(newTyped.name, retTypExpr, Some(newExpr)).toStmt,
+                    initRef.call(argTypes.indices.map(i => s"var$i".toIdent)).toStmt,
+                    newTyped.expr.ret
+                  ))
+                }
+              }
+            }
+        }
+    }
+
+    ctxAndFuncRef.map { case (ctx, funcRef) =>
+      val ifaceTyp = IType.getReturnType(insn.desc)
+      val ifaceMethod = methodSetManager.functionalInterfaceMethod(
+        ctx.classPath,
+        ctx.classPath.getFirstClass(ifaceTyp.internalName).cls
+      ).getOrElse(sys.error(s"Expected ${ifaceTyp.internalName} to be a functional interface as target of dyn insn"))
+      // val (handleArgs, handleResult) = IType.getArgumentAndReturnTypes(insn.bsmArgs(0).asInstanceOf[Type].getDescriptor)
+      val (handleArgs, handleResult) = handleArgAndRetTypes(handle)
+      funcRefToFuncRefExact(ctx, funcRef, handleArgs, handleResult, ifaceMethod.argTypes, ifaceMethod.returnType).map {
+        case (ctx, funcRef) =>
+          ctx.staticInstRefExpr(ifaceTyp.internalName).map { case (ctx, staticInst) =>
+            ctx.stackPushed(TypedExpression(
+              expr = staticInst.sel(
+                ctx.mangler.funcInterfaceProxyCreateMethodName(ifaceTyp.internalName)
+              ).call(Seq(funcRef)),
+              typ = ifaceTyp,
+              cheapRef = true
+            )) -> Nil
+          }
+      }
+    }
+  }
+
+  protected def funcRefToFuncRefExact(
+    ctx: Context,
+    source: Node.Expression,
+    sourceArgs: Seq[IType],
+    sourceResult: IType,
+    targetArgs: Seq[IType],
+    targetResult: IType
+  ): (Context, Node.Expression) = {
+    require(sourceArgs.size == targetArgs.size, "Expect same size when translating func refs")
+    if (sourceArgs == targetArgs && sourceResult == targetResult) ctx -> source else {
+      val init = ctx -> Seq.empty[(Node.Expression, Node.Field)]
+      val ctxAndConvArgsWithFields = sourceArgs.zip(targetArgs).zipWithIndex.foldLeft(init) {
+        case ((ctx, argsWithFields), ((sourceArg, targetArg), index)) =>
+          val name = s"var$index"
+          TypedExpression(name.toIdent, sourceArg, cheapRef = true).toExprNode(ctx, targetArg).map { case (ctx, arg) =>
+            ctx.typeToGoType(targetArg).map { case (ctx, targetTyp) =>
+              ctx -> (argsWithFields :+ (arg -> field(name, targetTyp)))
+            }
+          }
+
+      }
+      ctxAndConvArgsWithFields.map { case (ctx, convArgsWithFields) =>
+        val call = source.call(convArgsWithFields.map(_._1))
+        val ctxAndCallStmtWithResultTypOpt = targetResult match {
+          case IType.VoidType => ctx -> (call.toStmt -> None)
+          case typ => TypedExpression(call, sourceResult, cheapRef = true).toExprNode(ctx, typ).map {
+            case (ctx, call) => ctx.typeToGoType(typ).map { case (ctx, targetRetTyp) =>
+              ctx -> (call.ret -> Some(targetRetTyp))
+            }
+          }
+        }
+        ctxAndCallStmtWithResultTypOpt.map { case (ctx, (callStmt, resultTypOpt)) =>
+          ctx -> funcTypeWithFields(convArgsWithFields.map(_._2), resultTypOpt).toFuncLit(Seq(callStmt))
+        }
+      }
+    }
+  }
+
+  protected def handleArgAndRetTypes(handle: Handle): (Seq[IType], IType) = {
+    handle.getTag match {
+      case Opcodes.H_GETFIELD | Opcodes.H_GETSTATIC =>
+        Nil -> IType.getType(handle.getDesc)
+      case Opcodes.H_PUTFIELD | Opcodes.H_PUTSTATIC =>
+        Seq(IType.getType(handle.getDesc)) -> IType.VoidType
+      case Opcodes.H_INVOKEVIRTUAL | Opcodes.H_INVOKEINTERFACE | Opcodes.H_INVOKESPECIAL | Opcodes.H_INVOKESTATIC =>
+        IType.getArgumentAndReturnTypes(handle.getDesc)
+      case Opcodes.H_NEWINVOKESPECIAL =>
+        IType.getArgumentTypes(handle.getDesc) -> IType.getObjectType(handle.getOwner)
+    }
+  }
+
+  protected def pushInvokedCallSite(ctx: Context, insn: InvokeDynamicInsnNode): (Context, Seq[Node.Statement]) = {
+    pushBootstrappedCallSite(ctx, insn).map { case (ctx, stmts) =>
+      ctx.stackPopped { case (ctx, callSite) =>
+        val (argTyps, retTyp) = IType.getArgumentAndReturnTypes(insn.desc)
+        ctx.stackPopped(argTyps.size, { case (ctx, args) =>
+          ctx.typeToGoType(retTyp).map { case (ctx, retTypExpr) =>
+            val call = callSite.expr.sel(
+              ctx.mangler.forwardMethodName("dynamicInvoker", "()Ljava/lang/invoke/MethodHandle;")
+            ).call().sel(
+              ctx.mangler.forwardMethodName("invoke", "([Ljava/lang/Object;)Ljava/lang/Object;")
+            ).call(args.map(_.expr)).typeAssert(retTypExpr)
+            ctx.stackPushed(TypedExpression(
+              expr = call,
+              typ = retTyp,
+              cheapRef = false
+            )) -> stmts
+          }
+        })
+      }
+    }
   }
 
   protected def pushBootstrappedCallSite(
@@ -29,16 +201,11 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler =>
     pushBootstrapCall(ctx, insn).stackPopped { case (ctx, bootstrapCall) =>
       val funcIface = IType.getReturnType(insn.desc)
       ctx.stackPushed(TypedExpression(callSiteVarName.toIdent, funcIface, cheapRef = true)).map { ctx =>
-        ctx.staticInstRefExpr(funcIface.internalName).map { case (ctx, staticInst) =>
-          ctx -> syncVarName.toIdent.sel("Do").call(Seq(
-            funcType(Nil).toFuncLit(Seq(
-              callSiteVarName.toIdent.assignExisting(
-                staticInst.sel(ctx.mangler.funcInterfaceProxyCreateMethodName(funcIface.internalName)).
-                  call(Seq(bootstrapCall.expr))
-              )
-            ))
-          )).toStmt.singleSeq
-        }
+        ctx -> syncVarName.toIdent.sel("Do").call(Seq(
+          funcType(Nil).toFuncLit(Seq(
+            callSiteVarName.toIdent.assignExisting(bootstrapCall.expr)
+          ))
+        )).toStmt.singleSeq
       }
     }
   }
@@ -53,7 +220,7 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler =>
       // We know there are no stmts
       compile(
         ctx,
-        new MethodInsnNode(Opcodes.INVOKESTATIC, insn.bsm.getOwner, insn.bsm.getName, insn.bsm.getDesc, false)
+        new MethodInsnNode(methodOpcode, insn.bsm.getOwner, insn.bsm.getName, insn.bsm.getDesc, false)
       )._1
     }
   }
@@ -171,4 +338,7 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler =>
       compile(ctx, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, method.cls.name, method.name, method.desc, false))._1
     }
   }
+
+  protected def signatureCompiler: SignatureCompiler = SignatureCompiler
+  protected def methodSetManager: MethodSetManager = MethodSetManager.Default
 }

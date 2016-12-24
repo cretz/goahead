@@ -8,19 +8,22 @@ trait GoAheadCompiler extends Logger {
   import Helpers._
 
   def compileMainFile(
+    conf: Config,
     importPath: String,
     internalClassName: String,
     classPath: ClassPath,
     mangler: Mangler = Mangler.Simple
   ): Node.File =
-    mainCompiler.compile(importPath, internalClassName, classPath, mangler)
+    mainCompiler.compile(conf, importPath, internalClassName, classPath, mangler)
 
   // Note, resulting package name is empty and expected to be filled in by caller
   def compile(
+    conf: Config,
     internalClassNames: Seq[String],
     classPath: ClassPath,
     mangler: Mangler = Mangler.Simple
   ): Node.File = compileClasses(
+    conf,
     internalClassNames.map(n => classPath.getFirstClass(n).cls),
     classPath,
     mangler
@@ -28,6 +31,7 @@ trait GoAheadCompiler extends Logger {
 
   // Note, resulting package name is empty and expected to be filled in by caller
   protected def compileClasses(
+    conf: Config,
     classes: Seq[Cls],
     classPath: ClassPath,
     mangler: Mangler
@@ -35,7 +39,7 @@ trait GoAheadCompiler extends Logger {
     // TODO: parallelize at some point?
     val (imports, decls) = classes.foldLeft(Imports(classPath) -> Seq.empty[Node.Declaration]) {
       case ((imports, prevDecls), cls) =>
-        classCompiler.compile(cls, imports, mangler).map { case (imports, decls) =>
+        classCompiler.compile(conf, cls, imports, mangler).map { case (imports, decls) =>
           imports -> (prevDecls ++ decls)
         }
     }

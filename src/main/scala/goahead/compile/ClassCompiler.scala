@@ -5,7 +5,7 @@ import java.util.Collections
 import goahead.Logger
 import goahead.ast.Node
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.{ClassNode, FieldNode, InvokeDynamicInsnNode}
+import org.objectweb.asm.tree.{ClassNode, InvokeDynamicInsnNode}
 
 import scala.util.control.NonFatal
 
@@ -14,19 +14,20 @@ trait ClassCompiler extends Logger {
   import ClassCompiler._
   import Helpers._
 
-  def compile(cls: Cls, imports: Imports, mangler: Mangler): (Imports, Seq[Node.Declaration]) = {
+  def compile(conf: Config, cls: Cls, imports: Imports, mangler: Mangler): (Imports, Seq[Node.Declaration]) = {
     logger.debug(s"Compiling class: ${cls.name}")
     try {
       // TODO: limit major version to 1.6+ to avoid issues with JSR/RET deprecation?
-      compile(initContext(cls, imports, mangler)).map { case (ctx, decls) => ctx.imports -> decls }
+      compile(initContext(conf, cls, imports, mangler)).map { case (ctx, decls) => ctx.imports -> decls }
     } catch { case NonFatal(e) => throw new Exception(s"Unable to compile class ${cls.name}", e) }
   }
 
   protected def initContext(
+    conf: Config,
     cls: Cls,
     imports: Imports,
     mangler: Mangler
-  ) = Context(cls, imports, mangler)
+  ) = Context(conf, cls, imports, mangler)
 
   protected def compile(ctx: Context): (Context, Seq[Node.Declaration]) = {
     if (ctx.cls.access.isAccessInterface) compileInterface(ctx) else compileClass(ctx)
@@ -184,9 +185,7 @@ trait ClassCompiler extends Logger {
         extension.visibleTypeAnnotations = null
         extension.invisibleTypeAnnotations = null
         extension.innerClasses.clear()
-        extension.fields = Collections.singletonList(
-          new FieldNode(Opcodes.ACC_PUBLIC, "callSite", "Ljava/lang/invoke/CallSite;", null, null)
-        )
+        extension.fields.clear()
         extension.methods.clear()
 
         // Set the new class, inject into class path, run compile again
@@ -204,9 +203,26 @@ trait ClassCompiler extends Logger {
         compile(newCtx).map { case (extCtx, decls) =>
           // Put the original class and class path back, but keep everything else
           val ctx = extCtx.copy(cls = origCtx.cls, imports = extCtx.imports.copy(classPath = origCtx.classPath))
-          compileFunctionalInterfaceProxyCreator(ctx, extensionCls).map { case (ctx, creatorDecl) =>
-            compileFunctionalInterfaceProxyMethod(ctx, extensionCls, ifaceMethod).map { case (ctx, methodDecl) =>
-              ctx -> (decls :+ creatorDecl :+ methodDecl)
+
+          // Take the impl struct and add a field to it for the function
+          val implStructName = ctx.mangler.implObjectName(extensionCls.name)
+          val ctxAndDecls = decls.foldLeft(ctx -> Seq.empty[Node.Declaration]) {
+            case ((ctx, decls), Node.GenericDeclaration(
+              Node.Token.Type,
+              Seq(Node.TypeSpecification(Node.Identifier(ident), Node.StructType(fields)))
+            )) if ident == implStructName =>
+              signatureCompiler.buildFuncType(ctx, ifaceMethod, includeParamNames = false).map { case (ctx, funcTyp) =>
+                ctx -> (decls :+ struct(ident, fields :+ field("fn", funcTyp)))
+              }
+            case ((ctx, decls), decl) =>
+              ctx -> (decls :+ decl)
+          }
+
+          ctxAndDecls.map { case (ctx, decls) =>
+            compileFunctionalInterfaceProxyCreator(ctx, extensionCls, ifaceMethod).map { case (ctx, creatorDecl) =>
+              compileFunctionalInterfaceProxyMethod(ctx, extensionCls, ifaceMethod).map { case (ctx, methodDecl) =>
+                ctx -> (decls :+ creatorDecl :+ methodDecl)
+              }
             }
           }
         }
@@ -215,17 +231,18 @@ trait ClassCompiler extends Logger {
 
   protected def compileFunctionalInterfaceProxyCreator(
     ctx: Context,
-    extension: Cls
+    extension: Cls,
+    ifaceMethod: Method
   ): (Context, Node.FunctionDeclaration) = {
     ctx.staticInstTypeExpr(ctx.cls.name).map { case (ctx, staticTyp) =>
-      ctx.typeToGoType(IType.getObjectType("java/lang/invoke/CallSite")).map { case (ctx, callSiteTyp) =>
+      signatureCompiler.buildFuncType(ctx, ifaceMethod, includeParamNames = false).map { case (ctx, funcTyp) =>
         ctx.typeToGoType(IType.getObjectType(ctx.cls.name)).map { case (ctx, retTyp) =>
           ctx.staticNewExpr(extension.parent.get).map { case (ctx, superStaticNewExpr) =>
             val parentImplObjName = ctx.mangler.implObjectName(extension.parent.get)
             val defineStmt = "v".toIdent.assignDefine(literal(
               Some(ctx.mangler.implObjectName(extension.name).toIdent),
               parentImplObjName.toIdent.withValue(superStaticNewExpr),
-              ctx.mangler.fieldName(extension.name, "callSite").toIdent.withValue("cs".toIdent)
+              "fn".toIdent.withValue("fn".toIdent)
             ).unary(Node.Token.And))
             val initDispatchStmt = "v".toIdent.sel(
               ctx.mangler.dispatchInitMethodName(extension.name)
@@ -236,7 +253,7 @@ trait ClassCompiler extends Logger {
             ctx -> funcDecl(
               rec = Some("_" -> staticTyp),
               name = ctx.mangler.funcInterfaceProxyCreateMethodName(ctx.cls.name),
-              params = Seq("cs" -> callSiteTyp),
+              params = Seq("fn" -> funcTyp),
               results = Some(retTyp),
               stmts = Seq(defineStmt, initDispatchStmt, constructStmt, retStmt)
             )
@@ -252,19 +269,13 @@ trait ClassCompiler extends Logger {
     ifaceMethod: Method
   ): (Context, Node.FunctionDeclaration) = {
     // Just forward the call to the call site passing each param and type asserting the result
-    val call = "this".toIdent.sel(ctx.mangler.fieldName(extension.name, "callSite")).sel(
-      ctx.mangler.forwardMethodName("dynamicInvoker", "()Ljava/lang/invoke/MethodHandle;")
-    ).call().sel(
-      ctx.mangler.forwardMethodName("invoke", "([Ljava/lang/Object;)Ljava/lang/Object;")
-    ).call(ifaceMethod.argTypes.indices.map(i => s"var$i".toIdent))
-    val ctxAndCallStmt = ifaceMethod.returnType match {
-      case IType.VoidType => ctx -> call.toStmt
-      case retTyp => ctx.typeToGoType(retTyp).map { case (ctx, retTyp) => ctx -> call.typeAssert(retTyp).ret }
+    val call = "this".toIdent.sel("fn").call(ifaceMethod.argTypes.indices.map(i => s"var$i".toIdent))
+    val callStmt = ifaceMethod.returnType match {
+      case IType.VoidType => call.toStmt
+      case _ => call.ret
     }
-    ctxAndCallStmt.map { case (ctx, callStmt) =>
-      signatureCompiler.buildFuncDecl(ctx, ifaceMethod, Seq(callStmt)).map { case (ctx, funcDecl) =>
-        ctx -> funcDecl.copy(receivers = Seq(field("this", ctx.mangler.implObjectName(extension.name).toIdent.star)))
-      }
+    signatureCompiler.buildFuncDecl(ctx, ifaceMethod, Seq(callStmt)).map { case (ctx, funcDecl) =>
+      ctx -> funcDecl.copy(receivers = Seq(field("this", ctx.mangler.implObjectName(extension.name).toIdent.star)))
     }
   }
 
@@ -468,6 +479,7 @@ trait ClassCompiler extends Logger {
   protected def compileMethods(ctx: Context, methods: Seq[Method]): (Context, Seq[Node.FunctionDeclaration]) = {
     methods.foldLeft(ctx -> Seq.empty[Node.FunctionDeclaration]) { case ((ctx, prevFuncs), node) =>
       val (newImports, fn) = methodCompiler.compile(
+        conf = ctx.conf,
         cls = ctx.cls,
         method = node,
         imports = ctx.imports,
@@ -484,10 +496,13 @@ trait ClassCompiler extends Logger {
     // Each invoke dynamic instruction gets a sync.Once var to synchronize the invoke dynamic build, then it also
     // gets a call site var to store the permanent result globally
     methods.foldLeft(ctx -> Seq.empty[Node.GenericDeclaration]) { case (ctxAndPrevVars, method) =>
-      val invokeInsns = method.instructions.zipWithIndex.collect { case (n: InvokeDynamicInsnNode, i) => n -> i }
+      // This only applies to non-optimizable insns
+      val invokeInsns = method.instructions.zipWithIndex.collect {
+        case (n: InvokeDynamicInsnNode, i) if !ctx.isOptimizable(n) => n -> i
+      }
       invokeInsns.foldLeft(ctxAndPrevVars) { case ((ctx, prevVars), (insn, index)) =>
         ctx.withImportAlias("sync").map { case (ctx, syncAlias) =>
-          ctx.typeToGoType(IType.getReturnType(insn.desc)).map { case (ctx, callSiteTyp) =>
+          ctx.typeToGoType(IType.getObjectType("java/lang/invoke/CallSite")).map { case (ctx, callSiteTyp) =>
             ctx -> (prevVars :+ varDecls(
               ctx.mangler.invokeDynamicSyncVarName(ctx.cls.name, method.name, method.desc, index) ->
                 syncAlias.toIdent.sel("Once"),
@@ -606,6 +621,7 @@ trait ClassCompiler extends Logger {
 
 object ClassCompiler extends ClassCompiler {
   case class Context(
+    conf: Config,
     cls: Cls,
     imports: Imports,
     mangler: Mangler

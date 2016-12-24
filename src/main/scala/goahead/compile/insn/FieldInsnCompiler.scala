@@ -14,50 +14,70 @@ trait FieldInsnCompiler {
     insn.byOpcode {
       case Opcodes.GETFIELD =>
         ctx.stackPopped { case (ctx, item) =>
-          val field = ctx.classPath.findFieldOnDeclarer(insn.owner, insn.name, static = false)
-          // If the field is private, we have to cast the instance to its impl
-          val ctxAndSubject = if (!field.access.isAccessPrivate) ctx -> item.expr else ctx.instToImpl(item, insn.owner)
-          ctxAndSubject.map { case (ctx, subject) =>
-            ctx.stackPushed(
-              TypedExpression(
-                expr = subject.sel(ctx.mangler.fieldGetterName(field.cls.name, insn.name)).call(),
-                typ = IType.getType(insn.desc),
-                cheapRef = false
-              )
-            ) -> Nil
+          instanceFieldAccessorRef(ctx, insn.name, insn.desc, insn.owner, item, getter = true).map {
+            case (ctx, ref) =>
+              ctx.stackPushed(
+                TypedExpression(
+                  expr = ref.call(),
+                  typ = IType.getType(insn.desc),
+                  cheapRef = false
+                )
+              ) -> Nil
           }
         }
       case Opcodes.GETSTATIC =>
-        ctx.staticInstRefExpr(insn.owner).map { case (ctx, expr) =>
+        staticFieldRef(ctx, insn.name, insn.desc, insn.owner).map { case (ctx, ref) =>
           ctx.stackPushed(TypedExpression(
-            expr = expr.sel(ctx.mangler.fieldName(insn.owner, insn.name)),
+            expr = ref,
             typ = IType.getType(insn.desc),
             cheapRef = false
           )) -> Nil
         }
       case Opcodes.PUTFIELD =>
         ctx.stackPopped(2, { case (ctx, Seq(objectRef, value)) =>
-          // If the field is private, we have to cast the instance to its impl
-          val field = ctx.classPath.findFieldOnDeclarer(insn.owner, insn.name, static = false)
-          // If the field is private, we have to cast the instance to its impl
-          val ctxAndSubject =
-            if (!field.access.isAccessPrivate) ctx -> objectRef.expr
-            else ctx.instToImpl(objectRef, insn.owner)
-          ctxAndSubject.map { case (ctx, subject) =>
-            value.toExprNode(ctx, IType.getType(insn.desc)).map { case (ctx, value) =>
-              ctx -> subject.sel(ctx.mangler.fieldSetterName(field.cls.name, insn.name)).
-                call(Seq(value)).toStmt.singleSeq
-            }
+          instanceFieldAccessorRef(ctx, insn.name, insn.desc, insn.owner, objectRef, getter = false).map {
+            case (ctx, ref) =>
+              value.toExprNode(ctx, IType.getType(insn.desc)).map { case (ctx, value) =>
+                ctx -> ref.call(Seq(value)).toStmt.singleSeq
+              }
           }
         })
       case Opcodes.PUTSTATIC =>
-        ctx.staticInstRefExpr(insn.owner).map { case (ctx, expr) =>
+        staticFieldRef(ctx, insn.name, insn.desc, insn.owner).map { case (ctx, ref) =>
           ctx.stackPopped { case (ctx, value) =>
             value.toExprNode(ctx, IType.getType(insn.desc)).map { case (ctx, value) =>
-              ctx -> expr.sel(ctx.mangler.fieldName(insn.owner, insn.name)).assignExisting(value).singleSeq
+              ctx -> ref.assignExisting(value).singleSeq
             }
           }
         }
+    }
+  }
+
+  protected def instanceFieldAccessorRef(
+    ctx: Context,
+    name: String,
+    desc: String,
+    owner: String,
+    subject: TypedExpression,
+    getter: Boolean
+  ): (Context, Node.Expression) = {
+    val field = ctx.classPath.findFieldOnDeclarer(owner, name, static = false)
+    // If the field is private, we have to cast the instance to its impl
+    val ctxAndSubject = if (!field.access.isAccessPrivate) ctx -> subject.expr else ctx.instToImpl(subject, owner)
+    ctxAndSubject.map { case (ctx, subject) =>
+      if (getter) ctx -> subject.sel(ctx.mangler.fieldGetterName(field.cls.name, name))
+      else ctx -> subject.sel(ctx.mangler.fieldSetterName(field.cls.name, name))
+    }
+  }
+
+  protected def staticFieldRef(
+    ctx: Context,
+    name: String,
+    desc: String,
+    owner: String
+  ): (Context, Node.Expression) = {
+    ctx.staticInstRefExpr(owner).map { case (ctx, expr) =>
+      ctx -> expr.sel(ctx.mangler.fieldName(owner, name))
     }
   }
 }
