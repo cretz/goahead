@@ -2,6 +2,14 @@
 // GPL license with the classpath exception
 package rt
 
+type Java__lang__reflect__AnnotatedElement__Static struct{}
+
+var Java__lang__reflect__AnnotatedElement__Var Java__lang__reflect__AnnotatedElement__Static
+
+func Java__lang__reflect__AnnotatedElement() *Java__lang__reflect__AnnotatedElement__Static {
+	return &Java__lang__reflect__AnnotatedElement__Var
+}
+
 type Java__lang__reflect__AnnotatedElement__Instance interface {
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
@@ -21,6 +29,14 @@ func Java__lang__reflect__AnnotatedElement__defaultmethod__IsAnnotationPresent__
 	panic("Not Implemented - java/lang/reflect/AnnotatedElement.isAnnotationPresent(Ljava/lang/Class;)Z")
 }
 
+type Java__lang__reflect__GenericDeclaration__Static struct{}
+
+var Java__lang__reflect__GenericDeclaration__Var Java__lang__reflect__GenericDeclaration__Static
+
+func Java__lang__reflect__GenericDeclaration() *Java__lang__reflect__GenericDeclaration__Static {
+	return &Java__lang__reflect__GenericDeclaration__Var
+}
+
 type Java__lang__reflect__GenericDeclaration__Instance interface {
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
@@ -34,6 +50,14 @@ type Java__lang__reflect__GenericDeclaration__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+}
+
+type Java__lang__reflect__Type__Static struct{}
+
+var Java__lang__reflect__Type__Var Java__lang__reflect__Type__Static
+
+func Java__lang__reflect__Type() *Java__lang__reflect__Type__Static {
+	return &Java__lang__reflect__Type__Var
 }
 
 type Java__lang__reflect__Type__Instance interface {

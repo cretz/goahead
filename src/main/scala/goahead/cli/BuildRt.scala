@@ -34,6 +34,7 @@ trait BuildRt extends Command {
       classes = Seq(
         "java.io.PrintStream",
         "java.lang.Class",
+        "java.lang.ClassLoader",
         "java.lang.ClassCastException",
         "java.lang.Exception",
         "java.lang.IllegalMonitorStateException",
@@ -42,7 +43,13 @@ trait BuildRt extends Command {
         "java.lang.String",
         "java.lang.StringBuilder",
         "java.lang.System",
-        "java.lang.VirtualMachineError"
+        "java.lang.VirtualMachineError",
+        "java.lang.invoke.CallSite",
+        "java.lang.invoke.LambdaMetafactory",
+        "java.lang.invoke.MethodHandle",
+        "java.lang.invoke.MethodHandles",
+        "java.lang.invoke.MethodHandles$Lookup",
+        "java.lang.invoke.MethodType"
       ),
       // Things we are handling ourselves for now
       excludePatterns = Seq(

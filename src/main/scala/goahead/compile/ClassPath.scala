@@ -18,8 +18,6 @@ import scala.util.Try
 // Guaranteed thread safe
 case class ClassPath(entries: Seq[ClassPath.Entry]) {
 
-//  def runtimeRelativeCompiledDir = getFirstClass("java/lang/Object").relativeCompiledDir
-
   def findClassRelativeCompiledDir(classInternalName: String): Option[String] = {
     findFirstClass(classInternalName).map(_.relativeCompiledDir)
   }

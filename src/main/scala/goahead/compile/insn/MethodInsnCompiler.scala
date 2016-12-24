@@ -23,20 +23,7 @@ trait MethodInsnCompiler {
       }
     }
 
-    @inline def isAskingForCallerClass =
-      insn.owner == "sun/reflect/Reflection" && insn.name == "getCallerClass" && insn.desc == "()Ljava/lang/Class;"
-
     insn.byOpcode {
-      // As a special case, asking for the caller class means we replace with Class.forName
-      case Opcodes.INVOKESTATIC if isAskingForCallerClass =>
-        ctx.staticInstRefExpr("java/lang/Class").map { case (ctx, staticInstExpr) =>
-          val method = ctx.classPath.getFirstClass("java/lang/Class").cls.methods.
-            find(m => m.name == "forName" && m.desc == "(Ljava/lang/String;)Ljava/lang/Class;").get
-          val methodExpr = staticInstExpr.sel(ctx.mangler.implMethodName(method.name, method.desc))
-          // We have to double up the caller class due to forName wanting the caller class too
-          val args = Seq("callerClass".toIdent, "callerClass".toIdent)
-          invokeStmt(ctx, method, methodExpr, args, retType, argsIncludesCallerName = true)
-        }
       case Opcodes.INVOKESTATIC =>
         ctx.staticInstRefExpr(insn.owner).map { case (ctx, staticInstExpr) =>
           ctx.stackPopped(argTypes.length, { case (ctx, args) =>
@@ -149,18 +136,10 @@ trait MethodInsnCompiler {
     method: Method,
     methodExpr: Node.Expression,
     args: Seq[Node.Expression],
-    retType: IType,
-    argsIncludesCallerName: Boolean = false
+    retType: IType
   ): (Context, Seq[Node.Statement]) = {
-    // As a special case, if it has a sun.reflect.CallerSensitive, we pass the caller class name as the first param
-    if (!argsIncludesCallerName && method.isCallerSpecific) {
-      ctx.newString(ctx.cls.name).map { case (ctx, clsName) =>
-        invokeStmt(ctx, method, methodExpr, clsName +: args, retType, argsIncludesCallerName = true)
-      }
-    } else {
-      val called = methodExpr.call(args)
-      if (retType == IType.VoidType) ctx -> called.toStmt.singleSeq
-      else ctx.stackPushed(TypedExpression(called, retType, cheapRef = false)) -> Nil
-    }
+    val called = methodExpr.call(args)
+    if (retType == IType.VoidType) ctx -> called.toStmt.singleSeq
+    else ctx.stackPushed(TypedExpression(called, retType, cheapRef = false)) -> Nil
   }
 }

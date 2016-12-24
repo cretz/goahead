@@ -35,19 +35,11 @@ trait SignatureCompiler {
     includeParamNames: Boolean
   ): (T, Node.FunctionType) = {
     val ctxWithParams =
-      // Signature polymorphic should be varargs
+      // Signature polymorphic should be varargs empty interface
       if (method.isSignaturePolymorphic) {
-        ctx.typeToGoType(IType.getObjectType("java/lang/Object")).map { case (ctx, typ) =>
-          ctx -> Seq(field("var0", emptyInterface.ellipsis))
-        }
+        ctx -> Seq(field("var0", emptyInterface.ellipsis))
       } else {
-        // As a special case, if the method is caller specific, it's first param is the caller class name
-        val initialCtxAndFields = if (!method.isCallerSpecific) ctx -> Nil else {
-          ctx.typeToGoType(IType.getObjectType("java/lang/String")).map { case (ctx, strTyp) =>
-            ctx -> Seq(field("callerClass", strTyp))
-          }
-        }
-        IType.getArgumentTypes(method.desc).zipWithIndex.foldLeft(initialCtxAndFields) {
+        IType.getArgumentTypes(method.desc).zipWithIndex.foldLeft(ctx -> Seq.empty[Node.Field]) {
           case ((ctx, params), (argType, argIndex)) =>
             ctx.typeToGoType(argType).map { case (ctx, typ) =>
               val param = if (includeParamNames) field(s"var$argIndex", typ) else typ.namelessField
@@ -57,10 +49,12 @@ trait SignatureCompiler {
       }
 
     ctxWithParams.map { case (ctx, params) =>
-      val ctxWithResultTypOpt = IType.getReturnType(method.desc) match {
-        case IType.VoidType => ctx -> None
-        case retTyp => ctx.typeToGoType(retTyp).map { case (ctx, typ) => ctx -> Some(typ) }
-      }
+      val ctxWithResultTypOpt =
+        if (method.isSignaturePolymorphic) ctx -> Some(emptyInterface)
+        else IType.getReturnType(method.desc) match {
+          case IType.VoidType => ctx -> None
+          case retTyp => ctx.typeToGoType(retTyp).map { case (ctx, typ) => ctx -> Some(typ) }
+        }
 
       ctxWithResultTypOpt.map { case (ctx, resultTypOpt) => ctx -> funcTypeWithFields(params, resultTypOpt) }
     }

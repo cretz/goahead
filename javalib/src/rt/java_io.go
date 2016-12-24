@@ -2,6 +2,14 @@
 // GPL license with the classpath exception
 package rt
 
+type Java__io__Closeable__Static struct{}
+
+var Java__io__Closeable__Var Java__io__Closeable__Static
+
+func Java__io__Closeable() *Java__io__Closeable__Static {
+	return &Java__io__Closeable__Var
+}
+
 type Java__io__Closeable__Instance interface {
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Close__desc____ret__V()
@@ -15,6 +23,87 @@ type Java__io__Closeable__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+}
+
+type Java__io__Closeable__dynproxy____Static struct{}
+
+var Java__io__Closeable__dynproxy____Var Java__io__Closeable__dynproxy____Static
+
+func Java__io__Closeable__dynproxy__() *Java__io__Closeable__dynproxy____Static {
+	return &Java__io__Closeable__dynproxy____Var
+}
+
+func (this *Java__io__Closeable__dynproxy____Static) New() *Java__io__Closeable__dynproxy____Impl {
+	v := &Java__io__Closeable__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__io__Closeable__dynproxy____InitDispatch(v)
+	return v
+}
+
+type Java__io__Closeable__dynproxy____Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Close__desc____ret__V()
+}
+
+func (this *Java__io__Closeable__dynproxy____Impl) Java__io__Closeable__dynproxy____InitDispatch(v Java__io__Closeable__dynproxy____Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__io__Closeable__dynproxy____Impl) Close__desc____ret__V() {
+	this._dispatch.Impl__Close__desc____ret__V()
+}
+
+type Java__io__Closeable__dynproxy____Instance interface {
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Close__desc____ret__V()
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	FieldGet__Java__io__Closeable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance
+	FieldSet__Java__io__Closeable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance)
+	RawPtr__Java__io__Closeable__dynproxy__() *Java__io__Closeable__dynproxy____Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__io__Closeable__dynproxy____Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__io__Closeable__dynproxy____Dispatch
+	CallSite  Java__lang__invoke__CallSite__Instance
+}
+
+func (this *Java__io__Closeable__dynproxy____Impl) FieldGet__Java__io__Closeable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance {
+	return this.CallSite
+}
+
+func (this *Java__io__Closeable__dynproxy____Impl) FieldSet__Java__io__Closeable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance) {
+	this.CallSite = v
+}
+
+func (this *Java__io__Closeable__dynproxy____Impl) RawPtr__Java__io__Closeable__dynproxy__() *Java__io__Closeable__dynproxy____Impl {
+	return this
+}
+
+func (_ *Java__io__Closeable__Static) DynProxy_Create(cs Java__lang__invoke__CallSite__Instance) Java__io__Closeable__Instance {
+	v := &Java__io__Closeable__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+		CallSite:                 cs,
+	}
+	v.Java__io__Closeable__dynproxy____InitDispatch(v)
+	v.Java__lang__Object__Impl.Impl__Instance_Init__desc____ret__V()
+	return v
+}
+
+func (this *Java__io__Closeable__dynproxy____Impl) Impl__Close__desc____ret__V() {
+	this.CallSite.DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle().Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object()
 }
 
 type Java__io__FilterOutputStream__Static struct{}
@@ -113,6 +202,14 @@ func (this *Java__io__FilterOutputStream__Impl) RawPtr__Java__io__FilterOutputSt
 	return this
 }
 
+type Java__io__Flushable__Static struct{}
+
+var Java__io__Flushable__Var Java__io__Flushable__Static
+
+func Java__io__Flushable() *Java__io__Flushable__Static {
+	return &Java__io__Flushable__Var
+}
+
 type Java__io__Flushable__Instance interface {
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
@@ -126,6 +223,87 @@ type Java__io__Flushable__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+}
+
+type Java__io__Flushable__dynproxy____Static struct{}
+
+var Java__io__Flushable__dynproxy____Var Java__io__Flushable__dynproxy____Static
+
+func Java__io__Flushable__dynproxy__() *Java__io__Flushable__dynproxy____Static {
+	return &Java__io__Flushable__dynproxy____Var
+}
+
+func (this *Java__io__Flushable__dynproxy____Static) New() *Java__io__Flushable__dynproxy____Impl {
+	v := &Java__io__Flushable__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__io__Flushable__dynproxy____InitDispatch(v)
+	return v
+}
+
+type Java__io__Flushable__dynproxy____Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Flush__desc____ret__V()
+}
+
+func (this *Java__io__Flushable__dynproxy____Impl) Java__io__Flushable__dynproxy____InitDispatch(v Java__io__Flushable__dynproxy____Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__io__Flushable__dynproxy____Impl) Flush__desc____ret__V() {
+	this._dispatch.Impl__Flush__desc____ret__V()
+}
+
+type Java__io__Flushable__dynproxy____Instance interface {
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	Flush__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	FieldGet__Java__io__Flushable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance
+	FieldSet__Java__io__Flushable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance)
+	RawPtr__Java__io__Flushable__dynproxy__() *Java__io__Flushable__dynproxy____Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__io__Flushable__dynproxy____Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__io__Flushable__dynproxy____Dispatch
+	CallSite  Java__lang__invoke__CallSite__Instance
+}
+
+func (this *Java__io__Flushable__dynproxy____Impl) FieldGet__Java__io__Flushable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance {
+	return this.CallSite
+}
+
+func (this *Java__io__Flushable__dynproxy____Impl) FieldSet__Java__io__Flushable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance) {
+	this.CallSite = v
+}
+
+func (this *Java__io__Flushable__dynproxy____Impl) RawPtr__Java__io__Flushable__dynproxy__() *Java__io__Flushable__dynproxy____Impl {
+	return this
+}
+
+func (_ *Java__io__Flushable__Static) DynProxy_Create(cs Java__lang__invoke__CallSite__Instance) Java__io__Flushable__Instance {
+	v := &Java__io__Flushable__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+		CallSite:                 cs,
+	}
+	v.Java__io__Flushable__dynproxy____InitDispatch(v)
+	v.Java__lang__Object__Impl.Impl__Instance_Init__desc____ret__V()
+	return v
+}
+
+func (this *Java__io__Flushable__dynproxy____Impl) Impl__Flush__desc____ret__V() {
+	this.CallSite.DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle().Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object()
 }
 
 type Java__io__OutputStream__Static struct{}
@@ -617,6 +795,14 @@ func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__
 
 func (this *Java__io__PrintStream__Impl) RawPtr__Java__io__PrintStream() *Java__io__PrintStream__Impl {
 	return this
+}
+
+type Java__io__Serializable__Static struct{}
+
+var Java__io__Serializable__Var Java__io__Serializable__Static
+
+func Java__io__Serializable() *Java__io__Serializable__Static {
+	return &Java__io__Serializable__Var
 }
 
 type Java__io__Serializable__Instance interface {

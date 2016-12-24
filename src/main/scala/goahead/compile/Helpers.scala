@@ -290,12 +290,10 @@ object Helpers extends Logger {
 
     def typeLit(typ: IType): (MethodCompiler.Context, Node.Expression) = {
       ctx.staticInstRefExpr("java/lang/Class").map { case (ctx, staticInstExpr) =>
-        ctx.newString(ctx.cls.name).map { case (ctx, callerName) =>
-          ctx.newString(typ.className).map { case (ctx, className) =>
-            ctx -> staticInstExpr.sel(
-              ctx.mangler.implMethodName("forName", "(Ljava/lang/String;)Ljava/lang/Class;")
-            ).call(Seq(callerName, className))
-          }
+        ctx.newString(typ.className).map { case (ctx, className) =>
+          ctx -> staticInstExpr.sel(
+            ctx.mangler.implMethodName("forName", "(Ljava/lang/String;)Ljava/lang/Class;")
+          ).call(Seq(className))
         }
       }
     }

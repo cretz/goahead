@@ -12,14 +12,14 @@ sealed trait Method {
   def desc: String
   def argTypes: Seq[IType]
   def returnType: IType
-  def instructions: Seq[AbstractInsnNode]
+  def instructions: IndexedSeq[AbstractInsnNode]
   def debugLocalVars: Seq[LocalVariableNode]
   def asmString: String
   def tryCatchBlocks: Seq[TryCatchBlockNode]
   def isSignaturePolymorphic: Boolean
   def visibleAnnotations: Seq[Annotation]
   def invisibleAnnotations: Seq[Annotation]
-  def isCallerSpecific: Boolean
+  def isCallerSensitive: Boolean
 }
 
 object Method {
@@ -40,7 +40,7 @@ object Method {
 
     override def instructions = {
       import scala.collection.JavaConverters._
-      node.instructions.iterator.asScala.asInstanceOf[Iterator[AbstractInsnNode]].toSeq
+      node.instructions.iterator.asScala.asInstanceOf[Iterator[AbstractInsnNode]].toIndexedSeq
     }
 
     override def debugLocalVars = {
@@ -78,9 +78,9 @@ object Method {
       Option(node.invisibleAnnotations).toSeq.flatMap(_.asScala.asInstanceOf[Seq[AnnotationNode]].map(Annotation.apply))
     }
 
-    override lazy val isCallerSpecific = {
-      visibleAnnotations.exists(_.desc == "Lsun/reflect/CallerSensitive") ||
-        invisibleAnnotations.exists(_.desc == "Lsun/reflect/CallerSensitive")
+    override lazy val isCallerSensitive = {
+      visibleAnnotations.exists(_.desc == "Lsun/reflect/CallerSensitive;") ||
+        invisibleAnnotations.exists(_.desc == "Lsun/reflect/CallerSensitive;")
     }
   }
 }

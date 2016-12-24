@@ -17,6 +17,10 @@ trait Mangler {
   def staticAccessorName(internalName: String): String
   def staticObjectName(internalName: String): String
   def staticVarName(internalName: String): String
+  def invokeDynamicSyncVarName(owner: String, methodName: String, methodDesc: String, insnIndex: Int): String
+  def invokeDynamicCallSiteVarName(owner: String, methodName: String, methodDesc: String, insnIndex: Int): String
+  def funcInterfaceProxySuffix(internalName: String): String
+  def funcInterfaceProxyCreateMethodName(internalName: String): String
   // NOTE: without extension
   def fileName(packageOrClassNameWithSlashesOrDots: String): String
 }
@@ -117,6 +121,26 @@ object Mangler {
     }
 
     private[this] def varName(name: String): String = name
+
+    override def invokeDynamicSyncVarName(
+      owner: String,
+      methName: String,
+      methDesc: String,
+      insnIndex: Int
+    ): String = "_" + objectNamePrefix(owner) + s"__invokedynsync${insnIndex}__" + methodName(methName, methDesc)
+
+    override def invokeDynamicCallSiteVarName(
+      owner: String,
+      methName: String,
+      methDesc: String,
+      insnIndex: Int
+    ): String = "_" + objectNamePrefix(owner) + s"__invokedynsite${insnIndex}__" + methodName(methName, methDesc)
+
+    override def funcInterfaceProxySuffix(internalName: String): String =
+      "__dynproxy__"
+
+    override def funcInterfaceProxyCreateMethodName(internalName: String): String =
+      "DynProxy_Create"
 
     override def fileName(packageOrClassNameWithSlashesOrDots: String): String =
       packageOrClassNameWithSlashesOrDots.replace('.', '_').replace('/', '_')

@@ -1,7 +1,11 @@
 package goahead.compile
 
+import java.util.Collections
+
 import goahead.Logger
 import goahead.ast.Node
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.{ClassNode, FieldNode, InvokeDynamicInsnNode}
 
 import scala.util.control.NonFatal
 
@@ -14,10 +18,7 @@ trait ClassCompiler extends Logger {
     logger.debug(s"Compiling class: ${cls.name}")
     try {
       // TODO: limit major version to 1.6+ to avoid issues with JSR/RET deprecation?
-      val ctx = initContext(cls, imports, mangler)
-      (if (cls.access.isAccessInterface) compileInterface(ctx) else compileClass(ctx)).map { case (ctx, decls) =>
-        ctx.imports -> decls
-      }
+      compile(initContext(cls, imports, mangler)).map { case (ctx, decls) => ctx.imports -> decls }
     } catch { case NonFatal(e) => throw new Exception(s"Unable to compile class ${cls.name}", e) }
   }
 
@@ -27,10 +28,18 @@ trait ClassCompiler extends Logger {
     mangler: Mangler
   ) = Context(cls, imports, mangler)
 
+  protected def compile(ctx: Context): (Context, Seq[Node.Declaration]) = {
+    if (ctx.cls.access.isAccessInterface) compileInterface(ctx) else compileClass(ctx)
+  }
+
   protected def compileInterface(ctx: Context): (Context, Seq[Node.Declaration]) = {
-    compileInstInterface(ctx).map { case (ctx, instIfaceDecl) =>
-      compileInterfaceDefaultMethods(ctx).map { case (ctx, ifaceDefaultDecls) =>
-        ctx -> (instIfaceDecl +: ifaceDefaultDecls)
+    compileStatic(ctx).map { case (ctx, staticDecls) =>
+      compileInstInterface(ctx).map { case (ctx, instIfaceDecl) =>
+        compileInterfaceDefaultMethods(ctx).map { case (ctx, ifaceDefaultDecls) =>
+          compileFunctionalInterfaceProxy(ctx).map { case (ctx, ifaceProxyDecls) =>
+            ctx -> (staticDecls ++ instIfaceDecl.singleSeq ++ ifaceDefaultDecls ++ ifaceProxyDecls)
+          }
+        }
       }
     }
   }
@@ -101,55 +110,161 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileStaticNew(ctx: Context): (Context, Option[Node.FunctionDeclaration]) = {
-    val ctxAndStaticNewElements = ctx.cls.parent match {
-      case None => ctx -> Nil
-      case Some(superName) => ctx.staticNewExpr(superName).map { case (ctx, superStaticNewExpr) =>
-        ctx -> ctx.mangler.implObjectName(superName).toIdent.withValue(superStaticNewExpr).singleSeq
+    if (ctx.cls.access.isAccessInterface) ctx -> None else {
+      val ctxAndStaticNewElements = ctx.cls.parent match {
+        case None => ctx -> Nil
+        case Some(superName) => ctx.staticNewExpr(superName).map { case (ctx, superStaticNewExpr) =>
+          ctx -> ctx.mangler.implObjectName(superName).toIdent.withValue(superStaticNewExpr).singleSeq
+        }
       }
-    }
 
-    val ctxAndStmts = ctxAndStaticNewElements.map { case (ctx, staticNewElements) =>
-      val defineStmt = "v".toIdent.assignDefine(literal(
-        Some(ctx.mangler.implObjectName(ctx.cls.name).toIdent),
-        staticNewElements:_*
-      ).unary(Node.Token.And))
-      val initDispatchStmt = "v".toIdent.sel(
-        ctx.mangler.dispatchInitMethodName(ctx.cls.name)
-      ).call("v".toIdent.singleSeq).toStmt
-      val retStmt = "v".toIdent.ret
-      ctx -> Seq(defineStmt, initDispatchStmt, retStmt)
-    }
+      val ctxAndStmts = ctxAndStaticNewElements.map { case (ctx, staticNewElements) =>
+        val defineStmt = "v".toIdent.assignDefine(literal(
+          Some(ctx.mangler.implObjectName(ctx.cls.name).toIdent),
+          staticNewElements: _*
+        ).unary(Node.Token.And))
+        val initDispatchStmt = "v".toIdent.sel(
+          ctx.mangler.dispatchInitMethodName(ctx.cls.name)
+        ).call("v".toIdent.singleSeq).toStmt
+        val retStmt = "v".toIdent.ret
+        ctx -> Seq(defineStmt, initDispatchStmt, retStmt)
+      }
 
-    ctxAndStmts.map { case (ctx, stmts) =>
-      ctx -> Some(funcDecl(
-        rec = Some("this" -> ctx.mangler.staticObjectName(ctx.cls.name).toIdent.star),
-        name = "New",
-        params = Nil,
-        results = Some(ctx.mangler.implObjectName(ctx.cls.name).toIdent.star),
-        stmts = stmts
-      ))
+      ctxAndStmts.map { case (ctx, stmts) =>
+        ctx -> Some(funcDecl(
+          rec = Some("this" -> ctx.mangler.staticObjectName(ctx.cls.name).toIdent.star),
+          name = "New",
+          params = Nil,
+          results = Some(ctx.mangler.implObjectName(ctx.cls.name).toIdent.star),
+          stmts = stmts
+        ))
+      }
     }
   }
 
-  protected def compileStaticMethods(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
+  protected def compileStaticMethods(ctx: Context): (Context, Seq[Node.Declaration]) = {
     val methods = methodSetManager.staticMethods(ctx.classPath, ctx.cls).methodsWithCovariantReturnDuplicates
-    compileMethods(ctx, methods).map {
-      case (ctx, funcs) =>
+    compileMethods(ctx, methods).map { case (ctx, funcs) =>
 
-        // As a special case, we have to combine all static inits, so we'll do it with anon
-        // functions if there is more than one
-        val staticMethodName = ctx.mangler.implMethodName("<clinit>", "()V")
-        val (staticInitFns, otherFns) = funcs.partition(_.name.name == staticMethodName)
-        if (staticInitFns.length <= 1) ctx -> funcs else {
-          val newStaticInitFn = staticInitFns.head.copy(
-            body = Some(block(
-              staticInitFns.map { staticInitFn =>
-                funcType(Nil).toFuncLit(staticInitFn.body.get.statements).call().toStmt
-              }
-            ))
-          )
-          ctx -> (newStaticInitFn +: otherFns)
+      // As a special case, we have to combine all static inits, so we'll do it with anon
+      // functions if there is more than one
+      val staticMethodName = ctx.mangler.implMethodName("<clinit>", "()V")
+      val (staticInitFns, otherFns) = funcs.partition(_.name.name == staticMethodName)
+      val staticFuncs = if (staticInitFns.length <= 1) funcs else {
+        val newStaticInitFn = staticInitFns.head.copy(
+          body = Some(block(
+            staticInitFns.map { staticInitFn =>
+              funcType(Nil).toFuncLit(staticInitFn.body.get.statements).call().toStmt
+            }
+          ))
+        )
+        newStaticInitFn +: otherFns
+      }
+
+      compileInvokeDynamicSyncVars(ctx, methods).map { case (ctx, invokeDynVars) =>
+        ctx -> (staticFuncs ++ invokeDynVars)
+      }
+    }
+  }
+
+  protected def compileFunctionalInterfaceProxy(ctx: Context): (Context, Seq[Node.Declaration]) = {
+    methodSetManager.functionalInterfaceMethod(ctx.classPath, ctx.cls) match {
+      case None => ctx -> Nil
+      case Some(ifaceMethod) =>
+        // The way we do this is to "extend" the current class with no overrides, create a field for the call site,
+        // and then manually create the create function on the static part of this class
+        val extension = new ClassNode()
+        ctx.cls.asInstanceOf[Cls.Asm].node.accept(extension)
+        extension.access &= ~Opcodes.ACC_INTERFACE
+        extension.name = ctx.cls.name + ctx.mangler.funcInterfaceProxySuffix(ctx.cls.name)
+        extension.superName = "java/lang/Object"
+        extension.interfaces = Collections.singletonList(ctx.cls.name)
+        extension.visibleAnnotations = null
+        extension.invisibleAnnotations = null
+        extension.visibleTypeAnnotations = null
+        extension.invisibleTypeAnnotations = null
+        extension.innerClasses.clear()
+        extension.fields = Collections.singletonList(
+          new FieldNode(Opcodes.ACC_PUBLIC, "callSite", "Ljava/lang/invoke/CallSite;", null, null)
+        )
+        extension.methods.clear()
+
+        // Set the new class, inject into class path, run compile again
+        val origCtx = ctx
+        val extensionCls = Cls(extension)
+        val newCtx = origCtx.copy(
+          cls = extensionCls,
+          imports = origCtx.imports.copy(classPath = origCtx.classPath.copy(
+            entries = origCtx.classPath.entries :+ ClassPath.Entry.SingleClassEntry(
+              extensionCls,
+              origCtx.classPath.getFirstClass(ctx.cls.name).relativeCompiledDir
+            )
+          ))
+        )
+        compile(newCtx).map { case (extCtx, decls) =>
+          // Put the original class and class path back, but keep everything else
+          val ctx = extCtx.copy(cls = origCtx.cls, imports = extCtx.imports.copy(classPath = origCtx.classPath))
+          compileFunctionalInterfaceProxyCreator(ctx, extensionCls).map { case (ctx, creatorDecl) =>
+            compileFunctionalInterfaceProxyMethod(ctx, extensionCls, ifaceMethod).map { case (ctx, methodDecl) =>
+              ctx -> (decls :+ creatorDecl :+ methodDecl)
+            }
+          }
         }
+    }
+  }
+
+  protected def compileFunctionalInterfaceProxyCreator(
+    ctx: Context,
+    extension: Cls
+  ): (Context, Node.FunctionDeclaration) = {
+    ctx.staticInstTypeExpr(ctx.cls.name).map { case (ctx, staticTyp) =>
+      ctx.typeToGoType(IType.getObjectType("java/lang/invoke/CallSite")).map { case (ctx, callSiteTyp) =>
+        ctx.typeToGoType(IType.getObjectType(ctx.cls.name)).map { case (ctx, retTyp) =>
+          ctx.staticNewExpr(extension.parent.get).map { case (ctx, superStaticNewExpr) =>
+            val parentImplObjName = ctx.mangler.implObjectName(extension.parent.get)
+            val defineStmt = "v".toIdent.assignDefine(literal(
+              Some(ctx.mangler.implObjectName(extension.name).toIdent),
+              parentImplObjName.toIdent.withValue(superStaticNewExpr),
+              ctx.mangler.fieldName(extension.name, "callSite").toIdent.withValue("cs".toIdent)
+            ).unary(Node.Token.And))
+            val initDispatchStmt = "v".toIdent.sel(
+              ctx.mangler.dispatchInitMethodName(extension.name)
+            ).call("v".toIdent.singleSeq).toStmt
+            val constructStmt = "v".toIdent.sel(parentImplObjName).
+              sel(ctx.mangler.implMethodName("<init>", "()V")).call().toStmt
+            val retStmt = "v".toIdent.ret
+            ctx -> funcDecl(
+              rec = Some("_" -> staticTyp),
+              name = ctx.mangler.funcInterfaceProxyCreateMethodName(ctx.cls.name),
+              params = Seq("cs" -> callSiteTyp),
+              results = Some(retTyp),
+              stmts = Seq(defineStmt, initDispatchStmt, constructStmt, retStmt)
+            )
+          }
+        }
+      }
+    }
+  }
+
+  protected def compileFunctionalInterfaceProxyMethod(
+    ctx: Context,
+    extension: Cls,
+    ifaceMethod: Method
+  ): (Context, Node.FunctionDeclaration) = {
+    // Just forward the call to the call site passing each param and type asserting the result
+    val call = "this".toIdent.sel(ctx.mangler.fieldName(extension.name, "callSite")).sel(
+      ctx.mangler.forwardMethodName("dynamicInvoker", "()Ljava/lang/invoke/MethodHandle;")
+    ).call().sel(
+      ctx.mangler.forwardMethodName("invoke", "([Ljava/lang/Object;)Ljava/lang/Object;")
+    ).call(ifaceMethod.argTypes.indices.map(i => s"var$i".toIdent))
+    val ctxAndCallStmt = ifaceMethod.returnType match {
+      case IType.VoidType => ctx -> call.toStmt
+      case retTyp => ctx.typeToGoType(retTyp).map { case (ctx, retTyp) => ctx -> call.typeAssert(retTyp).ret }
+    }
+    ctxAndCallStmt.map { case (ctx, callStmt) =>
+      signatureCompiler.buildFuncDecl(ctx, ifaceMethod, Seq(callStmt)).map { case (ctx, funcDecl) =>
+        ctx -> funcDecl.copy(receivers = Seq(field("this", ctx.mangler.implObjectName(extension.name).toIdent.star)))
+      }
     }
   }
 
@@ -205,7 +320,12 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileInterfaceDefaultMethods(ctx: Context): (Context, Seq[Node.Declaration]) = {
-    compileMethods(ctx, methodSetManager.instInterfaceDefaultMethods(ctx.classPath, ctx.cls).methods)
+    val methods = methodSetManager.instInterfaceDefaultMethods(ctx.classPath, ctx.cls).methods
+    compileMethods(ctx, methods).map { case (ctx, funcs) =>
+      compileInvokeDynamicSyncVars(ctx, methods).map { case (ctx, invokeDynVars) =>
+        ctx -> (funcs ++ invokeDynVars)
+      }
+    }
   }
 
   protected def compileImpl(ctx: Context): (Context, Seq[Node.Declaration]) = {
@@ -226,14 +346,16 @@ trait ClassCompiler extends Logger {
     }
   }
 
-  protected def compileImplMethods(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
+  protected def compileImplMethods(ctx: Context): (Context, Seq[Node.Declaration]) = {
     compileImplFieldAccessors(ctx).map { case (ctx, accessorDecls) =>
       val methodSet = methodSetManager.implMethods(ctx.classPath, ctx.cls)
       compileMethods(ctx, methodSet.methods).map { case (ctx, methodDecls) =>
-        compileImplRawPointerMethod(ctx).map { case (ctx, rawPointerMethod) =>
-          compileImplCovariantReturnDuplicateForwarders(ctx, methodSet.covariantReturnDuplicates).map {
-            case (ctx, covariantMethodDecls) =>
-              ctx -> (accessorDecls ++ methodDecls ++ covariantMethodDecls :+ rawPointerMethod)
+        compileInvokeDynamicSyncVars(ctx, methodSet.methods).map { case (ctx, invokeDynVars) =>
+          compileImplRawPointerMethod(ctx).map { case (ctx, rawPointerMethod) =>
+            compileImplCovariantReturnDuplicateForwarders(ctx, methodSet.covariantReturnDuplicates).map {
+              case (ctx, covariantMethodDecls) =>
+                ctx -> (accessorDecls ++ methodDecls ++ invokeDynVars ++ covariantMethodDecls :+ rawPointerMethod)
+            }
           }
         }
       }
@@ -355,6 +477,29 @@ trait ClassCompiler extends Logger {
     }
   }
 
+  protected def compileInvokeDynamicSyncVars(
+    ctx: Context,
+    methods: Seq[Method]
+  ): (Context, Seq[Node.GenericDeclaration]) = {
+    // Each invoke dynamic instruction gets a sync.Once var to synchronize the invoke dynamic build, then it also
+    // gets a call site var to store the permanent result globally
+    methods.foldLeft(ctx -> Seq.empty[Node.GenericDeclaration]) { case (ctxAndPrevVars, method) =>
+      val invokeInsns = method.instructions.zipWithIndex.collect { case (n: InvokeDynamicInsnNode, i) => n -> i }
+      invokeInsns.foldLeft(ctxAndPrevVars) { case ((ctx, prevVars), (insn, index)) =>
+        ctx.withImportAlias("sync").map { case (ctx, syncAlias) =>
+          ctx.typeToGoType(IType.getReturnType(insn.desc)).map { case (ctx, callSiteTyp) =>
+            ctx -> (prevVars :+ varDecls(
+              ctx.mangler.invokeDynamicSyncVarName(ctx.cls.name, method.name, method.desc, index) ->
+                syncAlias.toIdent.sel("Once"),
+              ctx.mangler.invokeDynamicCallSiteVarName(ctx.cls.name, method.name, method.desc, index) ->
+                callSiteTyp
+            ))
+          }
+        }
+      }
+    }
+  }
+
   protected def methodCompiler: MethodCompiler = MethodCompiler
 
   protected def compileDispatch(ctx: Context): (Context, Seq[Node.Declaration]) = {
@@ -368,9 +513,6 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileDispatchInterface(ctx: Context): (Context, Node.Declaration) = {
-    val allSuperTypes =
-      if (ctx.cls.access.isAccessInterface) ctx.imports.classPath.allSuperAndImplementingTypes(ctx.cls.name)
-      else ctx.imports.classPath.allSuperTypes(ctx.cls.name)
     // Interfaces use parent interfaces, classes just use the parent class if present
     val superNames =
       if (ctx.cls.access.isAccessInterface) ctx.cls.interfaces else ctx.cls.parent.toSeq

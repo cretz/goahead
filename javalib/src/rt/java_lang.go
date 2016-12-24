@@ -633,6 +633,14 @@ func (this *Java__lang__AbstractStringBuilder__Impl) RawPtr__Java__lang__Abstrac
 	return this
 }
 
+type Java__lang__Appendable__Static struct{}
+
+var Java__lang__Appendable__Var Java__lang__Appendable__Static
+
+func Java__lang__Appendable() *Java__lang__Appendable__Static {
+	return &Java__lang__Appendable__Var
+}
+
 type Java__lang__Appendable__Instance interface {
 	Append__desc__C__ret____obj__Java__lang__Appendable(rune) Java__lang__Appendable__Instance
 	Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance
@@ -650,6 +658,14 @@ type Java__lang__Appendable__Instance interface {
 	Wait__desc__J__I__ret__V(int64, int)
 }
 
+type Java__lang__AutoCloseable__Static struct{}
+
+var Java__lang__AutoCloseable__Var Java__lang__AutoCloseable__Static
+
+func Java__lang__AutoCloseable() *Java__lang__AutoCloseable__Static {
+	return &Java__lang__AutoCloseable__Var
+}
+
 type Java__lang__AutoCloseable__Instance interface {
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Close__desc____ret__V()
@@ -663,6 +679,95 @@ type Java__lang__AutoCloseable__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+}
+
+type Java__lang__AutoCloseable__dynproxy____Static struct{}
+
+var Java__lang__AutoCloseable__dynproxy____Var Java__lang__AutoCloseable__dynproxy____Static
+
+func Java__lang__AutoCloseable__dynproxy__() *Java__lang__AutoCloseable__dynproxy____Static {
+	return &Java__lang__AutoCloseable__dynproxy____Var
+}
+
+func (this *Java__lang__AutoCloseable__dynproxy____Static) New() *Java__lang__AutoCloseable__dynproxy____Impl {
+	v := &Java__lang__AutoCloseable__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__AutoCloseable__dynproxy____InitDispatch(v)
+	return v
+}
+
+type Java__lang__AutoCloseable__dynproxy____Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Close__desc____ret__V()
+}
+
+func (this *Java__lang__AutoCloseable__dynproxy____Impl) Java__lang__AutoCloseable__dynproxy____InitDispatch(v Java__lang__AutoCloseable__dynproxy____Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__AutoCloseable__dynproxy____Impl) Close__desc____ret__V() {
+	this._dispatch.Impl__Close__desc____ret__V()
+}
+
+type Java__lang__AutoCloseable__dynproxy____Instance interface {
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Close__desc____ret__V()
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	FieldGet__Java__lang__AutoCloseable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance
+	FieldSet__Java__lang__AutoCloseable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance)
+	RawPtr__Java__lang__AutoCloseable__dynproxy__() *Java__lang__AutoCloseable__dynproxy____Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__AutoCloseable__dynproxy____Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__AutoCloseable__dynproxy____Dispatch
+	CallSite  Java__lang__invoke__CallSite__Instance
+}
+
+func (this *Java__lang__AutoCloseable__dynproxy____Impl) FieldGet__Java__lang__AutoCloseable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance {
+	return this.CallSite
+}
+
+func (this *Java__lang__AutoCloseable__dynproxy____Impl) FieldSet__Java__lang__AutoCloseable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance) {
+	this.CallSite = v
+}
+
+func (this *Java__lang__AutoCloseable__dynproxy____Impl) RawPtr__Java__lang__AutoCloseable__dynproxy__() *Java__lang__AutoCloseable__dynproxy____Impl {
+	return this
+}
+
+func (_ *Java__lang__AutoCloseable__Static) DynProxy_Create(cs Java__lang__invoke__CallSite__Instance) Java__lang__AutoCloseable__Instance {
+	v := &Java__lang__AutoCloseable__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+		CallSite:                 cs,
+	}
+	v.Java__lang__AutoCloseable__dynproxy____InitDispatch(v)
+	v.Java__lang__Object__Impl.Impl__Instance_Init__desc____ret__V()
+	return v
+}
+
+func (this *Java__lang__AutoCloseable__dynproxy____Impl) Impl__Close__desc____ret__V() {
+	this.CallSite.DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle().Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object()
+}
+
+type Java__lang__CharSequence__Static struct{}
+
+var Java__lang__CharSequence__Var Java__lang__CharSequence__Static
+
+func Java__lang__CharSequence() *Java__lang__CharSequence__Static {
+	return &Java__lang__CharSequence__Var
 }
 
 type Java__lang__CharSequence__Instance interface {
@@ -721,6 +826,10 @@ func (this *Java__lang__Class__Static) Impl__ForName__desc____obj__Java__lang__S
 	panic("Not Implemented - java/lang/Class.forName(Ljava/lang/String;)Ljava/lang/Class;")
 }
 
+func (this *Java__lang__Class__Static) Impl__ForName__desc____obj__Java__lang__String__Z____obj__Java__lang__ClassLoader__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance, var1 bool, var2 Java__lang__ClassLoader__Instance) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/Class.forName(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;")
+}
+
 func (this *Java__lang__Class__Static) Impl__GetPrimitiveClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
 	panic("Not Implemented - java/lang/Class.getPrimitiveClass(Ljava/lang/String;)Ljava/lang/Class;")
 }
@@ -731,6 +840,8 @@ type Java__lang__Class__Dispatch interface {
 	Impl__Cast__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance) Java__lang__Object__Instance
 	Impl__DesiredAssertionStatus__desc____ret__Z() bool
 	Impl__GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetClassLoader__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
+	Impl__GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
 	Impl__GetClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	Impl__GetComponentType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	Impl__GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
@@ -785,6 +896,14 @@ func (this *Java__lang__Class__Impl) DesiredAssertionStatus__desc____ret__Z() bo
 
 func (this *Java__lang__Class__Impl) GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
 	return this._dispatch.Impl__GetCanonicalName__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__Class__Impl) GetClassLoader__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance {
+	return this._dispatch.Impl__GetClassLoader__desc____ret____obj__Java__lang__ClassLoader()
+}
+
+func (this *Java__lang__Class__Impl) GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance {
+	return this._dispatch.Impl__GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader()
 }
 
 func (this *Java__lang__Class__Impl) GetClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
@@ -928,6 +1047,8 @@ type Java__lang__Class__Instance interface {
 	Finalize__desc____ret__V()
 	GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetClassLoader__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
+	GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
 	GetClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	GetComponentType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
@@ -991,6 +1112,14 @@ func (this *Java__lang__Class__Impl) Impl__DesiredAssertionStatus__desc____ret__
 
 func (this *Java__lang__Class__Impl) Impl__GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
 	panic("Not Implemented - java/lang/Class.getCanonicalName()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetClassLoader__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance {
+	panic("Not Implemented - java/lang/Class.getClassLoader()Ljava/lang/ClassLoader;")
+}
+
+func (this *Java__lang__Class__Impl) Impl__GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance {
+	panic("Not Implemented - java/lang/Class.getClassLoader0()Ljava/lang/ClassLoader;")
 }
 
 func (this *Java__lang__Class__Impl) Impl__GetClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
@@ -1200,6 +1329,309 @@ func (this *Java__lang__ClassCastException__Impl) RawPtr__Java__lang__ClassCastE
 	return this
 }
 
+type Java__lang__ClassLoader__Static struct {
+	init sync.Once
+}
+
+var Java__lang__ClassLoader__Var Java__lang__ClassLoader__Static
+
+func Java__lang__ClassLoader() *Java__lang__ClassLoader__Static {
+	Java__lang__ClassLoader__Var.init.Do(Java__lang__ClassLoader__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__ClassLoader__Var
+}
+
+func (this *Java__lang__ClassLoader__Static) New() *Java__lang__ClassLoader__Impl {
+	v := &Java__lang__ClassLoader__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__ClassLoader__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__ClassLoader__Static) Impl__Static_Init__desc____ret__V() {
+	
+}
+
+func (this *Java__lang__ClassLoader__Static) Impl__CheckClassLoaderPermission__desc____obj__Java__lang__ClassLoader____obj__Java__lang__Class__ret__V(var0 Java__lang__ClassLoader__Instance, var1 Java__lang__Class__Instance) {
+	panic("Not Implemented - java/lang/ClassLoader.checkClassLoaderPermission(Ljava/lang/ClassLoader;Ljava/lang/Class;)V")
+}
+
+func (this *Java__lang__ClassLoader__Static) Impl__FindNative__desc____obj__Java__lang__ClassLoader____obj__Java__lang__String__ret__J(var0 Java__lang__ClassLoader__Instance, var1 Java__lang__String__Instance) int64 {
+	panic("Not Implemented - java/lang/ClassLoader.findNative(Ljava/lang/ClassLoader;Ljava/lang/String;)J")
+}
+
+func (this *Java__lang__ClassLoader__Static) Impl__GetClassLoader__desc____obj__Java__lang__Class__ret____obj__Java__lang__ClassLoader(var0 Java__lang__Class__Instance) Java__lang__ClassLoader__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.getClassLoader(Ljava/lang/Class;)Ljava/lang/ClassLoader;")
+}
+
+func (this *Java__lang__ClassLoader__Static) Impl__GetSystemClassLoader__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.getSystemClassLoader()Ljava/lang/ClassLoader;")
+}
+
+func (this *Java__lang__ClassLoader__Static) Impl__LoadLibrary__desc____obj__Java__lang__Class____obj__Java__lang__String__Z__ret__V(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 bool) {
+	panic("Not Implemented - java/lang/ClassLoader.loadLibrary(Ljava/lang/Class;Ljava/lang/String;Z)V")
+}
+
+func (this *Java__lang__ClassLoader__Static) Impl__RegisterAsParallelCapable__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/ClassLoader.registerAsParallelCapable()Z")
+}
+
+type Java__lang__ClassLoader__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Instance_Init__desc____obj__Java__lang__ClassLoader__ret__V(Java__lang__ClassLoader__Instance)
+	Impl__AddClass__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
+	Impl__ClearAssertionStatus__desc____ret__V()
+	Impl__DefineClass__desc____obj__Java__lang__String____arr__B__I__I__ret____obj__Java__lang__Class(Java__lang__String__Instance, ByteArray__Instance, int, int) Java__lang__Class__Instance
+	Impl__DefineClass__desc____arr__B__I__I__ret____obj__Java__lang__Class(ByteArray__Instance, int, int) Java__lang__Class__Instance
+	Impl__DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
+	Impl__FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
+	Impl__FindLibrary__desc____obj__Java__lang__String__ret____obj__Java__lang__String(Java__lang__String__Instance) Java__lang__String__Instance
+	Impl__FindLoadedClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
+	Impl__FindSystemClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
+	Impl__GetClassLoadingLock__desc____obj__Java__lang__String__ret____obj__Java__lang__Object(Java__lang__String__Instance) Java__lang__Object__Instance
+	Impl__GetParent__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
+	Impl__IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(Java__lang__ClassLoader__Instance) bool
+	Impl__LoadClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
+	Impl__LoadClass__desc____obj__Java__lang__String__Z__ret____obj__Java__lang__Class(Java__lang__String__Instance, bool) Java__lang__Class__Instance
+	Impl__ResolveClass__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
+	Impl__SetClassAssertionStatus__desc____obj__Java__lang__String__Z__ret__V(Java__lang__String__Instance, bool)
+	Impl__SetDefaultAssertionStatus__desc__Z__ret__V(bool)
+	Impl__SetPackageAssertionStatus__desc____obj__Java__lang__String__Z__ret__V(Java__lang__String__Instance, bool)
+	Impl__SetSigners__desc____obj__Java__lang__Class____arr____obj__Java__lang__Object__ret__V(Java__lang__Class__Instance, ObjectArray__Instance)
+}
+
+func (this *Java__lang__ClassLoader__Impl) Java__lang__ClassLoader__InitDispatch(v Java__lang__ClassLoader__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__ClassLoader__Impl) Instance_Init__desc____obj__Java__lang__ClassLoader__ret__V(var0 Java__lang__ClassLoader__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__ClassLoader__ret__V(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) AddClass__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
+	this._dispatch.Impl__AddClass__desc____obj__Java__lang__Class__ret__V(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) ClearAssertionStatus__desc____ret__V() {
+	this._dispatch.Impl__ClearAssertionStatus__desc____ret__V()
+}
+
+func (this *Java__lang__ClassLoader__Impl) DefineClass__desc____obj__Java__lang__String____arr__B__I__I__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance, var1 ByteArray__Instance, var2 int, var3 int) Java__lang__Class__Instance {
+	return this._dispatch.Impl__DefineClass__desc____obj__Java__lang__String____arr__B__I__I__ret____obj__Java__lang__Class(var0, var1, var2, var3)
+}
+
+func (this *Java__lang__ClassLoader__Impl) DefineClass__desc____arr__B__I__I__ret____obj__Java__lang__Class(var0 ByteArray__Instance, var1 int, var2 int) Java__lang__Class__Instance {
+	return this._dispatch.Impl__DefineClass__desc____arr__B__I__I__ret____obj__Java__lang__Class(var0, var1, var2)
+}
+
+func (this *Java__lang__ClassLoader__Impl) DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
+	return this._dispatch.Impl__DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	return this._dispatch.Impl__FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) FindLibrary__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance) Java__lang__String__Instance {
+	return this._dispatch.Impl__FindLibrary__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) FindLoadedClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	return this._dispatch.Impl__FindLoadedClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) FindSystemClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	return this._dispatch.Impl__FindSystemClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) GetClassLoadingLock__desc____obj__Java__lang__String__ret____obj__Java__lang__Object(var0 Java__lang__String__Instance) Java__lang__Object__Instance {
+	return this._dispatch.Impl__GetClassLoadingLock__desc____obj__Java__lang__String__ret____obj__Java__lang__Object(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) GetParent__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance {
+	return this._dispatch.Impl__GetParent__desc____ret____obj__Java__lang__ClassLoader()
+}
+
+func (this *Java__lang__ClassLoader__Impl) IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(var0 Java__lang__ClassLoader__Instance) bool {
+	return this._dispatch.Impl__IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) LoadClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	return this._dispatch.Impl__LoadClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) LoadClass__desc____obj__Java__lang__String__Z__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance, var1 bool) Java__lang__Class__Instance {
+	return this._dispatch.Impl__LoadClass__desc____obj__Java__lang__String__Z__ret____obj__Java__lang__Class(var0, var1)
+}
+
+func (this *Java__lang__ClassLoader__Impl) ResolveClass__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
+	this._dispatch.Impl__ResolveClass__desc____obj__Java__lang__Class__ret__V(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) SetClassAssertionStatus__desc____obj__Java__lang__String__Z__ret__V(var0 Java__lang__String__Instance, var1 bool) {
+	this._dispatch.Impl__SetClassAssertionStatus__desc____obj__Java__lang__String__Z__ret__V(var0, var1)
+}
+
+func (this *Java__lang__ClassLoader__Impl) SetDefaultAssertionStatus__desc__Z__ret__V(var0 bool) {
+	this._dispatch.Impl__SetDefaultAssertionStatus__desc__Z__ret__V(var0)
+}
+
+func (this *Java__lang__ClassLoader__Impl) SetPackageAssertionStatus__desc____obj__Java__lang__String__Z__ret__V(var0 Java__lang__String__Instance, var1 bool) {
+	this._dispatch.Impl__SetPackageAssertionStatus__desc____obj__Java__lang__String__Z__ret__V(var0, var1)
+}
+
+func (this *Java__lang__ClassLoader__Impl) SetSigners__desc____obj__Java__lang__Class____arr____obj__Java__lang__Object__ret__V(var0 Java__lang__Class__Instance, var1 ObjectArray__Instance) {
+	this._dispatch.Impl__SetSigners__desc____obj__Java__lang__Class____arr____obj__Java__lang__Object__ret__V(var0, var1)
+}
+
+type Java__lang__ClassLoader__Instance interface {
+	AddClass__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
+	ClearAssertionStatus__desc____ret__V()
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	DefineClass__desc____obj__Java__lang__String____arr__B__I__I__ret____obj__Java__lang__Class(Java__lang__String__Instance, ByteArray__Instance, int, int) Java__lang__Class__Instance
+	DefineClass__desc____arr__B__I__I__ret____obj__Java__lang__Class(ByteArray__Instance, int, int) Java__lang__Class__Instance
+	DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
+	FindLibrary__desc____obj__Java__lang__String__ret____obj__Java__lang__String(Java__lang__String__Instance) Java__lang__String__Instance
+	FindLoadedClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
+	FindSystemClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetClassLoadingLock__desc____obj__Java__lang__String__ret____obj__Java__lang__Object(Java__lang__String__Instance) Java__lang__Object__Instance
+	GetParent__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
+	HashCode__desc____ret__I() int
+	IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(Java__lang__ClassLoader__Instance) bool
+	LoadClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
+	LoadClass__desc____obj__Java__lang__String__Z__ret____obj__Java__lang__Class(Java__lang__String__Instance, bool) Java__lang__Class__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ResolveClass__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
+	SetClassAssertionStatus__desc____obj__Java__lang__String__Z__ret__V(Java__lang__String__Instance, bool)
+	SetDefaultAssertionStatus__desc__Z__ret__V(bool)
+	SetPackageAssertionStatus__desc____obj__Java__lang__String__Z__ret__V(Java__lang__String__Instance, bool)
+	SetSigners__desc____obj__Java__lang__Class____arr____obj__Java__lang__Object__ret__V(Java__lang__Class__Instance, ObjectArray__Instance)
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	FieldGet__Java__lang__ClassLoader__AssertionLock() Java__lang__Object__Instance
+	FieldSet__Java__lang__ClassLoader__AssertionLock(v Java__lang__Object__Instance)
+	RawPtr__Java__lang__ClassLoader() *Java__lang__ClassLoader__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__ClassLoader__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch     Java__lang__ClassLoader__Dispatch
+	AssertionLock Java__lang__Object__Instance
+}
+
+func (this *Java__lang__ClassLoader__Impl) FieldGet__Java__lang__ClassLoader__AssertionLock() Java__lang__Object__Instance {
+	return this.AssertionLock
+}
+
+func (this *Java__lang__ClassLoader__Impl) FieldSet__Java__lang__ClassLoader__AssertionLock(v Java__lang__Object__Instance) {
+	this.AssertionLock = v
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__Instance_Init__desc____ret__V() {
+	panic("Not Implemented - java/lang/ClassLoader.<init>()V")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__Instance_Init__desc____obj__Java__lang__ClassLoader__ret__V(var0 Java__lang__ClassLoader__Instance) {
+	panic("Not Implemented - java/lang/ClassLoader.<init>(Ljava/lang/ClassLoader;)V")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__AddClass__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
+	panic("Not Implemented - java/lang/ClassLoader.addClass(Ljava/lang/Class;)V")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__ClearAssertionStatus__desc____ret__V() {
+	panic("Not Implemented - java/lang/ClassLoader.clearAssertionStatus()V")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__DefineClass__desc____obj__Java__lang__String____arr__B__I__I__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance, var1 ByteArray__Instance, var2 int, var3 int) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.defineClass(Ljava/lang/String;[BII)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__DefineClass__desc____arr__B__I__I__ret____obj__Java__lang__Class(var0 ByteArray__Instance, var1 int, var2 int) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.defineClass([BII)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
+	panic("Not Implemented - java/lang/ClassLoader.desiredAssertionStatus(Ljava/lang/String;)Z")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.findClass(Ljava/lang/String;)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__FindLibrary__desc____obj__Java__lang__String__ret____obj__Java__lang__String(var0 Java__lang__String__Instance) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.findLibrary(Ljava/lang/String;)Ljava/lang/String;")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__FindLoadedClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.findLoadedClass(Ljava/lang/String;)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__FindSystemClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.findSystemClass(Ljava/lang/String;)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__GetClassLoadingLock__desc____obj__Java__lang__String__ret____obj__Java__lang__Object(var0 Java__lang__String__Instance) Java__lang__Object__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.getClassLoadingLock(Ljava/lang/String;)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__GetParent__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.getParent()Ljava/lang/ClassLoader;")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(var0 Java__lang__ClassLoader__Instance) bool {
+	panic("Not Implemented - java/lang/ClassLoader.isAncestor(Ljava/lang/ClassLoader;)Z")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__LoadClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__LoadClass__desc____obj__Java__lang__String__Z__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance, var1 bool) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/ClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__ResolveClass__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
+	panic("Not Implemented - java/lang/ClassLoader.resolveClass(Ljava/lang/Class;)V")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__SetClassAssertionStatus__desc____obj__Java__lang__String__Z__ret__V(var0 Java__lang__String__Instance, var1 bool) {
+	panic("Not Implemented - java/lang/ClassLoader.setClassAssertionStatus(Ljava/lang/String;Z)V")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__SetDefaultAssertionStatus__desc__Z__ret__V(var0 bool) {
+	panic("Not Implemented - java/lang/ClassLoader.setDefaultAssertionStatus(Z)V")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__SetPackageAssertionStatus__desc____obj__Java__lang__String__Z__ret__V(var0 Java__lang__String__Instance, var1 bool) {
+	panic("Not Implemented - java/lang/ClassLoader.setPackageAssertionStatus(Ljava/lang/String;Z)V")
+}
+
+func (this *Java__lang__ClassLoader__Impl) Impl__SetSigners__desc____obj__Java__lang__Class____arr____obj__Java__lang__Object__ret__V(var0 Java__lang__Class__Instance, var1 ObjectArray__Instance) {
+	panic("Not Implemented - java/lang/ClassLoader.setSigners(Ljava/lang/Class;[Ljava/lang/Object;)V")
+}
+
+func (this *Java__lang__ClassLoader__Impl) RawPtr__Java__lang__ClassLoader() *Java__lang__ClassLoader__Impl {
+	return this
+}
+
+type Java__lang__Comparable__Static struct{}
+
+var Java__lang__Comparable__Var Java__lang__Comparable__Static
+
+func Java__lang__Comparable() *Java__lang__Comparable__Static {
+	return &Java__lang__Comparable__Var
+}
+
 type Java__lang__Comparable__Instance interface {
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
@@ -1213,6 +1645,87 @@ type Java__lang__Comparable__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+}
+
+type Java__lang__Comparable__dynproxy____Static struct{}
+
+var Java__lang__Comparable__dynproxy____Var Java__lang__Comparable__dynproxy____Static
+
+func Java__lang__Comparable__dynproxy__() *Java__lang__Comparable__dynproxy____Static {
+	return &Java__lang__Comparable__dynproxy____Var
+}
+
+func (this *Java__lang__Comparable__dynproxy____Static) New() *Java__lang__Comparable__dynproxy____Impl {
+	v := &Java__lang__Comparable__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__Comparable__dynproxy____InitDispatch(v)
+	return v
+}
+
+type Java__lang__Comparable__dynproxy____Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+}
+
+func (this *Java__lang__Comparable__dynproxy____Impl) Java__lang__Comparable__dynproxy____InitDispatch(v Java__lang__Comparable__dynproxy____Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__Comparable__dynproxy____Impl) CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0)
+}
+
+type Java__lang__Comparable__dynproxy____Instance interface {
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	FieldGet__Java__lang__Comparable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance
+	FieldSet__Java__lang__Comparable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance)
+	RawPtr__Java__lang__Comparable__dynproxy__() *Java__lang__Comparable__dynproxy____Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Comparable__dynproxy____Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__Comparable__dynproxy____Dispatch
+	CallSite  Java__lang__invoke__CallSite__Instance
+}
+
+func (this *Java__lang__Comparable__dynproxy____Impl) FieldGet__Java__lang__Comparable__dynproxy____CallSite() Java__lang__invoke__CallSite__Instance {
+	return this.CallSite
+}
+
+func (this *Java__lang__Comparable__dynproxy____Impl) FieldSet__Java__lang__Comparable__dynproxy____CallSite(v Java__lang__invoke__CallSite__Instance) {
+	this.CallSite = v
+}
+
+func (this *Java__lang__Comparable__dynproxy____Impl) RawPtr__Java__lang__Comparable__dynproxy__() *Java__lang__Comparable__dynproxy____Impl {
+	return this
+}
+
+func (_ *Java__lang__Comparable__Static) DynProxy_Create(cs Java__lang__invoke__CallSite__Instance) Java__lang__Comparable__Instance {
+	v := &Java__lang__Comparable__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+		CallSite:                 cs,
+	}
+	v.Java__lang__Comparable__dynproxy____InitDispatch(v)
+	v.Java__lang__Object__Impl.Impl__Instance_Init__desc____ret__V()
+	return v
+}
+
+func (this *Java__lang__Comparable__dynproxy____Impl) Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	return this.CallSite.DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle().Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0).(int)
 }
 
 type Java__lang__Error__Static struct {

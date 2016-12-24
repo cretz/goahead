@@ -12,6 +12,9 @@ trait MethodSetManager {
   def instInterfaceDefaultMethods(classPath: ClassPath, cls: Cls): MethodSet
   def implMethods(classPath: ClassPath, cls: Cls): MethodSet
   def implDefaultForwarderMethods(classPath: ClassPath, cls: Cls): MethodSet
+
+  // None if not a functional interface
+  def functionalInterfaceMethod(classPath: ClassPath, cls: Cls): Option[Method]
 }
 
 object MethodSetManager {
@@ -85,6 +88,17 @@ object MethodSetManager {
     override def implDefaultForwarderMethods(classPath: ClassPath, cls: Cls): MethodSet = {
       defaultForwarderMethods(classPath, cls)
     }
+
+    override def functionalInterfaceMethod(classPath: ClassPath, cls: Cls): Option[Method] = {
+      // Can only have one that is abstract and not part of object
+      if (!cls.access.isAccessInterface) None else {
+        val methodPossibles = allMethods(classPath, cls).map.collect {
+          case (_, (meth, dupes)) if meth.access.isAccessAbstract && !dupes.exists(_.cls.name == "java/lang/Object") =>
+            meth
+        }
+        if (methodPossibles.size != 1) None else methodPossibles.headOption
+      }
+    }
   }
 
   abstract class Filtered(underlying: MethodSetManager = Default) extends MethodSetManager {
@@ -105,12 +119,15 @@ object MethodSetManager {
       underlying.implMethods(classPath, cls).filter(filter(_, forImpl = true))
     def implDefaultForwarderMethods(classPath: ClassPath, cls: Cls): MethodSet =
       underlying.implDefaultForwarderMethods(classPath, cls).filter(filter(_, forImpl = false))
+
+    override def functionalInterfaceMethod(classPath: ClassPath, cls: Cls) =
+      underlying.functionalInterfaceMethod(classPath, cls).filter(filter(_, forImpl = false))
   }
 
   case class MethodSet private(
     private val classPath: ClassPath,
     // Keyed by name then arg type, value is actual -> covariant dupes
-    private val map: Map[(String, Seq[IType]), (Method, Iterable[Method])]
+    private[MethodSetManager] val map: Map[(String, Seq[IType]), (Method, Iterable[Method])]
   ) {
     def methods = map.values.map(_._1).toSeq.sortBy(m => m.name -> m.desc)
 
