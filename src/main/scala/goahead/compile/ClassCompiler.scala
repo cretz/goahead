@@ -316,9 +316,10 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileInstInterfaceRawPointerMethodSigs(ctx: Context): (Context, Seq[Node.Field]) = {
-    if (ctx.cls.access.isAccessInterface) ctx -> Nil else {
-      // Gotta do it for all parents
-      val allClasses = ctx.cls.name +: ctx.classPath.allSuperTypes(ctx.cls.name).map(_.cls.name)
+      // Gotta do it for all parents (and myself if I'm not an interface)
+      val allClasses =
+        if (ctx.cls.access.isAccessInterface) ctx.classPath.allSuperTypes(ctx.cls.name).map(_.cls.name)
+        else ctx.cls.name +: ctx.classPath.allSuperTypes(ctx.cls.name).map(_.cls.name)
       allClasses.foldLeft(ctx -> Seq.empty[Node.Field]) { case ((ctx, fields), clsName) =>
         ctx.implTypeExpr(clsName).map { case (ctx, typPtr) =>
           ctx -> (fields :+ field(
@@ -327,7 +328,6 @@ trait ClassCompiler extends Logger {
           ))
         }
       }
-    }
   }
 
   protected def compileInterfaceDefaultMethods(ctx: Context): (Context, Seq[Node.Declaration]) = {

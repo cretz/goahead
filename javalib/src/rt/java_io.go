@@ -23,6 +23,7 @@ type Java__io__Closeable__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 type Java__io__Closeable__dynproxy____Static struct{}
@@ -213,6 +214,7 @@ type Java__io__Flushable__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 type Java__io__Flushable__dynproxy____Static struct{}
@@ -797,4 +799,5 @@ type Java__io__Serializable__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }

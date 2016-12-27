@@ -60,10 +60,9 @@ trait MethodInsnCompiler {
     desc: String,
     owner: String
   ): (Context, (Method, Node.Expression)) = {
-    ctx.staticInstRefExpr(owner).map { case (ctx, staticInstExpr) =>
-      val method = ctx.classPath.getFirstClass(owner).cls.methods.
-        find(m => m.name == name && m.desc == desc).
-        getOrElse(sys.error(s"Unable to find static method $name$desc on $owner"))
+    // The method can be on a parent class actually
+    val method = resolveMethod(ctx, name, desc, owner, static = true)
+    ctx.staticInstRefExpr(method.cls.name).map { case (ctx, staticInstExpr) =>
       ctx -> (method -> staticInstExpr.sel(ctx.mangler.implMethodName(name, desc)))
     }
   }
@@ -105,7 +104,7 @@ trait MethodInsnCompiler {
   ): (Context, (Method, Node.Expression)) = {
     // If the start type is an array, we expect it to mean object
     val properStartType = if (resolutionStartType.startsWith("[")) "java/lang/Object" else resolutionStartType
-    val method = resolveInstanceMethod(ctx, name, desc, properStartType)
+    val method = resolveMethod(ctx, name, desc, properStartType, static = false)
     subject.toExprNode(ctx, IType.getObjectType(method.cls.name)).map { case (ctx, subjectExpr) =>
       if (method.name == "<init>" && !subject.isThis) {
         // If it's an init call, but not on "this", then we have to type assert since we don't
@@ -133,13 +132,19 @@ trait MethodInsnCompiler {
     }
   }
 
-  protected def resolveInstanceMethod(ctx: Context, name: String, desc: String, startAtType: String): Method = {
+  protected def resolveMethod(
+    ctx: Context,
+    name: String,
+    desc: String,
+    startAtType: String,
+    static: Boolean
+  ): Method = {
     // Iterator's ++ is lazy so we use that and then turn it to a stream for multiple use
     val allSuperAndImplementingTypes = (Iterator(ctx.classPath.getFirstClass(startAtType)) ++
       ctx.classPath.allSuperAndImplementingTypes(startAtType)).toStream
     val allSuperAndImplementingTypeMethods = allSuperAndImplementingTypes.flatMap(_.cls.methods)
     val possibleMethods = allSuperAndImplementingTypeMethods.filter(m =>
-      m.name == name && (m.desc == desc || m.isSignaturePolymorphic)
+      m.name == name && (m.desc == desc || m.isSignaturePolymorphic) && m.access.isAccessStatic == static
     )
     // By going non-iface -> abstract -> any we are basically going:
     //   class -> iface abstract -> iface default impl

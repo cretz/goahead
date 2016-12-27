@@ -13,6 +13,7 @@ import org.scalatest.BeforeAndAfterAll
 import scala.concurrent.duration._
 import scala.io.Source
 import scala.util.Try
+import com.google.common.reflect.{ClassPath => CP}
 
 class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   import AstDsl._
@@ -184,6 +185,7 @@ object CompilerSpec extends Logger {
       TestCase(classOf[InterfaceDefaults]),
       TestCase(classOf[Interfaces]),
       TestCase(classOf[Lambdas]), // TODO: test without optimization too
+      TestCase(classOf[LocalClasses]).withLocalAndAnonymousClasses(),
       TestCase(classOf[LocalVarReuse]),
       TestCase(classOf[NonStaticInnerClasses]),
       TestCase(classOf[Primitives]),
@@ -241,6 +243,19 @@ object CompilerSpec extends Logger {
 
     lazy val expectedOpcodes = {
       classes.flatMap(c => Option(c.getAnnotation(classOf[ExpectOpcodes]))).flatMap(_.value()).toSet
+    }
+
+    def withLocalAndAnonymousClasses(): TestCase = {
+      // Obtain all classes from the packages we know, then get all local classes of our classes
+      import scala.collection.JavaConversions._
+      val packages = classes.map(_.getPackage.getName).toSet
+      copy(
+        classes = classes ++ CP.from(classes.head.getClassLoader).getAllClasses.collect({
+          case c if packages.contains(c.getPackageName) => Class.forName(c.getName)
+        }).filter(c =>
+          Option(Class.forName(c.getName).getEnclosingMethod).exists(m => classes.contains(m.getDeclaringClass))
+        )
+      )
     }
   }
 

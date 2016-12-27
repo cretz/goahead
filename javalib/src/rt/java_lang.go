@@ -656,6 +656,7 @@ type Java__lang__Appendable__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 type Java__lang__AutoCloseable__Static struct{}
@@ -679,6 +680,7 @@ type Java__lang__AutoCloseable__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 type Java__lang__AutoCloseable__dynproxy____Static struct{}
@@ -775,6 +777,7 @@ type Java__lang__CharSequence__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 type Java__lang__Class__Static struct {
@@ -1635,6 +1638,7 @@ type Java__lang__Comparable__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 type Java__lang__Comparable__dynproxy____Static struct{}
@@ -1863,6 +1867,85 @@ func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____obj__Java_
 }
 
 func (this *Java__lang__Exception__Impl) RawPtr__Java__lang__Exception() *Java__lang__Exception__Impl {
+	return this
+}
+
+type Java__lang__IllegalArgumentException__Static struct{}
+
+var Java__lang__IllegalArgumentException__Var Java__lang__IllegalArgumentException__Static
+
+func Java__lang__IllegalArgumentException() *Java__lang__IllegalArgumentException__Static {
+	return &Java__lang__IllegalArgumentException__Var
+}
+
+func (this *Java__lang__IllegalArgumentException__Static) New() *Java__lang__IllegalArgumentException__Impl {
+	v := &Java__lang__IllegalArgumentException__Impl{
+		Java__lang__RuntimeException__Impl: Java__lang__RuntimeException().New(),
+	}
+	v.Java__lang__IllegalArgumentException__InitDispatch(v)
+	return v
+}
+
+type Java__lang__IllegalArgumentException__Dispatch interface {
+	Java__lang__RuntimeException__Dispatch
+}
+
+func (this *Java__lang__IllegalArgumentException__Impl) Java__lang__IllegalArgumentException__InitDispatch(v Java__lang__IllegalArgumentException__Dispatch) {
+	this.Java__lang__RuntimeException__Impl.Java__lang__RuntimeException__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__IllegalArgumentException__Instance interface {
+	AddSuppressed__desc____obj__Java__lang__Throwable__ret__V(Java__lang__Throwable__Instance)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	FillInStackTrace__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	Finalize__desc____ret__V()
+	GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetStackTraceDepth__desc____ret__I() int
+	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
+	HashCode__desc____ret__I() int
+	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	PrintStackTrace__desc____ret__V()
+	PrintStackTrace__desc____obj__Java__io__PrintStream__ret__V(Java__io__PrintStream__Instance)
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__IllegalArgumentException() *Java__lang__IllegalArgumentException__Impl
+	RawPtr__Java__lang__RuntimeException() *Java__lang__RuntimeException__Impl
+	RawPtr__Java__lang__Exception() *Java__lang__Exception__Impl
+	RawPtr__Java__lang__Throwable() *Java__lang__Throwable__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__IllegalArgumentException__Impl struct {
+	*Java__lang__RuntimeException__Impl
+	_dispatch Java__lang__IllegalArgumentException__Dispatch
+}
+
+func (this *Java__lang__IllegalArgumentException__Impl) Impl__Instance_Init__desc____ret__V() {
+	panic("Not Implemented - java/lang/IllegalArgumentException.<init>()V")
+}
+
+func (this *Java__lang__IllegalArgumentException__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	panic("Not Implemented - java/lang/IllegalArgumentException.<init>(Ljava/lang/String;)V")
+}
+
+func (this *Java__lang__IllegalArgumentException__Impl) Impl__Instance_Init__desc____obj__Java__lang__String____obj__Java__lang__Throwable__ret__V(var0 Java__lang__String__Instance, var1 Java__lang__Throwable__Instance) {
+	panic("Not Implemented - java/lang/IllegalArgumentException.<init>(Ljava/lang/String;Ljava/lang/Throwable;)V")
+}
+
+func (this *Java__lang__IllegalArgumentException__Impl) Impl__Instance_Init__desc____obj__Java__lang__Throwable__ret__V(var0 Java__lang__Throwable__Instance) {
+	panic("Not Implemented - java/lang/IllegalArgumentException.<init>(Ljava/lang/Throwable;)V")
+}
+
+func (this *Java__lang__IllegalArgumentException__Impl) RawPtr__Java__lang__IllegalArgumentException() *Java__lang__IllegalArgumentException__Impl {
 	return this
 }
 

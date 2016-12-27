@@ -51,16 +51,26 @@ trait SignatureCompiler {
     methodDesc: String,
     includeParamNames: Boolean
   ): (T, Node.FunctionType) = {
-    val ctxWithParams = IType.getArgumentTypes(methodDesc).zipWithIndex.foldLeft(ctx -> Seq.empty[Node.Field]) {
+    buildFuncType(ctx, IType.getArgumentTypes(methodDesc), IType.getReturnType(methodDesc),
+      if (includeParamNames) Some("var") else None)
+  }
+
+  def buildFuncType[T <: Contextual[T]](
+    ctx: T,
+    argTypes: Seq[IType],
+    retType: IType,
+    paramNamePrefix: Option[String]
+  ): (T, Node.FunctionType) = {
+    val ctxWithParams = argTypes.zipWithIndex.foldLeft(ctx -> Seq.empty[Node.Field]) {
       case ((ctx, params), (argType, argIndex)) =>
         ctx.typeToGoType(argType).map { case (ctx, typ) =>
-          val param = if (includeParamNames) field(s"var$argIndex", typ) else typ.namelessField
+          val param = paramNamePrefix.map(p => field(p + argIndex, typ)).getOrElse(typ.namelessField)
           ctx -> (params :+ param)
         }
     }
 
     ctxWithParams.map { case (ctx, params) =>
-      val ctxWithResultTypOpt = IType.getReturnType(methodDesc) match {
+      val ctxWithResultTypOpt = retType match {
         case IType.VoidType => ctx -> None
         case retTyp => ctx.typeToGoType(retTyp).map { case (ctx, typ) => ctx -> Some(typ) }
       }

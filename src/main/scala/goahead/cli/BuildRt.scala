@@ -37,6 +37,7 @@ trait BuildRt extends Command {
         "java.lang.ClassLoader",
         "java.lang.ClassCastException",
         "java.lang.Exception",
+        "java.lang.IllegalArgumentException",
         "java.lang.IllegalMonitorStateException",
         "java.lang.NegativeArraySizeException",
         "java.lang.NullPointerException",
@@ -49,7 +50,8 @@ trait BuildRt extends Command {
         "java.lang.invoke.MethodHandle",
         "java.lang.invoke.MethodHandles",
         "java.lang.invoke.MethodHandles$Lookup",
-        "java.lang.invoke.MethodType"
+        "java.lang.invoke.MethodType",
+        "java.lang.invoke.SerializedLambda"
       ),
       // Things we are handling ourselves for now
       excludePatterns = Seq(

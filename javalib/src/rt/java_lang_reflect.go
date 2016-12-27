@@ -23,6 +23,7 @@ type Java__lang__reflect__AnnotatedElement__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 func Java__lang__reflect__AnnotatedElement__defaultmethod__IsAnnotationPresent__desc____obj__Java__lang__Class__ret__Z(this Java__lang__reflect__AnnotatedElement__Instance, var0 Java__lang__Class__Instance) bool {
@@ -50,6 +51,7 @@ type Java__lang__reflect__GenericDeclaration__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 type Java__lang__reflect__Type__Static struct{}
@@ -73,6 +75,7 @@ type Java__lang__reflect__Type__Instance interface {
 	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 func Java__lang__reflect__Type__defaultmethod__GetTypeName__desc____ret____obj__Java__lang__String(this Java__lang__reflect__Type__Instance) Java__lang__String__Instance {

@@ -180,7 +180,9 @@ object Helpers extends Logger {
       ctx.conf.optimizeRecognizedInvokeDynamic &&
         insn.bsm.getTag == Opcodes.H_INVOKESTATIC &&
         insn.bsm.getOwner == "java/lang/invoke/LambdaMetafactory" &&
-        insn.bsm.getName == "metafactory"
+        // TODO: we actually need to remove alt meta factory and do it somewhere else
+        // since it can implement other interfaces and have bridges and what not
+        (insn.bsm.getName == "metafactory" || insn.bsm.getName == "altMetafactory")
     }
   }
 

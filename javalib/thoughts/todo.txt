@@ -19,7 +19,9 @@ Compliance pre-stdlib:
 * non-static inner classes - DONE
 * private fields - DONE
 * static and instance inits - DONE
-* Local classes
+* Local classes - DONE
+* Simple lambdas - DONE
+* Static methods including inheritance and interface statics
 
 Compliance post-stdlib:
 
@@ -28,4 +30,8 @@ Compliance post-stdlib:
 * Object methods on array types
 * Enums
 * Lambdas
+  * Serialized
+  * Multi-interface implement (ugh)
 * Monitors and synchronized methods
+* Caller sensitive
+* Serialization

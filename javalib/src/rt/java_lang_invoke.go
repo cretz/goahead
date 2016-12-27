@@ -1423,3 +1423,180 @@ func (this *Java__lang__invoke__MethodType__Impl) Impl__Wrap__desc____ret____obj
 func (this *Java__lang__invoke__MethodType__Impl) RawPtr__Java__lang__invoke__MethodType() *Java__lang__invoke__MethodType__Impl {
 	return this
 }
+
+type Java__lang__invoke__SerializedLambda__Static struct{}
+
+var Java__lang__invoke__SerializedLambda__Var Java__lang__invoke__SerializedLambda__Static
+
+func Java__lang__invoke__SerializedLambda() *Java__lang__invoke__SerializedLambda__Static {
+	return &Java__lang__invoke__SerializedLambda__Var
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Static) New() *Java__lang__invoke__SerializedLambda__Impl {
+	v := &Java__lang__invoke__SerializedLambda__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__SerializedLambda__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Static) Impl__Access__dollar__000__desc____obj__Java__lang__invoke__SerializedLambda__ret____obj__Java__lang__Class(var0 Java__lang__invoke__SerializedLambda__Instance) Java__lang__Class__Instance {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.access$000(Ljava/lang/invoke/SerializedLambda;)Ljava/lang/Class;")
+}
+
+type Java__lang__invoke__SerializedLambda__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Instance_Init__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String__I____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____arr____obj__Java__lang__Object__ret__V(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__String__Instance, Java__lang__String__Instance, int, Java__lang__String__Instance, Java__lang__String__Instance, Java__lang__String__Instance, Java__lang__String__Instance, ObjectArray__Instance)
+	Impl__GetCapturedArg__desc__I__ret____obj__Java__lang__Object(int) Java__lang__Object__Instance
+	Impl__GetCapturedArgCount__desc____ret__I() int
+	Impl__GetCapturingClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetFunctionalInterfaceClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetFunctionalInterfaceMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetFunctionalInterfaceMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetImplClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetImplMethodKind__desc____ret__I() int
+	Impl__GetImplMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetImplMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetInstantiatedMethodType__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Java__lang__invoke__SerializedLambda__InitDispatch(v Java__lang__invoke__SerializedLambda__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Instance_Init__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String__I____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____arr____obj__Java__lang__Object__ret__V(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__String__Instance, var3 Java__lang__String__Instance, var4 int, var5 Java__lang__String__Instance, var6 Java__lang__String__Instance, var7 Java__lang__String__Instance, var8 Java__lang__String__Instance, var9 ObjectArray__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String__I____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____arr____obj__Java__lang__Object__ret__V(var0, var1, var2, var3, var4, var5, var6, var7, var8, var9)
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetCapturedArg__desc__I__ret____obj__Java__lang__Object(var0 int) Java__lang__Object__Instance {
+	return this._dispatch.Impl__GetCapturedArg__desc__I__ret____obj__Java__lang__Object(var0)
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetCapturedArgCount__desc____ret__I() int {
+	return this._dispatch.Impl__GetCapturedArgCount__desc____ret__I()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetCapturingClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetCapturingClass__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetFunctionalInterfaceClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetFunctionalInterfaceClass__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetFunctionalInterfaceMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetFunctionalInterfaceMethodName__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetFunctionalInterfaceMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetFunctionalInterfaceMethodSignature__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetImplClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetImplClass__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetImplMethodKind__desc____ret__I() int {
+	return this._dispatch.Impl__GetImplMethodKind__desc____ret__I()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetImplMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetImplMethodName__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetImplMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetImplMethodSignature__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetInstantiatedMethodType__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetInstantiatedMethodType__desc____ret____obj__Java__lang__String()
+}
+
+type Java__lang__invoke__SerializedLambda__Instance interface {
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	GetCapturedArg__desc__I__ret____obj__Java__lang__Object(int) Java__lang__Object__Instance
+	GetCapturedArgCount__desc____ret__I() int
+	GetCapturingClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetFunctionalInterfaceClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetFunctionalInterfaceMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetFunctionalInterfaceMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetImplClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetImplMethodKind__desc____ret__I() int
+	GetImplMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetImplMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetInstantiatedMethodType__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__invoke__SerializedLambda() *Java__lang__invoke__SerializedLambda__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__SerializedLambda__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__SerializedLambda__Dispatch
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__Instance_Init__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String__I____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____arr____obj__Java__lang__Object__ret__V(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__String__Instance, var3 Java__lang__String__Instance, var4 int, var5 Java__lang__String__Instance, var6 Java__lang__String__Instance, var7 Java__lang__String__Instance, var8 Java__lang__String__Instance, var9 ObjectArray__Instance) {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.<init>(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetCapturedArg__desc__I__ret____obj__Java__lang__Object(var0 int) Java__lang__Object__Instance {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.getCapturedArg(I)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetCapturedArgCount__desc____ret__I() int {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.getCapturedArgCount()I")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetCapturingClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.getCapturingClass()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetFunctionalInterfaceClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.getFunctionalInterfaceClass()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetFunctionalInterfaceMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.getFunctionalInterfaceMethodName()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetFunctionalInterfaceMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.getFunctionalInterfaceMethodSignature()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetImplClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.getImplClass()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetImplMethodKind__desc____ret__I() int {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.getImplMethodKind()I")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetImplMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.getImplMethodName()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetImplMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.getImplMethodSignature()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetInstantiatedMethodType__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.getInstantiatedMethodType()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/invoke/SerializedLambda.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) RawPtr__Java__lang__invoke__SerializedLambda() *Java__lang__invoke__SerializedLambda__Impl {
+	return this
+}
