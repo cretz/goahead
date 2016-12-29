@@ -408,9 +408,9 @@ object Helpers extends Logger {
           ctx -> "float32".toIdent.call(Seq(expr.expr))
         case (o, IType.IntType) if o.isNumeric =>
           ctx -> "int".toIdent.call(Seq(expr.expr))
-        case (IType.BooleanType, IType.IntType) =>
+        case (IType.BooleanType, o) if o.isNumeric =>
           ctx.importRuntimeQualifiedName("BoolToInt").map { case (ctx, boolToInt) =>
-            ctx -> boolToInt.call(Seq(expr.expr))
+            TypedExpression(boolToInt.call(Seq(expr.expr)), IType.IntType, cheapRef = false).toExprNode(ctx, o)
           }
         case (o, IType.LongType) if o.isNumeric =>
           ctx -> "int64".toIdent.call(Seq(expr.expr))

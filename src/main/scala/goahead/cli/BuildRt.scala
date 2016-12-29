@@ -61,6 +61,7 @@ trait BuildRt extends Command {
         "java.lang.invoke.MethodHandles$Lookup",
         "java.lang.invoke.MethodType",
         "java.lang.invoke.SerializedLambda",
+        "java.util.function.BiConsumer",
         "java.util.function.BinaryOperator"
       ),
       // Things we are handling ourselves for now

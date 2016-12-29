@@ -1,6 +1,7 @@
 package goahead.testclasses;
 
 import java.io.Serializable;
+import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 
 public class Lambdas {
@@ -40,6 +41,8 @@ public class Lambdas {
         deserializeLambda();
         defaultConsumerChainTest();
         binaryOperator();
+        biConsumer();
+        defaultMethodOverride();
     }
 
     static void invokeStatic() {
@@ -91,4 +94,33 @@ public class Lambdas {
         System.out.println(op.apply(13L, 14L).longValue());
     }
 
+    static void biConsumer() {
+        BiConsumer<StringBuilder, String> op = StringBuilder::append;
+        StringBuilder test = new StringBuilder();
+        op.accept(test, "Test");
+        System.out.println(test.toString());
+    }
+
+    interface Sink<T> {
+        void accept(T typ);
+
+        default void accept(long value) {
+            System.out.println("Fail");
+        }
+    }
+
+    interface LongSink extends Sink<Long>, LongConsumer {
+        @Override
+        void accept(long value);
+
+        @Override
+        default void accept(Long typ) {
+            accept(typ.longValue());
+        }
+    }
+
+    static void defaultMethodOverride() {
+        LongSink sink = v -> System.out.println(v);
+        sink.accept(Long.valueOf(20));
+    }
 }

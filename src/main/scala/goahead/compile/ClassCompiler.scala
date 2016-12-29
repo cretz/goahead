@@ -169,9 +169,9 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileFunctionalInterfaceProxy(ctx: Context): (Context, Seq[Node.Declaration]) = {
-    methodSetManager.functionalInterfaceMethod(ctx.classPath, ctx.cls) match {
+    methodSetManager.functionalInterfaceMethodWithDupes(ctx.classPath, ctx.cls) match {
       case None => ctx -> Nil
-      case Some(ifaceMethod) =>
+      case Some((ifaceMethod, dupes)) =>
         // The way we do this is to "extend" the current class with no overrides, create a field for the call site,
         // and then manually create the create function on the static part of this class
         val extension = new ClassNode()
@@ -198,9 +198,15 @@ trait ClassCompiler extends Logger {
               extensionCls,
               origCtx.classPath.getFirstClass(ctx.cls.name).relativeCompiledDir
             )
-          ))
+          )),
+          // Make sure we remove default forwarders for dupes (i.e. ones we've "re-abstracted")
+          excludeDefaultForwarders = Set(ifaceMethod.name -> ifaceMethod.desc) ++ dupes.map(m => m.name -> m.desc)
         )
+        logger.trace(s"Creating func iface dyn proxy as class name ${extension.name} for " +
+          s"method ${ifaceMethod.name}${ifaceMethod.desc} excluding methods: " +
+          newCtx.excludeDefaultForwarders.map(m => m._1 + m._2).mkString(", "))
         compile(newCtx).map { case (extCtx, decls) =>
+
           // Put the original class and class path back, but keep everything else
           val ctx = extCtx.copy(cls = origCtx.cls, imports = extCtx.imports.copy(classPath = origCtx.classPath))
 
@@ -399,7 +405,9 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileImplDefaultMethodForwarders(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
-    val methods = methodSetManager.implDefaultForwarderMethods(ctx.classPath, ctx.cls).methods
+    val methods = methodSetManager.implDefaultForwarderMethods(ctx.classPath, ctx.cls).methods.filterNot { m =>
+      ctx.excludeDefaultForwarders.contains(m.name -> m.desc)
+    }
     methods.foldLeft(ctx -> Seq.empty[Node.FunctionDeclaration]) {
       case ((ctx, funcDecls), defaultMethod) =>
         val defName = ctx.mangler.interfaceDefaultMethodName(
@@ -624,7 +632,8 @@ object ClassCompiler extends ClassCompiler {
     conf: Config,
     cls: Cls,
     imports: Imports,
-    mangler: Mangler
+    mangler: Mangler,
+    excludeDefaultForwarders: Set[(String, String)] = Set.empty
   ) extends Contextual[Context] { self =>
     override def updatedImports(mports: Imports) = copy(imports = mports)
   }

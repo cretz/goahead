@@ -26,15 +26,21 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
     ).getOrElse(sys.error(s"Expected ${ifaceTyp.internalName} to be a functional interface as target of dyn insn"))
     val allHandleArgTypes = IType.getArgumentTypes(handle.getDesc)
     val (fixedArgTypes, nonFixedArgTypes) = allHandleArgTypes.splitAt(allHandleArgTypes.size - ifaceMethod.argTypes.size)
+    // In some cases, "this" is a non fixed arg
+    val instantiatedArgTypes = IType.getArgumentTypes(insn.bsmArgs(2).asInstanceOf[Type].getDescriptor)
+    val thisArgTypeOpt =
+      if (instantiatedArgTypes.size == nonFixedArgTypes.size) None
+      else if (instantiatedArgTypes.size == nonFixedArgTypes.size + 1) Some(instantiatedArgTypes.head)
+      else sys.error(s"Expected arg count of $instantiatedArgTypes to be within one of $nonFixedArgTypes")
     val (sourceArgTypes, sourceRetType) =
       IType.getArgumentAndReturnTypes(insn.bsmArgs(2).asInstanceOf[Type].getDescriptor)
     val (_, handleResult) = handleArgAndRetTypes(handle)
-    buildDirectProxyFuncRef(ctx, handle, fixedArgTypes, nonFixedArgTypes).map { case (ctx, funcRef) =>
+    buildDirectProxyFuncRef(ctx, handle, fixedArgTypes, nonFixedArgTypes, thisArgTypeOpt).map { case (ctx, funcRef) =>
       // We have to convert twice. First from handle -> subject, then from subject -> target iface
       funcRefToFuncRefExact(
         ctx,
         funcRef,
-        nonFixedArgTypes,
+        thisArgTypeOpt.toSeq ++ nonFixedArgTypes,
         handleResult,
         sourceArgTypes,
         sourceRetType
@@ -65,13 +71,15 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
     ctx: Context,
     handle: Handle,
     fixedArgTypes: Seq[IType],
-    nonFixedArgTypes: Seq[IType]
+    nonFixedArgTypes: Seq[IType],
+    thisArgType: Option[IType]
   ): (Context, Node.Expression) = {
     logger.trace(s"Building direct proxy refs for fixed args of $fixedArgTypes and non-fixed of $nonFixedArgTypes")
     val retType = IType.getReturnType(handle.getDesc)
     val stackPopCount = handle.getTag match {
       case Opcodes.H_GETSTATIC | Opcodes.H_INVOKESTATIC |
            Opcodes.H_PUTSTATIC | Opcodes.H_NEWINVOKESPECIAL => fixedArgTypes.size
+      case _ if thisArgType.isDefined => fixedArgTypes.size
       case _ => fixedArgTypes.size + 1
     }
     def convArgTypes(ctx: Context, args: Seq[TypedExpression]): (Context, Seq[Node.Expression]) = {
@@ -104,12 +112,13 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
             }
           }
         case Opcodes.H_INVOKEVIRTUAL | Opcodes.H_INVOKEINTERFACE | Opcodes.H_INVOKESPECIAL =>
+          val subject = thisArgType.map(TypedExpression.namedVar("tvar0", _)).getOrElse(stk.head)
           val resolved =
             if (handle.getTag == Opcodes.H_INVOKESPECIAL)
-              resolveSpecialMethodRef(ctx, handle.getName, handle.getDesc, stk.head, handle.isInterface, handle.getOwner)
+              resolveSpecialMethodRef(ctx, handle.getName, handle.getDesc, subject, handle.isInterface, handle.getOwner)
             else
-              resolveInterfaceOrVirtualMethodRef(ctx, handle.getName, handle.getDesc, stk.head, handle.getOwner)
-          resolved.map {
+              resolveInterfaceOrVirtualMethodRef(ctx, handle.getName, handle.getDesc, subject, handle.getOwner)
+          val ctxAndMethodWithFuncRef = resolved.map {
             // Default includes the subject as an arg which means we need a new func lit
             case (ctx, (method, methodRef)) if method.isDefault =>
               // We make our own param names to prevent clash
@@ -117,15 +126,30 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
                 val funcTypWithNames = funcTyp.copy(parameters = funcTyp.parameters.zipWithIndex.map {
                   case (param, i) => param.copy(names = Seq(s"ivar$i".toIdent))
                 })
-                val call = methodRef.call(stk.head.expr +: method.argTypes.indices.map(i => s"ivar$i".toIdent))
+                val call = methodRef.call(subject.expr +: method.argTypes.indices.map(i => s"ivar$i".toIdent))
                 val callStmt = method.returnType match {
                   case IType.VoidType => call.toStmt
                   case _ => call.ret
                 }
-                ctx -> funcTypWithNames.toFuncLit(Seq(callStmt))
+                ctx -> (method -> funcTypWithNames.toFuncLit(Seq(callStmt)))
               }
-            case (ctx, (_, methodRef)) =>
-              ctx -> methodRef
+            case v => v
+          }
+          // When we have a "this" type, we have to wrap in a completely new func ref accepting a new "this" type
+          thisArgType match {
+            case None => ctxAndMethodWithFuncRef.map { case (ctx, (_, funcRef)) => ctx -> funcRef }
+            case Some(thisArgType) => ctxAndMethodWithFuncRef.map { case (ctx, (method, funcRef)) =>
+              // Just create a copy of the func type with our new "this" type, and forward it
+              signatureCompiler.buildFuncType(ctx, thisArgType +: method.argTypes, method.returnType, Some("tvar")).
+                map { case (ctx, funcTyp) =>
+                  val call = funcRef.call(method.argTypes.indices.map(i => s"tvar${i + 1}".toIdent))
+                  val callStmt = method.returnType match {
+                    case IType.VoidType => call.toStmt
+                    case _ => call.ret
+                  }
+                  ctx -> funcTyp.toFuncLit(Seq(callStmt))
+                }
+            }
           }
         case Opcodes.H_INVOKESTATIC =>
           resolveStaticMethodRef(ctx, handle.getName, handle.getDesc, handle.getOwner).map {
@@ -391,7 +415,6 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
     pushLookupClass(ctx).map(pushArgs).map { ctx =>
       val method = ctx.classPath.getFirstClass("java/lang/invoke/MethodHandles$Lookup").cls.
         methods.find(_.name == methodName).get
-      println(s"CHECKING ${method.cls.name}.${method.name}${method.desc}")
       compile(ctx, new MethodInsnNode(Opcodes.INVOKEVIRTUAL, method.cls.name, method.name, method.desc, false))._1
     }
   }

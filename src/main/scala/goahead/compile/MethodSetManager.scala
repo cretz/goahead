@@ -15,6 +15,7 @@ trait MethodSetManager {
 
   // None if not a functional interface
   def functionalInterfaceMethod(classPath: ClassPath, cls: Cls): Option[Method]
+  def functionalInterfaceMethodWithDupes(classPath: ClassPath, cls: Cls): Option[(Method, Seq[Method])]
 }
 
 object MethodSetManager {
@@ -90,11 +91,15 @@ object MethodSetManager {
     }
 
     override def functionalInterfaceMethod(classPath: ClassPath, cls: Cls): Option[Method] = {
+      functionalInterfaceMethodWithDupes(classPath, cls).map(_._1)
+    }
+
+    override def functionalInterfaceMethodWithDupes(classPath: ClassPath, cls: Cls): Option[(Method, Seq[Method])] = {
       // Can only have one that is abstract and not part of object
       if (!cls.access.isAccessInterface) None else {
-        val methodPossibles = allMethods(classPath, cls).map.collect {
+        val methodPossibles = allMethods(classPath, cls).map.toSeq.collect {
           case (_, (meth, dupes)) if meth.access.isAccessAbstract && !dupes.exists(_.cls.name == "java/lang/Object") =>
-            meth
+            meth -> dupes.toSeq
         }
         if (methodPossibles.size != 1) None else methodPossibles.headOption
       }
@@ -122,6 +127,8 @@ object MethodSetManager {
 
     override def functionalInterfaceMethod(classPath: ClassPath, cls: Cls) =
       underlying.functionalInterfaceMethod(classPath, cls).filter(filter(_, forImpl = false))
+    override def functionalInterfaceMethodWithDupes(classPath: ClassPath, cls: Cls) =
+      underlying.functionalInterfaceMethodWithDupes(classPath, cls).filter(v => filter(v._1, forImpl = false))
   }
 
   case class MethodSet private(
@@ -151,6 +158,14 @@ object MethodSetManager {
 
     def filter(fn: Method => Boolean) = MethodSet(classPath, allMethods.filter(fn))
     def filterNot(fn: Method => Boolean) = MethodSet(classPath, allMethods.filterNot(fn))
+
+    def prettyLines: Seq[String] = {
+      covariantReturnDuplicates.flatMap { case (m, dupes) =>
+        s"Method: ${m.cls.name}::${m.name}${m.desc}" +: dupes.map { m =>
+          s"  Dupe: ${m.cls.name}::${m.name}${m.desc}"
+        }
+      }
+    }
   }
 
   object MethodSet {
@@ -171,11 +186,12 @@ object MethodSetManager {
       // Most specific covariant if return types are not the same
       if (m1.returnType != m2.returnType) {
         if (m1.returnType.isAssignableFrom(classPath, m2.returnType)) m2 else m1
-      // Non-interface preferred, then non abstract
+      // Non-interface preferred, then just prefer the first
       } else if (m1.access.isAccessInterface != m2.access.isAccessInterface) {
         if (m1.access.isAccessInterface) m2 else m1
       } else {
-        if (m1.access.isAccessAbstract) m2 else m1
+//        if (m1.access.isAccessAbstract) m2 else m1
+        m1
       }
     }
   }

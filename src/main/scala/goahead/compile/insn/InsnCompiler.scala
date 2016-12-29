@@ -60,7 +60,8 @@ trait InsnCompiler extends Logger with
         case NonFatal(e) =>
           val insn = insns.head
           throw new Exception(
-            s"Unable to compile method ${ctx.cls.name}::${ctx.method.name} insn #${insn.index} - ${insn.pretty}",
+            s"Unable to compile method ${ctx.cls.name}::${ctx.method.name}${ctx.method.desc} " +
+              s"insn #${insn.index} - ${insn.pretty}",
             e
           )
       }
