@@ -25,7 +25,15 @@ trait VarInsnCompiler {
   protected def load(ctx: Context, index: Int, opcode: Int): (Context, Seq[Node.Statement]) = {
     @inline
     def doLoad(typ: IType) = ctx.getLocalVar(index, typ, forWriting = false).map { case (ctx, local) =>
-      ctx.stackPushed(local) -> Seq.empty[Node.Statement]
+      // If it's "this", we don't cast
+      val ctxAndTypedLocal =
+        if (local.isThis) ctx -> local
+        else local.toExprNode(ctx, typ).map { case (ctx, typedLocal) =>
+          ctx -> TypedExpression(typedLocal, typ, cheapRef = false)
+        }
+      ctxAndTypedLocal.map { case (ctx, typedLocal) =>
+        ctx.stackPushed(typedLocal) -> Seq.empty[Node.Statement]
+      }
     }
     opcode match {
       case Opcodes.ALOAD => doLoad(ObjectType)

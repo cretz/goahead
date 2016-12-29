@@ -97,9 +97,10 @@ object MethodSetManager {
     override def functionalInterfaceMethodWithDupes(classPath: ClassPath, cls: Cls): Option[(Method, Seq[Method])] = {
       // Can only have one that is abstract and not part of object
       if (!cls.access.isAccessInterface) None else {
-        val methodPossibles = allMethods(classPath, cls).map.toSeq.collect {
-          case (_, (meth, dupes)) if meth.access.isAccessAbstract && !dupes.exists(_.cls.name == "java/lang/Object") =>
-            meth -> dupes.toSeq
+        // All methods not in the object class
+        val all = allMethods(classPath, cls) -- allMethods(classPath, classPath.getFirstClass("java/lang/Object").cls)
+        val methodPossibles = all.map.toSeq.collect {
+          case (_, (meth, dupes)) if meth.access.isAccessAbstract => meth -> dupes.toSeq
         }
         if (methodPossibles.size != 1) None else methodPossibles.headOption
       }
