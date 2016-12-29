@@ -754,6 +754,355 @@ func (this *Java__lang__AutoCloseable__dynproxy____Impl) Impl__Close__desc____re
 	this.fn()
 }
 
+type Java__lang__Boolean__Static struct {
+	FALSE Java__lang__Boolean__Instance
+	TRUE  Java__lang__Boolean__Instance
+	TYPE  Java__lang__Class__Instance
+	init  sync.Once
+}
+
+var Java__lang__Boolean__Var Java__lang__Boolean__Static
+
+func Java__lang__Boolean() *Java__lang__Boolean__Static {
+	Java__lang__Boolean__Var.init.Do(Java__lang__Boolean__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__Boolean__Var
+}
+
+func (this *Java__lang__Boolean__Static) New() *Java__lang__Boolean__Impl {
+	v := &Java__lang__Boolean__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__Boolean__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__Boolean__Static) Impl__Static_Init__desc____ret__V() {
+	
+}
+
+func (this *Java__lang__Boolean__Static) Impl__Compare__desc__Z__Z__ret__I(var0 bool, var1 bool) int {
+	panic("Not Implemented - java/lang/Boolean.compare(ZZ)I")
+}
+
+func (this *Java__lang__Boolean__Static) Impl__GetBoolean__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
+	panic("Not Implemented - java/lang/Boolean.getBoolean(Ljava/lang/String;)Z")
+}
+
+func (this *Java__lang__Boolean__Static) Impl__HashCode__desc__Z__ret__I(var0 bool) int {
+	panic("Not Implemented - java/lang/Boolean.hashCode(Z)I")
+}
+
+func (this *Java__lang__Boolean__Static) Impl__LogicalAnd__desc__Z__Z__ret__Z(var0 bool, var1 bool) bool {
+	panic("Not Implemented - java/lang/Boolean.logicalAnd(ZZ)Z")
+}
+
+func (this *Java__lang__Boolean__Static) Impl__LogicalOr__desc__Z__Z__ret__Z(var0 bool, var1 bool) bool {
+	panic("Not Implemented - java/lang/Boolean.logicalOr(ZZ)Z")
+}
+
+func (this *Java__lang__Boolean__Static) Impl__LogicalXor__desc__Z__Z__ret__Z(var0 bool, var1 bool) bool {
+	panic("Not Implemented - java/lang/Boolean.logicalXor(ZZ)Z")
+}
+
+func (this *Java__lang__Boolean__Static) Impl__ParseBoolean__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
+	panic("Not Implemented - java/lang/Boolean.parseBoolean(Ljava/lang/String;)Z")
+}
+
+func (this *Java__lang__Boolean__Static) Impl__ToString__desc__Z__ret____obj__Java__lang__String(var0 bool) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Boolean.toString(Z)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Boolean__Static) Impl__ValueOf__desc____obj__Java__lang__String__ret____obj__Java__lang__Boolean(var0 Java__lang__String__Instance) Java__lang__Boolean__Instance {
+	panic("Not Implemented - java/lang/Boolean.valueOf(Ljava/lang/String;)Ljava/lang/Boolean;")
+}
+
+func (this *Java__lang__Boolean__Static) Impl__ValueOf__desc__Z__ret____obj__Java__lang__Boolean(var0 bool) Java__lang__Boolean__Instance {
+	panic("Not Implemented - java/lang/Boolean.valueOf(Z)Ljava/lang/Boolean;")
+}
+
+type Java__lang__Boolean__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
+	Impl__Instance_Init__desc__Z__ret__V(bool)
+	Impl__BooleanValue__desc____ret__Z() bool
+	Impl__CompareTo__desc____obj__Java__lang__Boolean__ret__I(Java__lang__Boolean__Instance) int
+	Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+}
+
+func (this *Java__lang__Boolean__Impl) Java__lang__Boolean__InitDispatch(v Java__lang__Boolean__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__Boolean__Impl) Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
+}
+
+func (this *Java__lang__Boolean__Impl) Instance_Init__desc__Z__ret__V(var0 bool) {
+	this._dispatch.Impl__Instance_Init__desc__Z__ret__V(var0)
+}
+
+func (this *Java__lang__Boolean__Impl) BooleanValue__desc____ret__Z() bool {
+	return this._dispatch.Impl__BooleanValue__desc____ret__Z()
+}
+
+func (this *Java__lang__Boolean__Impl) CompareTo__desc____obj__Java__lang__Boolean__ret__I(var0 Java__lang__Boolean__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Boolean__ret__I(var0)
+}
+
+func (this *Java__lang__Boolean__Impl) CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0)
+}
+
+type Java__lang__Boolean__Instance interface {
+	BooleanValue__desc____ret__Z() bool
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	CompareTo__desc____obj__Java__lang__Boolean__ret__I(Java__lang__Boolean__Instance) int
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Boolean() *Java__lang__Boolean__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Boolean__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__Boolean__Dispatch
+	Value     bool
+}
+
+func (this *Java__lang__Boolean__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	panic("Not Implemented - java/lang/Boolean.<init>(Ljava/lang/String;)V")
+}
+
+func (this *Java__lang__Boolean__Impl) Impl__Instance_Init__desc__Z__ret__V(var0 bool) {
+	panic("Not Implemented - java/lang/Boolean.<init>(Z)V")
+}
+
+func (this *Java__lang__Boolean__Impl) Impl__BooleanValue__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Boolean.booleanValue()Z")
+}
+
+func (this *Java__lang__Boolean__Impl) Impl__CompareTo__desc____obj__Java__lang__Boolean__ret__I(var0 Java__lang__Boolean__Instance) int {
+	panic("Not Implemented - java/lang/Boolean.compareTo(Ljava/lang/Boolean;)I")
+}
+
+func (this *Java__lang__Boolean__Impl) Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	panic("Not Implemented - java/lang/Boolean.compareTo(Ljava/lang/Object;)I")
+}
+
+func (this *Java__lang__Boolean__Impl) Impl__Equals__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
+	panic("Not Implemented - java/lang/Boolean.equals(Ljava/lang/Object;)Z")
+}
+
+func (this *Java__lang__Boolean__Impl) Impl__HashCode__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Boolean.hashCode()I")
+}
+
+func (this *Java__lang__Boolean__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Boolean.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Boolean__Impl) RawPtr__Java__lang__Boolean() *Java__lang__Boolean__Impl {
+	return this
+}
+
+type Java__lang__Byte__Static struct {
+	BYTES     int
+	MAX_VALUE byte
+	MIN_VALUE byte
+	SIZE      int
+	TYPE      Java__lang__Class__Instance
+	init      sync.Once
+}
+
+var Java__lang__Byte__Var Java__lang__Byte__Static
+
+func Java__lang__Byte() *Java__lang__Byte__Static {
+	Java__lang__Byte__Var.init.Do(Java__lang__Byte__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__Byte__Var
+}
+
+func (this *Java__lang__Byte__Static) New() *Java__lang__Byte__Impl {
+	v := &Java__lang__Byte__Impl{
+		Java__lang__Number__Impl: Java__lang__Number().New(),
+	}
+	v.Java__lang__Byte__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__Byte__Static) Impl__Static_Init__desc____ret__V() {
+	
+}
+
+func (this *Java__lang__Byte__Static) Impl__Compare__desc__B__B__ret__I(var0 byte, var1 byte) int {
+	panic("Not Implemented - java/lang/Byte.compare(BB)I")
+}
+
+func (this *Java__lang__Byte__Static) Impl__Decode__desc____obj__Java__lang__String__ret____obj__Java__lang__Byte(var0 Java__lang__String__Instance) Java__lang__Byte__Instance {
+	panic("Not Implemented - java/lang/Byte.decode(Ljava/lang/String;)Ljava/lang/Byte;")
+}
+
+func (this *Java__lang__Byte__Static) Impl__HashCode__desc__B__ret__I(var0 byte) int {
+	panic("Not Implemented - java/lang/Byte.hashCode(B)I")
+}
+
+func (this *Java__lang__Byte__Static) Impl__ParseByte__desc____obj__Java__lang__String__ret__B(var0 Java__lang__String__Instance) byte {
+	panic("Not Implemented - java/lang/Byte.parseByte(Ljava/lang/String;)B")
+}
+
+func (this *Java__lang__Byte__Static) Impl__ParseByte__desc____obj__Java__lang__String__I__ret__B(var0 Java__lang__String__Instance, var1 int) byte {
+	panic("Not Implemented - java/lang/Byte.parseByte(Ljava/lang/String;I)B")
+}
+
+func (this *Java__lang__Byte__Static) Impl__ToString__desc__B__ret____obj__Java__lang__String(var0 byte) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Byte.toString(B)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Byte__Static) Impl__ToUnsignedInt__desc__B__ret__I(var0 byte) int {
+	panic("Not Implemented - java/lang/Byte.toUnsignedInt(B)I")
+}
+
+func (this *Java__lang__Byte__Static) Impl__ToUnsignedLong__desc__B__ret__J(var0 byte) int64 {
+	panic("Not Implemented - java/lang/Byte.toUnsignedLong(B)J")
+}
+
+func (this *Java__lang__Byte__Static) Impl__ValueOf__desc__B__ret____obj__Java__lang__Byte(var0 byte) Java__lang__Byte__Instance {
+	panic("Not Implemented - java/lang/Byte.valueOf(B)Ljava/lang/Byte;")
+}
+
+func (this *Java__lang__Byte__Static) Impl__ValueOf__desc____obj__Java__lang__String__ret____obj__Java__lang__Byte(var0 Java__lang__String__Instance) Java__lang__Byte__Instance {
+	panic("Not Implemented - java/lang/Byte.valueOf(Ljava/lang/String;)Ljava/lang/Byte;")
+}
+
+func (this *Java__lang__Byte__Static) Impl__ValueOf__desc____obj__Java__lang__String__I__ret____obj__Java__lang__Byte(var0 Java__lang__String__Instance, var1 int) Java__lang__Byte__Instance {
+	panic("Not Implemented - java/lang/Byte.valueOf(Ljava/lang/String;I)Ljava/lang/Byte;")
+}
+
+type Java__lang__Byte__Dispatch interface {
+	Java__lang__Number__Dispatch
+	Impl__Instance_Init__desc__B__ret__V(byte)
+	Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
+	Impl__CompareTo__desc____obj__Java__lang__Byte__ret__I(Java__lang__Byte__Instance) int
+	Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+}
+
+func (this *Java__lang__Byte__Impl) Java__lang__Byte__InitDispatch(v Java__lang__Byte__Dispatch) {
+	this.Java__lang__Number__Impl.Java__lang__Number__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__Byte__Impl) Instance_Init__desc__B__ret__V(var0 byte) {
+	this._dispatch.Impl__Instance_Init__desc__B__ret__V(var0)
+}
+
+func (this *Java__lang__Byte__Impl) Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
+}
+
+func (this *Java__lang__Byte__Impl) CompareTo__desc____obj__Java__lang__Byte__ret__I(var0 Java__lang__Byte__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Byte__ret__I(var0)
+}
+
+func (this *Java__lang__Byte__Impl) CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0)
+}
+
+type Java__lang__Byte__Instance interface {
+	ByteValue__desc____ret__B() byte
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	CompareTo__desc____obj__Java__lang__Byte__ret__I(Java__lang__Byte__Instance) int
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	DoubleValue__desc____ret__D() float64
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	FloatValue__desc____ret__F() float32
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	IntValue__desc____ret__I() int
+	LongValue__desc____ret__J() int64
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ShortValue__desc____ret__S() int16
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Byte() *Java__lang__Byte__Impl
+	RawPtr__Java__lang__Number() *Java__lang__Number__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Byte__Impl struct {
+	*Java__lang__Number__Impl
+	_dispatch Java__lang__Byte__Dispatch
+	Value     byte
+}
+
+func (this *Java__lang__Byte__Impl) Impl__Instance_Init__desc__B__ret__V(var0 byte) {
+	panic("Not Implemented - java/lang/Byte.<init>(B)V")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	panic("Not Implemented - java/lang/Byte.<init>(Ljava/lang/String;)V")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__ByteValue__desc____ret__B() byte {
+	panic("Not Implemented - java/lang/Byte.byteValue()B")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__CompareTo__desc____obj__Java__lang__Byte__ret__I(var0 Java__lang__Byte__Instance) int {
+	panic("Not Implemented - java/lang/Byte.compareTo(Ljava/lang/Byte;)I")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	panic("Not Implemented - java/lang/Byte.compareTo(Ljava/lang/Object;)I")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__DoubleValue__desc____ret__D() float64 {
+	panic("Not Implemented - java/lang/Byte.doubleValue()D")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__Equals__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
+	panic("Not Implemented - java/lang/Byte.equals(Ljava/lang/Object;)Z")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__FloatValue__desc____ret__F() float32 {
+	panic("Not Implemented - java/lang/Byte.floatValue()F")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__HashCode__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Byte.hashCode()I")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__IntValue__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Byte.intValue()I")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__LongValue__desc____ret__J() int64 {
+	panic("Not Implemented - java/lang/Byte.longValue()J")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__ShortValue__desc____ret__S() int16 {
+	panic("Not Implemented - java/lang/Byte.shortValue()S")
+}
+
+func (this *Java__lang__Byte__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Byte.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Byte__Impl) RawPtr__Java__lang__Byte() *Java__lang__Byte__Impl {
+	return this
+}
+
 type Java__lang__CharSequence__Static struct{}
 
 var Java__lang__CharSequence__Var Java__lang__CharSequence__Static
@@ -778,6 +1127,535 @@ type Java__lang__CharSequence__Instance interface {
 	Wait__desc__J__ret__V(int64)
 	Wait__desc__J__I__ret__V(int64, int)
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Character__Static struct {
+	__dollar__assertionsDisabled              bool
+	BYTES                                     int
+	COMBINING_SPACING_MARK                    byte
+	CONNECTOR_PUNCTUATION                     byte
+	CONTROL                                   byte
+	CURRENCY_SYMBOL                           byte
+	DASH_PUNCTUATION                          byte
+	DECIMAL_DIGIT_NUMBER                      byte
+	DIRECTIONALITY_ARABIC_NUMBER              byte
+	DIRECTIONALITY_BOUNDARY_NEUTRAL           byte
+	DIRECTIONALITY_COMMON_NUMBER_SEPARATOR    byte
+	DIRECTIONALITY_EUROPEAN_NUMBER            byte
+	DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR  byte
+	DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR byte
+	DIRECTIONALITY_LEFT_TO_RIGHT              byte
+	DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING    byte
+	DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE     byte
+	DIRECTIONALITY_NONSPACING_MARK            byte
+	DIRECTIONALITY_OTHER_NEUTRALS             byte
+	DIRECTIONALITY_PARAGRAPH_SEPARATOR        byte
+	DIRECTIONALITY_POP_DIRECTIONAL_FORMAT     byte
+	DIRECTIONALITY_RIGHT_TO_LEFT              byte
+	DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC       byte
+	DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING    byte
+	DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE     byte
+	DIRECTIONALITY_SEGMENT_SEPARATOR          byte
+	DIRECTIONALITY_UNDEFINED                  byte
+	DIRECTIONALITY_WHITESPACE                 byte
+	ENCLOSING_MARK                            byte
+	END_PUNCTUATION                           byte
+	ERROR                                     int
+	FINAL_QUOTE_PUNCTUATION                   byte
+	FORMAT                                    byte
+	INITIAL_QUOTE_PUNCTUATION                 byte
+	LETTER_NUMBER                             byte
+	LINE_SEPARATOR                            byte
+	LOWERCASE_LETTER                          byte
+	MATH_SYMBOL                               byte
+	MAX_CODE_POINT                            int
+	MAX_HIGH_SURROGATE                        rune
+	MAX_LOW_SURROGATE                         rune
+	MAX_RADIX                                 int
+	MAX_SURROGATE                             rune
+	MAX_VALUE                                 rune
+	MIN_CODE_POINT                            int
+	MIN_HIGH_SURROGATE                        rune
+	MIN_LOW_SURROGATE                         rune
+	MIN_RADIX                                 int
+	MIN_SUPPLEMENTARY_CODE_POINT              int
+	MIN_SURROGATE                             rune
+	MIN_VALUE                                 rune
+	MODIFIER_LETTER                           byte
+	MODIFIER_SYMBOL                           byte
+	NON_SPACING_MARK                          byte
+	OTHER_LETTER                              byte
+	OTHER_NUMBER                              byte
+	OTHER_PUNCTUATION                         byte
+	OTHER_SYMBOL                              byte
+	PARAGRAPH_SEPARATOR                       byte
+	PRIVATE_USE                               byte
+	SIZE                                      int
+	SPACE_SEPARATOR                           byte
+	START_PUNCTUATION                         byte
+	SURROGATE                                 byte
+	TITLECASE_LETTER                          byte
+	TYPE                                      Java__lang__Class__Instance
+	UNASSIGNED                                byte
+	UPPERCASE_LETTER                          byte
+	init                                      sync.Once
+}
+
+var Java__lang__Character__Var Java__lang__Character__Static
+
+func Java__lang__Character() *Java__lang__Character__Static {
+	Java__lang__Character__Var.init.Do(Java__lang__Character__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__Character__Var
+}
+
+func (this *Java__lang__Character__Static) New() *Java__lang__Character__Impl {
+	v := &Java__lang__Character__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__Character__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__Character__Static) Impl__Static_Init__desc____ret__V() {
+	
+}
+
+func (this *Java__lang__Character__Static) Impl__CharCount__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Character.charCount(I)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__CodePointAt__desc____obj__Java__lang__CharSequence__I__ret__I(var0 Java__lang__CharSequence__Instance, var1 int) int {
+	panic("Not Implemented - java/lang/Character.codePointAt(Ljava/lang/CharSequence;I)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__CodePointAt__desc____arr__C__I__ret__I(var0 CharArray__Instance, var1 int) int {
+	panic("Not Implemented - java/lang/Character.codePointAt([CI)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__CodePointAt__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
+	panic("Not Implemented - java/lang/Character.codePointAt([CII)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__CodePointAtImpl__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
+	panic("Not Implemented - java/lang/Character.codePointAtImpl([CII)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__CodePointBefore__desc____obj__Java__lang__CharSequence__I__ret__I(var0 Java__lang__CharSequence__Instance, var1 int) int {
+	panic("Not Implemented - java/lang/Character.codePointBefore(Ljava/lang/CharSequence;I)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__CodePointBefore__desc____arr__C__I__ret__I(var0 CharArray__Instance, var1 int) int {
+	panic("Not Implemented - java/lang/Character.codePointBefore([CI)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__CodePointBefore__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
+	panic("Not Implemented - java/lang/Character.codePointBefore([CII)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__CodePointBeforeImpl__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
+	panic("Not Implemented - java/lang/Character.codePointBeforeImpl([CII)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__CodePointCount__desc____obj__Java__lang__CharSequence__I__I__ret__I(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) int {
+	panic("Not Implemented - java/lang/Character.codePointCount(Ljava/lang/CharSequence;II)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__CodePointCount__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
+	panic("Not Implemented - java/lang/Character.codePointCount([CII)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__CodePointCountImpl__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
+	panic("Not Implemented - java/lang/Character.codePointCountImpl([CII)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__Compare__desc__C__C__ret__I(var0 rune, var1 rune) int {
+	panic("Not Implemented - java/lang/Character.compare(CC)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__Digit__desc__C__I__ret__I(var0 rune, var1 int) int {
+	panic("Not Implemented - java/lang/Character.digit(CI)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__Digit__desc__I__I__ret__I(var0 int, var1 int) int {
+	panic("Not Implemented - java/lang/Character.digit(II)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__ForDigit__desc__I__I__ret__C(var0 int, var1 int) rune {
+	panic("Not Implemented - java/lang/Character.forDigit(II)C")
+}
+
+func (this *Java__lang__Character__Static) Impl__GetDirectionality__desc__C__ret__B(var0 rune) byte {
+	panic("Not Implemented - java/lang/Character.getDirectionality(C)B")
+}
+
+func (this *Java__lang__Character__Static) Impl__GetDirectionality__desc__I__ret__B(var0 int) byte {
+	panic("Not Implemented - java/lang/Character.getDirectionality(I)B")
+}
+
+func (this *Java__lang__Character__Static) Impl__GetName__desc__I__ret____obj__Java__lang__String(var0 int) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Character.getName(I)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Character__Static) Impl__GetNumericValue__desc__C__ret__I(var0 rune) int {
+	panic("Not Implemented - java/lang/Character.getNumericValue(C)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__GetNumericValue__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Character.getNumericValue(I)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__GetType__desc__C__ret__I(var0 rune) int {
+	panic("Not Implemented - java/lang/Character.getType(C)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__GetType__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Character.getType(I)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__HashCode__desc__C__ret__I(var0 rune) int {
+	panic("Not Implemented - java/lang/Character.hashCode(C)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__HighSurrogate__desc__I__ret__C(var0 int) rune {
+	panic("Not Implemented - java/lang/Character.highSurrogate(I)C")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsAlphabetic__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isAlphabetic(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsBmpCodePoint__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isBmpCodePoint(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsDefined__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isDefined(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsDefined__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isDefined(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsDigit__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isDigit(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsDigit__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isDigit(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsHighSurrogate__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isHighSurrogate(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsISOControl__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isISOControl(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsISOControl__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isISOControl(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsIdentifierIgnorable__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isIdentifierIgnorable(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsIdentifierIgnorable__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isIdentifierIgnorable(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsIdeographic__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isIdeographic(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsJavaIdentifierPart__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isJavaIdentifierPart(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsJavaIdentifierPart__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isJavaIdentifierPart(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsJavaIdentifierStart__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isJavaIdentifierStart(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsJavaIdentifierStart__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isJavaIdentifierStart(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsJavaLetter__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isJavaLetter(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsJavaLetterOrDigit__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isJavaLetterOrDigit(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsLetter__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isLetter(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsLetter__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isLetter(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsLetterOrDigit__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isLetterOrDigit(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsLetterOrDigit__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isLetterOrDigit(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsLowSurrogate__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isLowSurrogate(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsLowerCase__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isLowerCase(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsLowerCase__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isLowerCase(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsMirrored__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isMirrored(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsMirrored__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isMirrored(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsSpace__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isSpace(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsSpaceChar__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isSpaceChar(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsSpaceChar__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isSpaceChar(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsSupplementaryCodePoint__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isSupplementaryCodePoint(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsSurrogate__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isSurrogate(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsSurrogatePair__desc__C__C__ret__Z(var0 rune, var1 rune) bool {
+	panic("Not Implemented - java/lang/Character.isSurrogatePair(CC)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsTitleCase__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isTitleCase(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsTitleCase__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isTitleCase(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsUnicodeIdentifierPart__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isUnicodeIdentifierPart(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsUnicodeIdentifierPart__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isUnicodeIdentifierPart(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsUnicodeIdentifierStart__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isUnicodeIdentifierStart(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsUnicodeIdentifierStart__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isUnicodeIdentifierStart(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsUpperCase__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isUpperCase(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsUpperCase__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isUpperCase(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsValidCodePoint__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isValidCodePoint(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsWhitespace__desc__C__ret__Z(var0 rune) bool {
+	panic("Not Implemented - java/lang/Character.isWhitespace(C)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__IsWhitespace__desc__I__ret__Z(var0 int) bool {
+	panic("Not Implemented - java/lang/Character.isWhitespace(I)Z")
+}
+
+func (this *Java__lang__Character__Static) Impl__LowSurrogate__desc__I__ret__C(var0 int) rune {
+	panic("Not Implemented - java/lang/Character.lowSurrogate(I)C")
+}
+
+func (this *Java__lang__Character__Static) Impl__OffsetByCodePoints__desc____obj__Java__lang__CharSequence__I__I__ret__I(var0 Java__lang__CharSequence__Instance, var1 int, var2 int) int {
+	panic("Not Implemented - java/lang/Character.offsetByCodePoints(Ljava/lang/CharSequence;II)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__OffsetByCodePoints__desc____arr__C__I__I__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 int, var4 int) int {
+	panic("Not Implemented - java/lang/Character.offsetByCodePoints([CIIII)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__OffsetByCodePointsImpl__desc____arr__C__I__I__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 int, var4 int) int {
+	panic("Not Implemented - java/lang/Character.offsetByCodePointsImpl([CIIII)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__ReverseBytes__desc__C__ret__C(var0 rune) rune {
+	panic("Not Implemented - java/lang/Character.reverseBytes(C)C")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToChars__desc__I__ret____arr__C(var0 int) CharArray__Instance {
+	panic("Not Implemented - java/lang/Character.toChars(I)[C")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToChars__desc__I____arr__C__I__ret__I(var0 int, var1 CharArray__Instance, var2 int) int {
+	panic("Not Implemented - java/lang/Character.toChars(I[CI)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToCodePoint__desc__C__C__ret__I(var0 rune, var1 rune) int {
+	panic("Not Implemented - java/lang/Character.toCodePoint(CC)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToLowerCase__desc__C__ret__C(var0 rune) rune {
+	panic("Not Implemented - java/lang/Character.toLowerCase(C)C")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToLowerCase__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Character.toLowerCase(I)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToString__desc__C__ret____obj__Java__lang__String(var0 rune) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Character.toString(C)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToSurrogates__desc__I____arr__C__I__ret__V(var0 int, var1 CharArray__Instance, var2 int) {
+	panic("Not Implemented - java/lang/Character.toSurrogates(I[CI)V")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToTitleCase__desc__C__ret__C(var0 rune) rune {
+	panic("Not Implemented - java/lang/Character.toTitleCase(C)C")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToTitleCase__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Character.toTitleCase(I)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToUpperCase__desc__C__ret__C(var0 rune) rune {
+	panic("Not Implemented - java/lang/Character.toUpperCase(C)C")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToUpperCase__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Character.toUpperCase(I)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToUpperCaseCharArray__desc__I__ret____arr__C(var0 int) CharArray__Instance {
+	panic("Not Implemented - java/lang/Character.toUpperCaseCharArray(I)[C")
+}
+
+func (this *Java__lang__Character__Static) Impl__ToUpperCaseEx__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Character.toUpperCaseEx(I)I")
+}
+
+func (this *Java__lang__Character__Static) Impl__ValueOf__desc__C__ret____obj__Java__lang__Character(var0 rune) Java__lang__Character__Instance {
+	panic("Not Implemented - java/lang/Character.valueOf(C)Ljava/lang/Character;")
+}
+
+type Java__lang__Character__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Instance_Init__desc__C__ret__V(rune)
+	Impl__CharValue__desc____ret__C() rune
+	Impl__CompareTo__desc____obj__Java__lang__Character__ret__I(Java__lang__Character__Instance) int
+	Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+}
+
+func (this *Java__lang__Character__Impl) Java__lang__Character__InitDispatch(v Java__lang__Character__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__Character__Impl) Instance_Init__desc__C__ret__V(var0 rune) {
+	this._dispatch.Impl__Instance_Init__desc__C__ret__V(var0)
+}
+
+func (this *Java__lang__Character__Impl) CharValue__desc____ret__C() rune {
+	return this._dispatch.Impl__CharValue__desc____ret__C()
+}
+
+func (this *Java__lang__Character__Impl) CompareTo__desc____obj__Java__lang__Character__ret__I(var0 Java__lang__Character__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Character__ret__I(var0)
+}
+
+func (this *Java__lang__Character__Impl) CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0)
+}
+
+type Java__lang__Character__Instance interface {
+	CharValue__desc____ret__C() rune
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	CompareTo__desc____obj__Java__lang__Character__ret__I(Java__lang__Character__Instance) int
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Character() *Java__lang__Character__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Character__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__Character__Dispatch
+	Value     rune
+}
+
+func (this *Java__lang__Character__Impl) Impl__Instance_Init__desc__C__ret__V(var0 rune) {
+	panic("Not Implemented - java/lang/Character.<init>(C)V")
+}
+
+func (this *Java__lang__Character__Impl) Impl__CharValue__desc____ret__C() rune {
+	panic("Not Implemented - java/lang/Character.charValue()C")
+}
+
+func (this *Java__lang__Character__Impl) Impl__CompareTo__desc____obj__Java__lang__Character__ret__I(var0 Java__lang__Character__Instance) int {
+	panic("Not Implemented - java/lang/Character.compareTo(Ljava/lang/Character;)I")
+}
+
+func (this *Java__lang__Character__Impl) Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	panic("Not Implemented - java/lang/Character.compareTo(Ljava/lang/Object;)I")
+}
+
+func (this *Java__lang__Character__Impl) Impl__Equals__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
+	panic("Not Implemented - java/lang/Character.equals(Ljava/lang/Object;)Z")
+}
+
+func (this *Java__lang__Character__Impl) Impl__HashCode__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Character.hashCode()I")
+}
+
+func (this *Java__lang__Character__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Character.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Character__Impl) RawPtr__Java__lang__Character() *Java__lang__Character__Impl {
+	return this
 }
 
 type Java__lang__Class__Static struct {
@@ -1712,6 +2590,240 @@ func (this *Java__lang__Comparable__dynproxy____Impl) Impl__CompareTo__desc____o
 	return this.fn(var0)
 }
 
+type Java__lang__Double__Static struct {
+	BYTES             int
+	MAX_EXPONENT      int
+	MAX_VALUE         float64
+	MIN_EXPONENT      int
+	MIN_NORMAL        float64
+	MIN_VALUE         float64
+	NEGATIVE_INFINITY float64
+	NaN               float64
+	POSITIVE_INFINITY float64
+	SIZE              int
+	TYPE              Java__lang__Class__Instance
+	init              sync.Once
+}
+
+var Java__lang__Double__Var Java__lang__Double__Static
+
+func Java__lang__Double() *Java__lang__Double__Static {
+	Java__lang__Double__Var.init.Do(Java__lang__Double__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__Double__Var
+}
+
+func (this *Java__lang__Double__Static) New() *Java__lang__Double__Impl {
+	v := &Java__lang__Double__Impl{
+		Java__lang__Number__Impl: Java__lang__Number().New(),
+	}
+	v.Java__lang__Double__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__Double__Static) Impl__Static_Init__desc____ret__V() {
+	
+}
+
+func (this *Java__lang__Double__Static) Impl__Compare__desc__D__D__ret__I(var0 float64, var1 float64) int {
+	panic("Not Implemented - java/lang/Double.compare(DD)I")
+}
+
+func (this *Java__lang__Double__Static) Impl__DoubleToLongBits__desc__D__ret__J(var0 float64) int64 {
+	panic("Not Implemented - java/lang/Double.doubleToLongBits(D)J")
+}
+
+func (this *Java__lang__Double__Static) Impl__DoubleToRawLongBits__desc__D__ret__J(var0 float64) int64 {
+	panic("Not Implemented - java/lang/Double.doubleToRawLongBits(D)J")
+}
+
+func (this *Java__lang__Double__Static) Impl__HashCode__desc__D__ret__I(var0 float64) int {
+	panic("Not Implemented - java/lang/Double.hashCode(D)I")
+}
+
+func (this *Java__lang__Double__Static) Impl__IsFinite__desc__D__ret__Z(var0 float64) bool {
+	panic("Not Implemented - java/lang/Double.isFinite(D)Z")
+}
+
+func (this *Java__lang__Double__Static) Impl__IsInfinite__desc__D__ret__Z(var0 float64) bool {
+	panic("Not Implemented - java/lang/Double.isInfinite(D)Z")
+}
+
+func (this *Java__lang__Double__Static) Impl__IsNaN__desc__D__ret__Z(var0 float64) bool {
+	panic("Not Implemented - java/lang/Double.isNaN(D)Z")
+}
+
+func (this *Java__lang__Double__Static) Impl__LongBitsToDouble__desc__J__ret__D(var0 int64) float64 {
+	panic("Not Implemented - java/lang/Double.longBitsToDouble(J)D")
+}
+
+func (this *Java__lang__Double__Static) Impl__Max__desc__D__D__ret__D(var0 float64, var1 float64) float64 {
+	panic("Not Implemented - java/lang/Double.max(DD)D")
+}
+
+func (this *Java__lang__Double__Static) Impl__Min__desc__D__D__ret__D(var0 float64, var1 float64) float64 {
+	panic("Not Implemented - java/lang/Double.min(DD)D")
+}
+
+func (this *Java__lang__Double__Static) Impl__ParseDouble__desc____obj__Java__lang__String__ret__D(var0 Java__lang__String__Instance) float64 {
+	panic("Not Implemented - java/lang/Double.parseDouble(Ljava/lang/String;)D")
+}
+
+func (this *Java__lang__Double__Static) Impl__Sum__desc__D__D__ret__D(var0 float64, var1 float64) float64 {
+	panic("Not Implemented - java/lang/Double.sum(DD)D")
+}
+
+func (this *Java__lang__Double__Static) Impl__ToHexString__desc__D__ret____obj__Java__lang__String(var0 float64) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Double.toHexString(D)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Double__Static) Impl__ToString__desc__D__ret____obj__Java__lang__String(var0 float64) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Double.toString(D)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Double__Static) Impl__ValueOf__desc__D__ret____obj__Java__lang__Double(var0 float64) Java__lang__Double__Instance {
+	panic("Not Implemented - java/lang/Double.valueOf(D)Ljava/lang/Double;")
+}
+
+func (this *Java__lang__Double__Static) Impl__ValueOf__desc____obj__Java__lang__String__ret____obj__Java__lang__Double(var0 Java__lang__String__Instance) Java__lang__Double__Instance {
+	panic("Not Implemented - java/lang/Double.valueOf(Ljava/lang/String;)Ljava/lang/Double;")
+}
+
+type Java__lang__Double__Dispatch interface {
+	Java__lang__Number__Dispatch
+	Impl__Instance_Init__desc__D__ret__V(float64)
+	Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
+	Impl__CompareTo__desc____obj__Java__lang__Double__ret__I(Java__lang__Double__Instance) int
+	Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	Impl__IsInfinite__desc____ret__Z() bool
+	Impl__IsNaN__desc____ret__Z() bool
+}
+
+func (this *Java__lang__Double__Impl) Java__lang__Double__InitDispatch(v Java__lang__Double__Dispatch) {
+	this.Java__lang__Number__Impl.Java__lang__Number__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__Double__Impl) Instance_Init__desc__D__ret__V(var0 float64) {
+	this._dispatch.Impl__Instance_Init__desc__D__ret__V(var0)
+}
+
+func (this *Java__lang__Double__Impl) Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
+}
+
+func (this *Java__lang__Double__Impl) CompareTo__desc____obj__Java__lang__Double__ret__I(var0 Java__lang__Double__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Double__ret__I(var0)
+}
+
+func (this *Java__lang__Double__Impl) CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0)
+}
+
+func (this *Java__lang__Double__Impl) IsInfinite__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsInfinite__desc____ret__Z()
+}
+
+func (this *Java__lang__Double__Impl) IsNaN__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsNaN__desc____ret__Z()
+}
+
+type Java__lang__Double__Instance interface {
+	ByteValue__desc____ret__B() byte
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	CompareTo__desc____obj__Java__lang__Double__ret__I(Java__lang__Double__Instance) int
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	DoubleValue__desc____ret__D() float64
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	FloatValue__desc____ret__F() float32
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	IntValue__desc____ret__I() int
+	IsInfinite__desc____ret__Z() bool
+	IsNaN__desc____ret__Z() bool
+	LongValue__desc____ret__J() int64
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ShortValue__desc____ret__S() int16
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Double() *Java__lang__Double__Impl
+	RawPtr__Java__lang__Number() *Java__lang__Number__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Double__Impl struct {
+	*Java__lang__Number__Impl
+	_dispatch Java__lang__Double__Dispatch
+	Value     float64
+}
+
+func (this *Java__lang__Double__Impl) Impl__Instance_Init__desc__D__ret__V(var0 float64) {
+	panic("Not Implemented - java/lang/Double.<init>(D)V")
+}
+
+func (this *Java__lang__Double__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	panic("Not Implemented - java/lang/Double.<init>(Ljava/lang/String;)V")
+}
+
+func (this *Java__lang__Double__Impl) Impl__ByteValue__desc____ret__B() byte {
+	panic("Not Implemented - java/lang/Double.byteValue()B")
+}
+
+func (this *Java__lang__Double__Impl) Impl__CompareTo__desc____obj__Java__lang__Double__ret__I(var0 Java__lang__Double__Instance) int {
+	panic("Not Implemented - java/lang/Double.compareTo(Ljava/lang/Double;)I")
+}
+
+func (this *Java__lang__Double__Impl) Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	panic("Not Implemented - java/lang/Double.compareTo(Ljava/lang/Object;)I")
+}
+
+func (this *Java__lang__Double__Impl) Impl__DoubleValue__desc____ret__D() float64 {
+	panic("Not Implemented - java/lang/Double.doubleValue()D")
+}
+
+func (this *Java__lang__Double__Impl) Impl__Equals__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
+	panic("Not Implemented - java/lang/Double.equals(Ljava/lang/Object;)Z")
+}
+
+func (this *Java__lang__Double__Impl) Impl__FloatValue__desc____ret__F() float32 {
+	panic("Not Implemented - java/lang/Double.floatValue()F")
+}
+
+func (this *Java__lang__Double__Impl) Impl__HashCode__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Double.hashCode()I")
+}
+
+func (this *Java__lang__Double__Impl) Impl__IntValue__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Double.intValue()I")
+}
+
+func (this *Java__lang__Double__Impl) Impl__IsInfinite__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Double.isInfinite()Z")
+}
+
+func (this *Java__lang__Double__Impl) Impl__IsNaN__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Double.isNaN()Z")
+}
+
+func (this *Java__lang__Double__Impl) Impl__LongValue__desc____ret__J() int64 {
+	panic("Not Implemented - java/lang/Double.longValue()J")
+}
+
+func (this *Java__lang__Double__Impl) Impl__ShortValue__desc____ret__S() int16 {
+	panic("Not Implemented - java/lang/Double.shortValue()S")
+}
+
+func (this *Java__lang__Double__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Double.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Double__Impl) RawPtr__Java__lang__Double() *Java__lang__Double__Impl {
+	return this
+}
+
 type Java__lang__Error__Static struct {
 	SerialVersionUID int64
 }
@@ -1870,6 +2982,249 @@ func (this *Java__lang__Exception__Impl) RawPtr__Java__lang__Exception() *Java__
 	return this
 }
 
+type Java__lang__Float__Static struct {
+	BYTES             int
+	MAX_EXPONENT      int
+	MAX_VALUE         float32
+	MIN_EXPONENT      int
+	MIN_NORMAL        float32
+	MIN_VALUE         float32
+	NEGATIVE_INFINITY float32
+	NaN               float32
+	POSITIVE_INFINITY float32
+	SIZE              int
+	TYPE              Java__lang__Class__Instance
+	init              sync.Once
+}
+
+var Java__lang__Float__Var Java__lang__Float__Static
+
+func Java__lang__Float() *Java__lang__Float__Static {
+	Java__lang__Float__Var.init.Do(Java__lang__Float__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__Float__Var
+}
+
+func (this *Java__lang__Float__Static) New() *Java__lang__Float__Impl {
+	v := &Java__lang__Float__Impl{
+		Java__lang__Number__Impl: Java__lang__Number().New(),
+	}
+	v.Java__lang__Float__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__Float__Static) Impl__Static_Init__desc____ret__V() {
+	
+}
+
+func (this *Java__lang__Float__Static) Impl__Compare__desc__F__F__ret__I(var0 float32, var1 float32) int {
+	panic("Not Implemented - java/lang/Float.compare(FF)I")
+}
+
+func (this *Java__lang__Float__Static) Impl__FloatToIntBits__desc__F__ret__I(var0 float32) int {
+	panic("Not Implemented - java/lang/Float.floatToIntBits(F)I")
+}
+
+func (this *Java__lang__Float__Static) Impl__FloatToRawIntBits__desc__F__ret__I(var0 float32) int {
+	panic("Not Implemented - java/lang/Float.floatToRawIntBits(F)I")
+}
+
+func (this *Java__lang__Float__Static) Impl__HashCode__desc__F__ret__I(var0 float32) int {
+	panic("Not Implemented - java/lang/Float.hashCode(F)I")
+}
+
+func (this *Java__lang__Float__Static) Impl__IntBitsToFloat__desc__I__ret__F(var0 int) float32 {
+	panic("Not Implemented - java/lang/Float.intBitsToFloat(I)F")
+}
+
+func (this *Java__lang__Float__Static) Impl__IsFinite__desc__F__ret__Z(var0 float32) bool {
+	panic("Not Implemented - java/lang/Float.isFinite(F)Z")
+}
+
+func (this *Java__lang__Float__Static) Impl__IsInfinite__desc__F__ret__Z(var0 float32) bool {
+	panic("Not Implemented - java/lang/Float.isInfinite(F)Z")
+}
+
+func (this *Java__lang__Float__Static) Impl__IsNaN__desc__F__ret__Z(var0 float32) bool {
+	panic("Not Implemented - java/lang/Float.isNaN(F)Z")
+}
+
+func (this *Java__lang__Float__Static) Impl__Max__desc__F__F__ret__F(var0 float32, var1 float32) float32 {
+	panic("Not Implemented - java/lang/Float.max(FF)F")
+}
+
+func (this *Java__lang__Float__Static) Impl__Min__desc__F__F__ret__F(var0 float32, var1 float32) float32 {
+	panic("Not Implemented - java/lang/Float.min(FF)F")
+}
+
+func (this *Java__lang__Float__Static) Impl__ParseFloat__desc____obj__Java__lang__String__ret__F(var0 Java__lang__String__Instance) float32 {
+	panic("Not Implemented - java/lang/Float.parseFloat(Ljava/lang/String;)F")
+}
+
+func (this *Java__lang__Float__Static) Impl__Sum__desc__F__F__ret__F(var0 float32, var1 float32) float32 {
+	panic("Not Implemented - java/lang/Float.sum(FF)F")
+}
+
+func (this *Java__lang__Float__Static) Impl__ToHexString__desc__F__ret____obj__Java__lang__String(var0 float32) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Float.toHexString(F)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Float__Static) Impl__ToString__desc__F__ret____obj__Java__lang__String(var0 float32) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Float.toString(F)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Float__Static) Impl__ValueOf__desc__F__ret____obj__Java__lang__Float(var0 float32) Java__lang__Float__Instance {
+	panic("Not Implemented - java/lang/Float.valueOf(F)Ljava/lang/Float;")
+}
+
+func (this *Java__lang__Float__Static) Impl__ValueOf__desc____obj__Java__lang__String__ret____obj__Java__lang__Float(var0 Java__lang__String__Instance) Java__lang__Float__Instance {
+	panic("Not Implemented - java/lang/Float.valueOf(Ljava/lang/String;)Ljava/lang/Float;")
+}
+
+type Java__lang__Float__Dispatch interface {
+	Java__lang__Number__Dispatch
+	Impl__Instance_Init__desc__D__ret__V(float64)
+	Impl__Instance_Init__desc__F__ret__V(float32)
+	Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
+	Impl__CompareTo__desc____obj__Java__lang__Float__ret__I(Java__lang__Float__Instance) int
+	Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	Impl__IsInfinite__desc____ret__Z() bool
+	Impl__IsNaN__desc____ret__Z() bool
+}
+
+func (this *Java__lang__Float__Impl) Java__lang__Float__InitDispatch(v Java__lang__Float__Dispatch) {
+	this.Java__lang__Number__Impl.Java__lang__Number__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__Float__Impl) Instance_Init__desc__D__ret__V(var0 float64) {
+	this._dispatch.Impl__Instance_Init__desc__D__ret__V(var0)
+}
+
+func (this *Java__lang__Float__Impl) Instance_Init__desc__F__ret__V(var0 float32) {
+	this._dispatch.Impl__Instance_Init__desc__F__ret__V(var0)
+}
+
+func (this *Java__lang__Float__Impl) Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
+}
+
+func (this *Java__lang__Float__Impl) CompareTo__desc____obj__Java__lang__Float__ret__I(var0 Java__lang__Float__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Float__ret__I(var0)
+}
+
+func (this *Java__lang__Float__Impl) CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0)
+}
+
+func (this *Java__lang__Float__Impl) IsInfinite__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsInfinite__desc____ret__Z()
+}
+
+func (this *Java__lang__Float__Impl) IsNaN__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsNaN__desc____ret__Z()
+}
+
+type Java__lang__Float__Instance interface {
+	ByteValue__desc____ret__B() byte
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	CompareTo__desc____obj__Java__lang__Float__ret__I(Java__lang__Float__Instance) int
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	DoubleValue__desc____ret__D() float64
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	FloatValue__desc____ret__F() float32
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	IntValue__desc____ret__I() int
+	IsInfinite__desc____ret__Z() bool
+	IsNaN__desc____ret__Z() bool
+	LongValue__desc____ret__J() int64
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ShortValue__desc____ret__S() int16
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Float() *Java__lang__Float__Impl
+	RawPtr__Java__lang__Number() *Java__lang__Number__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Float__Impl struct {
+	*Java__lang__Number__Impl
+	_dispatch Java__lang__Float__Dispatch
+	Value     float32
+}
+
+func (this *Java__lang__Float__Impl) Impl__Instance_Init__desc__D__ret__V(var0 float64) {
+	panic("Not Implemented - java/lang/Float.<init>(D)V")
+}
+
+func (this *Java__lang__Float__Impl) Impl__Instance_Init__desc__F__ret__V(var0 float32) {
+	panic("Not Implemented - java/lang/Float.<init>(F)V")
+}
+
+func (this *Java__lang__Float__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	panic("Not Implemented - java/lang/Float.<init>(Ljava/lang/String;)V")
+}
+
+func (this *Java__lang__Float__Impl) Impl__ByteValue__desc____ret__B() byte {
+	panic("Not Implemented - java/lang/Float.byteValue()B")
+}
+
+func (this *Java__lang__Float__Impl) Impl__CompareTo__desc____obj__Java__lang__Float__ret__I(var0 Java__lang__Float__Instance) int {
+	panic("Not Implemented - java/lang/Float.compareTo(Ljava/lang/Float;)I")
+}
+
+func (this *Java__lang__Float__Impl) Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	panic("Not Implemented - java/lang/Float.compareTo(Ljava/lang/Object;)I")
+}
+
+func (this *Java__lang__Float__Impl) Impl__DoubleValue__desc____ret__D() float64 {
+	panic("Not Implemented - java/lang/Float.doubleValue()D")
+}
+
+func (this *Java__lang__Float__Impl) Impl__Equals__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
+	panic("Not Implemented - java/lang/Float.equals(Ljava/lang/Object;)Z")
+}
+
+func (this *Java__lang__Float__Impl) Impl__FloatValue__desc____ret__F() float32 {
+	panic("Not Implemented - java/lang/Float.floatValue()F")
+}
+
+func (this *Java__lang__Float__Impl) Impl__HashCode__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Float.hashCode()I")
+}
+
+func (this *Java__lang__Float__Impl) Impl__IntValue__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Float.intValue()I")
+}
+
+func (this *Java__lang__Float__Impl) Impl__IsInfinite__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Float.isInfinite()Z")
+}
+
+func (this *Java__lang__Float__Impl) Impl__IsNaN__desc____ret__Z() bool {
+	panic("Not Implemented - java/lang/Float.isNaN()Z")
+}
+
+func (this *Java__lang__Float__Impl) Impl__LongValue__desc____ret__J() int64 {
+	panic("Not Implemented - java/lang/Float.longValue()J")
+}
+
+func (this *Java__lang__Float__Impl) Impl__ShortValue__desc____ret__S() int16 {
+	panic("Not Implemented - java/lang/Float.shortValue()S")
+}
+
+func (this *Java__lang__Float__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Float.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Float__Impl) RawPtr__Java__lang__Float() *Java__lang__Float__Impl {
+	return this
+}
+
 type Java__lang__IllegalArgumentException__Static struct{}
 
 var Java__lang__IllegalArgumentException__Var Java__lang__IllegalArgumentException__Static
@@ -2016,6 +3371,606 @@ func (this *Java__lang__IllegalMonitorStateException__Impl) RawPtr__Java__lang__
 	return this
 }
 
+type Java__lang__Integer__Static struct {
+	BYTES     int
+	DigitOnes CharArray__Instance
+	DigitTens CharArray__Instance
+	MAX_VALUE int
+	MIN_VALUE int
+	SIZE      int
+	TYPE      Java__lang__Class__Instance
+	Digits    CharArray__Instance
+	SizeTable IntArray__Instance
+	init      sync.Once
+}
+
+var Java__lang__Integer__Var Java__lang__Integer__Static
+
+func Java__lang__Integer() *Java__lang__Integer__Static {
+	Java__lang__Integer__Var.init.Do(Java__lang__Integer__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__Integer__Var
+}
+
+func (this *Java__lang__Integer__Static) New() *Java__lang__Integer__Impl {
+	v := &Java__lang__Integer__Impl{
+		Java__lang__Number__Impl: Java__lang__Number().New(),
+	}
+	v.Java__lang__Integer__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__Integer__Static) Impl__Static_Init__desc____ret__V() {
+	
+}
+
+func (this *Java__lang__Integer__Static) Impl__BitCount__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Integer.bitCount(I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__Compare__desc__I__I__ret__I(var0 int, var1 int) int {
+	panic("Not Implemented - java/lang/Integer.compare(II)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__CompareUnsigned__desc__I__I__ret__I(var0 int, var1 int) int {
+	panic("Not Implemented - java/lang/Integer.compareUnsigned(II)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__Decode__desc____obj__Java__lang__String__ret____obj__Java__lang__Integer(var0 Java__lang__String__Instance) Java__lang__Integer__Instance {
+	panic("Not Implemented - java/lang/Integer.decode(Ljava/lang/String;)Ljava/lang/Integer;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__DivideUnsigned__desc__I__I__ret__I(var0 int, var1 int) int {
+	panic("Not Implemented - java/lang/Integer.divideUnsigned(II)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__FormatUnsignedInt__desc__I__I____arr__C__I__I__ret__I(var0 int, var1 int, var2 CharArray__Instance, var3 int, var4 int) int {
+	panic("Not Implemented - java/lang/Integer.formatUnsignedInt(II[CII)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__GetChars__desc__I__I____arr__C__ret__V(var0 int, var1 int, var2 CharArray__Instance) {
+	panic("Not Implemented - java/lang/Integer.getChars(II[C)V")
+}
+
+func (this *Java__lang__Integer__Static) Impl__GetInteger__desc____obj__Java__lang__String__ret____obj__Java__lang__Integer(var0 Java__lang__String__Instance) Java__lang__Integer__Instance {
+	panic("Not Implemented - java/lang/Integer.getInteger(Ljava/lang/String;)Ljava/lang/Integer;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__GetInteger__desc____obj__Java__lang__String__I__ret____obj__Java__lang__Integer(var0 Java__lang__String__Instance, var1 int) Java__lang__Integer__Instance {
+	panic("Not Implemented - java/lang/Integer.getInteger(Ljava/lang/String;I)Ljava/lang/Integer;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__GetInteger__desc____obj__Java__lang__String____obj__Java__lang__Integer__ret____obj__Java__lang__Integer(var0 Java__lang__String__Instance, var1 Java__lang__Integer__Instance) Java__lang__Integer__Instance {
+	panic("Not Implemented - java/lang/Integer.getInteger(Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/Integer;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__HashCode__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Integer.hashCode(I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__HighestOneBit__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Integer.highestOneBit(I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__LowestOneBit__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Integer.lowestOneBit(I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__Max__desc__I__I__ret__I(var0 int, var1 int) int {
+	panic("Not Implemented - java/lang/Integer.max(II)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__Min__desc__I__I__ret__I(var0 int, var1 int) int {
+	panic("Not Implemented - java/lang/Integer.min(II)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__NumberOfLeadingZeros__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Integer.numberOfLeadingZeros(I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__NumberOfTrailingZeros__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Integer.numberOfTrailingZeros(I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ParseInt__desc____obj__Java__lang__String__ret__I(var0 Java__lang__String__Instance) int {
+	panic("Not Implemented - java/lang/Integer.parseInt(Ljava/lang/String;)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ParseInt__desc____obj__Java__lang__String__I__ret__I(var0 Java__lang__String__Instance, var1 int) int {
+	panic("Not Implemented - java/lang/Integer.parseInt(Ljava/lang/String;I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ParseUnsignedInt__desc____obj__Java__lang__String__ret__I(var0 Java__lang__String__Instance) int {
+	panic("Not Implemented - java/lang/Integer.parseUnsignedInt(Ljava/lang/String;)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ParseUnsignedInt__desc____obj__Java__lang__String__I__ret__I(var0 Java__lang__String__Instance, var1 int) int {
+	panic("Not Implemented - java/lang/Integer.parseUnsignedInt(Ljava/lang/String;I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__RemainderUnsigned__desc__I__I__ret__I(var0 int, var1 int) int {
+	panic("Not Implemented - java/lang/Integer.remainderUnsigned(II)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__Reverse__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Integer.reverse(I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ReverseBytes__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Integer.reverseBytes(I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__RotateLeft__desc__I__I__ret__I(var0 int, var1 int) int {
+	panic("Not Implemented - java/lang/Integer.rotateLeft(II)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__RotateRight__desc__I__I__ret__I(var0 int, var1 int) int {
+	panic("Not Implemented - java/lang/Integer.rotateRight(II)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__Signum__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Integer.signum(I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__StringSize__desc__I__ret__I(var0 int) int {
+	panic("Not Implemented - java/lang/Integer.stringSize(I)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__Sum__desc__I__I__ret__I(var0 int, var1 int) int {
+	panic("Not Implemented - java/lang/Integer.sum(II)I")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ToBinaryString__desc__I__ret____obj__Java__lang__String(var0 int) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Integer.toBinaryString(I)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ToHexString__desc__I__ret____obj__Java__lang__String(var0 int) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Integer.toHexString(I)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ToOctalString__desc__I__ret____obj__Java__lang__String(var0 int) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Integer.toOctalString(I)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ToString__desc__I__ret____obj__Java__lang__String(var0 int) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Integer.toString(I)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ToString__desc__I__I__ret____obj__Java__lang__String(var0 int, var1 int) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Integer.toString(II)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ToUnsignedLong__desc__I__ret__J(var0 int) int64 {
+	panic("Not Implemented - java/lang/Integer.toUnsignedLong(I)J")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ToUnsignedString__desc__I__ret____obj__Java__lang__String(var0 int) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Integer.toUnsignedString(I)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ToUnsignedString__desc__I__I__ret____obj__Java__lang__String(var0 int, var1 int) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Integer.toUnsignedString(II)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ValueOf__desc__I__ret____obj__Java__lang__Integer(var0 int) Java__lang__Integer__Instance {
+	panic("Not Implemented - java/lang/Integer.valueOf(I)Ljava/lang/Integer;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ValueOf__desc____obj__Java__lang__String__ret____obj__Java__lang__Integer(var0 Java__lang__String__Instance) Java__lang__Integer__Instance {
+	panic("Not Implemented - java/lang/Integer.valueOf(Ljava/lang/String;)Ljava/lang/Integer;")
+}
+
+func (this *Java__lang__Integer__Static) Impl__ValueOf__desc____obj__Java__lang__String__I__ret____obj__Java__lang__Integer(var0 Java__lang__String__Instance, var1 int) Java__lang__Integer__Instance {
+	panic("Not Implemented - java/lang/Integer.valueOf(Ljava/lang/String;I)Ljava/lang/Integer;")
+}
+
+type Java__lang__Integer__Dispatch interface {
+	Java__lang__Number__Dispatch
+	Impl__Instance_Init__desc__I__ret__V(int)
+	Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
+	Impl__CompareTo__desc____obj__Java__lang__Integer__ret__I(Java__lang__Integer__Instance) int
+	Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+}
+
+func (this *Java__lang__Integer__Impl) Java__lang__Integer__InitDispatch(v Java__lang__Integer__Dispatch) {
+	this.Java__lang__Number__Impl.Java__lang__Number__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__Integer__Impl) Instance_Init__desc__I__ret__V(var0 int) {
+	this._dispatch.Impl__Instance_Init__desc__I__ret__V(var0)
+}
+
+func (this *Java__lang__Integer__Impl) Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
+}
+
+func (this *Java__lang__Integer__Impl) CompareTo__desc____obj__Java__lang__Integer__ret__I(var0 Java__lang__Integer__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Integer__ret__I(var0)
+}
+
+func (this *Java__lang__Integer__Impl) CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0)
+}
+
+type Java__lang__Integer__Instance interface {
+	ByteValue__desc____ret__B() byte
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	CompareTo__desc____obj__Java__lang__Integer__ret__I(Java__lang__Integer__Instance) int
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	DoubleValue__desc____ret__D() float64
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	FloatValue__desc____ret__F() float32
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	IntValue__desc____ret__I() int
+	LongValue__desc____ret__J() int64
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ShortValue__desc____ret__S() int16
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Integer() *Java__lang__Integer__Impl
+	RawPtr__Java__lang__Number() *Java__lang__Number__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Integer__Impl struct {
+	*Java__lang__Number__Impl
+	_dispatch Java__lang__Integer__Dispatch
+	Value     int
+}
+
+func (this *Java__lang__Integer__Impl) Impl__Instance_Init__desc__I__ret__V(var0 int) {
+	panic("Not Implemented - java/lang/Integer.<init>(I)V")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	panic("Not Implemented - java/lang/Integer.<init>(Ljava/lang/String;)V")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__ByteValue__desc____ret__B() byte {
+	panic("Not Implemented - java/lang/Integer.byteValue()B")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__CompareTo__desc____obj__Java__lang__Integer__ret__I(var0 Java__lang__Integer__Instance) int {
+	panic("Not Implemented - java/lang/Integer.compareTo(Ljava/lang/Integer;)I")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	panic("Not Implemented - java/lang/Integer.compareTo(Ljava/lang/Object;)I")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__DoubleValue__desc____ret__D() float64 {
+	panic("Not Implemented - java/lang/Integer.doubleValue()D")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__Equals__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
+	panic("Not Implemented - java/lang/Integer.equals(Ljava/lang/Object;)Z")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__FloatValue__desc____ret__F() float32 {
+	panic("Not Implemented - java/lang/Integer.floatValue()F")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__HashCode__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Integer.hashCode()I")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__IntValue__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Integer.intValue()I")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__LongValue__desc____ret__J() int64 {
+	panic("Not Implemented - java/lang/Integer.longValue()J")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__ShortValue__desc____ret__S() int16 {
+	panic("Not Implemented - java/lang/Integer.shortValue()S")
+}
+
+func (this *Java__lang__Integer__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Integer.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Integer__Impl) RawPtr__Java__lang__Integer() *Java__lang__Integer__Impl {
+	return this
+}
+
+type Java__lang__Long__Static struct {
+	BYTES     int
+	MAX_VALUE int64
+	MIN_VALUE int64
+	SIZE      int
+	TYPE      Java__lang__Class__Instance
+	init      sync.Once
+}
+
+var Java__lang__Long__Var Java__lang__Long__Static
+
+func Java__lang__Long() *Java__lang__Long__Static {
+	Java__lang__Long__Var.init.Do(Java__lang__Long__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__Long__Var
+}
+
+func (this *Java__lang__Long__Static) New() *Java__lang__Long__Impl {
+	v := &Java__lang__Long__Impl{
+		Java__lang__Number__Impl: Java__lang__Number().New(),
+	}
+	v.Java__lang__Long__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__Long__Static) Impl__Static_Init__desc____ret__V() {
+	
+}
+
+func (this *Java__lang__Long__Static) Impl__BitCount__desc__J__ret__I(var0 int64) int {
+	panic("Not Implemented - java/lang/Long.bitCount(J)I")
+}
+
+func (this *Java__lang__Long__Static) Impl__Compare__desc__J__J__ret__I(var0 int64, var1 int64) int {
+	panic("Not Implemented - java/lang/Long.compare(JJ)I")
+}
+
+func (this *Java__lang__Long__Static) Impl__CompareUnsigned__desc__J__J__ret__I(var0 int64, var1 int64) int {
+	panic("Not Implemented - java/lang/Long.compareUnsigned(JJ)I")
+}
+
+func (this *Java__lang__Long__Static) Impl__Decode__desc____obj__Java__lang__String__ret____obj__Java__lang__Long(var0 Java__lang__String__Instance) Java__lang__Long__Instance {
+	panic("Not Implemented - java/lang/Long.decode(Ljava/lang/String;)Ljava/lang/Long;")
+}
+
+func (this *Java__lang__Long__Static) Impl__DivideUnsigned__desc__J__J__ret__J(var0 int64, var1 int64) int64 {
+	panic("Not Implemented - java/lang/Long.divideUnsigned(JJ)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__FormatUnsignedLong__desc__J__I____arr__C__I__I__ret__I(var0 int64, var1 int, var2 CharArray__Instance, var3 int, var4 int) int {
+	panic("Not Implemented - java/lang/Long.formatUnsignedLong(JI[CII)I")
+}
+
+func (this *Java__lang__Long__Static) Impl__GetChars__desc__J__I____arr__C__ret__V(var0 int64, var1 int, var2 CharArray__Instance) {
+	panic("Not Implemented - java/lang/Long.getChars(JI[C)V")
+}
+
+func (this *Java__lang__Long__Static) Impl__GetLong__desc____obj__Java__lang__String__ret____obj__Java__lang__Long(var0 Java__lang__String__Instance) Java__lang__Long__Instance {
+	panic("Not Implemented - java/lang/Long.getLong(Ljava/lang/String;)Ljava/lang/Long;")
+}
+
+func (this *Java__lang__Long__Static) Impl__GetLong__desc____obj__Java__lang__String__J__ret____obj__Java__lang__Long(var0 Java__lang__String__Instance, var1 int64) Java__lang__Long__Instance {
+	panic("Not Implemented - java/lang/Long.getLong(Ljava/lang/String;J)Ljava/lang/Long;")
+}
+
+func (this *Java__lang__Long__Static) Impl__GetLong__desc____obj__Java__lang__String____obj__Java__lang__Long__ret____obj__Java__lang__Long(var0 Java__lang__String__Instance, var1 Java__lang__Long__Instance) Java__lang__Long__Instance {
+	panic("Not Implemented - java/lang/Long.getLong(Ljava/lang/String;Ljava/lang/Long;)Ljava/lang/Long;")
+}
+
+func (this *Java__lang__Long__Static) Impl__HashCode__desc__J__ret__I(var0 int64) int {
+	panic("Not Implemented - java/lang/Long.hashCode(J)I")
+}
+
+func (this *Java__lang__Long__Static) Impl__HighestOneBit__desc__J__ret__J(var0 int64) int64 {
+	panic("Not Implemented - java/lang/Long.highestOneBit(J)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__LowestOneBit__desc__J__ret__J(var0 int64) int64 {
+	panic("Not Implemented - java/lang/Long.lowestOneBit(J)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__Max__desc__J__J__ret__J(var0 int64, var1 int64) int64 {
+	panic("Not Implemented - java/lang/Long.max(JJ)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__Min__desc__J__J__ret__J(var0 int64, var1 int64) int64 {
+	panic("Not Implemented - java/lang/Long.min(JJ)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__NumberOfLeadingZeros__desc__J__ret__I(var0 int64) int {
+	panic("Not Implemented - java/lang/Long.numberOfLeadingZeros(J)I")
+}
+
+func (this *Java__lang__Long__Static) Impl__NumberOfTrailingZeros__desc__J__ret__I(var0 int64) int {
+	panic("Not Implemented - java/lang/Long.numberOfTrailingZeros(J)I")
+}
+
+func (this *Java__lang__Long__Static) Impl__ParseLong__desc____obj__Java__lang__String__ret__J(var0 Java__lang__String__Instance) int64 {
+	panic("Not Implemented - java/lang/Long.parseLong(Ljava/lang/String;)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__ParseLong__desc____obj__Java__lang__String__I__ret__J(var0 Java__lang__String__Instance, var1 int) int64 {
+	panic("Not Implemented - java/lang/Long.parseLong(Ljava/lang/String;I)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__ParseUnsignedLong__desc____obj__Java__lang__String__ret__J(var0 Java__lang__String__Instance) int64 {
+	panic("Not Implemented - java/lang/Long.parseUnsignedLong(Ljava/lang/String;)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__ParseUnsignedLong__desc____obj__Java__lang__String__I__ret__J(var0 Java__lang__String__Instance, var1 int) int64 {
+	panic("Not Implemented - java/lang/Long.parseUnsignedLong(Ljava/lang/String;I)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__RemainderUnsigned__desc__J__J__ret__J(var0 int64, var1 int64) int64 {
+	panic("Not Implemented - java/lang/Long.remainderUnsigned(JJ)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__Reverse__desc__J__ret__J(var0 int64) int64 {
+	panic("Not Implemented - java/lang/Long.reverse(J)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__ReverseBytes__desc__J__ret__J(var0 int64) int64 {
+	panic("Not Implemented - java/lang/Long.reverseBytes(J)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__RotateLeft__desc__J__I__ret__J(var0 int64, var1 int) int64 {
+	panic("Not Implemented - java/lang/Long.rotateLeft(JI)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__RotateRight__desc__J__I__ret__J(var0 int64, var1 int) int64 {
+	panic("Not Implemented - java/lang/Long.rotateRight(JI)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__Signum__desc__J__ret__I(var0 int64) int {
+	panic("Not Implemented - java/lang/Long.signum(J)I")
+}
+
+func (this *Java__lang__Long__Static) Impl__StringSize__desc__J__ret__I(var0 int64) int {
+	panic("Not Implemented - java/lang/Long.stringSize(J)I")
+}
+
+func (this *Java__lang__Long__Static) Impl__Sum__desc__J__J__ret__J(var0 int64, var1 int64) int64 {
+	panic("Not Implemented - java/lang/Long.sum(JJ)J")
+}
+
+func (this *Java__lang__Long__Static) Impl__ToBinaryString__desc__J__ret____obj__Java__lang__String(var0 int64) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Long.toBinaryString(J)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Long__Static) Impl__ToHexString__desc__J__ret____obj__Java__lang__String(var0 int64) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Long.toHexString(J)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Long__Static) Impl__ToOctalString__desc__J__ret____obj__Java__lang__String(var0 int64) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Long.toOctalString(J)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Long__Static) Impl__ToString__desc__J__ret____obj__Java__lang__String(var0 int64) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Long.toString(J)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Long__Static) Impl__ToString__desc__J__I__ret____obj__Java__lang__String(var0 int64, var1 int) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Long.toString(JI)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Long__Static) Impl__ToUnsignedString__desc__J__ret____obj__Java__lang__String(var0 int64) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Long.toUnsignedString(J)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Long__Static) Impl__ToUnsignedString__desc__J__I__ret____obj__Java__lang__String(var0 int64, var1 int) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Long.toUnsignedString(JI)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Long__Static) Impl__ToUnsignedString0__desc__J__I__ret____obj__Java__lang__String(var0 int64, var1 int) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Long.toUnsignedString0(JI)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Long__Static) Impl__ValueOf__desc____obj__Java__lang__String__ret____obj__Java__lang__Long(var0 Java__lang__String__Instance) Java__lang__Long__Instance {
+	panic("Not Implemented - java/lang/Long.valueOf(Ljava/lang/String;)Ljava/lang/Long;")
+}
+
+func (this *Java__lang__Long__Static) Impl__ValueOf__desc____obj__Java__lang__String__I__ret____obj__Java__lang__Long(var0 Java__lang__String__Instance, var1 int) Java__lang__Long__Instance {
+	panic("Not Implemented - java/lang/Long.valueOf(Ljava/lang/String;I)Ljava/lang/Long;")
+}
+
+type Java__lang__Long__Dispatch interface {
+	Java__lang__Number__Dispatch
+	Impl__Instance_Init__desc__J__ret__V(int64)
+	Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
+	Impl__CompareTo__desc____obj__Java__lang__Long__ret__I(Java__lang__Long__Instance) int
+	Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+}
+
+func (this *Java__lang__Long__Impl) Java__lang__Long__InitDispatch(v Java__lang__Long__Dispatch) {
+	this.Java__lang__Number__Impl.Java__lang__Number__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__Long__Impl) Instance_Init__desc__J__ret__V(var0 int64) {
+	this._dispatch.Impl__Instance_Init__desc__J__ret__V(var0)
+}
+
+func (this *Java__lang__Long__Impl) Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
+}
+
+func (this *Java__lang__Long__Impl) CompareTo__desc____obj__Java__lang__Long__ret__I(var0 Java__lang__Long__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Long__ret__I(var0)
+}
+
+func (this *Java__lang__Long__Impl) CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0)
+}
+
+type Java__lang__Long__Instance interface {
+	ByteValue__desc____ret__B() byte
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	CompareTo__desc____obj__Java__lang__Long__ret__I(Java__lang__Long__Instance) int
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	DoubleValue__desc____ret__D() float64
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	FloatValue__desc____ret__F() float32
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	IntValue__desc____ret__I() int
+	LongValue__desc____ret__J() int64
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ShortValue__desc____ret__S() int16
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Long() *Java__lang__Long__Impl
+	RawPtr__Java__lang__Number() *Java__lang__Number__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Long__Impl struct {
+	*Java__lang__Number__Impl
+	_dispatch Java__lang__Long__Dispatch
+	Value     int64
+}
+
+func (this *Java__lang__Long__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	panic("Not Implemented - java/lang/Long.<init>(Ljava/lang/String;)V")
+}
+
+func (this *Java__lang__Long__Impl) Impl__ByteValue__desc____ret__B() byte {
+	panic("Not Implemented - java/lang/Long.byteValue()B")
+}
+
+func (this *Java__lang__Long__Impl) Impl__CompareTo__desc____obj__Java__lang__Long__ret__I(var0 Java__lang__Long__Instance) int {
+	panic("Not Implemented - java/lang/Long.compareTo(Ljava/lang/Long;)I")
+}
+
+func (this *Java__lang__Long__Impl) Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	panic("Not Implemented - java/lang/Long.compareTo(Ljava/lang/Object;)I")
+}
+
+func (this *Java__lang__Long__Impl) Impl__DoubleValue__desc____ret__D() float64 {
+	panic("Not Implemented - java/lang/Long.doubleValue()D")
+}
+
+func (this *Java__lang__Long__Impl) Impl__Equals__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
+	panic("Not Implemented - java/lang/Long.equals(Ljava/lang/Object;)Z")
+}
+
+func (this *Java__lang__Long__Impl) Impl__FloatValue__desc____ret__F() float32 {
+	panic("Not Implemented - java/lang/Long.floatValue()F")
+}
+
+func (this *Java__lang__Long__Impl) Impl__HashCode__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Long.hashCode()I")
+}
+
+func (this *Java__lang__Long__Impl) Impl__IntValue__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Long.intValue()I")
+}
+
+func (this *Java__lang__Long__Impl) Impl__ShortValue__desc____ret__S() int16 {
+	panic("Not Implemented - java/lang/Long.shortValue()S")
+}
+
+func (this *Java__lang__Long__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Long.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Long__Impl) RawPtr__Java__lang__Long() *Java__lang__Long__Impl {
+	return this
+}
+
 type Java__lang__NegativeArraySizeException__Static struct{}
 
 var Java__lang__NegativeArraySizeException__Var Java__lang__NegativeArraySizeException__Static
@@ -2147,6 +4102,120 @@ func (this *Java__lang__NullPointerException__Impl) Impl__Instance_Init__desc___
 }
 
 func (this *Java__lang__NullPointerException__Impl) RawPtr__Java__lang__NullPointerException() *Java__lang__NullPointerException__Impl {
+	return this
+}
+
+type Java__lang__Number__Static struct{}
+
+var Java__lang__Number__Var Java__lang__Number__Static
+
+func Java__lang__Number() *Java__lang__Number__Static {
+	return &Java__lang__Number__Var
+}
+
+func (this *Java__lang__Number__Static) New() *Java__lang__Number__Impl {
+	v := &Java__lang__Number__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__Number__InitDispatch(v)
+	return v
+}
+
+type Java__lang__Number__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__ByteValue__desc____ret__B() byte
+	Impl__DoubleValue__desc____ret__D() float64
+	Impl__FloatValue__desc____ret__F() float32
+	Impl__IntValue__desc____ret__I() int
+	Impl__LongValue__desc____ret__J() int64
+	Impl__ShortValue__desc____ret__S() int16
+}
+
+func (this *Java__lang__Number__Impl) Java__lang__Number__InitDispatch(v Java__lang__Number__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__Number__Impl) ByteValue__desc____ret__B() byte {
+	return this._dispatch.Impl__ByteValue__desc____ret__B()
+}
+
+func (this *Java__lang__Number__Impl) DoubleValue__desc____ret__D() float64 {
+	return this._dispatch.Impl__DoubleValue__desc____ret__D()
+}
+
+func (this *Java__lang__Number__Impl) FloatValue__desc____ret__F() float32 {
+	return this._dispatch.Impl__FloatValue__desc____ret__F()
+}
+
+func (this *Java__lang__Number__Impl) IntValue__desc____ret__I() int {
+	return this._dispatch.Impl__IntValue__desc____ret__I()
+}
+
+func (this *Java__lang__Number__Impl) LongValue__desc____ret__J() int64 {
+	return this._dispatch.Impl__LongValue__desc____ret__J()
+}
+
+func (this *Java__lang__Number__Impl) ShortValue__desc____ret__S() int16 {
+	return this._dispatch.Impl__ShortValue__desc____ret__S()
+}
+
+type Java__lang__Number__Instance interface {
+	ByteValue__desc____ret__B() byte
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	DoubleValue__desc____ret__D() float64
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	FloatValue__desc____ret__F() float32
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	IntValue__desc____ret__I() int
+	LongValue__desc____ret__J() int64
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ShortValue__desc____ret__S() int16
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Number() *Java__lang__Number__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Number__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__Number__Dispatch
+}
+
+func (this *Java__lang__Number__Impl) Impl__Instance_Init__desc____ret__V() {
+	panic("Not Implemented - java/lang/Number.<init>()V")
+}
+
+func (this *Java__lang__Number__Impl) Impl__ByteValue__desc____ret__B() byte {
+	panic("Not Implemented - java/lang/Number.byteValue()B")
+}
+
+func (this *Java__lang__Number__Impl) Impl__DoubleValue__desc____ret__D() float64 {
+	panic("Abstract")
+}
+
+func (this *Java__lang__Number__Impl) Impl__FloatValue__desc____ret__F() float32 {
+	panic("Abstract")
+}
+
+func (this *Java__lang__Number__Impl) Impl__IntValue__desc____ret__I() int {
+	panic("Abstract")
+}
+
+func (this *Java__lang__Number__Impl) Impl__LongValue__desc____ret__J() int64 {
+	panic("Abstract")
+}
+
+func (this *Java__lang__Number__Impl) Impl__ShortValue__desc____ret__S() int16 {
+	panic("Not Implemented - java/lang/Number.shortValue()S")
+}
+
+func (this *Java__lang__Number__Impl) RawPtr__Java__lang__Number() *Java__lang__Number__Impl {
 	return this
 }
 
@@ -2378,6 +4447,198 @@ func (this *Java__lang__RuntimeException__Impl) Impl__Instance_Init__desc____obj
 }
 
 func (this *Java__lang__RuntimeException__Impl) RawPtr__Java__lang__RuntimeException() *Java__lang__RuntimeException__Impl {
+	return this
+}
+
+type Java__lang__Short__Static struct {
+	BYTES     int
+	MAX_VALUE int16
+	MIN_VALUE int16
+	SIZE      int
+	TYPE      Java__lang__Class__Instance
+	init      sync.Once
+}
+
+var Java__lang__Short__Var Java__lang__Short__Static
+
+func Java__lang__Short() *Java__lang__Short__Static {
+	Java__lang__Short__Var.init.Do(Java__lang__Short__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__Short__Var
+}
+
+func (this *Java__lang__Short__Static) New() *Java__lang__Short__Impl {
+	v := &Java__lang__Short__Impl{
+		Java__lang__Number__Impl: Java__lang__Number().New(),
+	}
+	v.Java__lang__Short__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__Short__Static) Impl__Static_Init__desc____ret__V() {
+	
+}
+
+func (this *Java__lang__Short__Static) Impl__Compare__desc__S__S__ret__I(var0 int16, var1 int16) int {
+	panic("Not Implemented - java/lang/Short.compare(SS)I")
+}
+
+func (this *Java__lang__Short__Static) Impl__Decode__desc____obj__Java__lang__String__ret____obj__Java__lang__Short(var0 Java__lang__String__Instance) Java__lang__Short__Instance {
+	panic("Not Implemented - java/lang/Short.decode(Ljava/lang/String;)Ljava/lang/Short;")
+}
+
+func (this *Java__lang__Short__Static) Impl__HashCode__desc__S__ret__I(var0 int16) int {
+	panic("Not Implemented - java/lang/Short.hashCode(S)I")
+}
+
+func (this *Java__lang__Short__Static) Impl__ParseShort__desc____obj__Java__lang__String__ret__S(var0 Java__lang__String__Instance) int16 {
+	panic("Not Implemented - java/lang/Short.parseShort(Ljava/lang/String;)S")
+}
+
+func (this *Java__lang__Short__Static) Impl__ParseShort__desc____obj__Java__lang__String__I__ret__S(var0 Java__lang__String__Instance, var1 int) int16 {
+	panic("Not Implemented - java/lang/Short.parseShort(Ljava/lang/String;I)S")
+}
+
+func (this *Java__lang__Short__Static) Impl__ReverseBytes__desc__S__ret__S(var0 int16) int16 {
+	panic("Not Implemented - java/lang/Short.reverseBytes(S)S")
+}
+
+func (this *Java__lang__Short__Static) Impl__ToString__desc__S__ret____obj__Java__lang__String(var0 int16) Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Short.toString(S)Ljava/lang/String;")
+}
+
+func (this *Java__lang__Short__Static) Impl__ToUnsignedInt__desc__S__ret__I(var0 int16) int {
+	panic("Not Implemented - java/lang/Short.toUnsignedInt(S)I")
+}
+
+func (this *Java__lang__Short__Static) Impl__ToUnsignedLong__desc__S__ret__J(var0 int16) int64 {
+	panic("Not Implemented - java/lang/Short.toUnsignedLong(S)J")
+}
+
+func (this *Java__lang__Short__Static) Impl__ValueOf__desc____obj__Java__lang__String__ret____obj__Java__lang__Short(var0 Java__lang__String__Instance) Java__lang__Short__Instance {
+	panic("Not Implemented - java/lang/Short.valueOf(Ljava/lang/String;)Ljava/lang/Short;")
+}
+
+func (this *Java__lang__Short__Static) Impl__ValueOf__desc____obj__Java__lang__String__I__ret____obj__Java__lang__Short(var0 Java__lang__String__Instance, var1 int) Java__lang__Short__Instance {
+	panic("Not Implemented - java/lang/Short.valueOf(Ljava/lang/String;I)Ljava/lang/Short;")
+}
+
+func (this *Java__lang__Short__Static) Impl__ValueOf__desc__S__ret____obj__Java__lang__Short(var0 int16) Java__lang__Short__Instance {
+	panic("Not Implemented - java/lang/Short.valueOf(S)Ljava/lang/Short;")
+}
+
+type Java__lang__Short__Dispatch interface {
+	Java__lang__Number__Dispatch
+	Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
+	Impl__Instance_Init__desc__S__ret__V(int16)
+	Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	Impl__CompareTo__desc____obj__Java__lang__Short__ret__I(Java__lang__Short__Instance) int
+}
+
+func (this *Java__lang__Short__Impl) Java__lang__Short__InitDispatch(v Java__lang__Short__Dispatch) {
+	this.Java__lang__Number__Impl.Java__lang__Number__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__Short__Impl) Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0)
+}
+
+func (this *Java__lang__Short__Impl) Instance_Init__desc__S__ret__V(var0 int16) {
+	this._dispatch.Impl__Instance_Init__desc__S__ret__V(var0)
+}
+
+func (this *Java__lang__Short__Impl) CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0)
+}
+
+func (this *Java__lang__Short__Impl) CompareTo__desc____obj__Java__lang__Short__ret__I(var0 Java__lang__Short__Instance) int {
+	return this._dispatch.Impl__CompareTo__desc____obj__Java__lang__Short__ret__I(var0)
+}
+
+type Java__lang__Short__Instance interface {
+	ByteValue__desc____ret__B() byte
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	CompareTo__desc____obj__Java__lang__Short__ret__I(Java__lang__Short__Instance) int
+	DoubleValue__desc____ret__D() float64
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	FloatValue__desc____ret__F() float32
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	IntValue__desc____ret__I() int
+	LongValue__desc____ret__J() int64
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ShortValue__desc____ret__S() int16
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Short() *Java__lang__Short__Impl
+	RawPtr__Java__lang__Number() *Java__lang__Number__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Short__Impl struct {
+	*Java__lang__Number__Impl
+	_dispatch Java__lang__Short__Dispatch
+	Value     int16
+}
+
+func (this *Java__lang__Short__Impl) Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(var0 Java__lang__String__Instance) {
+	panic("Not Implemented - java/lang/Short.<init>(Ljava/lang/String;)V")
+}
+
+func (this *Java__lang__Short__Impl) Impl__Instance_Init__desc__S__ret__V(var0 int16) {
+	panic("Not Implemented - java/lang/Short.<init>(S)V")
+}
+
+func (this *Java__lang__Short__Impl) Impl__ByteValue__desc____ret__B() byte {
+	panic("Not Implemented - java/lang/Short.byteValue()B")
+}
+
+func (this *Java__lang__Short__Impl) Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(var0 Java__lang__Object__Instance) int {
+	panic("Not Implemented - java/lang/Short.compareTo(Ljava/lang/Object;)I")
+}
+
+func (this *Java__lang__Short__Impl) Impl__CompareTo__desc____obj__Java__lang__Short__ret__I(var0 Java__lang__Short__Instance) int {
+	panic("Not Implemented - java/lang/Short.compareTo(Ljava/lang/Short;)I")
+}
+
+func (this *Java__lang__Short__Impl) Impl__DoubleValue__desc____ret__D() float64 {
+	panic("Not Implemented - java/lang/Short.doubleValue()D")
+}
+
+func (this *Java__lang__Short__Impl) Impl__Equals__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
+	panic("Not Implemented - java/lang/Short.equals(Ljava/lang/Object;)Z")
+}
+
+func (this *Java__lang__Short__Impl) Impl__FloatValue__desc____ret__F() float32 {
+	panic("Not Implemented - java/lang/Short.floatValue()F")
+}
+
+func (this *Java__lang__Short__Impl) Impl__HashCode__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Short.hashCode()I")
+}
+
+func (this *Java__lang__Short__Impl) Impl__IntValue__desc____ret__I() int {
+	panic("Not Implemented - java/lang/Short.intValue()I")
+}
+
+func (this *Java__lang__Short__Impl) Impl__LongValue__desc____ret__J() int64 {
+	panic("Not Implemented - java/lang/Short.longValue()J")
+}
+
+func (this *Java__lang__Short__Impl) Impl__ShortValue__desc____ret__S() int16 {
+	panic("Not Implemented - java/lang/Short.shortValue()S")
+}
+
+func (this *Java__lang__Short__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Not Implemented - java/lang/Short.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__Short__Impl) RawPtr__Java__lang__Short() *Java__lang__Short__Impl {
 	return this
 }
 
@@ -4114,5 +6375,63 @@ func (this *Java__lang__VirtualMachineError__Impl) Impl__Instance_Init__desc____
 }
 
 func (this *Java__lang__VirtualMachineError__Impl) RawPtr__Java__lang__VirtualMachineError() *Java__lang__VirtualMachineError__Impl {
+	return this
+}
+
+type Java__lang__Void__Static struct {
+	TYPE Java__lang__Class__Instance
+	init sync.Once
+}
+
+var Java__lang__Void__Var Java__lang__Void__Static
+
+func Java__lang__Void() *Java__lang__Void__Static {
+	Java__lang__Void__Var.init.Do(Java__lang__Void__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__Void__Var
+}
+
+func (this *Java__lang__Void__Static) New() *Java__lang__Void__Impl {
+	v := &Java__lang__Void__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__Void__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__Void__Static) Impl__Static_Init__desc____ret__V() {
+	
+}
+
+type Java__lang__Void__Dispatch interface {
+	Java__lang__Object__Dispatch
+}
+
+func (this *Java__lang__Void__Impl) Java__lang__Void__InitDispatch(v Java__lang__Void__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__Void__Instance interface {
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Finalize__desc____ret__V()
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	HashCode__desc____ret__I() int
+	Notify__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Wait__desc__J__I__ret__V(int64, int)
+	RawPtr__Java__lang__Void() *Java__lang__Void__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__Void__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__Void__Dispatch
+}
+
+func (this *Java__lang__Void__Impl) RawPtr__Java__lang__Void() *Java__lang__Void__Impl {
 	return this
 }

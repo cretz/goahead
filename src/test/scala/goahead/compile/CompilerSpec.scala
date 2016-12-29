@@ -189,6 +189,7 @@ object CompilerSpec extends Logger {
       TestCase(classOf[LocalVarReuse]),
       TestCase(classOf[NonStaticInnerClasses]),
       TestCase(classOf[Primitives]),
+      TestCase(classOf[PrimitiveWrappers]),
       TestCase(classOf[SimpleInstance]),
       TestCase(classOf[StackManips]),
       TestCase(classOf[StaticFields]),

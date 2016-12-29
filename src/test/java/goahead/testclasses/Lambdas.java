@@ -1,6 +1,7 @@
 package goahead.testclasses;
 
 import java.io.Serializable;
+import java.util.function.BinaryOperator;
 
 public class Lambdas {
 
@@ -38,6 +39,7 @@ public class Lambdas {
         invokeNewSpecial();
         deserializeLambda();
         defaultConsumerChainTest();
+        binaryOperator();
     }
 
     static void invokeStatic() {
@@ -56,13 +58,22 @@ public class Lambdas {
         System.out.println(test.test().test());
     }
 
+    static class DeserializeLambdaTest {
+        Test getTest() {
+            return (Test & Serializable) () -> "Test";
+        }
+    }
+
     static void deserializeLambda() {
         System.out.println(new DeserializeLambdaTest().getTest().test());
     }
 
-    static class DeserializeLambdaTest {
-        Test getTest() {
-            return (Test & Serializable) () -> "Test";
+    interface LongConsumer {
+
+        void accept(long value);
+
+        default LongConsumer andThen(LongConsumer after) {
+            return (long t) -> { accept(t); after.accept(t); };
         }
     }
 
@@ -71,12 +82,13 @@ public class Lambdas {
         test.andThen(v -> System.out.println("Test2: " + v));
     }
 
-    public interface LongConsumer {
-
-        void accept(long value);
-
-        default LongConsumer andThen(LongConsumer after) {
-            return (long t) -> { accept(t); after.accept(t); };
-        }
+    public static long longSum(long a, long b) {
+        return a + b;
     }
+
+    static void binaryOperator() {
+        BinaryOperator<Long> op = Lambdas::longSum;
+        System.out.println(op.apply(13L, 14L).longValue());
+    }
+
 }

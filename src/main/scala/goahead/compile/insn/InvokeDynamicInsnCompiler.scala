@@ -26,17 +26,27 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
     ).getOrElse(sys.error(s"Expected ${ifaceTyp.internalName} to be a functional interface as target of dyn insn"))
     val allHandleArgTypes = IType.getArgumentTypes(handle.getDesc)
     val (fixedArgTypes, nonFixedArgTypes) = allHandleArgTypes.splitAt(allHandleArgTypes.size - ifaceMethod.argTypes.size)
+    val (sourceArgTypes, sourceRetType) =
+      IType.getArgumentAndReturnTypes(insn.bsmArgs(2).asInstanceOf[Type].getDescriptor)
+    val (_, handleResult) = handleArgAndRetTypes(handle)
     buildDirectProxyFuncRef(ctx, handle, fixedArgTypes, nonFixedArgTypes).map { case (ctx, funcRef) =>
-      val (_, handleResult) = handleArgAndRetTypes(handle)
+      // We have to convert twice. First from handle -> subject, then from subject -> target iface
       funcRefToFuncRefExact(
         ctx,
         funcRef,
         nonFixedArgTypes,
         handleResult,
-        ifaceMethod.argTypes,
-        ifaceMethod.returnType
-      ).map {
-        case (ctx, funcRef) =>
+        sourceArgTypes,
+        sourceRetType
+      ).map { case (ctx, funcRef) =>
+        funcRefToFuncRefExact(
+          ctx,
+          funcRef,
+          sourceArgTypes,
+          sourceRetType,
+          ifaceMethod.argTypes,
+          ifaceMethod.returnType
+        ).map { case (ctx, funcRef) =>
           ctx.staticInstRefExpr(ifaceTyp.internalName).map { case (ctx, staticInst) =>
             ctx.stackPushed(TypedExpression(
               expr = staticInst.sel(
@@ -46,6 +56,7 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
               cheapRef = true
             )) -> Nil
           }
+        }
       }
     }
   }
@@ -170,13 +181,14 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
     targetArgs: Seq[IType],
     targetResult: IType
   ): (Context, Node.Expression) = {
+    logger.trace(s"Translating func from ($sourceArgs)$sourceResult to ($targetArgs)$targetResult")
     require(sourceArgs.size == targetArgs.size, "Expect same size when translating func refs")
     if (sourceArgs == targetArgs && sourceResult == targetResult) ctx -> source else {
       val init = ctx -> Seq.empty[(Node.Expression, Node.Field)]
       val ctxAndConvArgsWithFields = sourceArgs.zip(targetArgs).zipWithIndex.foldLeft(init) {
         case ((ctx, argsWithFields), ((sourceArg, targetArg), index)) =>
           val name = s"var$index"
-          TypedExpression(name.toIdent, sourceArg, cheapRef = true).toExprNode(ctx, targetArg).map { case (ctx, arg) =>
+          TypedExpression(name.toIdent, targetArg, cheapRef = true).toExprNode(ctx, sourceArg).map { case (ctx, arg) =>
             ctx.typeToGoType(targetArg).map { case (ctx, targetTyp) =>
               ctx -> (argsWithFields :+ (arg -> field(name, targetTyp)))
             }

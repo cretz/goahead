@@ -46,6 +46,18 @@ object IType extends Logger {
   val LongType = IType(Type.LONG_TYPE)
   val ShortType = IType(Type.SHORT_TYPE)
 
+  val primitiveWrappers = Map(
+    VoidType -> IType.getObjectType("java/lang/Void"),
+    BooleanType -> IType.getObjectType("java/lang/Boolean"),
+    ByteType -> IType.getObjectType("java/lang/Byte"),
+    CharType -> IType.getObjectType("java/lang/Character"),
+    IntType -> IType.getObjectType("java/lang/Integer"),
+    FloatType -> IType.getObjectType("java/lang/Float"),
+    DoubleType -> IType.getObjectType("java/lang/Double"),
+    LongType -> IType.getObjectType("java/lang/Long"),
+    ShortType -> IType.getObjectType("java/lang/Short")
+  )
+
   def fromFrameVarType(thisNode: Cls, typ: Any) = typ match {
     case Opcodes.TOP => Undefined
     case Opcodes.INTEGER => IntType

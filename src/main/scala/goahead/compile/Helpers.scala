@@ -437,7 +437,6 @@ object Helpers extends Logger {
         case (oldTyp, newTyp: IType.Simple)
           if (newTyp.isObject || newTyp.isArray) && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp) =>
             ctx -> expr.expr
-        // TODO: support primitives
         case (oldTyp: IType.Simple, newTyp: IType.Simple) if oldTyp.isRef && newTyp.isRef =>
           nullSafeTypeAssert(ctx, newTyp)
         // Unknown source means we do a null-safe cast
@@ -446,6 +445,26 @@ object Helpers extends Logger {
         // Unknown target types just means use the old type
         case (_, newTyp) if newTyp.isUnknown =>
           ctx -> expr.expr
+        // Auto-box
+        case (oldTyp: IType.Simple, newTyp: IType.Simple) if oldTyp.isPrimitive && newTyp.isObject =>
+          val primitiveWrapper = IType.primitiveWrappers(oldTyp)
+          val method = ctx.classPath.getFirstClass(primitiveWrapper.internalName).cls.methods.find(m =>
+            m.access.isAccessStatic && m.name == "valueOf" &&
+              m.returnType == primitiveWrapper && m.argTypes == Seq(oldTyp)
+          ).getOrElse(sys.error(s"Unable to find valueOf on primitive wrapper for $primitiveWrapper"))
+          ctx.staticInstRefExpr(primitiveWrapper.internalName).map { case (ctx, staticInst) =>
+            ctx -> staticInst.sel(ctx.mangler.implMethodName(method.name, method.desc)).call(expr.expr.singleSeq)
+          }
+        // Auto-unbox
+        case (oldTyp: IType.Simple, newTyp: IType.Simple) if oldTyp.isObject && newTyp.isPrimitive =>
+          val primitiveWrapper = IType.primitiveWrappers(newTyp)
+          val methodName = newTyp.typ.getClassName + "Value"
+          val method = ctx.classPath.getFirstClass(primitiveWrapper.internalName).cls.methods.find(m =>
+            !m.access.isAccessStatic && m.name == methodName && m.returnType == newTyp
+          ).getOrElse(sys.error(s"Unable to find $methodName on primitive wrapper for $primitiveWrapper"))
+          toExprNode(ctx, primitiveWrapper).map { case (ctx, boxed) =>
+            ctx -> boxed.sel(ctx.mangler.forwardMethodName(method.name, method.desc)).call()
+          }
         case (oldTyp, newTyp) =>
           sys.error(s"Unable to assign types: $oldTyp -> $newTyp")
       }
