@@ -19,14 +19,19 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   import AstDsl._
   import CompilerSpec._
 
+  val useTestRt = true
+
   // Create this entry for the "rt" classes and close at the end
   val javaRuntimeEntry = ClassPath.Entry.fromJarFile(
     ClassPath.Entry.javaRuntimeJarPath,
-    "github.com/cretz/goahead/javalib/src/rt"
+    if (useTestRt)
+      "github.com/cretz/goahead/javalib/src/rt"
+    else
+      "github.com/cretz/goahead/javalib/rt"
   )
 
   val goFormatTimeout = 20.seconds
-  val goBuildTimeout = 20.seconds
+  val goBuildTimeout = if (useTestRt) 20.seconds else 200.seconds
   val exeRunTimeout = 20.seconds
   val checkFormatting = false
 
@@ -185,6 +190,7 @@ object CompilerSpec extends Logger {
       TestCase(classOf[InterfaceDefaults]),
       TestCase(classOf[Interfaces]),
       TestCase(classOf[Lambdas]), // TODO: test without optimization too
+      TestCase(classOf[Literals]),
       TestCase(classOf[LocalClasses]).withLocalAndAnonymousClasses(),
       TestCase(classOf[LocalVarReuse]),
       TestCase(classOf[NonStaticInnerClasses]),

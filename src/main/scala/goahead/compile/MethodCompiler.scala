@@ -150,6 +150,7 @@ trait MethodCompiler extends Logger {
     // TODO: this can be dangerous if they are embedded in expressions that are used after the frame
     // but that does not seem to happen in practice
     val (tempVarsOnStack, tempVarsNotOnStack) = ctx.localTempVars.partition(ctx.stack.items.contains)
+    val tempVarsOnStackAndNotAtFuncLevel = tempVarsOnStack.filterNot(ctx.functionVars.contains)
     // Make local decls out of ones not on stack and not already in function vars
     val tempVarsNotOnStackAndNotAtFuncLevel = tempVarsNotOnStack.filterNot(ctx.functionVars.contains)
     val ctxAndVarDecl =
@@ -168,8 +169,10 @@ trait MethodCompiler extends Logger {
       }
 
       ctxAndAddOnStmts.map { case (ctx, addOnStmts) =>
-        ctx.copy(localTempVars = tempVarsOnStack, functionVars = ctx.functionVars ++ tempVarsOnStack) ->
-          labeled(labelSet.label.getLabel.toString, maybeDecl.toSeq ++ stmts ++ addOnStmts)
+        ctx.copy(
+          localTempVars = tempVarsOnStack,
+          functionVars = ctx.functionVars ++ tempVarsOnStackAndNotAtFuncLevel
+        ) -> labeled(labelSet.label.getLabel.toString, maybeDecl.toSeq ++ stmts ++ addOnStmts)
       }
     }
   }
@@ -233,6 +236,7 @@ object MethodCompiler extends MethodCompiler {
     labelsAsFunctions: Map[String, Node.FunctionType] = Map.empty,
     stack: Stack = Stack.empty,
     localTempVars: IndexedSeq[TypedExpression] = IndexedSeq.empty,
+    tempVarCounter: Int = 0,
     functionVars: Seq[TypedExpression] = IndexedSeq.empty
   ) extends Contextual[Context] {
     override def updatedImports(mports: Imports) = copy(imports = mports)

@@ -271,11 +271,9 @@ object Helpers extends Logger {
       // to tell whether one is in use. Can't just check the top level of the stack, but would
       // have to walk all stack expressions. Instead, just create a new temp var and live with
       // the consequences which should be minimal because frames don't usually last long.
-      // We just check for existing names to know the next we are able to create.
-      val existingVars = ctx.functionVars ++ ctx.localTempVars
-      val name = Iterator.from(0).map("temp" + _).find(name => !existingVars.exists(_.name == name)).get
-      val tempVar = TypedExpression.namedVar(name, typ)
-      ctx.copy(localTempVars = ctx.localTempVars :+ tempVar) -> tempVar
+      // We are going to keep a temp var counter for naming temp vars.
+      val tempVar = TypedExpression.namedVar("temp" + ctx.tempVarCounter, typ)
+      ctx.copy(localTempVars = ctx.localTempVars :+ tempVar, tempVarCounter = ctx.tempVarCounter + 1) -> tempVar
     }
 
     def withTempVar[T](typ: IType, f: (MethodCompiler.Context, TypedExpression) => T) = {

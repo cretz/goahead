@@ -9,10 +9,14 @@ trait AddFunctionVars extends PostProcessor {
   import AstDsl._
 
   override def apply(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
-    // Add all local vars not part of the args
-    val argTypeCount = IType.getArgumentTypes(ctx.method.desc).length
-    val (localVarsUsed, localVarsUnused) =
-      ctx.localVars.allTimeVars.drop(argTypeCount).partition(ctx.localVars.isUsedVar)
+    // Add all local vars not part of the args...
+    // We know that args are the first and are never overwritten, so we just filter out the ones
+    // with the arg names
+    val localVars = {
+      val argNames = IType.getArgumentTypes(ctx.method.desc).indices.map("var" + _).toSet
+      ctx.localVars.allTimeVars.filterNot(v => argNames.contains(v.name))
+    }
+    val (localVarsUsed, localVarsUnused) = localVars.partition(ctx.localVars.isUsedVar)
     val varsToDecl = ctx.functionVars ++ localVarsUsed
     val ctxAndStmts =
       if (varsToDecl.isEmpty) ctx -> stmts

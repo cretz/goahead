@@ -126,11 +126,11 @@ trait Compile extends Command with Logger {
       ).map(v => if (v == "") None else Some(v)),
       classes = builder.trailingOpts(
         name = "classes",
-        // TODO: make this non-required but instead accept entire JARs or something
-        required = true,
+        default = Seq("*"),
         desc = "The fully qualified class names on the class path to build stubs for. If it ends in an asterisk, it " +
           "checks for all classes that start with the value sans asterisk. If it ends in a question mark, it is the " +
-          "smae as an asterisk but won't include anything in a deeper package (i.e. having another dot)"
+          "same as an asterisk but won't include anything in a deeper package (i.e. having another dot). If not " +
+          "present, it is the same as providing a single asterisk (i.e. all classes)"
       ).get
     )
   }
@@ -165,6 +165,7 @@ trait Compile extends Command with Logger {
     // Compile (with panics), one package per file
     val outDir = Paths.get(conf.outDir).toAbsolutePath
     val goPackageName = outDir.getFileName.toString
+
     // TODO: Maybe something like monix would be better so I can do gatherUnordered?
     def futFn: (=> Path) => Future[Path] = if (conf.parallel) Future.apply[Path] else p => Future.successful(p)
     val futures = classEntries.map { case (fileName, classes) =>

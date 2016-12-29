@@ -227,9 +227,20 @@ object AstDsl extends Logger {
   implicit class RichString(val str: String) extends AnyVal {
     def dot(right: String) = sel(str.toIdent, right)
 
-    def goUnescaped: String =
-      // TODO
-      str
+    def goUnescaped: String = {
+      // TODO: check this
+      import scala.collection.JavaConverters._
+      str.codePoints().iterator().asScala.map({
+        _.toChar match {
+          case '\n' => "\\n"
+          case '\r' => "\\r"
+          case '\\' => "\\\\"
+          case '"' => "\\\""
+          case c if c < 0x20 || c > 0x7f => "\\u%04x".format(c.toInt)
+          case c => "" + c
+        }
+      }).mkString
+    }
 
     def goSafeIdent: String = {
       // Only dollar sign so far is off
