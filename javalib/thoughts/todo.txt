@@ -10,6 +10,7 @@ Code:
 * Name ambiguities w/ the mangler
   * Cap and lowercase same fields
   * Classes w/ underscores and what not
+* Add comments to the output, maybe showing things like line numbers of source
 
 Compliance pre-stdlib:
 

@@ -171,7 +171,9 @@ trait ZeroOpInsnCompiler {
       opcode match {
         case Opcodes.BASTORE =>
           ctx.importRuntimeQualifiedName("SetBoolOrByte").map { case (ctx, setBoolOrByte) =>
-            ctx -> setBoolOrByte.call(Seq(arrayRef.expr, index.expr, value.expr)).toStmt.singleSeq
+            value.toExprNode(ctx, IType.IntType).map { case (ctx, value) =>
+              ctx -> setBoolOrByte.call(Seq(arrayRef.expr, index.expr, value)).toStmt.singleSeq
+            }
           }
         case _ =>
           val jvmType = opcode match {

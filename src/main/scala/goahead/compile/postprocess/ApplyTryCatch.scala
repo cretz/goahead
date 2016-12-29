@@ -126,11 +126,19 @@ trait ApplyTryCatch extends PostProcessor {
 
   protected def wrapAndInvokeStmts(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
     // Take all the statements and wrap in one big anon func, invoke, and store to result var if there is a result
-    val called = funcType(Nil).toFuncLit(stmts).call()
-    val wrapped =
-      if (IType.getReturnType(ctx.method.desc) == IType.VoidType) called.toStmt
-      else "ret".toIdent.assignDefine(called)
-    ctx -> wrapped.labeled("body").singleSeq
+    val ctxAndRetTypeOpt = IType.getReturnType(ctx.method.desc) match {
+      case IType.VoidType => ctx -> None
+      case typ => ctx.typeToGoType(typ).map { case (ctx, retTyp) => ctx -> Some(retTyp) }
+    }
+
+    ctxAndRetTypeOpt.map { case (ctx, retTypOpt) =>
+      val called = funcType(Nil, retTypOpt).toFuncLit(stmts).call()
+      val wrapped = retTypOpt match {
+        case None => called.toStmt
+        case Some(_) => "ret".toIdent.assignDefine(called)
+      }
+      ctx -> wrapped.labeled("body").singleSeq
+    }
   }
 
   protected def handleAfterInvoke(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {

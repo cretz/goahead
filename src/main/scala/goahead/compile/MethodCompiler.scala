@@ -1,7 +1,7 @@
 package goahead.compile
 
 import goahead.Logger
-import goahead.ast.Node
+import goahead.ast.{Node, NodeWalker}
 import goahead.compile.AstDsl._
 import goahead.compile.Helpers._
 import goahead.compile.insn.InsnCompiler
@@ -146,10 +146,12 @@ trait MethodCompiler extends Logger {
   ): (Context, Node.LabeledStatement) = {
     // All temp vars that are in the temp var section but are not on the stack are removed
     // from the temp var section and decld. If they are on the stack and not already in
-    // functionVars, they get added to function vars
-    // TODO: this can be dangerous if they are embedded in expressions that are used after the frame
-    // but that does not seem to happen in practice
-    val (tempVarsOnStack, tempVarsNotOnStack) = ctx.localTempVars.partition(ctx.stack.items.contains)
+    // functionVars, they get added to function vars.
+    val tempVarsByExpr = ctx.localTempVars.map(v => v.expr.asInstanceOf[Node] -> v).toMap
+    val tempVarsOnStack = ctx.stack.items.flatMap({ stackItem =>
+      NodeWalker.collect(stackItem.expr)(Function.unlift(tempVarsByExpr.get))
+    }).distinct
+    val tempVarsNotOnStack = ctx.localTempVars.diff(tempVarsOnStack)
     val tempVarsOnStackAndNotAtFuncLevel = tempVarsOnStack.filterNot(ctx.functionVars.contains)
     // Make local decls out of ones not on stack and not already in function vars
     val tempVarsNotOnStackAndNotAtFuncLevel = tempVarsNotOnStack.filterNot(ctx.functionVars.contains)
@@ -170,7 +172,7 @@ trait MethodCompiler extends Logger {
 
       ctxAndAddOnStmts.map { case (ctx, addOnStmts) =>
         ctx.copy(
-          localTempVars = tempVarsOnStack,
+          localTempVars = tempVarsOnStack.toIndexedSeq,
           functionVars = ctx.functionVars ++ tempVarsOnStackAndNotAtFuncLevel
         ) -> labeled(labelSet.label.getLabel.toString, maybeDecl.toSeq ++ stmts ++ addOnStmts)
       }
