@@ -372,9 +372,12 @@ trait ClassCompiler extends Logger {
       compileMethods(ctx, methodSet.methods).map { case (ctx, methodDecls) =>
         compileInvokeDynamicSyncVars(ctx, methodSet.methods).map { case (ctx, invokeDynVars) =>
           compileImplRawPointerMethod(ctx).map { case (ctx, rawPointerMethod) =>
-            compileImplCovariantReturnDuplicateForwarders(ctx, methodSet.covariantReturnDuplicates).map {
-              case (ctx, covariantMethodDecls) =>
-                ctx -> (accessorDecls ++ methodDecls ++ invokeDynVars ++ covariantMethodDecls :+ rawPointerMethod)
+            compileImplSelfMethod(ctx).map { case (ctx, selfMethod) =>
+              compileImplCovariantReturnDuplicateForwarders(ctx, methodSet.covariantReturnDuplicates).map {
+                case (ctx, covariantMethodDecls) =>
+                  ctx -> (accessorDecls ++ methodDecls ++ invokeDynVars ++
+                    covariantMethodDecls :+ rawPointerMethod :+ selfMethod)
+              }
             }
           }
         }
@@ -405,6 +408,18 @@ trait ClassCompiler extends Logger {
       results = Some(ctx.mangler.implObjectName(ctx.cls.name).toIdent.star),
       stmts = "this".toIdent.ret.singleSeq
     )
+  }
+
+  protected def compileImplSelfMethod(ctx: Context): (Context, Node.FunctionDeclaration) = {
+    ctx.typeToGoType(ObjectType).map { case (ctx, objTyp) =>
+      ctx -> funcDecl(
+        rec = Some("this" -> ctx.mangler.implObjectName(ctx.cls.name).toIdent.star),
+        name = ctx.mangler.implSelfMethodName(),
+        params = Nil,
+        results = Some(objTyp),
+        stmts = "this".toIdent.ret.singleSeq
+      )
+    }
   }
 
   protected def compileImplDefaultMethodForwarders(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
@@ -532,7 +547,9 @@ trait ClassCompiler extends Logger {
     compileDispatchInterface(ctx).map { case (ctx, ifaceDecl) =>
       compileDispatchInit(ctx).map { case (ctx, initDecl) =>
         compileDispatchForwardMethods(ctx).map { case (ctx, funcDecls) =>
-          ctx -> (Seq(ifaceDecl) ++ initDecl ++ funcDecls)
+          compileDispatchSelfForwarder(ctx).map { case (ctx, selfDeclOpt) =>
+            ctx -> (Seq(ifaceDecl) ++ initDecl ++ funcDecls ++ selfDeclOpt)
+          }
         }
       }
     }
@@ -559,10 +576,20 @@ trait ClassCompiler extends Logger {
       }
 
       ctxAndDispatchMethods.map { case (ctx, dispatchMethods) =>
-        ctx -> interface(
-          name = ctx.mangler.dispatchInterfaceName(ctx.cls.name),
-          fields = superDispatchRefs ++ dispatchMethods
-        )
+        // As a special case, anything parentless has a "self" impl method
+        val ctxAndSelfMethodOpt = ctx.cls.parent match {
+          case Some(_) => ctx -> None
+          case None => ctx.typeToGoType(ObjectType).map { case (ctx, objTyp) =>
+            ctx -> Some(field(ctx.mangler.implSelfMethodName(), funcType(Nil, Some(objTyp))))
+          }
+        }
+
+        ctxAndSelfMethodOpt.map { case (ctx, selfOpt) =>
+          ctx -> interface(
+            name = ctx.mangler.dispatchInterfaceName(ctx.cls.name),
+            fields = superDispatchRefs ++ dispatchMethods ++ selfOpt
+          )
+        }
       }
     }
   }
@@ -613,6 +640,25 @@ trait ClassCompiler extends Logger {
           ctx -> (methods :+ funcDecl)
         }
       }
+    }
+  }
+
+  protected def compileDispatchSelfForwarder(ctx: Context): (Context, Option[Node.Declaration]) = {
+    // Only applies if parentless
+    ctx.cls.parent match {
+      case Some(_) => ctx -> None
+      case None =>
+        ctx.implTypeExpr(ctx.cls.name).map { case (ctx, thisTyp) =>
+          ctx.typeToGoType(ObjectType).map { case (ctx, objTyp) =>
+            ctx -> Some(funcDecl(
+              rec = Some("this" -> thisTyp),
+              name = ctx.mangler.forwardSelfMethodName(),
+              params = Nil,
+              results = Some(objTyp),
+              stmts = Seq("this".toIdent.sel("_dispatch").sel(ctx.mangler.implSelfMethodName()).call().ret)
+            ))
+          }
+        }
     }
   }
 

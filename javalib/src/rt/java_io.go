@@ -83,6 +83,10 @@ func (this *Java__io__Closeable__dynproxy____Impl) RawPtr__Java__io__Closeable__
 	return this
 }
 
+func (this *Java__io__Closeable__dynproxy____Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 func (_ *Java__io__Closeable__Static) DynProxy_Create(fn func()) Java__io__Closeable__Instance {
 	v := &Java__io__Closeable__dynproxy____Impl{
 		Java__lang__Object__Impl: Java__lang__Object().New(),
@@ -193,6 +197,10 @@ func (this *Java__io__FilterOutputStream__Impl) RawPtr__Java__io__FilterOutputSt
 	return this
 }
 
+func (this *Java__io__FilterOutputStream__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__io__Flushable__Static struct{}
 
 var Java__io__Flushable__Var Java__io__Flushable__Static
@@ -271,6 +279,10 @@ type Java__io__Flushable__dynproxy____Impl struct {
 }
 
 func (this *Java__io__Flushable__dynproxy____Impl) RawPtr__Java__io__Flushable__dynproxy__() *Java__io__Flushable__dynproxy____Impl {
+	return this
+}
+
+func (this *Java__io__Flushable__dynproxy____Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -389,6 +401,10 @@ func (this *Java__io__OutputStream__Impl) Impl__Write__desc____arr__B__I__I__ret
 }
 
 func (this *Java__io__OutputStream__Impl) RawPtr__Java__io__OutputStream() *Java__io__OutputStream__Impl {
+	return this
+}
+
+func (this *Java__io__OutputStream__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -776,6 +792,10 @@ func (this *Java__io__PrintStream__Impl) Impl__Append__desc____obj__Java__lang__
 }
 
 func (this *Java__io__PrintStream__Impl) RawPtr__Java__io__PrintStream() *Java__io__PrintStream__Impl {
+	return this
+}
+
+func (this *Java__io__PrintStream__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 

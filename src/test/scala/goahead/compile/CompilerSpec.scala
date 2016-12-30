@@ -19,7 +19,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   import AstDsl._
   import CompilerSpec._
 
-  val useTestRt = false
+  val useTestRt = true
 
   // Create this entry for the "rt" classes and close at the end
   val javaRuntimeEntry =

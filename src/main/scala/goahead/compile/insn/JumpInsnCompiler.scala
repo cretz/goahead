@@ -33,8 +33,13 @@ trait JumpInsnCompiler {
 
       @inline
       def ifInt(ctx: Context, token: Node.Token) = ctx.stackPopped(2, { case (ctx, Seq(lhs, rhs)) =>
-        lhs.toExprNode(ctx, IType.IntType).map { case (ctx, lhs) =>
-          ifStmt(ctx, lhs, token, rhs.expr)
+        // If the types are the same, we don't need to do any conversion
+        if (lhs.typ == rhs.typ) ifStmt(ctx, lhs.expr, token, rhs.expr) else {
+          lhs.toExprNode(ctx, IType.IntType).map { case (ctx, lhs) =>
+            rhs.toExprNode(ctx, IType.IntType).map { case (ctx, rhs) =>
+              ifStmt(ctx, lhs, token, rhs)
+            }
+          }
         }
       })
 

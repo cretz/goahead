@@ -70,9 +70,13 @@ trait TypeInsnCompiler {
             // We need a temp bool to store the cast result
             ctx.getTempVar(IType.BooleanType).map { case (ctx, tempVar) =>
               ctx.typeToGoType(IType.getObjectType(insn.desc)).map { case (ctx, goType) =>
+                // As a special case, "this" is a concrete pointer already
+                val toCheck =
+                  if (typedExpr.isThis) typedExpr.expr.sel(ctx.mangler.forwardSelfMethodName()).call()
+                  else typedExpr.expr
                 val checkStmt = assignExistingMultiple(
                   left = Seq("_".toIdent, tempVar.expr),
-                  right = typedExpr.expr.typeAssert(goType).singleSeq
+                  right = toCheck.typeAssert(goType).singleSeq
                 )
                 ctx.stackPushed(tempVar) -> (tempAssignStmtOpt.toSeq :+ checkStmt)
               }

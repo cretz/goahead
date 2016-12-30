@@ -21,6 +21,8 @@ trait Mangler {
   def invokeDynamicCallSiteVarName(owner: String, methodName: String, methodDesc: String, insnIndex: Int): String
   def funcInterfaceProxySuffix(internalName: String): String
   def funcInterfaceProxyCreateMethodName(internalName: String): String
+  def implSelfMethodName(): String
+  def forwardSelfMethodName(): String
   // NOTE: without extension
   def fileName(packageOrClassNameWithSlashesOrDots: String): String
 }
@@ -143,6 +145,10 @@ object Mangler {
 
     override def funcInterfaceProxyCreateMethodName(internalName: String): String =
       "DynProxy_Create"
+
+    override def implSelfMethodName(): String = "Impl_Self"
+
+    override def forwardSelfMethodName(): String = "Self"
 
     override def fileName(packageOrClassNameWithSlashesOrDots: String): String =
       packageOrClassNameWithSlashesOrDots.replace('.', '_').replace('/', '_')

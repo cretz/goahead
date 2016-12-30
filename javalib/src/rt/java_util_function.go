@@ -94,6 +94,10 @@ func (this *Java__util__function__BiConsumer__dynproxy____Impl) RawPtr__Java__ut
 	return this
 }
 
+func (this *Java__util__function__BiConsumer__dynproxy____Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 func (this *Java__util__function__BiConsumer__dynproxy____Impl) Impl__AndThen__desc____obj__Java__util__function__BiConsumer__ret____obj__Java__util__function__BiConsumer(var0 Java__util__function__BiConsumer__Instance) Java__util__function__BiConsumer__Instance {
 	return Java__util__function__BiConsumer__defaultmethod__AndThen__desc____obj__Java__util__function__BiConsumer__ret____obj__Java__util__function__BiConsumer(this, var0)
 }
@@ -193,6 +197,10 @@ func (this *Java__util__function__BiFunction__dynproxy____Impl) RawPtr__Java__ut
 	return this
 }
 
+func (this *Java__util__function__BiFunction__dynproxy____Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 func (_ *Java__util__function__BiFunction__Static) DynProxy_Create(fn func(Java__lang__Object__Instance, Java__lang__Object__Instance) Java__lang__Object__Instance) Java__util__function__BiFunction__Instance {
 	v := &Java__util__function__BiFunction__dynproxy____Impl{
 		Java__lang__Object__Impl: Java__lang__Object().New(),
@@ -285,6 +293,10 @@ type Java__util__function__BinaryOperator__dynproxy____Impl struct {
 }
 
 func (this *Java__util__function__BinaryOperator__dynproxy____Impl) RawPtr__Java__util__function__BinaryOperator__dynproxy__() *Java__util__function__BinaryOperator__dynproxy____Impl {
+	return this
+}
+
+func (this *Java__util__function__BinaryOperator__dynproxy____Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 

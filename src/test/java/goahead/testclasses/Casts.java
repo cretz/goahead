@@ -29,6 +29,7 @@ public class Casts {
         checkInterfaceCast();
         checkInstanceOf();
         nullCast();
+        checkThisInstanceOfFoo();
     }
 
     public static void checkCast() {
@@ -58,5 +59,22 @@ public class Casts {
     public static void nullCast() {
         Foo foo = (Foo) null;
         System.out.println(foo == null);
+    }
+
+    static class ThisInstanceOfFoo {
+        boolean isFoo = this instanceof Foo;
+    }
+
+    public static void checkThisInstanceOfFoo() {
+        ThisInstanceOfFoo v = new ThisInstanceOfFoo();
+        System.out.println(v.isFoo);
+        class SomethingElse extends ThisInstanceOfFoo implements Foo {
+            @Override
+            public String foo() {
+                return null;
+            }
+        }
+        v = new SomethingElse();
+        System.out.println(v.isFoo);
     }
 }

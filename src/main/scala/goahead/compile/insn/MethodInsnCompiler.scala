@@ -113,12 +113,17 @@ trait MethodInsnCompiler {
         ctx -> (method -> defName)
       }
     } else {
+      // Virtual calls forward the method, otherwise do a direct impl reference
       val methodName =
         if (virtual) ctx.mangler.forwardMethodName(method.name, method.desc)
         else ctx.mangler.implMethodName(method.name, method.desc)
+      // Interfaces are simple type assertions (unless "this" which is already a pointer),
+      // whereas non ifaces fetch the pointer
       val ctxAndSubject =
-        if (method.cls.access.isAccessInterface) subject.toExprNode(ctx, IType.getObjectType(method.cls.name))
-        else ctx.instToImpl(subject, method.cls.name)
+        if (method.cls.access.isAccessInterface) {
+          if (subject.isThis) ctx -> subject.expr
+          else subject.toExprNode(ctx, IType.getObjectType(method.cls.name))
+        } else ctx.instToImpl(subject, method.cls.name)
 
       ctxAndSubject.map { case (ctx, subject) => ctx -> (method -> subject.sel(methodName)) }
     }

@@ -633,6 +633,10 @@ func (this *Java__lang__AbstractStringBuilder__Impl) RawPtr__Java__lang__Abstrac
 	return this
 }
 
+func (this *Java__lang__AbstractStringBuilder__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__Appendable__Static struct{}
 
 var Java__lang__Appendable__Var Java__lang__Appendable__Static
@@ -737,6 +741,10 @@ type Java__lang__AutoCloseable__dynproxy____Impl struct {
 }
 
 func (this *Java__lang__AutoCloseable__dynproxy____Impl) RawPtr__Java__lang__AutoCloseable__dynproxy__() *Java__lang__AutoCloseable__dynproxy____Impl {
+	return this
+}
+
+func (this *Java__lang__AutoCloseable__dynproxy____Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -912,6 +920,10 @@ func (this *Java__lang__Boolean__Impl) Impl__ToString__desc____ret____obj__Java_
 }
 
 func (this *Java__lang__Boolean__Impl) RawPtr__Java__lang__Boolean() *Java__lang__Boolean__Impl {
+	return this
+}
+
+func (this *Java__lang__Boolean__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -1100,6 +1112,10 @@ func (this *Java__lang__Byte__Impl) Impl__ToString__desc____ret____obj__Java__la
 }
 
 func (this *Java__lang__Byte__Impl) RawPtr__Java__lang__Byte() *Java__lang__Byte__Impl {
+	return this
+}
+
+func (this *Java__lang__Byte__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -1658,6 +1674,10 @@ func (this *Java__lang__Character__Impl) RawPtr__Java__lang__Character() *Java__
 	return this
 }
 
+func (this *Java__lang__Character__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__Class__Static struct {
 	init sync.Once
 }
@@ -2133,6 +2153,10 @@ func (this *Java__lang__Class__Impl) RawPtr__Java__lang__Class() *Java__lang__Cl
 	return this
 }
 
+func (this *Java__lang__Class__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__ClassCastException__Static struct{}
 
 var Java__lang__ClassCastException__Var Java__lang__ClassCastException__Static
@@ -2197,6 +2221,10 @@ func (this *Java__lang__ClassCastException__Impl) Impl__Instance_Init__desc____o
 }
 
 func (this *Java__lang__ClassCastException__Impl) RawPtr__Java__lang__ClassCastException() *Java__lang__ClassCastException__Impl {
+	return this
+}
+
+func (this *Java__lang__ClassCastException__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -2495,6 +2523,10 @@ func (this *Java__lang__ClassLoader__Impl) RawPtr__Java__lang__ClassLoader() *Ja
 	return this
 }
 
+func (this *Java__lang__ClassLoader__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__Comparable__Static struct{}
 
 var Java__lang__Comparable__Var Java__lang__Comparable__Static
@@ -2573,6 +2605,10 @@ type Java__lang__Comparable__dynproxy____Impl struct {
 }
 
 func (this *Java__lang__Comparable__dynproxy____Impl) RawPtr__Java__lang__Comparable__dynproxy__() *Java__lang__Comparable__dynproxy____Impl {
+	return this
+}
+
+func (this *Java__lang__Comparable__dynproxy____Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -2824,6 +2860,10 @@ func (this *Java__lang__Double__Impl) RawPtr__Java__lang__Double() *Java__lang__
 	return this
 }
 
+func (this *Java__lang__Double__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__Error__Static struct {
 	SerialVersionUID int64
 }
@@ -2907,6 +2947,10 @@ func (this *Java__lang__Error__Impl) RawPtr__Java__lang__Error() *Java__lang__Er
 	return this
 }
 
+func (this *Java__lang__Error__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__Exception__Static struct {
 	SerialVersionUID int64
 }
@@ -2979,6 +3023,10 @@ func (this *Java__lang__Exception__Impl) Impl__Instance_Init__desc____obj__Java_
 }
 
 func (this *Java__lang__Exception__Impl) RawPtr__Java__lang__Exception() *Java__lang__Exception__Impl {
+	return this
+}
+
+func (this *Java__lang__Exception__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -3225,6 +3273,10 @@ func (this *Java__lang__Float__Impl) RawPtr__Java__lang__Float() *Java__lang__Fl
 	return this
 }
 
+func (this *Java__lang__Float__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__IllegalArgumentException__Static struct{}
 
 var Java__lang__IllegalArgumentException__Var Java__lang__IllegalArgumentException__Static
@@ -3304,6 +3356,10 @@ func (this *Java__lang__IllegalArgumentException__Impl) RawPtr__Java__lang__Ille
 	return this
 }
 
+func (this *Java__lang__IllegalArgumentException__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__IllegalMonitorStateException__Static struct{}
 
 var Java__lang__IllegalMonitorStateException__Var Java__lang__IllegalMonitorStateException__Static
@@ -3368,6 +3424,10 @@ func (this *Java__lang__IllegalMonitorStateException__Impl) Impl__Instance_Init_
 }
 
 func (this *Java__lang__IllegalMonitorStateException__Impl) RawPtr__Java__lang__IllegalMonitorStateException() *Java__lang__IllegalMonitorStateException__Impl {
+	return this
+}
+
+func (this *Java__lang__IllegalMonitorStateException__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -3679,6 +3739,10 @@ func (this *Java__lang__Integer__Impl) RawPtr__Java__lang__Integer() *Java__lang
 	return this
 }
 
+func (this *Java__lang__Integer__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__Long__Static struct {
 	BYTES     int
 	MAX_VALUE int64
@@ -3971,6 +4035,10 @@ func (this *Java__lang__Long__Impl) RawPtr__Java__lang__Long() *Java__lang__Long
 	return this
 }
 
+func (this *Java__lang__Long__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__NegativeArraySizeException__Static struct{}
 
 var Java__lang__NegativeArraySizeException__Var Java__lang__NegativeArraySizeException__Static
@@ -4038,6 +4106,10 @@ func (this *Java__lang__NegativeArraySizeException__Impl) RawPtr__Java__lang__Ne
 	return this
 }
 
+func (this *Java__lang__NegativeArraySizeException__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__NullPointerException__Static struct{}
 
 var Java__lang__NullPointerException__Var Java__lang__NullPointerException__Static
@@ -4102,6 +4174,10 @@ func (this *Java__lang__NullPointerException__Impl) Impl__Instance_Init__desc___
 }
 
 func (this *Java__lang__NullPointerException__Impl) RawPtr__Java__lang__NullPointerException() *Java__lang__NullPointerException__Impl {
+	return this
+}
+
+func (this *Java__lang__NullPointerException__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -4219,6 +4295,10 @@ func (this *Java__lang__Number__Impl) RawPtr__Java__lang__Number() *Java__lang__
 	return this
 }
 
+func (this *Java__lang__Number__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__Object__Static struct {
 	init sync.Once
 }
@@ -4253,6 +4333,7 @@ type Java__lang__Object__Dispatch interface {
 	Impl__Wait__desc____ret__V()
 	Impl__Wait__desc__J__ret__V(int64)
 	Impl__Wait__desc__J__I__ret__V(int64, int)
+	Impl_Self() Java__lang__Object__Instance
 }
 
 func (this *Java__lang__Object__Impl) Java__lang__Object__InitDispatch(v Java__lang__Object__Dispatch) {
@@ -4305,6 +4386,10 @@ func (this *Java__lang__Object__Impl) Wait__desc__J__ret__V(var0 int64) {
 
 func (this *Java__lang__Object__Impl) Wait__desc__J__I__ret__V(var0 int64, var1 int) {
 	this._dispatch.Impl__Wait__desc__J__I__ret__V(var0, var1)
+}
+
+func (this *Java__lang__Object__Impl) Self() Java__lang__Object__Instance {
+	return this._dispatch.Impl_Self()
 }
 
 type Java__lang__Object__Instance interface {
@@ -4363,6 +4448,10 @@ func (this *Java__lang__Object__Impl) Impl__Wait__desc__J__I__ret__V(var0 int64,
 }
 
 func (this *Java__lang__Object__Impl) RawPtr__Java__lang__Object() *Java__lang__Object__Impl {
+	return this
+}
+
+func (this *Java__lang__Object__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -4447,6 +4536,10 @@ func (this *Java__lang__RuntimeException__Impl) Impl__Instance_Init__desc____obj
 }
 
 func (this *Java__lang__RuntimeException__Impl) RawPtr__Java__lang__RuntimeException() *Java__lang__RuntimeException__Impl {
+	return this
+}
+
+func (this *Java__lang__RuntimeException__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -4639,6 +4732,10 @@ func (this *Java__lang__Short__Impl) Impl__ToString__desc____ret____obj__Java__l
 }
 
 func (this *Java__lang__Short__Impl) RawPtr__Java__lang__Short() *Java__lang__Short__Impl {
+	return this
+}
+
+func (this *Java__lang__Short__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -5362,6 +5459,10 @@ func (this *Java__lang__String__Impl) RawPtr__Java__lang__String() *Java__lang__
 	return this
 }
 
+func (this *Java__lang__String__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__StringBuilder__Static struct {
 	SerialVersionUID int64
 }
@@ -5982,6 +6083,10 @@ func (this *Java__lang__StringBuilder__Impl) RawPtr__Java__lang__StringBuilder()
 	return this
 }
 
+func (this *Java__lang__StringBuilder__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__System__Static struct {
 	Err  Java__io__PrintStream__Instance
 	Out  Java__io__PrintStream__Instance
@@ -6106,6 +6211,10 @@ type Java__lang__System__Impl struct {
 }
 
 func (this *Java__lang__System__Impl) RawPtr__Java__lang__System() *Java__lang__System__Impl {
+	return this
+}
+
+func (this *Java__lang__System__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -6304,6 +6413,10 @@ func (this *Java__lang__Throwable__Impl) RawPtr__Java__lang__Throwable() *Java__
 	return this
 }
 
+func (this *Java__lang__Throwable__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__VirtualMachineError__Static struct{}
 
 var Java__lang__VirtualMachineError__Var Java__lang__VirtualMachineError__Static
@@ -6378,6 +6491,10 @@ func (this *Java__lang__VirtualMachineError__Impl) RawPtr__Java__lang__VirtualMa
 	return this
 }
 
+func (this *Java__lang__VirtualMachineError__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__Void__Static struct {
 	TYPE Java__lang__Class__Instance
 	init sync.Once
@@ -6433,5 +6550,9 @@ type Java__lang__Void__Impl struct {
 }
 
 func (this *Java__lang__Void__Impl) RawPtr__Java__lang__Void() *Java__lang__Void__Impl {
+	return this
+}
+
+func (this *Java__lang__Void__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }

@@ -193,6 +193,10 @@ func (this *Java__lang__invoke__CallSite__Impl) RawPtr__Java__lang__invoke__Call
 	return this
 }
 
+func (this *Java__lang__invoke__CallSite__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__invoke__LambdaMetafactory__Static struct {
 	FLAG_BRIDGES      int
 	FLAG_MARKERS      int
@@ -262,6 +266,10 @@ func (this *Java__lang__invoke__LambdaMetafactory__Impl) Impl__Instance_Init__de
 }
 
 func (this *Java__lang__invoke__LambdaMetafactory__Impl) RawPtr__Java__lang__invoke__LambdaMetafactory() *Java__lang__invoke__LambdaMetafactory__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__LambdaMetafactory__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -595,6 +603,10 @@ func (this *Java__lang__invoke__MethodHandle__Impl) RawPtr__Java__lang__invoke__
 	return this
 }
 
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__invoke__MethodHandles__Static struct {
 	__dollar__assertionsDisabled bool
 	init                         sync.Once
@@ -742,6 +754,10 @@ type Java__lang__invoke__MethodHandles__Impl struct {
 }
 
 func (this *Java__lang__invoke__MethodHandles__Impl) RawPtr__Java__lang__invoke__MethodHandles() *Java__lang__invoke__MethodHandles__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandles__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -969,6 +985,10 @@ func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__T
 }
 
 func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) RawPtr__Java__lang__invoke__MethodHandles__innerclass__Lookup() *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }
 
@@ -1424,6 +1444,10 @@ func (this *Java__lang__invoke__MethodType__Impl) RawPtr__Java__lang__invoke__Me
 	return this
 }
 
+func (this *Java__lang__invoke__MethodType__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
 type Java__lang__invoke__SerializedLambda__Static struct{}
 
 var Java__lang__invoke__SerializedLambda__Var Java__lang__invoke__SerializedLambda__Static
@@ -1598,5 +1622,9 @@ func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__ToString__desc____
 }
 
 func (this *Java__lang__invoke__SerializedLambda__Impl) RawPtr__Java__lang__invoke__SerializedLambda() *Java__lang__invoke__SerializedLambda__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl_Self() Java__lang__Object__Instance {
 	return this
 }

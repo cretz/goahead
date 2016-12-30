@@ -132,11 +132,13 @@ trait ZeroOpInsnCompiler {
       opcode match {
         case Opcodes.BALOAD =>
           ctx.importRuntimeQualifiedName("GetBoolOrByte").map { case (ctx, getBoolOrByte) =>
-            ctx.stackPushed(TypedExpression(
-              getBoolOrByte.call(Seq(arrayRef.expr, index.expr)),
-              IType.IntType,
-              cheapRef = true
-            )) -> Nil
+            index.toExprNode(ctx, IType.IntType).map { case (ctx, index) =>
+              ctx.stackPushed(TypedExpression(
+                getBoolOrByte.call(Seq(arrayRef.expr, index)),
+                IType.IntType,
+                cheapRef = true
+              )) -> Nil
+            }
           }
         case _ =>
           val jvmType = opcode match {
@@ -171,8 +173,10 @@ trait ZeroOpInsnCompiler {
       opcode match {
         case Opcodes.BASTORE =>
           ctx.importRuntimeQualifiedName("SetBoolOrByte").map { case (ctx, setBoolOrByte) =>
-            value.toExprNode(ctx, IType.IntType).map { case (ctx, value) =>
-              ctx -> setBoolOrByte.call(Seq(arrayRef.expr, index.expr, value)).toStmt.singleSeq
+            index.toExprNode(ctx, IType.IntType).map { case (ctx, index) =>
+              value.toExprNode(ctx, IType.IntType).map { case (ctx, value) =>
+                ctx -> setBoolOrByte.call(Seq(arrayRef.expr, index, value)).toStmt.singleSeq
+              }
             }
           }
         case _ =>
