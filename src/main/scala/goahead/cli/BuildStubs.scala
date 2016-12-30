@@ -226,9 +226,10 @@ object BuildStubs extends BuildStubs {
 
       override protected def clsFields(
         ctx: ClassCompiler.Context,
+        forImpl: Boolean,
         includeParentFields: Boolean = false
       ): Seq[Field] = {
-        super.clsFields(ctx, includeParentFields).filter { field =>
+        super.clsFields(ctx, forImpl, includeParentFields).filter { field =>
           if (field.access.isAccessPrivate || excludePatterns.contains(ctx.cls.name + "." + field.name)) false
           else if (onlyIncludeClassRefs.isEmpty) true
           else {

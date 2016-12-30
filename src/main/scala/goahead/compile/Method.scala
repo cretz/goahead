@@ -2,6 +2,7 @@ package goahead.compile
 
 import java.io.{PrintWriter, StringWriter}
 
+import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree._
 import org.objectweb.asm.util.{Textifier, TraceMethodVisitor}
 
@@ -65,8 +66,13 @@ object Method {
 
     override def isSignaturePolymorphic: Boolean = {
       import Helpers._
-      cls.name == "java/lang/invoke/MethodHandle" && desc == "([Ljava/lang/Object;)Ljava/lang/Object;" &&
-        access.isAccessNative && access.isAccessVarargs
+      if (cls.majorVersion <= Opcodes.V1_8) {
+        cls.name == "java/lang/invoke/MethodHandle" && desc == "([Ljava/lang/Object;)Ljava/lang/Object;" &&
+          access.isAccessNative && access.isAccessVarargs
+      } else {
+        visibleAnnotations.exists(_.desc == "Ljava/lang/invoke/MethodHandle$PolymorphicSignature;") ||
+          invisibleAnnotations.exists(_.desc == "Ljava/lang/invoke/MethodHandle$PolymorphicSignature;")
+      }
     }
 
     override lazy val visibleAnnotations: Seq[Annotation] = {

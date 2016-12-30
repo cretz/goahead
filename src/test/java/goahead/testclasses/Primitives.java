@@ -10,6 +10,7 @@ public class Primitives {
         System.out.println((int) floats());
         System.out.println(ints());
         System.out.println(longs());
+        System.out.println(bytes());
     }
 
     public static double doubles() {
@@ -89,5 +90,18 @@ public class Primitives {
         System.out.println(a ^ 7);
         System.out.println(a < b);
         return d % f;
+    }
+
+    static class Foo {
+        byte byteField;
+    }
+
+    public static byte bytes() {
+        Foo foo = new Foo();
+        foo.byteField = -5;
+        System.out.println(foo.byteField);
+        int b = foo.byteField * 10;
+        System.out.println(b);
+        return foo.byteField;
     }
 }

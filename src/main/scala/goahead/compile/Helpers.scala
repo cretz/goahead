@@ -4,7 +4,7 @@ import java.io.{PrintWriter, StringWriter}
 
 import goahead.Logger
 import goahead.ast.Node
-import org.objectweb.asm.Opcodes
+import org.objectweb.asm.{Label, Opcodes}
 import org.objectweb.asm.tree._
 import org.objectweb.asm.util.{Textifier, TraceMethodVisitor}
 
@@ -79,7 +79,7 @@ object Helpers extends Logger {
         case Type.VOID => ctx -> emptyStruct.star
         case Type.BOOLEAN => ctx -> "bool".toIdent
         case Type.CHAR => ctx -> "rune".toIdent
-        case Type.BYTE => ctx -> "byte".toIdent
+        case Type.BYTE => ctx -> "int8".toIdent
         case Type.SHORT => ctx -> "int16".toIdent
         case Type.INT => ctx -> "int".toIdent
         case Type.LONG => ctx -> "int64".toIdent
@@ -285,11 +285,13 @@ object Helpers extends Logger {
       ctx.sets.find(_.label.getLabel == label.getLabel).get.newFrame match {
         case None => ctx -> Nil
         case Some(otherFrame) =>
-          ctx -> ctx.frameStack(otherFrame).zipWithIndex.flatMap {
-            case (frameType, index) =>
-              // TODO: do we need to convert to anything here?
-              ctx.stack.items.lift(index).map { existingStackItem =>
-                s"${label.getLabel}_stack$index".toIdent.assignExisting(existingStackItem.expr)
+          ctx.frameStack(otherFrame).zipWithIndex.foldLeft(ctx -> Seq.empty[Node.Statement]) {
+            case ((ctx, prevStmts), (frameType, index)) =>
+              ctx.stack.items.lift(index) match {
+                case None => ctx -> prevStmts
+                case Some(existingStackItem) => existingStackItem.toExprNode(ctx, frameType).map { case (ctx, item) =>
+                  ctx -> (prevStmts :+ s"${label.getLabel}_stack$index".toIdent.assignExisting(item))
+                }
               }
           }
       }
@@ -350,7 +352,7 @@ object Helpers extends Logger {
     def zeroExpr = typ match {
       case IType.IntType | IType.FloatType | IType.DoubleType | IType.LongType | IType.ShortType => 0.toLit
       case IType.BooleanType => "false".toIdent
-      case IType.ByteType => "byte".toIdent.call(Seq(0.toLit))
+      case IType.ByteType => "int8".toIdent.call(Seq(0.toLit))
       case IType.CharType => "rune".toIdent.call(Seq(0.toLit))
       case _ => sys.error(s"Unrecognized type to get zero val for: $typ")
     }
@@ -417,7 +419,7 @@ object Helpers extends Logger {
           // TODO: should parenthesize?
           ctx -> expr.expr.neq(0.toLit)
         case (o, IType.ByteType) if o.isNumeric =>
-          ctx -> "byte".toIdent.call(Seq(expr.expr))
+          ctx -> "int8".toIdent.call(Seq(expr.expr))
         case (o, IType.CharType) if o.isNumeric =>
           ctx -> "rune".toIdent.call(Seq(expr.expr))
         case (o, IType.ShortType) if o.isNumeric =>
@@ -479,5 +481,9 @@ object Helpers extends Logger {
         )).call()
       }
     }
+  }
+
+  implicit class RichLabel(val label: Label) extends AnyVal {
+    def uniqueStr = "L" + label.hashCode()
   }
 }

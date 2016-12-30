@@ -1,18 +1,16 @@
 package goahead.compile
 
 import java.io.File
-import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file._
+import java.nio.file.attribute.BasicFileAttributes
 import java.util.function.BiPredicate
-import java.util.jar.JarFile
-import java.util.zip.ZipEntry
+import java.util.zip.{ZipEntry, ZipFile}
 
 import com.google.common.io.ByteStreams
 import goahead.compile.Helpers._
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.ClassNode
 
-import scala.annotation.tailrec
 import scala.util.Try
 
 // Guaranteed thread safe
@@ -73,22 +71,20 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
       case None => sys.error(s"Unable to find class $classInternalName")
     }
 
-  @tailrec
   final def findFieldOnDeclarer(
     startAtClassInternalName: String,
     fieldName: String,
     static: Boolean
   ): Field = {
-    // We don't check permissions yet...
-    val clsDet = getFirstClass(startAtClassInternalName)
-    clsDet.cls.fields.find(f => f.access.isAccessStatic == static && f.name == fieldName) match {
-      case Some(field) => field
-      case None => clsDet.cls.parent match {
-        case None => sys.error(s"Cannot find field $fieldName")
-        case Some(parent) => findFieldOnDeclarer(parent, fieldName, static)
-      }
-    }
-
+    val allImpls = getFirstClass(startAtClassInternalName) +: allSuperAndImplementingTypes(startAtClassInternalName)
+    // First try to find it in non-interfaces, then in interfaces if static
+    allImpls.filter(c => !c.cls.access.isAccessInterface).
+      collectFirst(Function.unlift(_.cls.fields.find(f => f.access.isAccessStatic == static && f.name == fieldName))).
+      orElse(
+        if (!static) None
+        else allImpls.filter(_.cls.access.isAccessInterface).
+          collectFirst(Function.unlift(_.cls.fields.find(f => f.access.isAccessStatic && f.name == fieldName)))
+      ).getOrElse(sys.error(s"Cannot find field $fieldName"))
   }
 
   def allClassNames(): Iterable[String] = entries.flatMap(_.allClassNames())
@@ -153,9 +149,9 @@ object ClassPath {
       import scala.collection.JavaConverters._
       require(Files.isDirectory(dir), s"$dir is not a directory")
       // Only .jar and .JAR files
-      val fileStream = Files.newDirectoryStream(dir, "*.{jar,JAR}")
+      val fileStream = Files.newDirectoryStream(dir, "*.{jar,JAR,jmod,JMOD}")
       new CompositeEntry(
-        try { fileStream.iterator().asScala.toSeq.map(fromJarFile(_, relativeCompiledDir)) }
+        try { fileStream.iterator().asScala.toSeq.map(fromZipFile(_, relativeCompiledDir)) }
         finally { fileStream.close() }
       )
     }
@@ -163,14 +159,20 @@ object ClassPath {
     def fromFile(file: Path, relativeCompiledDir: String) = {
       require(Files.exists(file), s"$file does not exist")
       val fileStr = file.toString
-      if (fileStr.endsWith(".jar") || fileStr.endsWith(".JAR")) fromJarFile(file, relativeCompiledDir)
+      if (fileStr.endsWith(".jar") || fileStr.endsWith(".JAR")) fromZipFile(file, relativeCompiledDir)
+      else if (fileStr.endsWith(".jmod") || fileStr.endsWith(".JMOD")) fromZipFile(file, relativeCompiledDir)
       else if (fileStr.endsWith(".class")) fromClassFile(file, relativeCompiledDir)
-      else sys.error(s"$file does not have jar or class extension")
+      else sys.error(s"$file does not have jar or jmod or class extension")
     }
 
-    def fromJarFile(file: Path, relativeCompiledDir: String) = {
+    def fromZipFile(file: Path, relativeCompiledDir: String): Entry = {
       require(Files.exists(file), s"$file does not exist")
-      new SingleDirJarEntry(new JarFile(file.toFile), relativeCompiledDir)
+      val fileName = file.toString
+      if (fileName.endsWith(".jar") || fileName.endsWith(".JAR"))
+        new SingleDirJarEntry(new ZipFile(file.toFile), relativeCompiledDir)
+      else if (fileName.endsWith(".jmod") || fileName.endsWith(".JMOD"))
+        new SingleDirJmodEntry(new ZipFile(file.toFile), relativeCompiledDir)
+      else sys.error(s"Expected $fileName to be a jar or jmod file")
     }
 
     def fromClassFile(file: Path, relativeCompiledDir: String) =
@@ -226,33 +228,56 @@ object ClassPath {
       override def close() = ()
     }
 
-    class SingleDirJarEntry(jar: JarFile, relativeCompiledDir: String) extends Entry {
+    sealed trait BaseZipEntry extends Entry {
       private[this] var cache = Map.empty[String, Option[SingleClassEntry]]
+
+      def file: ZipFile
+      def relativeCompiledDir: String
+
+      protected def internalClassNameToEntryPath(internalName: String): Option[String]
+
+      private[this] def readEntry(entry: ZipEntry): Array[Byte] = {
+        val is = file.getInputStream(entry)
+        try { ByteStreams.toByteArray(is) } finally { swallowException(is.close()) }
+      }
 
       override def findClass(internalClassName: String): Option[ClassDetails] = synchronized {
         cache.getOrElse(internalClassName, {
-          val detailsOpt = Option(jar.getEntry(s"$internalClassName.class")).map { entry =>
-            SingleClassEntry(readEntry(entry), relativeCompiledDir)
-          }
+          val detailsOpt = internalClassNameToEntryPath(internalClassName).flatMap(v => Option(file.getEntry(v))).
+            map(entry => SingleClassEntry(readEntry(entry), relativeCompiledDir))
           cache += internalClassName -> detailsOpt
           detailsOpt
         })
       }
 
-      // caller should be sync'd
-      private[this] def readEntry(entry: ZipEntry): Array[Byte] = {
-        val is = jar.getInputStream(entry)
-        try { ByteStreams.toByteArray(is) } finally { swallowException(is.close()) }
-      }
+      override def close() = synchronized(swallowException(file.close()))
+    }
+
+    class SingleDirJarEntry(val file: ZipFile, val relativeCompiledDir: String) extends BaseZipEntry {
+
+      protected def internalClassNameToEntryPath(internalName: String) = Some(s"$internalName.class")
 
       override def allClassNames(): Iterable[String] = {
         import scala.collection.JavaConverters._
-        jar.stream().iterator().asScala.toIterable.collect {
+        file.stream().iterator().asScala.toIterable.collect {
           case e if e.getName.endsWith(".class") => e.getName.dropRight(6)
         }
       }
+    }
 
-      override def close() = synchronized(swallowException(jar.close()))
+    class SingleDirJmodEntry(val file: ZipFile, val relativeCompiledDir: String) extends BaseZipEntry {
+      protected def internalClassNameToEntryPath(internalName: String) = Some(s"classes/$internalName.class")
+
+      override def allClassNames(): Iterable[String] = {
+        import scala.collection.JavaConverters._
+        file.stream().iterator().asScala.toIterable.collect {
+          case e if
+              e.getName != "classes/module-info.class" &&
+              e.getName.startsWith("classes/") &&
+              e.getName.endsWith(".class") =>
+            e.getName.drop(8).dropRight(6)
+        }
+      }
     }
 
     case class SingleClassEntry(cls: Cls, relativeCompiledDir: String) extends Entry with ClassDetails {

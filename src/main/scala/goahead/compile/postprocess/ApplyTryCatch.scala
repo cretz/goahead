@@ -101,7 +101,7 @@ trait ApplyTryCatch extends PostProcessor {
         ctxAndCondWithInitOpt.map { case (ctx, (cond, initOpt)) =>
           // Need to set stack var and then goto handler label
           val exIdent = if (initOpt.isDefined) "ex".toIdent else "currentEx".toIdent
-          val labelStr = tryCatchBlock.handler.getLabel.toString
+          val labelStr = tryCatchBlock.handler.getLabel.uniqueStr
           val stmts = Seq(
             (tryCatchBlock.handler.getLabel + "_stack0").toIdent.assignExisting(exIdent),
             goto(labelStr)
@@ -121,7 +121,7 @@ trait ApplyTryCatch extends PostProcessor {
     val startIndex = ctx.sets.indexWhere(_.label.getLabel == start.getLabel)
     val endIndex = ctx.sets.lastIndexWhere(_.label.getLabel == endExclusive.getLabel)
     require(startIndex != -1 && endIndex != -1 && startIndex <= endIndex)
-    ctx.sets.slice(startIndex, endIndex).map(_.label.getLabel.toString)
+    ctx.sets.slice(startIndex, endIndex).map(_.label.getLabel.uniqueStr)
   }
 
   protected def wrapAndInvokeStmts(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {

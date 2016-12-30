@@ -11,7 +11,7 @@ trait JumpInsnCompiler {
   import MethodCompiler._
 
   def compile(ctx: Context, insn: JumpInsnNode): (Context, Seq[Node.Statement]) = {
-    val label = insn.label.getLabel.toString
+    val label = insn.label.getLabel.uniqueStr
     ctx.copy(usedLabels = ctx.usedLabels + label).map { ctx =>
 
       @inline
@@ -33,7 +33,9 @@ trait JumpInsnCompiler {
 
       @inline
       def ifInt(ctx: Context, token: Node.Token) = ctx.stackPopped(2, { case (ctx, Seq(lhs, rhs)) =>
-        ifStmt(ctx, lhs.expr, token, rhs.expr)
+        lhs.toExprNode(ctx, IType.IntType).map { case (ctx, lhs) =>
+          ifStmt(ctx, lhs, token, rhs.expr)
+        }
       })
 
       insn.byOpcode {

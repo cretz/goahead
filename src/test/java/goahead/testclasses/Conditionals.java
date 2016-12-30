@@ -9,6 +9,7 @@ public class Conditionals {
         ifInts();
         ifZeros();
         ifNulls();
+        ifExplicitTrueFalseFromField();
     }
 
     public static void doubles() {
@@ -67,5 +68,23 @@ public class Conditionals {
         System.out.println(a != null);
         System.out.println(b == null);
         System.out.println(b != null);
+    }
+
+    static class Foo {
+        boolean field;
+    }
+
+    public static void ifExplicitTrueFalseFromField() {
+        Foo foo = new Foo();
+        if (foo.field == true) {
+            System.out.println("Foo is true");
+        } else {
+            System.out.println("Foo is not true");
+        }
+        if (foo.field == false) {
+            System.out.println("Foo is false");
+        } else {
+            System.out.println("Foo is not false");
+        }
     }
 }

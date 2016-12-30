@@ -149,9 +149,10 @@ object IType extends Logger {
   }
 
   case class UndefinedLabelInitialized(label: LabelNode) extends IType {
+    import Helpers._
     override def maybeMakeMoreSpecific(classPath: ClassPath, other: IType): IType = other
     override def isAssignableFrom(classPath: ClassPath, other: IType) = other == this
-    override def pretty: String = s"<undefined on ${label.getLabel.toString}>"
+    override def pretty: String = s"<undefined on ${label.getLabel.uniqueStr}>"
     override def asArray: IType = sys.error("Cannot make array of undefined label type")
     override def elementType: IType = sys.error("No element type of undefined label type")
     override def isUnknown = true

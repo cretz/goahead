@@ -3,11 +3,61 @@ package goahead.ast
 import goahead.ast.Node._
 
 object NodeWriter {
-  def fromNode(node: Node): String = new NodeWriter().appendNode(node).toString()
+  def fromNode(node: Node): String = {
+    val fullBuilder = new java.lang.StringBuilder()
+    fromNode(node, fullBuilder)
+    fullBuilder.toString
+  }
+
+  def fromNode(node: Node, appendable: Appendable): Unit =
+    new NodeWriter(new BufferedBuilder(appendable)).appendNode(node).builder.flushAll()
+
+  // We hold two newlines at a time
+  private[ast] class BufferedBuilder(val appendable: Appendable) {
+    val builder = new StringBuilder
+
+    def append(c: Char): Unit = {
+      builder.append(c)
+      flushAllButLastTwoNewlines()
+    }
+
+    def append(s: String): Unit = {
+      builder.append(s)
+      flushAllButLastTwoNewlines()
+    }
+
+    def length = builder.length
+
+    def deleteCharAt(i: Int): Unit = {
+      builder.deleteCharAt(i)
+      ()
+    }
+
+    def lastIndexOf(str: String) = builder.lastIndexOf(str)
+
+    def indexWhere(p: Char => Boolean, from: Int) = builder.indexWhere(p, from)
+
+    def flushAllButLastTwoNewlines(): Unit = {
+      builder.lastIndexOf('\n') match {
+        case -1 => ()
+        case index => builder.lastIndexOf('\n', index - 1) match {
+          case -1 => ()
+          case index =>
+            appendable.append(builder, 0, index)
+            builder.delete(0, index)
+            ()
+        }
+      }
+    }
+
+    def flushAll(): Unit = {
+      appendable.append(builder)
+      builder.clear()
+    }
+  }
 }
 
-class NodeWriter {
-  val builder = new StringBuilder()
+class NodeWriter(val builder: NodeWriter.BufferedBuilder) {
   var indention = 0
 
   def append(c: Char): this.type = {
@@ -35,8 +85,6 @@ class NodeWriter {
     builder.deleteCharAt(builder.length - 1)
     this
   }
-
-  override def toString: String = builder.toString()
 
   def __TODO__ : this.type = ???
 
@@ -151,7 +199,15 @@ class NodeWriter {
 
   def appendCommClause(stmt: CommClause): this.type = __TODO__
 
-  def appendComment(node: Comment): this.type = __TODO__
+  def appendComment(node: Comment): this.type = {
+    // Just do simple comment for now
+    require(!node.text.contains("\n"), "Newlines not supported yet in comments")
+    append(s"// ${node.text}")
+  }
+
+  def appendCommentStatement(node: CommentStatement): this.type = {
+    appendComment(node.comment)
+  }
 
   def appendCompositeLiteral(expr: CompositeLiteral): this.type = {
     expr.typ.foreach(appendExpression)
@@ -404,6 +460,7 @@ class NodeWriter {
     case b: BranchStatement => appendBranchStatement(b)
     case c: CaseClause => appendCaseClause(c)
     case c: CommClause => appendCommClause(c)
+    case c: CommentStatement => appendCommentStatement(c)
     case d: DeclarationStatement => appendDeclarationStatement(d)
     case d: DeferStatement => appendDeferStatement(d)
     case EmptyStatement => appendEmptyStatement()

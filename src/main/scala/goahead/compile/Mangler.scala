@@ -80,6 +80,8 @@ object Mangler {
     private[this] def methodPrefix(name: String): String = name match {
       case "<init>" => "Instance_Init"
       case "<clinit>" => "Static_Init"
+      // We do this to disambiguate two methods of the same case-insensitive name
+      case _ if name.head.isUpper => s"Capitalized__${name.capitalize}"
       case _ => name.capitalize
     }
 
@@ -92,7 +94,7 @@ object Mangler {
 
     private[this] def objectNamePrefix(internalName: String): String = {
       require(!internalName.headOption.contains('['), "Not ready yet for arrays")
-      val pieces = internalName.replace("$", "__innerclass__").split('/')
+      val pieces = internalName.replace("$", "__innerclass__").replace("-", "__dash__").split('/')
       packagePrefix(pieces.dropRight(1)) + classSuffix(pieces.last)
     }
 

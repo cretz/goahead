@@ -171,10 +171,11 @@ trait MethodCompiler extends Logger {
       }
 
       ctxAndAddOnStmts.map { case (ctx, addOnStmts) =>
+        val maybeComment = labelSet.line.map(line => comment(s"Line number $line").toStmt)
         ctx.copy(
           localTempVars = tempVarsOnStack.toIndexedSeq,
           functionVars = ctx.functionVars ++ tempVarsOnStackAndNotAtFuncLevel
-        ) -> labeled(labelSet.label.getLabel.toString, maybeDecl.toSeq ++ stmts ++ addOnStmts)
+        ) -> labeled(labelSet.label.getLabel.uniqueStr, maybeComment.toSeq ++ maybeDecl.toSeq ++ stmts ++ addOnStmts)
       }
     }
   }
@@ -222,7 +223,7 @@ object MethodCompiler extends MethodCompiler {
     insns: Seq[AbstractInsnNode] = Nil,
     nextLabel: Option[LabelNode] = None
   ) {
-    def pretty: String = label.getLabel.toString + newFrame.map(" - " + _.pretty).getOrElse("")
+    def pretty: String = label.getLabel.uniqueStr + newFrame.map(" - " + _.pretty).getOrElse("")
     def endsWithUnconditionalJump = insns.nonEmpty && insns.last.isUnconditionalJump
   }
 

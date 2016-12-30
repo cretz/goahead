@@ -917,8 +917,8 @@ func (this *Java__lang__Boolean__Impl) RawPtr__Java__lang__Boolean() *Java__lang
 
 type Java__lang__Byte__Static struct {
 	BYTES     int
-	MAX_VALUE byte
-	MIN_VALUE byte
+	MAX_VALUE int8
+	MIN_VALUE int8
 	SIZE      int
 	TYPE      Java__lang__Class__Instance
 	init      sync.Once
@@ -943,7 +943,7 @@ func (this *Java__lang__Byte__Static) Impl__Static_Init__desc____ret__V() {
 	
 }
 
-func (this *Java__lang__Byte__Static) Impl__Compare__desc__B__B__ret__I(var0 byte, var1 byte) int {
+func (this *Java__lang__Byte__Static) Impl__Compare__desc__B__B__ret__I(var0 int8, var1 int8) int {
 	panic("Not Implemented - java/lang/Byte.compare(BB)I")
 }
 
@@ -951,31 +951,31 @@ func (this *Java__lang__Byte__Static) Impl__Decode__desc____obj__Java__lang__Str
 	panic("Not Implemented - java/lang/Byte.decode(Ljava/lang/String;)Ljava/lang/Byte;")
 }
 
-func (this *Java__lang__Byte__Static) Impl__HashCode__desc__B__ret__I(var0 byte) int {
+func (this *Java__lang__Byte__Static) Impl__HashCode__desc__B__ret__I(var0 int8) int {
 	panic("Not Implemented - java/lang/Byte.hashCode(B)I")
 }
 
-func (this *Java__lang__Byte__Static) Impl__ParseByte__desc____obj__Java__lang__String__ret__B(var0 Java__lang__String__Instance) byte {
+func (this *Java__lang__Byte__Static) Impl__ParseByte__desc____obj__Java__lang__String__ret__B(var0 Java__lang__String__Instance) int8 {
 	panic("Not Implemented - java/lang/Byte.parseByte(Ljava/lang/String;)B")
 }
 
-func (this *Java__lang__Byte__Static) Impl__ParseByte__desc____obj__Java__lang__String__I__ret__B(var0 Java__lang__String__Instance, var1 int) byte {
+func (this *Java__lang__Byte__Static) Impl__ParseByte__desc____obj__Java__lang__String__I__ret__B(var0 Java__lang__String__Instance, var1 int) int8 {
 	panic("Not Implemented - java/lang/Byte.parseByte(Ljava/lang/String;I)B")
 }
 
-func (this *Java__lang__Byte__Static) Impl__ToString__desc__B__ret____obj__Java__lang__String(var0 byte) Java__lang__String__Instance {
+func (this *Java__lang__Byte__Static) Impl__ToString__desc__B__ret____obj__Java__lang__String(var0 int8) Java__lang__String__Instance {
 	panic("Not Implemented - java/lang/Byte.toString(B)Ljava/lang/String;")
 }
 
-func (this *Java__lang__Byte__Static) Impl__ToUnsignedInt__desc__B__ret__I(var0 byte) int {
+func (this *Java__lang__Byte__Static) Impl__ToUnsignedInt__desc__B__ret__I(var0 int8) int {
 	panic("Not Implemented - java/lang/Byte.toUnsignedInt(B)I")
 }
 
-func (this *Java__lang__Byte__Static) Impl__ToUnsignedLong__desc__B__ret__J(var0 byte) int64 {
+func (this *Java__lang__Byte__Static) Impl__ToUnsignedLong__desc__B__ret__J(var0 int8) int64 {
 	panic("Not Implemented - java/lang/Byte.toUnsignedLong(B)J")
 }
 
-func (this *Java__lang__Byte__Static) Impl__ValueOf__desc__B__ret____obj__Java__lang__Byte(var0 byte) Java__lang__Byte__Instance {
+func (this *Java__lang__Byte__Static) Impl__ValueOf__desc__B__ret____obj__Java__lang__Byte(var0 int8) Java__lang__Byte__Instance {
 	panic("Not Implemented - java/lang/Byte.valueOf(B)Ljava/lang/Byte;")
 }
 
@@ -989,7 +989,7 @@ func (this *Java__lang__Byte__Static) Impl__ValueOf__desc____obj__Java__lang__St
 
 type Java__lang__Byte__Dispatch interface {
 	Java__lang__Number__Dispatch
-	Impl__Instance_Init__desc__B__ret__V(byte)
+	Impl__Instance_Init__desc__B__ret__V(int8)
 	Impl__Instance_Init__desc____obj__Java__lang__String__ret__V(Java__lang__String__Instance)
 	Impl__CompareTo__desc____obj__Java__lang__Byte__ret__I(Java__lang__Byte__Instance) int
 	Impl__CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
@@ -1000,7 +1000,7 @@ func (this *Java__lang__Byte__Impl) Java__lang__Byte__InitDispatch(v Java__lang_
 	this._dispatch = v
 }
 
-func (this *Java__lang__Byte__Impl) Instance_Init__desc__B__ret__V(var0 byte) {
+func (this *Java__lang__Byte__Impl) Instance_Init__desc__B__ret__V(var0 int8) {
 	this._dispatch.Impl__Instance_Init__desc__B__ret__V(var0)
 }
 
@@ -1017,7 +1017,7 @@ func (this *Java__lang__Byte__Impl) CompareTo__desc____obj__Java__lang__Object__
 }
 
 type Java__lang__Byte__Instance interface {
-	ByteValue__desc____ret__B() byte
+	ByteValue__desc____ret__B() int8
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	CompareTo__desc____obj__Java__lang__Byte__ret__I(Java__lang__Byte__Instance) int
 	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
@@ -1047,7 +1047,7 @@ type Java__lang__Byte__Impl struct {
 	Value     byte
 }
 
-func (this *Java__lang__Byte__Impl) Impl__Instance_Init__desc__B__ret__V(var0 byte) {
+func (this *Java__lang__Byte__Impl) Impl__Instance_Init__desc__B__ret__V(var0 int8) {
 	panic("Not Implemented - java/lang/Byte.<init>(B)V")
 }
 
@@ -1055,7 +1055,7 @@ func (this *Java__lang__Byte__Impl) Impl__Instance_Init__desc____obj__Java__lang
 	panic("Not Implemented - java/lang/Byte.<init>(Ljava/lang/String;)V")
 }
 
-func (this *Java__lang__Byte__Impl) Impl__ByteValue__desc____ret__B() byte {
+func (this *Java__lang__Byte__Impl) Impl__ByteValue__desc____ret__B() int8 {
 	panic("Not Implemented - java/lang/Byte.byteValue()B")
 }
 
@@ -1132,42 +1132,42 @@ type Java__lang__CharSequence__Instance interface {
 type Java__lang__Character__Static struct {
 	__dollar__assertionsDisabled              bool
 	BYTES                                     int
-	COMBINING_SPACING_MARK                    byte
-	CONNECTOR_PUNCTUATION                     byte
-	CONTROL                                   byte
-	CURRENCY_SYMBOL                           byte
-	DASH_PUNCTUATION                          byte
-	DECIMAL_DIGIT_NUMBER                      byte
-	DIRECTIONALITY_ARABIC_NUMBER              byte
-	DIRECTIONALITY_BOUNDARY_NEUTRAL           byte
-	DIRECTIONALITY_COMMON_NUMBER_SEPARATOR    byte
-	DIRECTIONALITY_EUROPEAN_NUMBER            byte
-	DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR  byte
-	DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR byte
-	DIRECTIONALITY_LEFT_TO_RIGHT              byte
-	DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING    byte
-	DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE     byte
-	DIRECTIONALITY_NONSPACING_MARK            byte
-	DIRECTIONALITY_OTHER_NEUTRALS             byte
-	DIRECTIONALITY_PARAGRAPH_SEPARATOR        byte
-	DIRECTIONALITY_POP_DIRECTIONAL_FORMAT     byte
-	DIRECTIONALITY_RIGHT_TO_LEFT              byte
-	DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC       byte
-	DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING    byte
-	DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE     byte
-	DIRECTIONALITY_SEGMENT_SEPARATOR          byte
-	DIRECTIONALITY_UNDEFINED                  byte
-	DIRECTIONALITY_WHITESPACE                 byte
-	ENCLOSING_MARK                            byte
-	END_PUNCTUATION                           byte
+	COMBINING_SPACING_MARK                    int8
+	CONNECTOR_PUNCTUATION                     int8
+	CONTROL                                   int8
+	CURRENCY_SYMBOL                           int8
+	DASH_PUNCTUATION                          int8
+	DECIMAL_DIGIT_NUMBER                      int8
+	DIRECTIONALITY_ARABIC_NUMBER              int8
+	DIRECTIONALITY_BOUNDARY_NEUTRAL           int8
+	DIRECTIONALITY_COMMON_NUMBER_SEPARATOR    int8
+	DIRECTIONALITY_EUROPEAN_NUMBER            int8
+	DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR  int8
+	DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR int8
+	DIRECTIONALITY_LEFT_TO_RIGHT              int8
+	DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING    int8
+	DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE     int8
+	DIRECTIONALITY_NONSPACING_MARK            int8
+	DIRECTIONALITY_OTHER_NEUTRALS             int8
+	DIRECTIONALITY_PARAGRAPH_SEPARATOR        int8
+	DIRECTIONALITY_POP_DIRECTIONAL_FORMAT     int8
+	DIRECTIONALITY_RIGHT_TO_LEFT              int8
+	DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC       int8
+	DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING    int8
+	DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE     int8
+	DIRECTIONALITY_SEGMENT_SEPARATOR          int8
+	DIRECTIONALITY_UNDEFINED                  int8
+	DIRECTIONALITY_WHITESPACE                 int8
+	ENCLOSING_MARK                            int8
+	END_PUNCTUATION                           int8
 	ERROR                                     int
-	FINAL_QUOTE_PUNCTUATION                   byte
-	FORMAT                                    byte
-	INITIAL_QUOTE_PUNCTUATION                 byte
-	LETTER_NUMBER                             byte
-	LINE_SEPARATOR                            byte
-	LOWERCASE_LETTER                          byte
-	MATH_SYMBOL                               byte
+	FINAL_QUOTE_PUNCTUATION                   int8
+	FORMAT                                    int8
+	INITIAL_QUOTE_PUNCTUATION                 int8
+	LETTER_NUMBER                             int8
+	LINE_SEPARATOR                            int8
+	LOWERCASE_LETTER                          int8
+	MATH_SYMBOL                               int8
 	MAX_CODE_POINT                            int
 	MAX_HIGH_SURROGATE                        rune
 	MAX_LOW_SURROGATE                         rune
@@ -1181,23 +1181,23 @@ type Java__lang__Character__Static struct {
 	MIN_SUPPLEMENTARY_CODE_POINT              int
 	MIN_SURROGATE                             rune
 	MIN_VALUE                                 rune
-	MODIFIER_LETTER                           byte
-	MODIFIER_SYMBOL                           byte
-	NON_SPACING_MARK                          byte
-	OTHER_LETTER                              byte
-	OTHER_NUMBER                              byte
-	OTHER_PUNCTUATION                         byte
-	OTHER_SYMBOL                              byte
-	PARAGRAPH_SEPARATOR                       byte
-	PRIVATE_USE                               byte
+	MODIFIER_LETTER                           int8
+	MODIFIER_SYMBOL                           int8
+	NON_SPACING_MARK                          int8
+	OTHER_LETTER                              int8
+	OTHER_NUMBER                              int8
+	OTHER_PUNCTUATION                         int8
+	OTHER_SYMBOL                              int8
+	PARAGRAPH_SEPARATOR                       int8
+	PRIVATE_USE                               int8
 	SIZE                                      int
-	SPACE_SEPARATOR                           byte
-	START_PUNCTUATION                         byte
-	SURROGATE                                 byte
-	TITLECASE_LETTER                          byte
+	SPACE_SEPARATOR                           int8
+	START_PUNCTUATION                         int8
+	SURROGATE                                 int8
+	TITLECASE_LETTER                          int8
 	TYPE                                      Java__lang__Class__Instance
-	UNASSIGNED                                byte
-	UPPERCASE_LETTER                          byte
+	UNASSIGNED                                int8
+	UPPERCASE_LETTER                          int8
 	init                                      sync.Once
 }
 
@@ -1284,11 +1284,11 @@ func (this *Java__lang__Character__Static) Impl__ForDigit__desc__I__I__ret__C(va
 	panic("Not Implemented - java/lang/Character.forDigit(II)C")
 }
 
-func (this *Java__lang__Character__Static) Impl__GetDirectionality__desc__C__ret__B(var0 rune) byte {
+func (this *Java__lang__Character__Static) Impl__GetDirectionality__desc__C__ret__B(var0 rune) int8 {
 	panic("Not Implemented - java/lang/Character.getDirectionality(C)B")
 }
 
-func (this *Java__lang__Character__Static) Impl__GetDirectionality__desc__I__ret__B(var0 int) byte {
+func (this *Java__lang__Character__Static) Impl__GetDirectionality__desc__I__ret__B(var0 int) int8 {
 	panic("Not Implemented - java/lang/Character.getDirectionality(I)B")
 }
 
@@ -2728,7 +2728,7 @@ func (this *Java__lang__Double__Impl) IsNaN__desc____ret__Z() bool {
 }
 
 type Java__lang__Double__Instance interface {
-	ByteValue__desc____ret__B() byte
+	ByteValue__desc____ret__B() int8
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	CompareTo__desc____obj__Java__lang__Double__ret__I(Java__lang__Double__Instance) int
 	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
@@ -2768,7 +2768,7 @@ func (this *Java__lang__Double__Impl) Impl__Instance_Init__desc____obj__Java__la
 	panic("Not Implemented - java/lang/Double.<init>(Ljava/lang/String;)V")
 }
 
-func (this *Java__lang__Double__Impl) Impl__ByteValue__desc____ret__B() byte {
+func (this *Java__lang__Double__Impl) Impl__ByteValue__desc____ret__B() int8 {
 	panic("Not Implemented - java/lang/Double.byteValue()B")
 }
 
@@ -3125,7 +3125,7 @@ func (this *Java__lang__Float__Impl) IsNaN__desc____ret__Z() bool {
 }
 
 type Java__lang__Float__Instance interface {
-	ByteValue__desc____ret__B() byte
+	ByteValue__desc____ret__B() int8
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	CompareTo__desc____obj__Java__lang__Float__ret__I(Java__lang__Float__Instance) int
 	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
@@ -3169,7 +3169,7 @@ func (this *Java__lang__Float__Impl) Impl__Instance_Init__desc____obj__Java__lan
 	panic("Not Implemented - java/lang/Float.<init>(Ljava/lang/String;)V")
 }
 
-func (this *Java__lang__Float__Impl) Impl__ByteValue__desc____ret__B() byte {
+func (this *Java__lang__Float__Impl) Impl__ByteValue__desc____ret__B() int8 {
 	panic("Not Implemented - java/lang/Float.byteValue()B")
 }
 
@@ -3593,7 +3593,7 @@ func (this *Java__lang__Integer__Impl) CompareTo__desc____obj__Java__lang__Objec
 }
 
 type Java__lang__Integer__Instance interface {
-	ByteValue__desc____ret__B() byte
+	ByteValue__desc____ret__B() int8
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	CompareTo__desc____obj__Java__lang__Integer__ret__I(Java__lang__Integer__Instance) int
 	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
@@ -3631,7 +3631,7 @@ func (this *Java__lang__Integer__Impl) Impl__Instance_Init__desc____obj__Java__l
 	panic("Not Implemented - java/lang/Integer.<init>(Ljava/lang/String;)V")
 }
 
-func (this *Java__lang__Integer__Impl) Impl__ByteValue__desc____ret__B() byte {
+func (this *Java__lang__Integer__Impl) Impl__ByteValue__desc____ret__B() int8 {
 	panic("Not Implemented - java/lang/Integer.byteValue()B")
 }
 
@@ -3893,7 +3893,7 @@ func (this *Java__lang__Long__Impl) CompareTo__desc____obj__Java__lang__Object__
 }
 
 type Java__lang__Long__Instance interface {
-	ByteValue__desc____ret__B() byte
+	ByteValue__desc____ret__B() int8
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	CompareTo__desc____obj__Java__lang__Long__ret__I(Java__lang__Long__Instance) int
 	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
@@ -3927,7 +3927,7 @@ func (this *Java__lang__Long__Impl) Impl__Instance_Init__desc____obj__Java__lang
 	panic("Not Implemented - java/lang/Long.<init>(Ljava/lang/String;)V")
 }
 
-func (this *Java__lang__Long__Impl) Impl__ByteValue__desc____ret__B() byte {
+func (this *Java__lang__Long__Impl) Impl__ByteValue__desc____ret__B() int8 {
 	panic("Not Implemented - java/lang/Long.byteValue()B")
 }
 
@@ -4123,7 +4123,7 @@ func (this *Java__lang__Number__Static) New() *Java__lang__Number__Impl {
 
 type Java__lang__Number__Dispatch interface {
 	Java__lang__Object__Dispatch
-	Impl__ByteValue__desc____ret__B() byte
+	Impl__ByteValue__desc____ret__B() int8
 	Impl__DoubleValue__desc____ret__D() float64
 	Impl__FloatValue__desc____ret__F() float32
 	Impl__IntValue__desc____ret__I() int
@@ -4136,7 +4136,7 @@ func (this *Java__lang__Number__Impl) Java__lang__Number__InitDispatch(v Java__l
 	this._dispatch = v
 }
 
-func (this *Java__lang__Number__Impl) ByteValue__desc____ret__B() byte {
+func (this *Java__lang__Number__Impl) ByteValue__desc____ret__B() int8 {
 	return this._dispatch.Impl__ByteValue__desc____ret__B()
 }
 
@@ -4161,7 +4161,7 @@ func (this *Java__lang__Number__Impl) ShortValue__desc____ret__S() int16 {
 }
 
 type Java__lang__Number__Instance interface {
-	ByteValue__desc____ret__B() byte
+	ByteValue__desc____ret__B() int8
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	DoubleValue__desc____ret__D() float64
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
@@ -4191,7 +4191,7 @@ func (this *Java__lang__Number__Impl) Impl__Instance_Init__desc____ret__V() {
 	panic("Not Implemented - java/lang/Number.<init>()V")
 }
 
-func (this *Java__lang__Number__Impl) Impl__ByteValue__desc____ret__B() byte {
+func (this *Java__lang__Number__Impl) Impl__ByteValue__desc____ret__B() int8 {
 	panic("Not Implemented - java/lang/Number.byteValue()B")
 }
 
@@ -4556,7 +4556,7 @@ func (this *Java__lang__Short__Impl) CompareTo__desc____obj__Java__lang__Short__
 }
 
 type Java__lang__Short__Instance interface {
-	ByteValue__desc____ret__B() byte
+	ByteValue__desc____ret__B() int8
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
 	CompareTo__desc____obj__Java__lang__Short__ret__I(Java__lang__Short__Instance) int
@@ -4594,7 +4594,7 @@ func (this *Java__lang__Short__Impl) Impl__Instance_Init__desc__S__ret__V(var0 i
 	panic("Not Implemented - java/lang/Short.<init>(S)V")
 }
 
-func (this *Java__lang__Short__Impl) Impl__ByteValue__desc____ret__B() byte {
+func (this *Java__lang__Short__Impl) Impl__ByteValue__desc____ret__B() int8 {
 	panic("Not Implemented - java/lang/Short.byteValue()B")
 }
 

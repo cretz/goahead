@@ -3,6 +3,8 @@ package goahead.testclasses;
 public class Interfaces {
 
     interface IBar {
+        int[] someInts = { 5, 10 };
+
         String barThing();
     }
 
@@ -33,5 +35,6 @@ public class Interfaces {
     public static void main(String[] args) {
         printIFoo(new Foo());
         printIBar(new Foo());
+        System.out.println(Foo.someInts[1]);
     }
 }

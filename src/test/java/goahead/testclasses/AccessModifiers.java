@@ -25,8 +25,19 @@ public class AccessModifiers {
     static class Impl extends Base {
         private String stringField = "Impl";
 
+        public Impl() {
+        }
+
+        private Impl(String stringField) {
+            this.stringField = stringField;
+        }
+
         private String stringValue() {
             return "Impl";
+        }
+
+        public String recreateAndObtainField() {
+            return new Impl("Recreated").stringField;
         }
     }
 
@@ -36,5 +47,7 @@ public class AccessModifiers {
         Base base = new Impl();
         System.out.println(base.stringField);
         System.out.println(((Impl) base).stringField);
+        Impl impl = new Impl();
+        System.out.println(impl.recreateAndObtainField());
     }
 }

@@ -1,19 +1,21 @@
 package goahead.cli
 
+import java.io.{BufferedWriter, FileOutputStream, OutputStreamWriter}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths}
-import java.util.concurrent.TimeUnit
 
 import goahead.Logger
 import goahead.ast.{Node, NodeWriter}
 import goahead.compile.ClassPath._
 import goahead.compile._
-import org.objectweb.asm.Type
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
+import scala.util.Try
 
 trait Compile extends Command with Logger {
+  import Compile._
+
   override val name = "compile"
 
   case class Conf(
@@ -25,10 +27,11 @@ trait Compile extends Command with Logger {
     excludeSuperClassesOfSameEntry: Boolean = false,
     mangler: Option[String] = None,
     fileGrouping: Conf.FileGrouping = Conf.FileGrouping.Cls,
-    excludePatterns: Seq[String] = Nil,
-    onlyMethodsReferencingClasses: Boolean = false,
     prependToFile: Option[String] = None,
-    excludeInnerClasses: Boolean = false
+    excludeInnerClasses: Boolean = false,
+    includeOldVersionClasses: Boolean = false,
+    excludeAlreadyWrittenFiles: Boolean = false,
+    classRules: Map[String, ClassRules] = Map.empty
   ) {
     lazy val manglerInst = mangler.map(Class.forName(_).newInstance().asInstanceOf[Mangler]).getOrElse(Mangler.Simple)
   }
@@ -42,6 +45,7 @@ trait Compile extends Command with Logger {
         case "class" => Cls
         case "class-sans-inner" => Cls
         case "package" => Pkg
+        case str if str.startsWith("first-packages-") => FirstXPkgs(str.substring("first-packages-".length).toInt)
         case _ => sys.error(s"Unrecognized file grouping: $name")
       }
 
@@ -59,6 +63,15 @@ trait Compile extends Command with Logger {
 
       case object Pkg extends FileGrouping {
         override def groupClassBy(det: ClassDetails) = det.cls.packageName
+      }
+
+      case class FirstXPkgs(count: Int) extends FileGrouping {
+        override def groupClassBy(det: ClassDetails) = {
+          if (det.cls.packageName.isEmpty) "__root__" else {
+            val pieces = det.cls.packageName.split('/')
+            pieces.take(count).mkString("/")
+          }
+        }
       }
     }
   }
@@ -107,19 +120,6 @@ trait Compile extends Command with Logger {
         default = "class",
         desc = "Either 'class' or 'package' or 'class-sans-inner' file grouping"
       ).map(Conf.FileGrouping.apply),
-      excludePatterns = builder.opts(
-        name = "exclude-patterns",
-        aliases = Seq("e"),
-        desc = "Exclude certain patterns. Sans quotes, patterns can be things like 'java/lang/String' for classes, " +
-          "'java/lang/String.<init>(Ljava/lang/String;)V' for methods, etc. No regex support or anything yet. Note, " +
-          "this only excludes the impl methods, not the dispatch ones."
-      ).get,
-      onlyMethodsReferencingClasses = builder.flag(
-        name = "only-methods-referencing-classes",
-        aliases = Seq("limitmethods"),
-        desc = "By default, all methods are built. When this is set, if the method param or return type is not one of " +
-          "the classes being generated, it won't be generated."
-      ).get,
       prependToFile = builder.opt(
         name = "prependToFile",
         desc = "String to prepend to each resulting file"
@@ -135,11 +135,16 @@ trait Compile extends Command with Logger {
     )
   }
 
-  override def confLoader = {
+  override def confLoader = path => {
     import pureconfig._
     implicit val fileGroupingConvert = ConfigConvert.fromString(Conf.FileGrouping.apply)
     implicit def conv[T] = ConfigFieldMapping.apply[T](CamelCase, KebabCase)
-    pureconfig.loadConfig[Conf]
+    pureconfig.loadConfig[Conf](path).map { conf =>
+      if (conf.classes.isEmpty) {
+        if (conf.classRules.nonEmpty) conf.copy(classes = conf.classRules.keys.toSeq)
+        else conf.copy(classes = Seq("*"))
+      } else conf
+    }
   }
 
   override def run(conf: Conf): Unit = {
@@ -149,23 +154,19 @@ trait Compile extends Command with Logger {
       else conf.classPath :+ s"${Entry.javaRuntimeJarPath}=rt"
     logger.debug(s"Setting class path to $classPathStrings")
     val classPath = ClassPath.fromStrings(classPathStrings)
-
-    // Build up the class list which might include super classes
-    val classEntries = getClassEntriesByFileName(conf, classPath, conf.manglerInst)
-    logger.trace(s"Class entries: " + classEntries.mapValues(_.map(_.cls.name)))
-
-    // Build the compiler
-    val compiler = new Compile.FilteringCompiler(
-      excludePatterns = conf.excludePatterns.toSet,
-      onlyIncludeClassRefs =
-        if (!conf.onlyMethodsReferencingClasses) Set.empty
-        else classEntries.flatMap(_._2.map(_.cls.name)).toSet
-    )
-
-    // Compile (with panics), one package per file
     val outDir = Paths.get(conf.outDir).toAbsolutePath
     val goPackageName = outDir.getFileName.toString
 
+    // Build up the class list which might include super classes
+    var classEntries = getClassEntriesByFileName(conf, classPath, conf.manglerInst)
+    if (conf.excludeAlreadyWrittenFiles)
+      classEntries = classEntries.filter({ case (fileName, _) => !Files.exists(outDir.resolve(fileName)) })
+    logger.trace(s"Class entries: " + classEntries.map(_._2.map(_.cls.name)))
+
+    // Build the compiler
+    val compiler = new Compile.FilteringCompiler(conf.classRules.map({ case (k, v) => k.replace('.', '/') -> v }))
+
+    // Compile
     // TODO: Maybe something like monix would be better so I can do gatherUnordered?
     def futFn: (=> Path) => Future[Path] = if (conf.parallel) Future.apply[Path] else p => Future.successful(p)
     val futures = classEntries.map { case (fileName, classes) =>
@@ -178,24 +179,35 @@ trait Compile extends Command with Logger {
           mangler = conf.manglerInst
         ).copy(packageName = goPackageName.toIdent)
         logger.info(s"Writing to $fileName")
-        var codeStr = nodeToCode(conf, code)
-        conf.prependToFile.foreach(s => codeStr = s"$s\n$codeStr")
-        Files.write(outDir.resolve(fileName), codeStr.getBytes(StandardCharsets.UTF_8))
+        val resolvedFile = outDir.resolve(fileName)
+        val writer = new BufferedWriter(new OutputStreamWriter(
+          new FileOutputStream(resolvedFile.toFile), StandardCharsets.UTF_8
+        ))
+        try {
+          conf.prependToFile.foreach(s => writer.write(s + "\n"))
+          NodeWriter.fromNode(code, writer)
+        } finally { Try(writer.close()); () }
+        resolvedFile
       }
     }
 
-    // Just wait for all futures, ignore the response...wait for a fixed amount for now though only applies to parallel
-    Await.result(Future.sequence(futures), Duration(20, TimeUnit.SECONDS))
+    // Just wait for all futures, ignore the response...
+    Await.result(Future.sequence(futures), Duration.Inf)
     ()
   }
 
-  protected def nodeToCode(conf: Conf, file: Node.File): String = NodeWriter.fromNode(file)
+  protected def nodeToCode(conf: Conf, file: Node.File): String = {
+    conf.prependToFile match {
+      case None => NodeWriter.fromNode(file)
+      case Some(prepend) => prepend + "\n" + NodeWriter.fromNode(file)
+    }
+  }
 
   protected def getClassEntriesByFileName(
     conf: Conf,
     classPath: ClassPath,
     mangler: Mangler
-  ): Map[String, Seq[ClassDetails]] = {
+  ): Seq[(String, Seq[ClassDetails])] = {
     val classInternalNames = conf.classes.map(_.replace('.', '/')).flatMap({
       case str if str.endsWith("?") =>
         val prefix = str.dropRight(1)
@@ -204,78 +216,68 @@ trait Compile extends Command with Logger {
         val prefix = str.dropRight(1)
         classPath.allClassNames().filter(_.startsWith(prefix))
       case str => Some(str)
-    }).filterNot(conf.excludePatterns.contains)
+    })
     var classEntries = classInternalNames.map(classPath.getFirstClass)
     if (!conf.excludeInnerClasses)
       classEntries ++= classEntries.flatMap(_.cls.innerClasses.map(classPath.getFirstClass))
     if (!conf.excludeSuperClassesOfSameEntry)
       classEntries ++= classEntries.flatMap(e => classPath.allSuperAndImplementingTypes(e.cls.name))
+    if (!conf.includeOldVersionClasses)
+      classEntries = classEntries.filter(_.cls.majorVersion >= ClassCompiler.MinSupportedMajorVersion)
 
     // De-dupe, filter again, then map into file names
     classEntries.
       distinct.
-      filterNot(e => conf.excludePatterns.contains(e.cls.name)).
-      groupBy(conf.fileGrouping.groupClassBy).map {
+      groupBy(conf.fileGrouping.groupClassBy).map({
         case (k, v) => (mangler.fileName(k) + ".go") -> v.sortBy(_.cls.name)
-      }
+      }).toSeq.sortBy(_._1)
   }
 }
 
 object Compile extends Compile {
   import Helpers._
 
-  class FilteringCompiler(excludePatterns: Set[String], onlyIncludeClassRefs: Set[String]) extends GoAheadCompiler {
+  case class ClassRules(
+    excludeFields: Set[String] = Set.empty,
+    excludeMethods: Set[String] = Set.empty,
+    overrideMethods: Set[String] = Set.empty,
+    panicMethods: Set[String] = Set.empty
+  )
+
+  class FilteringCompiler(classRules: Map[String, ClassRules]) extends GoAheadCompiler {
     override val classCompiler = new ClassCompiler {
 
       override protected val methodSetManager = new MethodSetManager.Filtered() {
         override def filter(method: Method, forImpl: Boolean) = {
-          val exclusions = if (forImpl) excludePatterns else Set.empty[String]
-          if (exclusions.contains(method.cls.name + "." + method.name + method.desc)) false
-          else if (onlyIncludeClassRefs.isEmpty) true
-          else {
-            // We need to make sure neither the params nor the
-            val objectTypes = Type.getArgumentTypes(method.desc).flatMap(getObjectType) ++
-              getObjectType(Type.getReturnType(method.desc))
-            // Needs to be true if no object types exists that isn't in the only include
-            val hasNonIncludedClassRef = objectTypes.exists(t => !onlyIncludeClassRefs.contains(t))
-            !hasNonIncludedClassRef
+          !classRules.get(method.cls.name).exists { rules =>
+            val toCheck = method.cls.name + "." + method.name + method.desc
+            rules.excludeMethods.contains(toCheck) || (forImpl && rules.overrideMethods.contains(toCheck))
           }
         }
       }
 
       override protected def clsFields(
         ctx: ClassCompiler.Context,
+        forImpl: Boolean,
         includeParentFields: Boolean = false
       ): Seq[Field] = {
-        super.clsFields(ctx, includeParentFields).filter { field =>
-          if (excludePatterns.contains(ctx.cls.name + "." + field.name)) false
-          else if (onlyIncludeClassRefs.isEmpty) true
-          else {
-            // Has to be in only-include-class-refs
-            getObjectType(Type.getType(field.desc)) match {
-              case None => true
-              case Some(typ) => onlyIncludeClassRefs.contains(typ)
-            }
+        super.clsFields(ctx, forImpl, includeParentFields).filter { field =>
+          !classRules.get(field.cls.name).exists { rules =>
+            rules.excludeFields.contains(field.cls.name + "." + field.name)
           }
         }
-      }
-
-      def getObjectType(typ: Type): Option[String] = typ.getSort match {
-        case Type.ARRAY => getObjectType(typ.getElementType)
-        case Type.OBJECT => Some(typ.getInternalName)
-        case _ => None
       }
 
       override val methodCompiler = new MethodCompiler {
         override def compile(conf: Config, cls: Cls, method: Method, mports: Imports, mangler: Mangler) = {
           import AstDsl._
-          // Special handling for native methods
-          if (!method.access.isAccessNative) super.compile(conf, cls, method, mports, mangler) else {
-            val methodStr = s"${cls.name}.${method.name}${method.desc}"
-            logger.debug(s"Skipping native method $methodStr")
+          val methodStr = s"${cls.name}.${method.name}${method.desc}"
+          val panicImpl = method.access.isAccessNative ||
+            classRules.get(cls.name).exists(_.panicMethods.contains(methodStr))
+          if (!panicImpl) super.compile(conf, cls, method, mports, mangler) else {
             buildFuncDecl(
               ctx = initContext(conf, cls, method, mports, mangler, Nil),
-              stmts = Seq("panic".toIdent.call(s"Native method not implemented - $methodStr".toLit.singleSeq).toStmt)
+              stmts = Seq("panic".toIdent.call(s"Method not implemented - $methodStr".toLit.singleSeq).toStmt)
             ).map { case (ctx, funcDecl) => ctx.imports -> funcDecl }
           }
         }

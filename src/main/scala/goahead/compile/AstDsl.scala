@@ -17,6 +17,8 @@ object AstDsl extends Logger {
 
   def block(stmts: Seq[Statement]) = BlockStatement(stmts)
 
+  def comment(text: String) = Comment(text)
+
   def emptyInterface = InterfaceType(Nil)
 
   def emptyReturn = ReturnStatement(Nil)
@@ -134,6 +136,10 @@ object AstDsl extends Logger {
 
   implicit class RichCallExpression(val expr: CallExpression) extends AnyVal {
     def defer = DeferStatement(expr)
+  }
+
+  implicit class RichComment(val comment: Comment) extends AnyVal {
+    def toStmt = CommentStatement(comment)
   }
 
   implicit class RichDeclaration(val decl: Declaration) extends AnyVal {

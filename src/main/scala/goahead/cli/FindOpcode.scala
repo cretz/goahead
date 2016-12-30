@@ -90,12 +90,12 @@ class FindOpcode extends Command with Logger {
 }
 
 object FindOpcode extends FindOpcode {
-  class MethodsWithOpcodeClassVisitor(opcodes: Set[Int], staticOnly: Boolean) extends ClassVisitor(Opcodes.ASM5) {
+  class MethodsWithOpcodeClassVisitor(opcodes: Set[Int], staticOnly: Boolean) extends ClassVisitor(Opcodes.ASM6) {
     var className = ""
     var currMethod = ""
     var matchingMethods = Set.empty[String]
 
-    val methodVisitor = new MethodVisitor(Opcodes.ASM5) {
+    val methodVisitor = new MethodVisitor(Opcodes.ASM6) {
       var foundMethod = false
 
       override def visitEnd() = {

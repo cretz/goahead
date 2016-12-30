@@ -77,7 +77,7 @@ trait MethodInsnCompiler {
     // TODO: we need the actual object ref type please, not just the typed expression version of
     // subject since it can be wrong when local vars are reused
     val typName = subject.typ.maybeMakeMoreSpecific(ctx.classPath, IType.getObjectType(owner)).internalName
-    resolveInstanceMethodRef(ctx, name, desc, subject, typName)
+    resolveInstanceMethodRef(ctx, name, desc, subject, typName, virtual = true)
   }
 
   protected def resolveSpecialMethodRef(
@@ -92,7 +92,7 @@ trait MethodInsnCompiler {
       if (name != "<init>" && !itf && owner != ctx.cls.name)
         ctx.cls.parent.getOrElse(sys.error("Expected parent"))
       else owner
-    resolveInstanceMethodRef(ctx, name, desc, subject, ownerName)
+    resolveInstanceMethodRef(ctx, name, desc, subject, ownerName, virtual = false)
   }
 
   protected def resolveInstanceMethodRef(
@@ -100,35 +100,27 @@ trait MethodInsnCompiler {
     name: String,
     desc: String,
     subject: TypedExpression,
-    resolutionStartType: String
+    resolutionStartType: String,
+    virtual: Boolean
   ): (Context, (Method, Node.Expression)) = {
     // If the start type is an array, we expect it to mean object
     val properStartType = if (resolutionStartType.startsWith("[")) "java/lang/Object" else resolutionStartType
     val method = resolveMethod(ctx, name, desc, properStartType, static = false)
-    subject.toExprNode(ctx, IType.getObjectType(method.cls.name)).map { case (ctx, subjectExpr) =>
-      if (method.name == "<init>" && !subject.isThis) {
-        // If it's an init call, but not on "this", then we have to type assert since we don't
-        // put init methods on inst ifaces. We check it's not "this" to prevent calling it on ourselves
-        ctx.implTypeExpr(method.cls.name).map { case (ctx, implType) =>
-          ctx -> (
-            method -> subjectExpr.typeAssert(implType).sel(ctx.mangler.forwardMethodName(method.name, method.desc))
-          )
-        }
-      } else if (method.isDefault) {
-        // For default interface impls, we invoke statically
-        val defName = ctx.mangler.interfaceDefaultMethodName(method.cls.name, method.name, method.desc)
-        ctx.importQualifiedName(method.cls.name, defName).map { case (ctx, defName) =>
-          ctx -> (method -> defName)
-        }
-      } else if (method.access.isAccessPrivate || (subject.isThis && ctx.cls.name != method.cls.name)) {
-        // Private or calling ourselves but on a different class means we target
-        // the method directly, no dispatch
-        ctx.instToImpl(subjectExpr, method.cls.name).map { case (ctx, impl) =>
-          ctx -> (method -> impl.sel(ctx.mangler.implMethodName(name, desc)))
-        }
-      } else {
-        ctx -> (method -> subjectExpr.sel(ctx.mangler.forwardMethodName(name, desc)))
+    // For default interface impls, we invoke statically
+    if (method.isDefault) {
+      val defName = ctx.mangler.interfaceDefaultMethodName(method.cls.name, method.name, method.desc)
+      ctx.importQualifiedName(method.cls.name, defName).map { case (ctx, defName) =>
+        ctx -> (method -> defName)
       }
+    } else {
+      val methodName =
+        if (virtual) ctx.mangler.forwardMethodName(method.name, method.desc)
+        else ctx.mangler.implMethodName(method.name, method.desc)
+      val ctxAndSubject =
+        if (method.cls.access.isAccessInterface) subject.toExprNode(ctx, IType.getObjectType(method.cls.name))
+        else ctx.instToImpl(subject, method.cls.name)
+
+      ctxAndSubject.map { case (ctx, subject) => ctx -> (method -> subject.sel(methodName)) }
     }
   }
 

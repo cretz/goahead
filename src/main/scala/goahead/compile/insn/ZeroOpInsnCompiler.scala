@@ -196,11 +196,16 @@ trait ZeroOpInsnCompiler {
 
   protected def binary(ctx: Context, tok: Node.Token, typ: IType): (Context, Seq[Node.Statement]) = {
     ctx.stackPopped(2, { case (ctx, Seq(val1, val2)) =>
-      ctx.stackPushed(TypedExpression(
-        expr = val1.expr.binary(tok, val2.expr),
-        typ = typ,
-        cheapRef = false
-      )) -> Nil
+      // Values have to be of the same type
+      val1.toExprNode(ctx, typ).map { case (ctx, val1) =>
+        val2.toExprNode(ctx, typ).map { case (ctx, val2) =>
+          ctx.stackPushed(TypedExpression(
+            expr = val1.binary(tok, val2),
+            typ = typ,
+            cheapRef = false
+          )) -> Nil
+        }
+      }
     })
   }
 

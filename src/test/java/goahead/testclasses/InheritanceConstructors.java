@@ -26,6 +26,10 @@ public class InheritanceConstructors {
             // Skip our constructor
             super(item1 + ":" + item2 + ":" + item3);
         }
+
+        Child(int foo) {
+            super(foo > 5 ? "Over 5" : "Not Over 5");
+        }
     }
 
     public static void main(String[] args) {
@@ -34,5 +38,6 @@ public class InheritanceConstructors {
         System.out.println(new Child("item").item);
         System.out.println(new Child("item1", "item2").item);
         System.out.println(new Child("item1", "item2", "item3").item);
+        System.out.println(new Child(12).item);
     }
 }

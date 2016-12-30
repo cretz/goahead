@@ -43,9 +43,8 @@ object Main extends Logger {
             if (e.getCause == null) e.getMessage
             else e.getMessage + "\n" + (" " * indent) + errMsg(e.getCause, indent + 1)
           }
+          logger.warn("Execution failed", e)
           println("Error: " + errMsg(e))
-          if (logger.underlying.isDebugEnabled) logger.debug("Execution failed", e)
-          else println("Run with -vv for more details")
           sys.exit(1)
         case Success(_) =>
           logger.trace("App complete successfully")

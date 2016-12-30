@@ -63,7 +63,9 @@ trait FieldInsnCompiler {
   ): (Context, Node.Expression) = {
     val field = ctx.classPath.findFieldOnDeclarer(owner, name, static = false)
     // If the field is private, we have to cast the instance to its impl
-    val ctxAndSubject = if (!field.access.isAccessPrivate) ctx -> subject.expr else ctx.instToImpl(subject, owner)
+    val ctxAndSubject =
+      if (!field.access.isAccessPrivate) subject.toExprNode(ctx, IType.getObjectType(field.cls.name))
+      else ctx.instToImpl(subject, owner)
     ctxAndSubject.map { case (ctx, subject) =>
       if (getter) ctx -> subject.sel(ctx.mangler.fieldGetterName(field.cls.name, name))
       else ctx -> subject.sel(ctx.mangler.fieldSetterName(field.cls.name, name))
@@ -76,8 +78,9 @@ trait FieldInsnCompiler {
     desc: String,
     owner: String
   ): (Context, Node.Expression) = {
-    ctx.staticInstRefExpr(owner).map { case (ctx, expr) =>
-      ctx -> expr.sel(ctx.mangler.fieldName(owner, name))
+    val field = ctx.classPath.findFieldOnDeclarer(owner, name, static = true)
+    ctx.staticInstRefExpr(field.cls.name).map { case (ctx, expr) =>
+      ctx -> expr.sel(ctx.mangler.fieldName(field.cls.name, name))
     }
   }
 }

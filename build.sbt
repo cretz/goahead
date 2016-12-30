@@ -5,7 +5,8 @@ version := "1.0"
 scalaVersion := "2.11.8"
 
 libraryDependencies ++= Seq(
-  "org.ow2.asm" % "asm-all" % "5.1",
+  //"org.ow2.asm" % "asm-all" % "5.1",
+  "org.ow2.asm" % "asm-all" % "6.0_ALPHA",
   "io.circe" %% "circe-core" % "0.6.1",
   "io.circe" %% "circe-generic" % "0.6.1",
   "io.circe" %% "circe-parser" % "0.6.1",
@@ -40,11 +41,22 @@ scalacOptions ++= Seq(
 
 logBuffered in Test := false
 testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oDF")
-// Add the jvm.go test classes
-unmanagedSourceDirectories in Test += baseDirectory.value / "third-party/jvm.go/testclasses/src/main/java"
+fork in Test := true
+//javaOptions in Test ++= Seq(
+//  "-Dcom.sun.management.jmxremote.port=3333",
+//  "-Dcom.sun.management.jmxremote.ssl=false",
+//  "-Dcom.sun.management.jmxremote.authenticate=false"
+//)
 
 lazy val buildTestRt = taskKey[Unit]("Build the test RT lib")
 fullRunTask(buildTestRt, Runtime, "goahead.cli.Main", "build-rt", "-vv", "-o", "javalib/src/rt")
 
 lazy val buildRt = taskKey[Unit]("Build the RT lib")
+fork in buildRt := true
+javaOptions in buildRt += "-Xmx4G"
+//javaOptions in buildRt ++= Seq(
+//  "-Dcom.sun.management.jmxremote.port=3333",
+//  "-Dcom.sun.management.jmxremote.ssl=false",
+//  "-Dcom.sun.management.jmxremote.authenticate=false"
+//)
 fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "javalib/rt-compile.conf")

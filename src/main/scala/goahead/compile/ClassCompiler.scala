@@ -17,7 +17,10 @@ trait ClassCompiler extends Logger {
   def compile(conf: Config, cls: Cls, imports: Imports, mangler: Mangler): (Imports, Seq[Node.Declaration]) = {
     logger.debug(s"Compiling class: ${cls.name}")
     try {
-      // TODO: limit major version to 1.6+ to avoid issues with JSR/RET deprecation?
+      require(
+        cls.majorVersion >= MinSupportedMajorVersion,
+        s"${cls.name} major version of ${cls.majorVersion} is < $MinSupportedMajorVersion"
+      )
       compile(initContext(conf, cls, imports, mangler)).map { case (ctx, decls) => ctx.imports -> decls }
     } catch { case NonFatal(e) => throw new Exception(s"Unable to compile class ${cls.name}", e) }
   }
@@ -72,7 +75,7 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileStaticStruct(ctx: Context): (Context, Node.GenericDeclaration) = {
-    compileFields(ctx, clsFields(ctx).filter(_.access.isAccessStatic)).map { case (ctx, fields) =>
+    compileFields(ctx, clsFields(ctx, forImpl = false).filter(_.access.isAccessStatic)).map { case (ctx, fields) =>
       // Need a sync once
       val ctxAndStaticFieldOpt = if (!ctx.cls.hasStaticInit) ctx -> None else {
         ctx.withImportAlias("sync").map { case (ctx, syncAlias) =>
@@ -299,7 +302,7 @@ trait ClassCompiler extends Logger {
 
     // Add non-private, non-static field accessors (even of parents)
     val ctxAndAllFields = ctxAndMethodSigs.map { case (ctx, methodSigs) =>
-      val fields = clsFields(ctx, includeParentFields = true).
+      val fields = clsFields(ctx, forImpl = false, includeParentFields = true).
         filterNot(f => f.access.isAccessStatic || f.access.isAccessPrivate)
       fields.foldLeft(ctx -> methodSigs) { case ((ctx, fields), node) =>
         signatureCompiler.buildFieldGetterFuncType(ctx, node).map { case (ctx, getterType) =>
@@ -356,7 +359,7 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileImplStruct(ctx: Context): (Context, Node.Declaration) = {
-    compileFields(ctx, clsFields(ctx).filterNot(_.access.isAccessStatic)).map { case (ctx, fields) =>
+    compileFields(ctx, clsFields(ctx, forImpl = false).filterNot(_.access.isAccessStatic)).map { case (ctx, fields) =>
       compileStructSuperFields(ctx).map { case (ctx, superFields) =>
         ctx -> struct(ctx.mangler.implObjectName(ctx.cls.name), superFields ++ fields)
       }
@@ -458,7 +461,7 @@ trait ClassCompiler extends Logger {
 
   protected def compileImplFieldAccessors(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
     // All non-static fields get getters and setters, even private fields
-    val fields = clsFields(ctx).filterNot(_.access.isAccessStatic)
+    val fields = clsFields(ctx, forImpl = true).filterNot(_.access.isAccessStatic)
     fields.foldLeft(ctx -> Seq.empty[Node.FunctionDeclaration]) { case ((ctx, decls), node) =>
       ctx.implTypeExpr(ctx.cls.name).map { case (ctx, thisType) =>
         signatureCompiler.buildFieldGetterFuncType(ctx, node).map { case (ctx, getterType) =>
@@ -614,7 +617,7 @@ trait ClassCompiler extends Logger {
   }
 
   // TODO: slow
-  protected def clsFields(ctx: Context, includeParentFields: Boolean = false): Seq[Field] = {
+  protected def clsFields(ctx: Context, forImpl: Boolean, includeParentFields: Boolean = false): Seq[Field] = {
     if (!includeParentFields || ctx.cls.access.isAccessInterface) {
       ctx.cls.fields.sortBy(_.name)
     } else {
@@ -628,6 +631,8 @@ trait ClassCompiler extends Logger {
 }
 
 object ClassCompiler extends ClassCompiler {
+  val MinSupportedMajorVersion = 50
+
   case class Context(
     conf: Config,
     cls: Cls,

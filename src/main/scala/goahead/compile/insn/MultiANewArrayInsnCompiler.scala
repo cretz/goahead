@@ -39,11 +39,10 @@ trait MultiANewArrayInsnCompiler {
     depth: Int,
     parentType: IType
   ): (Context, Node.Statement) = {
-    ctx.typeToGoType(parentType.elementType).map { case (ctx, arrType) =>
+    ctx.typeToGoType(parentType).map { case (ctx, arrType) =>
       parentType.elementType.arrayNewFn(ctx).map { case (ctx, arrayNewFn) =>
         val lhsAsserted = lhsPreIndex.typeAssert(arrType)
         val indexVar = s"i$depth".toIdent
-        //val indexedVar = lhsPreIndex.indexed(indexVar)
         val indexedVar = lhsAsserted.sel("Get").call(Seq(indexVar))
         val newStmt = lhsAsserted.sel("Set").call(Seq(indexVar, arrayNewFn.call(Seq(nextSizes.head)))).toStmt
         // More?

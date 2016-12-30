@@ -35,17 +35,22 @@ trait TypeInsnCompiler {
           ctx.getTempVar(typ).map { case (ctx, tempVar) =>
             ctx.typeToGoType(typ).map { case (ctx, goType) =>
               ctx.importRuntimeQualifiedName("NewClassCastEx").map { case (ctx, classCastEx) =>
-                ctx.stackPushed(tempVar) ->
-                  iff(init = None, lhs = item.expr, op = Node.Token.Eql, rhs = NilExpr, body = Seq(
-                    tempVar.expr.assignExisting(NilExpr)
-                  )).els(iff(
-                    init = Some(assignDefineMultiple(
-                      left = Seq("casted".toIdent, "castOk".toIdent),
-                      right = item.expr.typeAssert(goType).singleSeq
-                    )),
-                    cond = "castOk".toIdent.unary(Node.Token.Not),
-                    body = "panic".toIdent.call(Seq(classCastEx.call())).toStmt.singleSeq
-                  ).els(tempVar.expr.assignExisting("casted".toIdent))).singleSeq
+                ctx.stackPushed(tempVar) -> (item.typ match {
+                  case _: IType.Simple =>
+                    iff(init = None, lhs = item.expr, op = Node.Token.Eql, rhs = NilExpr, body = Seq(
+                      tempVar.expr.assignExisting(NilExpr)
+                    )).els(iff(
+                      init = Some(assignDefineMultiple(
+                        left = Seq("casted".toIdent, "castOk".toIdent),
+                        right = item.expr.typeAssert(goType).singleSeq
+                      )),
+                      cond = "castOk".toIdent.unary(Node.Token.Not),
+                      body = "panic".toIdent.call(Seq(classCastEx.call())).toStmt.singleSeq
+                    ).els(tempVar.expr.assignExisting("casted".toIdent))).singleSeq
+                  case _ =>
+                    // Not simple means do nothing
+                    Nil
+                })
               }
             }
           }

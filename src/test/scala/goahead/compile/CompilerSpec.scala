@@ -2,9 +2,10 @@ package goahead.compile
 
 import java.io._
 import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Path}
+import java.nio.file.{Files, Path, Paths}
 
 import com.google.common.io.CharStreams
+import com.google.common.reflect.{ClassPath => CP}
 import goahead._
 import goahead.ast.{Node, NodeWriter}
 import org.objectweb.asm.util.Printer
@@ -13,22 +14,24 @@ import org.scalatest.BeforeAndAfterAll
 import scala.concurrent.duration._
 import scala.io.Source
 import scala.util.Try
-import com.google.common.reflect.{ClassPath => CP}
 
 class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   import AstDsl._
   import CompilerSpec._
 
-  val useTestRt = true
+  val useTestRt = false
 
   // Create this entry for the "rt" classes and close at the end
-  val javaRuntimeEntry = ClassPath.Entry.fromJarFile(
-    ClassPath.Entry.javaRuntimeJarPath,
-    if (useTestRt)
-      "github.com/cretz/goahead/javalib/src/rt"
-    else
-      "github.com/cretz/goahead/javalib/rt"
-  )
+  val javaRuntimeEntry =
+    if (useTestRt) {
+      ClassPath.Entry.fromZipFile(ClassPath.Entry.javaRuntimeJarPath, "github.com/cretz/goahead/javalib/src/rt")
+    } else {
+      require(sys.env.contains("ZULU_JDK_HOME"), "ZULU_JDK_HOME env var required")
+      ClassPath.Entry.fromZipFile(
+        Paths.get(sys.env("ZULU_JDK_HOME") + "/jmods/java.base.jmod"),
+        "github.com/cretz/goahead/javalib/rt"
+      )
+    }
 
   val goFormatTimeout = 20.seconds
   val goBuildTimeout = if (useTestRt) 20.seconds else 200.seconds
@@ -191,7 +194,7 @@ object CompilerSpec extends Logger {
       TestCase(classOf[Interfaces]),
       TestCase(classOf[Lambdas]), // TODO: test without optimization too
       TestCase(classOf[Literals]),
-      TestCase(classOf[LocalClasses]).withLocalAndAnonymousClasses(),
+      TestCase(classOf[LocalClasses]),
       TestCase(classOf[LocalVarReuse]),
       TestCase(classOf[NonStaticInnerClasses]),
       TestCase(classOf[Primitives]),
@@ -251,24 +254,13 @@ object CompilerSpec extends Logger {
     lazy val expectedOpcodes = {
       classes.flatMap(c => Option(c.getAnnotation(classOf[ExpectOpcodes]))).flatMap(_.value()).toSet
     }
-
-    def withLocalAndAnonymousClasses(): TestCase = {
-      // Obtain all classes from the packages we know, then get all local classes of our classes
-      import scala.collection.JavaConversions._
-      val packages = classes.map(_.getPackage.getName).toSet
-      copy(
-        classes = classes ++ CP.from(classes.head.getClassLoader).getAllClasses.collect({
-          case c if packages.contains(c.getPackageName) => Class.forName(c.getName)
-        }).filter(c =>
-          Option(Class.forName(c.getName).getEnclosingMethod).exists(m => classes.contains(m.getDeclaringClass))
-        )
-      )
-    }
   }
 
   object TestCase {
+    lazy val allClassesInClassLoader = CP.from(classOf[goahead.testclasses.HelloWorld].getClassLoader).getAllClasses
+
     def apply(topClasses: Class[_]*): TestCase = {
-      val allClasses = topClasses.flatMap(getSelfAndAllInnerClasses).distinct
+      val allClasses = getAllClasses(topClasses)
       // Get the expected out from an annotation or from a run
       val expectedOutput = allClasses.flatMap(c => Option(c.getAnnotation(classOf[ExpectedOutput]))).headOption match {
         case Some(expected) =>
@@ -286,6 +278,26 @@ object CompilerSpec extends Logger {
         expectedOutput = Some(expectedOutput),
         warnOnFormatError = topClasses.exists(_.isAnnotationPresent(classOf[WarnOnFormatError]))
       )
+    }
+
+    def getAllClasses(topClasses: Seq[Class[_]]): Seq[Class[_]] = {
+      import scala.collection.JavaConversions._
+      val classes = topClasses.flatMap(getSelfAndAllInnerClasses).toSet
+
+      def isYetUnseenSubclass(name: String): Boolean = {
+        val dollarIndex = name.indexOf('$')
+        if (dollarIndex == -1) false else {
+          val prefix = name.substring(0, dollarIndex)
+          !classes.exists(_.getName == name) && classes.exists(_.getName == prefix)
+        }
+      }
+
+      // We have to get all classes who's enclosing class is one of the classes
+      val additionalClasses = allClassesInClassLoader.collect {
+        case c if isYetUnseenSubclass(c.getName) => c.load()
+      }
+
+      (classes ++ additionalClasses).toSeq
     }
 
     def getSelfAndAllInnerClasses(cls: Class[_]): Seq[Class[_]] = {

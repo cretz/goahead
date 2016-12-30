@@ -235,6 +235,10 @@ object Node {
 
   sealed trait Statement extends Node
 
+  case class CommentStatement(comment: Comment) extends Statement {
+    def walk(w: NodeWalker) = copy(comment = w.applyGet(comment))
+  }
+
   case class DeclarationStatement(declaration: Declaration) extends Statement {
     def walk(w: NodeWalker) = copy(
       declaration = w.applyGet(declaration)

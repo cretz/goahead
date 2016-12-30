@@ -4,6 +4,7 @@ public class Arrays {
     public static void main(String[] args) {
         booleans();
         bytes();
+        multiBytes();
         chars();
         doubles();
         floats();
@@ -11,6 +12,7 @@ public class Arrays {
         shorts();
         longs();
         objects();
+        objectsWithFields();
         multidimensional();
         multiNewArray();
         arrayLength();
@@ -33,6 +35,11 @@ public class Arrays {
         System.out.println(anArray[0] == 14);
         System.out.println(anArray[1] == 35);
         System.out.println(anArray[2] == 0);
+    }
+
+    public static void multiBytes() {
+       byte[][] anArray = new byte[256][8];
+       System.out.println(anArray[7][3]);
     }
 
     public static void chars() {
@@ -96,6 +103,18 @@ public class Arrays {
         System.out.println(anArray[0]);
         System.out.println(anArray[1]);
         System.out.println(anArray[2]);
+    }
+
+    static class Foo {
+        String field = "Some field";
+        private String privateField = "Private field";
+    }
+
+    public static void objectsWithFields() {
+        Foo[] anArray = new Foo[2];
+        anArray[1] = new Foo();
+        System.out.println(anArray[1].field);
+        System.out.println(anArray[1].privateField);
     }
 
     public static void multidimensional() {

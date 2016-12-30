@@ -28,6 +28,7 @@ public class Casts {
         checkCast();
         checkInterfaceCast();
         checkInstanceOf();
+        nullCast();
     }
 
     public static void checkCast() {
@@ -52,5 +53,10 @@ public class Casts {
         System.out.println(foo instanceof Temp);
         System.out.println(foo instanceof String);
         // TODO: Check for nulls and array covariance
+    }
+
+    public static void nullCast() {
+        Foo foo = (Foo) null;
+        System.out.println(foo == null);
     }
 }

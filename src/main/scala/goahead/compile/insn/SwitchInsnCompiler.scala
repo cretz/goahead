@@ -42,14 +42,14 @@ trait SwitchInsnCompiler {
 
       val ctxAndCases = labels.foldLeft(ctx -> Seq.empty[(Node.Expression, Seq[Node.Statement])]) {
         case ((ctx, cases), (index, label)) =>
-          val labelStr = label.getLabel.toString
+          val labelStr = label.getLabel.uniqueStr
           ctx.copy(usedLabels = ctx.usedLabels + labelStr).prepareToGotoLabel(label).map { case (ctx, stmts) =>
             ctx -> (cases :+ (index.toLit -> (stmts :+ goto(labelStr))))
           }
       }
 
       ctxAndCases.map { case (ctx, cases) =>
-        val labelStr = default.getLabel.toString
+        val labelStr = default.getLabel.uniqueStr
         ctx.copy(usedLabels = ctx.usedLabels + labelStr).prepareToGotoLabel(default).map { case (ctx, stmts) =>
           ctx -> index.expr.switchOn(cases, Some(stmts :+ goto(labelStr))).singleSeq
         }

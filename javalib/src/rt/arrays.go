@@ -24,7 +24,7 @@ func SetBoolOrByte(arr Java__lang__Object__Instance, i int, val int) {
 	if v, ok := arr.(BoolArray__Instance); ok {
 		v.Set(i, val != 0)
 	} else {
-		arr.(ByteArray__Instance).Set(i, byte(val))
+		arr.(ByteArray__Instance).Set(i, int8(val))
 	}
 }
 
@@ -182,13 +182,13 @@ func (a DoubleArray__Impl) RawPtr__Java__lang__Object() *Java__lang__Object__Imp
 
 type ByteArray__Instance interface {
 	Java__lang__Object__Instance
-	Get(int) byte
-	Set(int, byte)
+	Get(int) int8
+	Set(int, int8)
 	Len() int
-	Raw() []byte
+	Raw() []int8
 }
 
-type ByteArray__Impl []byte
+type ByteArray__Impl []int8
 
 func NewByteArray(size int) ByteArray__Instance { return make(ByteArray__Impl, size) }
 
@@ -211,10 +211,10 @@ func (a ByteArray__Impl) ToString__desc____ret____obj__Java__lang__String() Java
 func (a ByteArray__Impl) Wait__desc____ret__V()               { panic("Not implmented") }
 func (a ByteArray__Impl) Wait__desc__J__ret__V(int64)         { panic("Not implmented") }
 func (a ByteArray__Impl) Wait__desc__J__I__ret__V(int64, int) { panic("Not implmented") }
-func (a ByteArray__Impl) Get(i int) byte                      { return a[i] }
-func (a ByteArray__Impl) Set(i int, v byte)                   { a[i] = v }
+func (a ByteArray__Impl) Get(i int) int8                      { return a[i] }
+func (a ByteArray__Impl) Set(i int, v int8)                   { a[i] = v }
 func (a ByteArray__Impl) Len() int                            { return len(a) }
-func (a ByteArray__Impl) Raw() []byte                         { return a }
+func (a ByteArray__Impl) Raw() []int8                         { return a }
 func (a ByteArray__Impl) RawPtr__Java__lang__Object() *Java__lang__Object__Impl { panic("Cannot get raw pointer of array") }
 
 type ShortArray__Instance interface {
