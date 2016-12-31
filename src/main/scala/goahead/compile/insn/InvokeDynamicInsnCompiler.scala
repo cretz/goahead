@@ -329,9 +329,9 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
     args.foldLeft(ctx) { case (ctx, arg) =>
       arg match {
         case v: java.lang.Integer => ctx.stackPushed(v.toInt.toTypedLit)
-        case v: java.lang.Float => ctx.stackPushed(v.toFloat.toTypedLit)
+        case v: java.lang.Float => v.toFloat.toTypedLit(ctx).map { case (ctx, lit) => ctx.stackPushed(lit) }
         case v: java.lang.Long => ctx.stackPushed(v.toLong.toTypedLit)
-        case v: java.lang.Double => ctx.stackPushed(v.toDouble.toTypedLit)
+        case v: java.lang.Double => v.toDouble.toTypedLit(ctx).map { case (ctx, lit) => ctx.stackPushed(lit) }
         case v: String => ctx.pushString(v)
         case v: Type => v.getSort match {
           case Type.OBJECT | Type.ARRAY =>

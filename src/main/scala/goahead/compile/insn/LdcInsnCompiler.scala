@@ -13,9 +13,9 @@ trait LdcInsnCompiler {
     // TODO: check Type for class lits and method types and handles
     insn.cst match {
       case v: java.lang.Double =>
-        ctx.stackPushed(TypedExpression(v.toDouble.toLit, IType.DoubleType, cheapRef = true)) -> Nil
+        v.toDouble.toTypedLit(ctx).map { case (ctx, lit) => ctx.stackPushed(lit) -> Nil }
       case v: java.lang.Float =>
-        ctx.stackPushed(TypedExpression(v.toFloat.toLit, IType.FloatType, cheapRef = true)) -> Nil
+        v.toFloat.toTypedLit(ctx).map { case (ctx, lit) => ctx.stackPushed(lit) -> Nil }
       case v: java.lang.Integer =>
         ctx.stackPushed(TypedExpression(v.toInt.toLit, IType.IntType, cheapRef = true)) -> Nil
       case v: java.lang.Long =>

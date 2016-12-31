@@ -75,13 +75,16 @@ object MethodSetManager {
     }
 
     override def implMethods(classPath: ClassPath, cls: Cls): MethodSet = {
-      // Only mine, non-static
-      allMyMethods(classPath, cls).filterNot(_.access.isAccessStatic)
+      // All of mine, non-static + all non-default-forwarder abstracts
+      allMyMethods(classPath, cls).filterNot(_.access.isAccessStatic) ++
+        (allMethods(classPath, cls).filterIncludingReturnDuplicates(_.access.isAccessAbstract) --
+          defaultForwarderMethods(classPath, cls))
     }
 
     protected def defaultForwarderMethods(classPath: ClassPath, cls: Cls): MethodSet = {
       // All interface defaults that neither I nor my parent doesn't implement in any way
-      val allInterfaceDefaults = MethodSet(classPath, classPath.allInterfaceTypes(cls.name).flatMap(_.cls.methods).
+      val allInterfaces = classPath.allSuperAndImplementingTypes(cls.name).filter(_.cls.access.isAccessInterface)
+      val allInterfaceDefaults = MethodSet(classPath, allInterfaces.flatMap(_.cls.methods).
         filterNot(m => m.access.isAccessStatic || m.access.isAccessAbstract))
       allInterfaceDefaults -- (allMyMethods(classPath, cls) ++ allParentMethods(classPath, cls))
     }
@@ -160,6 +163,11 @@ object MethodSetManager {
     def filter(fn: Method => Boolean) = MethodSet(classPath, allMethods.filter(fn))
     def filterNot(fn: Method => Boolean) = MethodSet(classPath, allMethods.filterNot(fn))
 
+    // Filters primary method and non-matches are excluded along with their dupes
+    def filterIncludingReturnDuplicates(fn: Method => Boolean) = copy(
+      map = map.filter { case (_, (m, _)) => fn(m) }
+    )
+
     def prettyLines: Seq[String] = {
       covariantReturnDuplicates.flatMap { case (m, dupes) =>
         s"Method: ${m.cls.name}::${m.name}${m.desc}" +: dupes.map { m =>
@@ -187,11 +195,10 @@ object MethodSetManager {
       // Most specific covariant if return types are not the same
       if (m1.returnType != m2.returnType) {
         if (m1.returnType.isAssignableFrom(classPath, m2.returnType)) m2 else m1
-      // Non-interface preferred, then just prefer the first
+      // Non-interface preferred, then just prefer the first (so, yes, order of input matters)
       } else if (m1.access.isAccessInterface != m2.access.isAccessInterface) {
         if (m1.access.isAccessInterface) m2 else m1
       } else {
-//        if (m1.access.isAccessAbstract) m2 else m1
         m1
       }
     }

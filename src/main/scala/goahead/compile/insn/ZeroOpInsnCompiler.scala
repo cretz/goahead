@@ -151,11 +151,13 @@ trait ZeroOpInsnCompiler {
             case Opcodes.SALOAD => IType.ShortType.asArray
           }
           arrayRef.toExprNode(ctx, jvmType).map { case (ctx, convArrayRef) =>
-            ctx.stackPushed(TypedExpression(
-              convArrayRef.sel("Get").call(Seq(index.expr)),
-              jvmType.elementType,
-              cheapRef = false
-            )) -> Nil
+            index.toExprNode(ctx, IType.IntType).map { case (ctx, index) =>
+              ctx.stackPushed(TypedExpression(
+                convArrayRef.sel("Get").call(Seq(index)),
+                jvmType.elementType,
+                cheapRef = false
+              )) -> Nil
+            }
           }
       }
     })
@@ -280,8 +282,9 @@ trait ZeroOpInsnCompiler {
 
   protected def dconst(ctx: Context, opcode: Int): (Context, Seq[Node.Statement]) = {
     @inline
-    def dconst(d: Double): (Context, Seq[Node.Statement]) =
-      ctx.stackPushed(TypedExpression(d.toLit, IType.DoubleType, cheapRef = true)) -> Nil
+    def dconst(d: Double): (Context, Seq[Node.Statement]) = d.toTypedLit(ctx).map {
+      case (ctx, lit) => ctx.stackPushed(lit) -> Nil
+    }
     opcode match {
       case Opcodes.DCONST_0 => dconst(0)
       case Opcodes.DCONST_1 => dconst(1)
@@ -290,8 +293,9 @@ trait ZeroOpInsnCompiler {
 
   protected def fconst(ctx: Context, opcode: Int): (Context, Seq[Node.Statement]) = {
     @inline
-    def fconst(f: Float): (Context, Seq[Node.Statement]) =
-      ctx.stackPushed(TypedExpression(f.toLit, IType.FloatType, cheapRef = true)) -> Nil
+    def fconst(f: Float): (Context, Seq[Node.Statement]) = f.toTypedLit(ctx).map {
+      case (ctx, lit) => ctx.stackPushed(lit) -> Nil
+    }
     opcode match {
       case Opcodes.FCONST_0 => fconst(0)
       case Opcodes.FCONST_1 => fconst(1)
@@ -445,20 +449,36 @@ trait ZeroOpInsnCompiler {
       case Opcodes.ISHL | Opcodes.ISHR | Opcodes.IUSHR => IType.IntType -> "uint32" -> "int"
       case Opcodes.LSHL | Opcodes.LSHR | Opcodes.LUSHR => IType.LongType -> "uint64" -> "int64"
     }
-    @inline
-    def applyFn(lhs: Node.Expression, rhs: Node.Expression) = opcode match {
-      case Opcodes.ISHL | Opcodes.LSHL => lhs.binary(Node.Token.Shl, rhs)
-      case Opcodes.ISHR | Opcodes.LSHR => lhs.binary(Node.Token.Shr, rhs)
-      case Opcodes.IUSHR | Opcodes.LUSHR => unsignedTo.toIdent.call(Seq(lhs)).binary(Node.Token.Shr, rhs)
+    def applyFn(ctx: Context, lhs: Node.Expression, rhs: Node.Expression) = opcode match {
+      case Opcodes.ISHL | Opcodes.LSHL =>
+        ctx -> lhs.binary(Node.Token.Shl, rhs)
+      case Opcodes.ISHR | Opcodes.LSHR =>
+        ctx -> lhs.binary(Node.Token.Shr, rhs)
+      case Opcodes.IUSHR | Opcodes.LUSHR =>
+        // As a special case, if it's a negative basic lit, we do max + lit + 1
+        // This is due to negative constants not be representable as uints, see:
+        //  https://groups.google.com/forum/#!topic/golang-nuts/2L7NfqtZYls
+        // We could put this in a helper if we wanted, but this makes it generic to the lhs type
+        lhs match {
+          case Node.BasicLiteral(_, v) if v.headOption.contains('-') =>
+            ctx.withImportAlias("math").map { case (ctx, math) =>
+              val max = if (opcode == Opcodes.IUSHR) "MaxUint32" else "MaxUint64"
+              ctx -> math.toIdent.sel(max).binary(Node.Token.Add, lhs).
+                binary(Node.Token.Add, 1.toLit).inParens.binary(Node.Token.Shr, rhs)
+            }
+          case _ =>
+            ctx -> unsignedTo.toIdent.call(Seq(lhs)).binary(Node.Token.Shr, rhs)
+        }
     }
     ctx.stackPopped(2, { case (ctx, Seq(val1, val2)) =>
-      ctx.stackPushed(TypedExpression(
-        expr = unsignedFrom.toIdent.call(Seq(
-          applyFn(val1.expr, unsignedTo.toIdent.call(Seq(val2.expr.binary(Node.Token.And, "0x1f".toIdent))))
-        )),
-        typ = typ,
-        cheapRef = false
-      )) -> Nil
+      applyFn(ctx, val1.expr, unsignedTo.toIdent.call(Seq(val2.expr.binary(Node.Token.And, "0x1f".toIdent)))).map {
+        case (ctx, expr) =>
+          ctx.stackPushed(TypedExpression(
+            expr = unsignedFrom.toIdent.call(Seq(expr)),
+            typ = typ,
+            cheapRef = false
+          )) -> Nil
+      }
     })
   }
 

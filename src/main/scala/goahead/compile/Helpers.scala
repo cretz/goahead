@@ -191,13 +191,41 @@ object Helpers extends Logger {
   }
 
   implicit class RichDouble(val double: Double) extends AnyVal {
-    def toLit: Node.BasicLiteral = Node.BasicLiteral(Node.Token.Float, double.toString)
-    def toTypedLit = TypedExpression(toLit, IType.DoubleType, cheapRef = true)
+    def toLit[T <: Contextual[T]](ctx: T): (T, Node.Expression) = {
+      // Some special cases we have to account for
+      @inline def mathCall(fn: String, params: Node.Expression*) = ctx.withImportAlias("math").map {
+        case (ctx, math) => ctx -> math.toIdent.sel(fn).call(params)
+      }
+      double match {
+        case Double.PositiveInfinity => mathCall("Inf", 1.toLit)
+        case Double.NegativeInfinity => mathCall("Inf", (-1).toLit)
+        case 0 if 1 / double < 0 => mathCall("Copysign", 0.toLit, (-1).toLit)
+        case d if d.isNaN => mathCall("NaN")
+        case d => ctx -> Node.BasicLiteral(Node.Token.Float, d.toString)
+      }
+    }
+
+    def toTypedLit[T <: Contextual[T]](ctx: T): (T, TypedExpression) =
+      toLit(ctx).map { case (ctx, lit) => ctx -> TypedExpression(lit, IType.DoubleType, cheapRef = true) }
   }
 
   implicit class RichFloat(val float: Float) extends AnyVal {
-    def toLit: Node.BasicLiteral = Node.BasicLiteral(Node.Token.Float, float.toString)
-    def toTypedLit = TypedExpression(toLit, IType.FloatType, cheapRef = true)
+    def toLit[T <: Contextual[T]](ctx: T): (T, Node.Expression) = {
+      // Some special cases we have to account for
+      @inline def mathCall(fn: String, params: Node.Expression*) = ctx.withImportAlias("math").map {
+        case (ctx, math) => ctx -> "float32".toIdent.call(Seq(math.toIdent.sel(fn).call(params)))
+      }
+      float match {
+        case Float.PositiveInfinity => mathCall("Inf", 1.toLit)
+        case Float.NegativeInfinity => mathCall("Inf", (-1).toLit)
+        case 0 if 1 / float < 0 => mathCall("Copysign", 0.toLit, (-1).toLit)
+        case f if f.isNaN => mathCall("NaN")
+        case f => ctx -> Node.BasicLiteral(Node.Token.Float, f.toString)
+      }
+    }
+
+    def toTypedLit[T <: Contextual[T]](ctx: T): (T, TypedExpression) =
+      toLit(ctx).map { case (ctx, lit) => ctx -> TypedExpression(lit, IType.FloatType, cheapRef = true) }
   }
 
   implicit class RichInt(val int: Int) extends AnyVal {

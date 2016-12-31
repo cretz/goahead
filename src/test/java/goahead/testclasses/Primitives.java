@@ -11,6 +11,8 @@ public class Primitives {
         System.out.println(ints());
         System.out.println(longs());
         System.out.println(bytes());
+        doubleOddities();
+        floatOddities();
     }
 
     public static double doubles() {
@@ -103,5 +105,63 @@ public class Primitives {
         int b = foo.byteField * 10;
         System.out.println(b);
         return foo.byteField;
+    }
+
+    private static void compareDoubles(double a, double b) {
+        System.out.println(a > b);
+        System.out.println(a >= b);
+        System.out.println(a < b);
+        System.out.println(a <= b);
+        System.out.println(a == b);
+    }
+
+    private static void compareDoublesWithInverse(double a, double b) {
+        compareDoubles(a, b);
+        compareDoubles(b, a);
+    }
+
+    private static void compareAllDoubles(double d) {
+        compareDoublesWithInverse(d, 0);
+        compareDoublesWithInverse(d, -0d);
+        compareDoublesWithInverse(d, Double.POSITIVE_INFINITY);
+        compareDoublesWithInverse(d, Double.NEGATIVE_INFINITY);
+        compareDoublesWithInverse(d, Double.NaN);
+    }
+
+    public static void doubleOddities() {
+        compareAllDoubles(0);
+        compareAllDoubles(-0d);
+        compareAllDoubles(Double.POSITIVE_INFINITY);
+        compareAllDoubles(Double.NEGATIVE_INFINITY);
+        compareAllDoubles(Double.NaN);
+    }
+
+    private static void compareFloats(float a, float b) {
+        System.out.println(a > b);
+        System.out.println(a >= b);
+        System.out.println(a < b);
+        System.out.println(a <= b);
+        System.out.println(a == b);
+    }
+
+    private static void compareFloatsWithInverse(float a, float b) {
+        compareFloats(a, b);
+        compareFloats(b, a);
+    }
+
+    private static void compareAllFloats(float f) {
+        compareFloatsWithInverse(f, 0);
+        compareFloatsWithInverse(f, -0f);
+        compareFloatsWithInverse(f, Float.POSITIVE_INFINITY);
+        compareFloatsWithInverse(f, Float.NEGATIVE_INFINITY);
+        compareFloatsWithInverse(f, Float.NaN);
+    }
+
+    public static void floatOddities() {
+        compareAllFloats(0);
+        compareAllFloats(-0f);
+        compareAllFloats(Float.POSITIVE_INFINITY);
+        compareAllFloats(Float.NEGATIVE_INFINITY);
+        compareAllFloats(Float.NaN);
     }
 }

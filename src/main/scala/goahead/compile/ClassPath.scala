@@ -45,8 +45,8 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
   // Guaranteed to start with given type and recurse up and return in order
   def allSuperAndImplementingTypes(classInternalName: String): Seq[ClassPath.ClassDetails] = {
     val superTypes = allSuperTypes(classInternalName)
-    (allInterfaceTypes(classInternalName) ++ superTypes
-      ++ superTypes.flatMap(c => allInterfaceTypes(c.cls.name))).distinct
+    (superTypes ++ allInterfaceTypes(classInternalName) ++
+      superTypes.flatMap(c => allInterfaceTypes(c.cls.name))).distinct
   }
 
   def classImplementsOrExtends(childInternalName: String, parentInternalName: String): Boolean = {

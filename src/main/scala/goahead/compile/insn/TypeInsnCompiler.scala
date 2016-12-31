@@ -37,12 +37,16 @@ trait TypeInsnCompiler {
               ctx.importRuntimeQualifiedName("NewClassCastEx").map { case (ctx, classCastEx) =>
                 ctx.stackPushed(tempVar) -> (item.typ match {
                   case _: IType.Simple =>
+                    // As a special case, "this" is a concrete pointer already
+                    val toCheck =
+                      if (item.isThis) item.expr.sel(ctx.mangler.forwardSelfMethodName()).call()
+                      else item.expr
                     iff(init = None, lhs = item.expr, op = Node.Token.Eql, rhs = NilExpr, body = Seq(
                       tempVar.expr.assignExisting(NilExpr)
                     )).els(iff(
                       init = Some(assignDefineMultiple(
                         left = Seq("casted".toIdent, "castOk".toIdent),
-                        right = item.expr.typeAssert(goType).singleSeq
+                        right = toCheck.typeAssert(goType).singleSeq
                       )),
                       cond = "castOk".toIdent.unary(Node.Token.Not),
                       body = "panic".toIdent.call(Seq(classCastEx.call())).toStmt.singleSeq

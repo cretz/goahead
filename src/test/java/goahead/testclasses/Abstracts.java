@@ -1,6 +1,12 @@
 package goahead.testclasses;
 
 public class Abstracts {
+
+    public static void main(String[] args) {
+        checkBaseAndImpl();
+        checkAbstractOfIface();
+    }
+
     static abstract class Base {
         abstract String getStr();
 
@@ -28,10 +34,34 @@ public class Abstracts {
         }
     }
 
-    public static void main(String[] args) {
+    static void checkBaseAndImpl() {
         Base base = new Impl();
         base.print();
         base = new Impl2();
         base.print();
+    }
+
+    interface IFoo {
+        String getFoo();
+    }
+
+    static abstract class AbstractFoo implements IFoo {
+        abstract String getBar();
+    }
+
+    static class Foo extends AbstractFoo {
+        @Override
+        public String getFoo() {
+            return "Foo";
+        }
+
+        @Override
+        String getBar() {
+            return "Bar";
+        }
+    }
+
+    static void checkAbstractOfIface() {
+        System.out.println(new Foo().getFoo());
     }
 }

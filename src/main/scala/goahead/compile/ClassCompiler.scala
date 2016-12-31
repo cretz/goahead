@@ -214,6 +214,9 @@ trait ClassCompiler extends Logger {
           val ctx = extCtx.copy(cls = origCtx.cls, imports = extCtx.imports.copy(classPath = origCtx.classPath))
 
           // Take the impl struct and add a field to it for the function
+          // Also remove the abstract method if present since we're gonna make our own (which
+          // means any imports caused by what we're removing will be ok)
+          val ifaceMethodName = ctx.mangler.implMethodName(ifaceMethod.name, ifaceMethod.desc)
           val implStructName = ctx.mangler.implObjectName(extensionCls.name)
           val ctxAndDecls = decls.foldLeft(ctx -> Seq.empty[Node.Declaration]) {
             case ((ctx, decls), Node.GenericDeclaration(
@@ -223,6 +226,8 @@ trait ClassCompiler extends Logger {
               signatureCompiler.buildFuncType(ctx, ifaceMethod, includeParamNames = false).map { case (ctx, funcTyp) =>
                 ctx -> (decls :+ struct(ident, fields :+ field("fn", funcTyp)))
               }
+            case (state, fn: Node.FunctionDeclaration) if fn.name.name == ifaceMethodName =>
+              state
             case ((ctx, decls), decl) =>
               ctx -> (decls :+ decl)
           }
@@ -423,11 +428,13 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileImplDefaultMethodForwarders(ctx: Context): (Context, Seq[Node.FunctionDeclaration]) = {
-    val methods = methodSetManager.implDefaultForwarderMethods(ctx.classPath, ctx.cls).methods.filterNot { m =>
-      ctx.excludeDefaultForwarders.contains(m.name -> m.desc)
-    }
+    // For each default forwarder, we have to foward it and its covariant dupes to the default method
+    val methods = methodSetManager.implDefaultForwarderMethods(ctx.classPath, ctx.cls).
+      covariantReturnDuplicates.filterNot { case (m, _) =>
+        ctx.excludeDefaultForwarders.contains(m.name -> m.desc)
+      }
     methods.foldLeft(ctx -> Seq.empty[Node.FunctionDeclaration]) {
-      case ((ctx, funcDecls), defaultMethod) =>
+      case ((ctx, funcDecls), (defaultMethod, defaultMethodDupes)) =>
         val defName = ctx.mangler.interfaceDefaultMethodName(
           defaultMethod.cls.name, defaultMethod.name, defaultMethod.desc
         )
@@ -440,8 +447,12 @@ trait ClassCompiler extends Logger {
               case _ => forwardCall.ret
             }
           )
-          signatureCompiler.buildFuncDecl(ctx, defaultMethod, forwardStmts).map { case (ctx, funcDecl) =>
-            ctx -> (funcDecls :+ funcDecl)
+
+          val allToImpl = defaultMethod +: defaultMethodDupes
+          allToImpl.foldLeft(ctx -> funcDecls) { case ((ctx, funcDecls), method) =>
+            signatureCompiler.buildFuncDecl(ctx, method, forwardStmts).map { case (ctx, funcDecl) =>
+              ctx -> (funcDecls :+ funcDecl)
+            }
           }
         }
     }
