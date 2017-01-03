@@ -1,4 +1,6 @@
 package goahead.compile
+import java.nio.charset.StandardCharsets
+
 import goahead.Logger
 import goahead.ast.Node
 
@@ -94,7 +96,7 @@ object AstDsl extends Logger {
     specifications = mports.map { case (alias, mport) =>
       ImportSpecification(
         name = if (alias == mport || mport.endsWith(s"/$alias")) None else Some(alias.toIdent),
-        path = mport.toLit
+        path = mport.toStringLit
       )
     }
   )
@@ -233,21 +235,6 @@ object AstDsl extends Logger {
   implicit class RichString(val str: String) extends AnyVal {
     def dot(right: String) = sel(str.toIdent, right)
 
-    def goUnescaped: String = {
-      // TODO: check this
-      import scala.collection.JavaConverters._
-      str.codePoints().iterator().asScala.map({
-        _.toChar match {
-          case '\n' => "\\n"
-          case '\r' => "\\r"
-          case '\\' => "\\\\"
-          case '"' => "\\\""
-          case c if c < 0x20 || c > 0x7f => "\\u%04x".format(c.toInt)
-          case c => "" + c
-        }
-      }).mkString
-    }
-
     def goSafeIdent: String = {
       // Only dollar sign so far is off
       str.replace("$", "__dollar__")
@@ -255,6 +242,23 @@ object AstDsl extends Logger {
 
     def toIdent = Identifier(str.goSafeIdent)
 
-    def toLit = BasicLiteral(Token.String, '"' + goUnescaped + '"')
+    def toStringLit = BasicLiteral(
+      Token.String,
+      '"' + str.replace("\n", "\\n").replace("\r", "\\r").replace("\\", "\\\\").replace("\"", "\\\"") + '"'
+    )
+
+    def toLit = {
+      // If there are any bytes outside of a normal printable range, then we will
+      // just encode an array of bytes
+      val outsideNorm = str.exists(c => c < 0x20 || c > 0x7f)
+      if (!outsideNorm) toStringLit else {
+        "string".toIdent.call(
+          literal(
+            typ = Some(arrayType("byte".toIdent)),
+            elems = str.getBytes(StandardCharsets.UTF_8).map(v => BasicLiteral(Token.Inc, (v.toInt & 0xff).toString)):_*
+          ).singleSeq
+        )
+      }
+    }
   }
 }

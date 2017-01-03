@@ -28,13 +28,13 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     } else {
       require(sys.env.contains("ZULU_JDK_HOME"), "ZULU_JDK_HOME env var required")
       ClassPath.Entry.fromZipFile(
-        Paths.get(sys.env("ZULU_JDK_HOME") + "/jmods/java.base.jmod"),
+        Paths.get(sys.env("ZULU_JDK_HOME"), "/jmods/java.base.jmod"),
         "github.com/cretz/goahead/javalib/rt"
       )
     }
 
   val goFormatTimeout = 20.seconds
-  val goBuildTimeout = if (useTestRt) 20.seconds else 200.seconds
+  val goBuildTimeout = if (useTestRt) 20.seconds else 2.hours
   val exeRunTimeout = 20.seconds
   val checkFormatting = false
 
@@ -199,6 +199,7 @@ object CompilerSpec extends Logger {
       TestCase(classOf[NonStaticInnerClasses]),
       TestCase(classOf[Primitives]),
       TestCase(classOf[PrimitiveWrappers]),
+      TestCase(classOf[SigPolys]),
       TestCase(classOf[SimpleInstance]),
       TestCase(classOf[StackManips]),
       TestCase(classOf[StaticFields]),

@@ -63,7 +63,7 @@ trait MethodInsnCompiler {
     // The method can be on a parent class actually
     val method = resolveMethod(ctx, name, desc, owner, static = true)
     ctx.staticInstRefExpr(method.cls.name).map { case (ctx, staticInstExpr) =>
-      ctx -> (method -> staticInstExpr.sel(ctx.mangler.implMethodName(name, desc)))
+      ctx -> (method -> staticInstExpr.sel(ctx.mangler.implMethodName(method.name, method.desc)))
     }
   }
 
@@ -162,7 +162,14 @@ trait MethodInsnCompiler {
     retType: IType
   ): (Context, Seq[Node.Statement]) = {
     val called = methodExpr.call(args)
-    if (retType == IType.VoidType) ctx -> called.toStmt.singleSeq
-    else ctx.stackPushed(TypedExpression(called, retType, cheapRef = false)) -> Nil
+    if (retType == IType.VoidType) ctx -> called.toStmt.singleSeq else {
+      // As a special case, sigpoly methods actually return an object despite the sig, so we cast
+      val ctxAndRetExpr =
+        if (!method.isSignaturePolymorphic) ctx -> TypedExpression(called, retType, cheapRef = false)
+        else TypedExpression(called, ObjectType, cheapRef = false).toExprNode(ctx, retType).map { case (ctx, expr) =>
+          ctx -> TypedExpression(expr, retType, cheapRef = false)
+        }
+      ctxAndRetExpr.map { case (ctx, expr) => ctx.stackPushed(expr) -> Nil }
+    }
   }
 }

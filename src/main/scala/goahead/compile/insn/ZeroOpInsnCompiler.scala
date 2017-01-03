@@ -192,8 +192,10 @@ trait ZeroOpInsnCompiler {
             case Opcodes.SASTORE => IType.ShortType.asArray
           }
           value.toExprNode(ctx, jvmType.elementType).map { case (ctx, typedValue) =>
-            arrayRef.toExprNode(ctx, jvmType).map { case (ctx, convArrayRef) =>
-              ctx -> convArrayRef.sel("Set").call(Seq(index.expr, typedValue)).toStmt.singleSeq
+            index.toExprNode(ctx, IType.IntType).map { case (ctx, index) =>
+              arrayRef.toExprNode(ctx, jvmType).map { case (ctx, convArrayRef) =>
+                ctx -> convArrayRef.sel("Set").call(Seq(index, typedValue)).toStmt.singleSeq
+              }
             }
           }
       }
@@ -355,11 +357,13 @@ trait ZeroOpInsnCompiler {
       case Opcodes.LNEG => IType.LongType
     }
     ctx.stackPopped { case (ctx, v) =>
-      ctx.stackPushed(TypedExpression(
-        expr = v.expr.unary(Node.Token.Sub),
-        typ = typ,
-        cheapRef = false
-      )) -> Nil
+      v.toExprNode(ctx, typ).map { case (ctx, expr) =>
+        ctx.stackPushed(TypedExpression(
+          expr = expr.unary(Node.Token.Sub),
+          typ = typ,
+          cheapRef = false
+        )) -> Nil
+      }
     }
   }
 

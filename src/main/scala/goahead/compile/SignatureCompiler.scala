@@ -34,15 +34,23 @@ trait SignatureCompiler {
     method: Method,
     includeParamNames: Boolean
   ): (T, Node.FunctionType) = {
-    // Signature polymorphic should be varargs empty interface
+    // Signature polymorphic should be varargs empty interface, but still return the same value
     if (method.isSignaturePolymorphic) {
-      ctx -> funcTypeWithFields(
-        params = Seq(
-          if (includeParamNames) field("var0", emptyInterface.ellipsis)
-          else emptyInterface.ellipsis.namelessField
-        ),
-        result = Some(emptyInterface)
-      )
+      ctx.typeToGoType(ObjectType).map { case (ctx, objTyp) =>
+        val ctxWithResultTypOpt = method.returnType match {
+          case IType.VoidType => ctx -> None
+          case retTyp => ctx.typeToGoType(retTyp).map { case (ctx, typ) => ctx -> Some(typ) }
+        }
+        ctxWithResultTypOpt.map { case (ctx, resultTypOpt) =>
+          ctx -> funcTypeWithFields(
+            params = Seq(
+              if (includeParamNames) field("var0", emptyInterface.ellipsis)
+              else emptyInterface.ellipsis.namelessField
+            ),
+            result = resultTypOpt
+          )
+        }
+      }
     } else buildFuncType(ctx, method.desc, includeParamNames)
   }
 

@@ -10,7 +10,7 @@ public class Primitives {
         System.out.println((int) floats());
         System.out.println(ints());
         System.out.println(longs());
-        System.out.println(bytes());
+        bytes();
         doubleOddities();
         floatOddities();
     }
@@ -98,13 +98,13 @@ public class Primitives {
         byte byteField;
     }
 
-    public static byte bytes() {
+    public static void bytes() {
         Foo foo = new Foo();
         foo.byteField = -5;
         System.out.println(foo.byteField);
         int b = foo.byteField * 10;
         System.out.println(b);
-        return foo.byteField;
+        System.out.println(-foo.byteField - 1);
     }
 
     private static void compareDoubles(double a, double b) {

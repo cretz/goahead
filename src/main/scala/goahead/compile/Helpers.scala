@@ -454,14 +454,12 @@ object Helpers extends Logger {
           ctx -> "int16".toIdent.call(Seq(expr.expr))
         case (oldTyp, newTyp) if oldTyp == newTyp =>
           ctx -> expr.expr
-        // Null type to object can be set simply
-        case (IType.NullType, newTyp: IType.Simple) if newTyp.isObject =>
+        // Actual null expressions to refs need no cast
+        case (IType.NullType, newTyp: IType.Simple) if expr.expr == NilExpr && newTyp.isRef =>
           ctx -> expr.expr
-        // Null type to slice requires type cast
-        case (IType.NullType, newTyp: IType.Simple) if newTyp.isArray =>
-          ctx.typeToGoType(newTyp).map { case (ctx, newTyp) =>
-            ctx -> newTyp.call(Seq(NilExpr))
-          }
+        // Null type to ref just needs to do a normal null safe assert
+        case (IType.NullType, newTyp: IType.Simple) if newTyp.isRef =>
+          nullSafeTypeAssert(ctx, newTyp)
         case (oldTyp, newTyp: IType.Simple)
           if (newTyp.isObject || newTyp.isArray) && newTyp.isAssignableFrom(ctx.imports.classPath, oldTyp) =>
             ctx -> expr.expr
@@ -500,12 +498,16 @@ object Helpers extends Logger {
 
     protected def nullSafeTypeAssert[T <: Contextual[T]](ctx: T, newTyp: IType): (T, Node.Expression) = {
       ctx.typeToGoType(newTyp).map { case (ctx, newTyp) =>
+        // We have to make a copy of the expression if it's not cheap
+        val (cheapExpr, preStmts) =
+          if (expr.cheapRef) expr.expr -> Nil
+          else "castTemp".toIdent -> Seq("castTemp".toIdent.assignDefine(expr.expr))
         ctx -> funcType(
           params = Nil,
           result = Some(newTyp)
-        ).toFuncLit(Seq(
-          iff(None, expr.expr, Node.Token.Eql, NilExpr, Seq(NilExpr.ret)),
-          expr.expr.typeAssert(newTyp).ret
+        ).toFuncLit(preStmts ++ Seq(
+          iff(None, cheapExpr, Node.Token.Eql, NilExpr, Seq(NilExpr.ret)),
+          cheapExpr.typeAssert(newTyp).ret
         )).call()
       }
     }

@@ -2,7 +2,8 @@ package goahead.compile
 
 import java.io.{PrintWriter, StringWriter}
 
-import org.objectweb.asm.Opcodes
+import goahead.PolymorphicSignature
+import org.objectweb.asm.{Opcodes, Type}
 import org.objectweb.asm.tree._
 import org.objectweb.asm.util.{Textifier, TraceMethodVisitor}
 
@@ -25,6 +26,11 @@ sealed trait Method {
 }
 
 object Method {
+
+  private[Method] val GoaheadSigPolyAnnotation = Type.getType(classOf[PolymorphicSignature]).getDescriptor
+  private[Method] val JvmSigPolyAnnotation = s"Ljava/lang/invoke/MethodHandle$$PolymorphicSignature;"
+  private[Method] val JvmCallerSensitiveAnnotation = "Lsun/reflect/CallerSensitive;"
+
   def apply(cls: Cls, node: MethodNode): Method = Asm(cls, node)
 
   case class Asm(override val cls: Cls, node: MethodNode) extends Method {
@@ -64,16 +70,18 @@ object Method {
       node.tryCatchBlocks.iterator.asScala.asInstanceOf[Iterator[TryCatchBlockNode]].toSeq
     }
 
-    override def isSignaturePolymorphic: Boolean = {
+    override lazy val isSignaturePolymorphic: Boolean = {
       import Helpers._
-      if (cls.majorVersion <= Opcodes.V1_8) {
+      // We also have our own version of this annotation for testing
+      if (allAnnotations.exists(_.desc == GoaheadSigPolyAnnotation)) {
+        true
+      } else if (cls.majorVersion <= Opcodes.V1_8) {
         cls.name == "java/lang/invoke/MethodHandle" && desc == "([Ljava/lang/Object;)Ljava/lang/Object;" &&
           access.isAccessNative && access.isAccessVarargs
-      } else {
-        visibleAnnotations.exists(_.desc == "Ljava/lang/invoke/MethodHandle$PolymorphicSignature;") ||
-          invisibleAnnotations.exists(_.desc == "Ljava/lang/invoke/MethodHandle$PolymorphicSignature;")
-      }
+      } else allAnnotations.exists(_.desc == JvmSigPolyAnnotation)
     }
+
+    lazy val allAnnotations = visibleAnnotations ++ invisibleAnnotations
 
     override lazy val visibleAnnotations: Seq[Annotation] = {
       import scala.collection.JavaConverters._
@@ -85,10 +93,7 @@ object Method {
       Option(node.invisibleAnnotations).toSeq.flatMap(_.asScala.asInstanceOf[Seq[AnnotationNode]].map(Annotation.apply))
     }
 
-    override lazy val isCallerSensitive = {
-      visibleAnnotations.exists(_.desc == "Lsun/reflect/CallerSensitive;") ||
-        invisibleAnnotations.exists(_.desc == "Lsun/reflect/CallerSensitive;")
-    }
+    override lazy val isCallerSensitive = allAnnotations.exists(_.desc == "Lsun/reflect/CallerSensitive;")
 
     override def isDefault = {
       import Helpers._

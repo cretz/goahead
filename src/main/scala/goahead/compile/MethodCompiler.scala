@@ -188,7 +188,10 @@ trait MethodCompiler extends Logger {
 
   protected def postProcessStatements(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
     statementPostProcessors.foldLeft(ctx -> stmts) {
-      case (ret, postProcessor) => postProcessor.tupled(ret)
+      case (ret, postProcessor) => postProcessor.tupled(ret).map { case (ctx, stmts) =>
+        // Go ahead and more all the temp vars into the overall var area
+        ctx.copy(localTempVars = IndexedSeq.empty, functionVars = ctx.functionVars ++ ctx.localTempVars) -> stmts
+      }
     }
   }
 

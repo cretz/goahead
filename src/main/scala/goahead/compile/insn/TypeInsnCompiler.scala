@@ -39,8 +39,13 @@ trait TypeInsnCompiler {
                   case _: IType.Simple =>
                     // As a special case, "this" is a concrete pointer already
                     val toCheck =
-                      if (item.isThis) item.expr.sel(ctx.mangler.forwardSelfMethodName()).call()
-                      else item.expr
+                      if (item.isThis) {
+                        // But the interface version needs to ask for the raw pointer first
+                        val thisExpr =
+                          if (!ctx.cls.access.isAccessInterface) item.expr
+                          else item.expr.sel(ctx.mangler.instanceRawPointerMethodName("java/lang/Object")).call()
+                        thisExpr.sel(ctx.mangler.forwardSelfMethodName()).call()
+                      } else item.expr
                     iff(init = None, lhs = item.expr, op = Node.Token.Eql, rhs = NilExpr, body = Seq(
                       tempVar.expr.assignExisting(NilExpr)
                     )).els(iff(

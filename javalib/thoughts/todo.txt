@@ -6,6 +6,7 @@ Code:
   * Type conversion stuff
   * Method and class resolution stuff to all use streams (or other lazy approaches)
   * Get rid of all the constant strings embedded everywhere
+  * Remove "case" extractors on all of the tuple maps
 * Support Java 9 modules too as a solution to circular imports
 * Name ambiguities w/ the mangler
   * Cap and lowercase same fields

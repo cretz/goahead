@@ -297,19 +297,19 @@ func (this *Java__lang__invoke__MethodHandle__Static) Impl__Static_Init__desc___
 	
 }
 
-func (this *Java__lang__invoke__MethodHandle__Static) Impl__LinkToInterface__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{} {
+func (this *Java__lang__invoke__MethodHandle__Static) Impl__LinkToInterface__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
 	panic("Not Implemented - java/lang/invoke/MethodHandle.linkToInterface([Ljava/lang/Object;)Ljava/lang/Object;")
 }
 
-func (this *Java__lang__invoke__MethodHandle__Static) Impl__LinkToSpecial__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{} {
+func (this *Java__lang__invoke__MethodHandle__Static) Impl__LinkToSpecial__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
 	panic("Not Implemented - java/lang/invoke/MethodHandle.linkToSpecial([Ljava/lang/Object;)Ljava/lang/Object;")
 }
 
-func (this *Java__lang__invoke__MethodHandle__Static) Impl__LinkToStatic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{} {
+func (this *Java__lang__invoke__MethodHandle__Static) Impl__LinkToStatic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
 	panic("Not Implemented - java/lang/invoke/MethodHandle.linkToStatic([Ljava/lang/Object;)Ljava/lang/Object;")
 }
 
-func (this *Java__lang__invoke__MethodHandle__Static) Impl__LinkToVirtual__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{} {
+func (this *Java__lang__invoke__MethodHandle__Static) Impl__LinkToVirtual__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
 	panic("Not Implemented - java/lang/invoke/MethodHandle.linkToVirtual([Ljava/lang/Object;)Ljava/lang/Object;")
 }
 
@@ -328,9 +328,9 @@ type Java__lang__invoke__MethodHandle__Dispatch interface {
 	Impl__InternalCallerClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	Impl__InternalProperties__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Impl__InternalValues__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Impl__Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
-	Impl__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
-	Impl__InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
+	Impl__Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
+	Impl__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
+	Impl__InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
 	Impl__InvokeWithArguments__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(ObjectArray__Instance) Java__lang__Object__Instance
 	Impl__IsInvokeSpecial__desc____ret__Z() bool
 	Impl__IsVarargsCollector__desc____ret__Z() bool
@@ -397,15 +397,15 @@ func (this *Java__lang__invoke__MethodHandle__Impl) InternalValues__desc____ret_
 	return this._dispatch.Impl__InternalValues__desc____ret____obj__Java__lang__Object()
 }
 
-func (this *Java__lang__invoke__MethodHandle__Impl) Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{} {
+func (this *Java__lang__invoke__MethodHandle__Impl) Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
 	return this._dispatch.Impl__Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0)
 }
 
-func (this *Java__lang__invoke__MethodHandle__Impl) InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{} {
+func (this *Java__lang__invoke__MethodHandle__Impl) InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
 	return this._dispatch.Impl__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0)
 }
 
-func (this *Java__lang__invoke__MethodHandle__Impl) InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{} {
+func (this *Java__lang__invoke__MethodHandle__Impl) InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
 	return this._dispatch.Impl__InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0)
 }
 
@@ -456,9 +456,9 @@ type Java__lang__invoke__MethodHandle__Instance interface {
 	InternalCallerClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	InternalProperties__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	InternalValues__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
-	InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
-	InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) interface{}
+	Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
+	InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
+	InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
 	InvokeWithArguments__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(ObjectArray__Instance) Java__lang__Object__Instance
 	IsInvokeSpecial__desc____ret__Z() bool
 	IsVarargsCollector__desc____ret__Z() bool
@@ -555,15 +555,15 @@ func (this *Java__lang__invoke__MethodHandle__Impl) Impl__InternalValues__desc__
 	panic("Not Implemented - java/lang/invoke/MethodHandle.internalValues()Ljava/lang/Object;")
 }
 
-func (this *Java__lang__invoke__MethodHandle__Impl) Impl__Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{} {
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
 	panic("Not Implemented - java/lang/invoke/MethodHandle.invoke([Ljava/lang/Object;)Ljava/lang/Object;")
 }
 
-func (this *Java__lang__invoke__MethodHandle__Impl) Impl__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{} {
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
 	panic("Not Implemented - java/lang/invoke/MethodHandle.invokeBasic([Ljava/lang/Object;)Ljava/lang/Object;")
 }
 
-func (this *Java__lang__invoke__MethodHandle__Impl) Impl__InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) interface{} {
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
 	panic("Not Implemented - java/lang/invoke/MethodHandle.invokeExact([Ljava/lang/Object;)Ljava/lang/Object;")
 }
 

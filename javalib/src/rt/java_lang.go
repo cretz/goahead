@@ -48,7 +48,6 @@ type Java__lang__AbstractStringBuilder__Dispatch interface {
 	Impl__Delete__desc__I__I__ret____obj__Java__lang__AbstractStringBuilder(int, int) Java__lang__AbstractStringBuilder__Instance
 	Impl__DeleteCharAt__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	Impl__EnsureCapacity__desc__I__ret__V(int)
-	Impl__ExpandCapacity__desc__I__ret__V(int)
 	Impl__GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
 	Impl__GetValue__desc____ret____arr__C() CharArray__Instance
 	Impl__IndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
@@ -186,10 +185,6 @@ func (this *Java__lang__AbstractStringBuilder__Impl) DeleteCharAt__desc__I__ret_
 
 func (this *Java__lang__AbstractStringBuilder__Impl) EnsureCapacity__desc__I__ret__V(var0 int) {
 	this._dispatch.Impl__EnsureCapacity__desc__I__ret__V(var0)
-}
-
-func (this *Java__lang__AbstractStringBuilder__Impl) ExpandCapacity__desc__I__ret__V(var0 int) {
-	this._dispatch.Impl__ExpandCapacity__desc__I__ret__V(var0)
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 CharArray__Instance, var3 int) {
@@ -332,7 +327,6 @@ type Java__lang__AbstractStringBuilder__Instance interface {
 	DeleteCharAt__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	EnsureCapacity__desc__I__ret__V(int)
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	ExpandCapacity__desc__I__ret__V(int)
 	Finalize__desc____ret__V()
 	GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
@@ -495,10 +489,6 @@ func (this *Java__lang__AbstractStringBuilder__Impl) Impl__DeleteCharAt__desc__I
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__EnsureCapacity__desc__I__ret__V(var0 int) {
 	panic("Not Implemented - java/lang/AbstractStringBuilder.ensureCapacity(I)V")
-}
-
-func (this *Java__lang__AbstractStringBuilder__Impl) Impl__ExpandCapacity__desc__I__ret__V(var0 int) {
-	panic("Not Implemented - java/lang/AbstractStringBuilder.expandCapacity(I)V")
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0 int, var1 int, var2 CharArray__Instance, var3 int) {
@@ -5688,7 +5678,6 @@ type Java__lang__StringBuilder__Instance interface {
 	DeleteCharAt__desc__I__ret____obj__Java__lang__StringBuilder(int) Java__lang__StringBuilder__Instance
 	EnsureCapacity__desc__I__ret__V(int)
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	ExpandCapacity__desc__I__ret__V(int)
 	Finalize__desc____ret__V()
 	GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
