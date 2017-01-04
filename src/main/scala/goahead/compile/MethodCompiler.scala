@@ -242,7 +242,6 @@ object MethodCompiler extends MethodCompiler {
     labelsAsFunctions: Map[String, Node.FunctionType] = Map.empty,
     stack: Stack = Stack.empty,
     localTempVars: IndexedSeq[TypedExpression] = IndexedSeq.empty,
-    tempVarCounter: Int = 0,
     functionVars: Seq[TypedExpression] = IndexedSeq.empty
   ) extends Contextual[Context] {
     override def updatedImports(mports: Imports) = copy(imports = mports)

@@ -77,7 +77,7 @@ case class LocalVars(
   }
 
   private[this] def addOrReplaceLocalVar(index: Int, typ: IType): (LocalVars, TypedExpression) = {
-    nextUnusedLocalVarName().map { case (localVars, name) =>
+    nextUnusedVarName().map { case (localVars, name) =>
       val localVar = TypedExpression.namedVar(name, typ)
       @inline
       def withUpdatedVar = localVars.copy(vars = vars + (index -> localVar))
@@ -88,8 +88,7 @@ case class LocalVars(
     }
   }
 
-  private[this] def nextUnusedLocalVarName() =
-    copy(nameCounter = nameCounter + 1) -> s"var$nameCounter"
+  def nextUnusedVarName() = copy(nameCounter = nameCounter + 1) -> s"var$nameCounter"
 
   private[this] def shouldReplaceExistingVar(ctx: Contextual[_], existing: IType, updated: IType) = {
     existing -> updated match {

@@ -3,8 +3,21 @@ package goahead.testclasses;
 import java.io.Serializable;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
+import java.util.stream.Stream;
 
 public class Lambdas {
+
+    public static void main(String[] args) {
+        invokeStatic();
+        invokeVirtual();
+        invokeNewSpecial();
+        deserializeLambda();
+        defaultConsumerChainTest();
+        binaryOperator();
+        biConsumer();
+        defaultMethodOverride();
+        lambdaReturn();
+    }
 
     interface Test {
         String test();
@@ -31,18 +44,6 @@ public class Lambdas {
         public String test() {
             return "TestImpl";
         }
-    }
-
-    public static void main(String[] args) {
-        // TODO: figure out how to test other things
-        invokeStatic();
-        invokeVirtual();
-        invokeNewSpecial();
-        deserializeLambda();
-        defaultConsumerChainTest();
-        binaryOperator();
-        biConsumer();
-        defaultMethodOverride();
     }
 
     static void invokeStatic() {
@@ -122,5 +123,31 @@ public class Lambdas {
     static void defaultMethodOverride() {
         LongSink sink = v -> System.out.println(v);
         sink.accept(Long.valueOf(20));
+    }
+
+    static Sink<String> returnSink(Sink<String> sink) {
+        return sink::accept;
+    }
+
+    static void lambdaReturn() {
+        returnSink(str -> System.out.println("STR: " + str)).accept("Test");
+    }
+
+    static boolean someBool;
+
+    // Doesn't need to be called, was just failing compile
+    static LongConsumer defaultThis(Sink<Long> sink) {
+        if (sink instanceof LongConsumer) {
+            return (LongConsumer) sink;
+        } else {
+            if (someBool) System.out.println("Some bool");
+            return sink::accept;
+        }
+    }
+
+    // Just fails compilation
+    public void testMap() {
+        int someOffset = 2;
+        Stream.of("foo", "bar").map(s -> s.substring(someOffset, s.length()));
     }
 }

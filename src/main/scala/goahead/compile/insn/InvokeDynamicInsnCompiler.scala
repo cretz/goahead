@@ -112,48 +112,62 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
             }
           }
         case Opcodes.H_INVOKEVIRTUAL | Opcodes.H_INVOKEINTERFACE | Opcodes.H_INVOKESPECIAL =>
-          val subject = thisArgType.map(TypedExpression.namedVar("tvar0", _)).getOrElse(stk.head)
-          val resolved =
-            if (handle.getTag == Opcodes.H_INVOKESPECIAL)
-              resolveSpecialMethodRef(ctx, handle.getName, handle.getDesc, subject, handle.isInterface, handle.getOwner)
-            else
-              resolveInterfaceOrVirtualMethodRef(ctx, handle.getName, handle.getDesc, subject, handle.getOwner)
-          val ctxAndMethodWithFuncRef = resolved.map {
-            // Default includes the subject as an arg which means we need a new func lit
-            case (ctx, (method, methodRef)) if method.isDefault =>
-              // We make our own param names to prevent clash
-              signatureCompiler.buildFuncType(ctx, method, includeParamNames = false).map { case (ctx, funcTyp) =>
-                val funcTypWithNames = funcTyp.copy(parameters = funcTyp.parameters.zipWithIndex.map {
-                  case (param, i) => param.copy(names = Seq(s"ivar$i".toIdent))
-                })
-                val call = methodRef.call(subject.expr +: method.argTypes.indices.map(i => s"ivar$i".toIdent))
-                val callStmt = method.returnType match {
-                  case IType.VoidType => call.toStmt
-                  case _ => call.ret
-                }
-                ctx -> (method -> funcTypWithNames.toFuncLit(Seq(callStmt)))
-              }
-            case v => v
+          val ctxAndSubject = thisArgType match {
+            case None => ctx -> stk.head
+            case Some(typ) => ctx.nextUnusedVarName().map {
+              case (ctx, name) => ctx -> TypedExpression.namedVar(name, typ)
+            }
           }
-          // When we have a "this" type, we have to wrap in a completely new func ref accepting a new "this" type
-          thisArgType match {
-            case None => ctxAndMethodWithFuncRef.map { case (ctx, (_, funcRef)) => ctx -> funcRef }
-            case Some(thisArgType) => ctxAndMethodWithFuncRef.map { case (ctx, (method, funcRef)) =>
-              // Just create a copy of the func type with our new "this" type, and forward it
-              signatureCompiler.buildFuncType(ctx, thisArgType +: method.argTypes, method.returnType, Some("tvar")).
-                map { case (ctx, funcTyp) =>
-                  val call = funcRef.call(method.argTypes.indices.map(i => s"tvar${i + 1}".toIdent))
-                  val callStmt = method.returnType match {
-                    case IType.VoidType => call.toStmt
-                    case _ => call.ret
+          ctxAndSubject.map { case (ctx, subject) =>
+            val resolved =
+              if (handle.getTag == Opcodes.H_INVOKESPECIAL)
+                resolveSpecialMethodRef(ctx, handle.getName, handle.getDesc,
+                  subject, handle.isInterface, handle.getOwner)
+              else
+                resolveInterfaceOrVirtualMethodRef(ctx, handle.getName, handle.getDesc, subject, handle.getOwner)
+            val ctxAndMethodWithFuncRef = resolved.map {
+              // Default includes the subject as an arg which means we need a new func lit
+              case (ctx, (method, methodRef)) if method.isDefault =>
+                // We make our own param names to prevent clash
+                signatureCompiler.buildFuncType(ctx, method, includeParamNames = false).map { case (ctx, funcTyp) =>
+                  subject.toExprNode(ctx, IType.getObjectType(method.cls.name)).map { case (ctx, subject) =>
+                    ctx.nextUnusedVarNames(funcTyp.parameters.size).map { case (ctx, paramNames) =>
+                      val funcTypWithNames = funcTyp.copy(parameters = funcTyp.parameters.zipWithIndex.map {
+                        case (param, i) => param.copy(names = Seq(paramNames(i).toIdent))
+                      })
+                      val call = methodRef.call(subject +: method.argTypes.indices.map(i => paramNames(i).toIdent))
+                      val callStmt = method.returnType match {
+                        case IType.VoidType => call.toStmt
+                        case _ => call.ret
+                      }
+                      ctx -> (method -> funcTypWithNames.toFuncLit(Seq(callStmt)))
+                    }
                   }
-                  ctx -> funcTyp.toFuncLit(Seq(callStmt))
                 }
+              case v => v
+            }
+            // When we have a "this" type, we have to wrap in a completely new func ref accepting a new "this" type
+            thisArgType match {
+              case None => ctxAndMethodWithFuncRef.map { case (ctx, (_, funcRef)) => ctx -> funcRef }
+              case Some(thisArgType) => ctxAndMethodWithFuncRef.map { case (ctx, (method, funcRef)) =>
+                // Just create a copy of the func type with our new "this" type, and forward it
+                ctx.nextUnusedVarNames(method.argTypes.size).map { case (ctx, paramNames) =>
+                  signatureCompiler.buildFuncType(ctx, thisArgType +: method.argTypes,
+                    method.returnType, Some(subject.name +: paramNames)).map { case (ctx, funcTyp) =>
+                      val call = funcRef.call(method.argTypes.indices.map(i => paramNames(i).toIdent))
+                      val callStmt = method.returnType match {
+                        case IType.VoidType => call.toStmt
+                        case _ => call.ret
+                      }
+                      ctx -> funcTyp.toFuncLit(Seq(callStmt))
+                    }
+                }
+              }
             }
           }
         case Opcodes.H_INVOKESTATIC =>
           resolveStaticMethodRef(ctx, handle.getName, handle.getDesc, handle.getOwner).map {
-            case (ctx, (_, methodRef)) => ctx -> methodRef
+            case (ctx, (method, methodRef)) => ctx -> methodRef
           }
         case Opcodes.H_NEWINVOKESPECIAL =>
           ctx.staticNewExpr(handle.getOwner).map { case (ctx, newExpr) =>
@@ -167,14 +181,16 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
                 }
                 ctxAndArgTypes.map { case (ctx, argTypes) =>
                   ctx.typeToGoType(retTyp).map { case (ctx, retTypExpr) =>
-                    ctx -> funcType(
-                      params = argTypes.zipWithIndex.map { case (arg, index) => s"var$index" -> arg },
-                      result = Some(retTypExpr)
-                    ).toFuncLit(Seq(
-                      varDecl(newTyped.name, retTypExpr, Some(newExpr)).toStmt,
-                      initRef.call(argTypes.indices.map(i => s"var$i".toIdent)).toStmt,
-                      newTyped.expr.ret
-                    ))
+                    ctx.nextUnusedVarNames(argTypes.size).map { case (ctx, paramNames) =>
+                      ctx -> funcType(
+                        params = argTypes.zipWithIndex.map { case (arg, index) => paramNames(index) -> arg },
+                        result = Some(retTypExpr)
+                      ).toFuncLit(Seq(
+                        varDecl(newTyped.name, retTypExpr, Some(newExpr)).toStmt,
+                        initRef.call(argTypes.indices.map(i => paramNames(i).toIdent)).toStmt,
+                        newTyped.expr.ret
+                      ))
+                    }
                   }
                 }
               }
@@ -185,12 +201,15 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
       // If there are no fixed args, we can just return the ref
       if (fixedArgTypes.isEmpty) ctxAndFuncRef else ctxAndFuncRef.map { case (ctx, funcRef) =>
         convArgTypes(ctx, stk.takeRight(fixedArgTypes.size)).map { (ctx, fixedArgExprs) =>
-          signatureCompiler.buildFuncType(ctx, nonFixedArgTypes, retType, Some("fvar")).map { case (ctx, newFuncTyp) =>
-            val call = funcRef.call(fixedArgExprs ++ nonFixedArgTypes.indices.map(i => s"fvar$i".toIdent))
-            ctx -> newFuncTyp.toFuncLit(Seq(retType match {
-              case IType.VoidType => call.toStmt
-              case _ => call.ret
-            }))
+          ctx.nextUnusedVarNames(nonFixedArgTypes.size).map { case (ctx, nonFixedNames) =>
+            signatureCompiler.buildFuncType(ctx, nonFixedArgTypes, retType, Some(nonFixedNames)).map {
+              case (ctx, newFuncTyp) =>
+                val call = funcRef.call(fixedArgExprs ++ nonFixedArgTypes.indices.map(i => nonFixedNames(i).toIdent))
+                ctx -> newFuncTyp.toFuncLit(Seq(retType match {
+                  case IType.VoidType => call.toStmt
+                  case _ => call.ret
+                }))
+            }
           }
         }
       }
@@ -208,16 +227,19 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
     logger.trace(s"Translating func from ($sourceArgs)$sourceResult to ($targetArgs)$targetResult")
     require(sourceArgs.size == targetArgs.size, "Expect same size when translating func refs")
     if (sourceArgs == targetArgs && sourceResult == targetResult) ctx -> source else {
-      val init = ctx -> Seq.empty[(Node.Expression, Node.Field)]
-      val ctxAndConvArgsWithFields = sourceArgs.zip(targetArgs).zipWithIndex.foldLeft(init) {
-        case ((ctx, argsWithFields), ((sourceArg, targetArg), index)) =>
-          val name = s"var$index"
-          TypedExpression(name.toIdent, targetArg, cheapRef = true).toExprNode(ctx, sourceArg).map { case (ctx, arg) =>
-            ctx.typeToGoType(targetArg).map { case (ctx, targetTyp) =>
-              ctx -> (argsWithFields :+ (arg -> field(name, targetTyp)))
+      val ctxAndConvArgsWithFields = ctx.nextUnusedVarNames(targetArgs.size).map { case (ctx, paramNames) =>
+        val init = ctx -> Seq.empty[(Node.Expression, Node.Field)]
+        sourceArgs.zip(targetArgs).zipWithIndex.foldLeft(init) {
+          case ((ctx, argsWithFields), ((sourceArg, targetArg), index)) =>
+            val name = paramNames(index)
+            TypedExpression(name.toIdent, targetArg, cheapRef = true).toExprNode(ctx, sourceArg).map {
+              case (ctx, arg) =>
+                ctx.typeToGoType(targetArg).map { case (ctx, targetTyp) =>
+                  ctx -> (argsWithFields :+ (arg -> field(name, targetTyp)))
+                }
             }
-          }
 
+        }
       }
       ctxAndConvArgsWithFields.map { case (ctx, convArgsWithFields) =>
         val call = source.call(convArgsWithFields.map(_._1))

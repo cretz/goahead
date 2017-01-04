@@ -37,21 +37,12 @@ trait TypeInsnCompiler {
               ctx.importRuntimeQualifiedName("NewClassCastEx").map { case (ctx, classCastEx) =>
                 ctx.stackPushed(tempVar) -> (item.typ match {
                   case _: IType.Simple =>
-                    // As a special case, "this" is a concrete pointer already
-                    val toCheck =
-                      if (item.isThis) {
-                        // But the interface version needs to ask for the raw pointer first
-                        val thisExpr =
-                          if (!ctx.cls.access.isAccessInterface) item.expr
-                          else item.expr.sel(ctx.mangler.instanceRawPointerMethodName("java/lang/Object")).call()
-                        thisExpr.sel(ctx.mangler.forwardSelfMethodName()).call()
-                      } else item.expr
                     iff(init = None, lhs = item.expr, op = Node.Token.Eql, rhs = NilExpr, body = Seq(
                       tempVar.expr.assignExisting(NilExpr)
                     )).els(iff(
                       init = Some(assignDefineMultiple(
                         left = Seq("casted".toIdent, "castOk".toIdent),
-                        right = toCheck.typeAssert(goType).singleSeq
+                        right = typeCheckableExpr(ctx, item).typeAssert(goType).singleSeq
                       )),
                       cond = "castOk".toIdent.unary(Node.Token.Not),
                       body = "panic".toIdent.call(Seq(classCastEx.call())).toStmt.singleSeq
@@ -79,13 +70,9 @@ trait TypeInsnCompiler {
             // We need a temp bool to store the cast result
             ctx.getTempVar(IType.BooleanType).map { case (ctx, tempVar) =>
               ctx.typeToGoType(IType.getObjectType(insn.desc)).map { case (ctx, goType) =>
-                // As a special case, "this" is a concrete pointer already
-                val toCheck =
-                  if (typedExpr.isThis) typedExpr.expr.sel(ctx.mangler.forwardSelfMethodName()).call()
-                  else typedExpr.expr
                 val checkStmt = assignExistingMultiple(
                   left = Seq("_".toIdent, tempVar.expr),
-                  right = toCheck.typeAssert(goType).singleSeq
+                  right = typeCheckableExpr(ctx, typedExpr).typeAssert(goType).singleSeq
                 )
                 ctx.stackPushed(tempVar) -> (tempAssignStmtOpt.toSeq :+ checkStmt)
               }
@@ -100,5 +87,16 @@ trait TypeInsnCompiler {
           ) -> Nil
         }
     }
+  }
+
+  protected def typeCheckableExpr(ctx: Context, item: TypedExpression): Node.Expression = {
+    // As a special case, "this" is a concrete pointer already
+    if (item.isThis) {
+      // But the interface version needs to ask for the raw pointer first
+      val thisExpr =
+        if (!ctx.cls.access.isAccessInterface) item.expr
+        else item.expr.sel(ctx.mangler.instanceRawPointerMethodName("java/lang/Object")).call()
+      thisExpr.sel(ctx.mangler.forwardSelfMethodName()).call()
+    } else item.expr
   }
 }

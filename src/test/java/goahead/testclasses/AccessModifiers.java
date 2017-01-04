@@ -2,6 +2,13 @@ package goahead.testclasses;
 
 public class AccessModifiers {
 
+    public static void main(String[] args) {
+        normalFields();
+        recreateField();
+// TODO: fix
+//        packagePrivateOverrideWithPrivate();
+    }
+
     static class Base {
         private String stringField = "Base";
 
@@ -41,13 +48,30 @@ public class AccessModifiers {
         }
     }
 
-    public static void main(String[] args) {
+    static void normalFields() {
         new Impl().print();
         new Impl().print2();
         Base base = new Impl();
         System.out.println(base.stringField);
         System.out.println(((Impl) base).stringField);
+    }
+
+    static void recreateField() {
         Impl impl = new Impl();
         System.out.println(impl.recreateAndObtainField());
     }
+
+// TODO: fix this...
+//    static class Foo extends goahead.testclasses.otherpkg.AccessModifiers.Foo {
+//        private String getFoo() {
+//            return "Bar";
+//        }
+//    }
+//
+//    static goahead.testclasses.otherpkg.AccessModifiers.Foo foo;
+//
+//    static void packagePrivateOverrideWithPrivate() {
+//        foo = new Foo();
+//        foo.printFoo();
+//    }
 }

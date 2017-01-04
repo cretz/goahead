@@ -467,8 +467,8 @@ trait ZeroOpInsnCompiler {
           case Node.BasicLiteral(_, v) if v.headOption.contains('-') =>
             ctx.withImportAlias("math").map { case (ctx, math) =>
               val max = if (opcode == Opcodes.IUSHR) "MaxUint32" else "MaxUint64"
-              ctx -> math.toIdent.sel(max).binary(Node.Token.Add, lhs).
-                binary(Node.Token.Add, 1.toLit).inParens.binary(Node.Token.Shr, rhs)
+              ctx -> unsignedTo.toIdent.call(Seq(math.toIdent.sel(max).binary(Node.Token.Add, lhs).
+                binary(Node.Token.Add, 1.toLit))).binary(Node.Token.Shr, rhs)
             }
           case _ =>
             ctx -> unsignedTo.toIdent.call(Seq(lhs)).binary(Node.Token.Shr, rhs)

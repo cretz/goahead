@@ -294,14 +294,28 @@ object Helpers extends Logger {
       ctx.copy(localVars = ctx.localVars.take(amount))
     }
 
+    def nextUnusedVarName(): (MethodCompiler.Context, String) = {
+      ctx.localVars.nextUnusedVarName().map { case (localVars, name) =>
+        ctx.copy(localVars = localVars) -> name
+      }
+    }
+
+    def nextUnusedVarNames(amount: Int): (MethodCompiler.Context, Seq[String]) = {
+      (0 until amount).foldLeft(ctx -> Seq.empty[String]) { case ((ctx, names), _) =>
+        ctx.nextUnusedVarName().map { case (ctx, name) => ctx -> (names :+ name) }
+      }
+    }
+
     def getTempVar(typ: IType) = {
       // Previously we tried to find one not in use, but unfortunately it is very difficult
       // to tell whether one is in use. Can't just check the top level of the stack, but would
       // have to walk all stack expressions. Instead, just create a new temp var and live with
       // the consequences which should be minimal because frames don't usually last long.
       // We are going to keep a temp var counter for naming temp vars.
-      val tempVar = TypedExpression.namedVar("temp" + ctx.tempVarCounter, typ)
-      ctx.copy(localTempVars = ctx.localTempVars :+ tempVar, tempVarCounter = ctx.tempVarCounter + 1) -> tempVar
+      nextUnusedVarName().map { case (ctx, name) =>
+        val tempVar = TypedExpression.namedVar(name, typ)
+        ctx.copy(localTempVars = ctx.localTempVars :+ tempVar) -> tempVar
+      }
     }
 
     def withTempVar[T](typ: IType, f: (MethodCompiler.Context, TypedExpression) => T) = {

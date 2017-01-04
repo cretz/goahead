@@ -62,7 +62,10 @@ trait BuildRt extends Command {
         "java.lang.invoke.MethodType",
         "java.lang.invoke.SerializedLambda",
         "java.util.function.BiConsumer",
-        "java.util.function.BinaryOperator"
+        "java.util.function.BinaryOperator",
+        "java.util.function.IntFunction",
+        "java.util.function.Function",
+        "java.util.stream.Stream"
       ),
       // Things we are handling ourselves for now
       excludePatterns = Seq(

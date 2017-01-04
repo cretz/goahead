@@ -180,7 +180,7 @@ object CompilerSpec extends Logger {
     import goahead.testclasses._
     Seq(
       TestCase(classOf[Abstracts]),
-      TestCase(classOf[AccessModifiers]),
+      TestCase(classOf[AccessModifiers], classOf[goahead.testclasses.otherpkg.AccessModifiers]),
       TestCase(classOf[Arrays]),
       TestCase(classOf[Casts]),
       TestCase(classOf[Conditionals]),

@@ -163,11 +163,11 @@ trait MethodInsnCompiler {
   ): (Context, Seq[Node.Statement]) = {
     val called = methodExpr.call(args)
     if (retType == IType.VoidType) ctx -> called.toStmt.singleSeq else {
-      // As a special case, sigpoly methods actually return an object despite the sig, so we cast
+      // As a special case, sigpoly methods actually return something else despite the sig, so we cast
       val ctxAndRetExpr =
         if (!method.isSignaturePolymorphic) ctx -> TypedExpression(called, retType, cheapRef = false)
-        else TypedExpression(called, ObjectType, cheapRef = false).toExprNode(ctx, retType).map { case (ctx, expr) =>
-          ctx -> TypedExpression(expr, retType, cheapRef = false)
+        else TypedExpression(called, IType.getReturnType(method.desc), cheapRef = false).toExprNode(ctx, retType).map {
+          case (ctx, expr) => ctx -> TypedExpression(expr, retType, cheapRef = false)
         }
       ctxAndRetExpr.map { case (ctx, expr) => ctx.stackPushed(expr) -> Nil }
     }
