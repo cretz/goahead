@@ -103,7 +103,8 @@ object MethodSetManager {
         // All methods not in the object class
         val all = allMethods(classPath, cls) -- allMethods(classPath, classPath.getFirstClass("java/lang/Object").cls)
         val methodPossibles = all.map.toSeq.collect {
-          case (_, (meth, dupes)) if meth.access.isAccessAbstract => meth -> dupes.toSeq
+          case (_, (dupes)) if dupes.primary.access.isAccessAbstract =>
+            dupes.primary -> dupes.covariantReturnTypes
         }
         if (methodPossibles.size != 1) None else methodPossibles.headOption
       }
@@ -137,21 +138,22 @@ object MethodSetManager {
 
   case class MethodSet private(
     private val classPath: ClassPath,
-    // Keyed by name then arg type, value is actual -> covariant dupes
-    private[MethodSetManager] val map: Map[(String, Seq[IType]), (Method, Iterable[Method])]
+    private[MethodSetManager] val map: Map[(String, Seq[IType]), MethodDupes]
   ) {
-    def methods = map.values.map(_._1).toSeq.sortBy(m => m.name -> m.desc)
+    def methods = map.values.map(_.primary).toSeq.sortBy(m => m.name -> m.desc)
 
     def covariantReturnDuplicates = {
       // Sort inside and out
-      map.values.toSeq.sortBy(m => m._1.name -> m._1.desc).map { case (m, dupes) =>
-        m -> dupes.toSeq.sortBy(m => m.name -> m.desc)
+      map.values.toSeq.sortBy(m => m.primary.name -> m.primary.desc).map { case (dupes) =>
+        dupes.primary -> dupes.covariantReturnTypes.sortBy(m => m.name -> m.desc)
       }
     }
 
-    def methodsWithCovariantReturnDuplicates = allMethods.toSeq.sortBy(m => m.name -> m.desc)
+    def methodsWithCovariantReturnDuplicates = {
+      map.values.flatMap(m => m.primary +: m.covariantReturnTypes).toSeq.sortBy(m => m.name -> m.desc)
+    }
 
-    private def allMethods = map.values.flatMap(v => Iterable(v._1) ++ v._2)
+    private def allMethods = map.values.flatMap(m => m.primary +: (m.covariantReturnTypes ++ m.regularDupes))
 
     def `++`(other: MethodSet) = MethodSet(classPath, allMethods ++ other.allMethods)
 
@@ -165,15 +167,17 @@ object MethodSetManager {
 
     // Filters primary method and non-matches are excluded along with their dupes
     def filterIncludingReturnDuplicates(fn: Method => Boolean) = copy(
-      map = map.filter { case (_, (m, _)) => fn(m) }
+      map = map.filter { case (_, (m)) => fn(m.primary) }
     )
 
     def prettyLines: Seq[String] = {
-      covariantReturnDuplicates.flatMap { case (m, dupes) =>
-        s"Method: ${m.cls.name}::${m.name}${m.desc}" +: dupes.map { m =>
-          s"  Dupe: ${m.cls.name}::${m.name}${m.desc}"
-        }
-      }
+      @inline def methodStr(m: Method) = s"${m.cls.name}::${m.name}${m.desc}"
+      map.values.flatMap({ m =>
+        s"Method: ${methodStr(m.primary)}" +: (
+          m.covariantReturnTypes.map(m => s"  Covariant Return Dupe: ${methodStr(m)}") ++
+          m.regularDupes.map(m => s"  Regular Dupe: ${methodStr(m)}")
+        )
+      }).toSeq
     }
   }
 
@@ -187,7 +191,13 @@ object MethodSetManager {
         // Now, of all of the dupes, which is the most specific?
         val mostSpec = distinctDupes.reduce(mostSpecific(classPath, _, _))
         // All others are just dupes
-        mostSpec -> distinctDupes.filterNot(_.returnType == mostSpec.returnType).toSeq
+        val differentReturnType = distinctDupes.filterNot(_.returnType == mostSpec.returnType).toSeq
+        val sameReturnType = dupes.toSeq.diff(mostSpec +: differentReturnType)
+        MethodDupes(
+          primary = mostSpec,
+          differentReturnType,
+          sameReturnType
+        )
       })
     }
 
@@ -203,4 +213,10 @@ object MethodSetManager {
       }
     }
   }
+
+  case class MethodDupes(
+    primary: Method,
+    covariantReturnTypes: Seq[Method],
+    regularDupes: Seq[Method]
+  )
 }
