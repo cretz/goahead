@@ -59,4 +59,10 @@ public class FrameVars {
             temp = new UnknownFrame1(null, var0 == null ? UnknownFrame2.foo() : var0, doSomething(var1));
         }
     }
+
+    private static void duplicateLabelIssue() {
+        for (;;) {
+            String temp = "Test";
+        }
+    }
 }

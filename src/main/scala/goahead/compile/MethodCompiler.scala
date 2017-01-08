@@ -59,7 +59,7 @@ trait MethodCompiler extends Logger {
       val insns = node.instructions
       require(insns.headOption.exists(_.isInstanceOf[LabelNode]), "Expected label to be first insn")
       val initial = LabelSet(insns.head.asInstanceOf[LabelNode])
-      insns.foldLeft(Seq(initial)) { case (labelSets, insn) =>
+      insns.tail.foldLeft(Seq(initial)) { case (labelSets, insn) =>
         insn match {
           case n: FrameNode =>
             require(labelSets.last.newFrame.isEmpty, "Expected label to not have two frames")
