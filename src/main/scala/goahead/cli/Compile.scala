@@ -21,7 +21,7 @@ trait Compile extends Command with Logger {
   case class Conf(
     excludeRunningRuntimeJar: Boolean = false,
     classPath: Seq[String] = Nil,
-    classes: Seq[String] = Nil,
+    classes: Seq[String] = Seq("*"),
     outDir: String,
     parallel: Boolean = false,
     excludeSuperClassesOfSameEntry: Boolean = false,
@@ -31,7 +31,15 @@ trait Compile extends Command with Logger {
     excludeInnerClasses: Boolean = false,
     includeOldVersionClasses: Boolean = false,
     excludeAlreadyWrittenFiles: Boolean = false,
-    classRules: Map[String, ClassRules] = Map.empty
+    excludeFields: Seq[String] = Nil,
+    excludeMethods: Seq[String] = Nil,
+    overrideMethods: Seq[String] = Nil,
+    bodylessMethods: Seq[String] = Nil,
+    fileTransformers: Seq[String] = Nil,
+    onlyMethodsReferencingClasses: Boolean = false,
+    onlyFieldsReferencingClasses: Boolean = false,
+    excludePrivateMethods: Boolean = false,
+    excludePrivateFields: Boolean = false
   ) {
     lazy val manglerInst = mangler.map(Class.forName(_).newInstance().asInstanceOf[Mangler]).getOrElse(Mangler.Simple)
   }
@@ -135,16 +143,11 @@ trait Compile extends Command with Logger {
     )
   }
 
-  override def confLoader = path => {
+  override def confLoader = {
     import pureconfig._
     implicit val fileGroupingConvert = ConfigConvert.fromString(Conf.FileGrouping.apply)
     implicit def conv[T] = ConfigFieldMapping.apply[T](CamelCase, KebabCase)
-    pureconfig.loadConfig[Conf](path).map { conf =>
-      if (conf.classes.isEmpty) {
-        if (conf.classRules.nonEmpty) conf.copy(classes = conf.classRules.keys.toSeq)
-        else conf.copy(classes = Seq("*"))
-      } else conf
-    }
+    pureconfig.loadConfig[Conf]
   }
 
   override def run(conf: Conf): Unit = {
@@ -164,7 +167,25 @@ trait Compile extends Command with Logger {
     logger.trace(s"Class entries: " + classEntries.map(_._2.map(_.cls.name)))
 
     // Build the compiler
-    val compiler = new Compile.FilteringCompiler(conf.classRules.map({ case (k, v) => k.replace('.', '/') -> v }))
+    var classRules = ClassRules(
+      excludeFields = MethodOrFieldMatchers.fromStrings(conf.excludeFields),
+      excludeMethods = MethodOrFieldMatchers.fromStrings(conf.excludeMethods),
+      overrideMethods = MethodOrFieldMatchers.fromStrings(conf.overrideMethods),
+      bodylessMethods = MethodOrFieldMatchers.fromStrings(conf.bodylessMethods)
+    )
+    if (conf.onlyMethodsReferencingClasses || conf.onlyFieldsReferencingClasses) {
+      val matcher = MethodOrFieldMatch.NotContainingTypes(classEntries.flatMap(_._2.map(_.cls.name)).toSet)
+      if (conf.onlyMethodsReferencingClasses)
+        classRules = classRules.copy(excludeMethods = classRules.excludeMethods + matcher)
+      if (conf.onlyFieldsReferencingClasses)
+        classRules = classRules.copy(excludeFields = classRules.excludeFields + matcher)
+    }
+    if (conf.excludePrivateMethods)
+      classRules = classRules.copy(excludeMethods = classRules.excludeMethods + MethodOrFieldMatch.PrivateMatch)
+    if (conf.excludePrivateFields)
+      classRules = classRules.copy(excludeFields = classRules.excludeFields + MethodOrFieldMatch.PrivateMatch)
+    val fileTransformers = conf.fileTransformers.map(c => Class.forName(c).newInstance().asInstanceOf[FileTransformer])
+    val compiler = new Compile.FilteringCompiler(classRules, fileTransformers)
 
     // Compile
     // TODO: Maybe something like monix would be better so I can do gatherUnordered?
@@ -238,50 +259,137 @@ object Compile extends Compile {
   import Helpers._
 
   case class ClassRules(
-    excludeFields: Set[String] = Set.empty,
-    excludeMethods: Set[String] = Set.empty,
-    overrideMethods: Set[String] = Set.empty,
-    panicMethods: Set[String] = Set.empty
+    excludeFields: MethodOrFieldMatchers,
+    excludeMethods: MethodOrFieldMatchers,
+    overrideMethods: MethodOrFieldMatchers,
+    bodylessMethods: MethodOrFieldMatchers
   )
 
-  class FilteringCompiler(classRules: Map[String, ClassRules]) extends GoAheadCompiler {
+  class FilteringCompiler(classRules: ClassRules, fileTransfomers: Seq[FileTransformer]) extends GoAheadCompiler {
+
+    override protected def compileClasses(conf: Config, classes: Seq[Cls], classPath: ClassPath, mangler: Mangler) =
+      fileTransfomers.foldLeft(super.compileClasses(conf, classes, classPath, mangler)) {
+        case (file, fileTransformer) => fileTransformer.apply(conf, classes, classPath, mangler, file)
+      }
+
     override val classCompiler = new ClassCompiler {
 
       override protected val methodSetManager = new MethodSetManager.Filtered() {
-        override def filter(method: Method, forImpl: Boolean) = {
-          !classRules.get(method.cls.name).exists { rules =>
-            val toCheck = method.cls.name + "." + method.name + method.desc
-            rules.excludeMethods.contains(toCheck) || (forImpl && rules.overrideMethods.contains(toCheck))
-          }
-        }
+        override def filter(method: Method, forImpl: Boolean) =
+          !classRules.excludeMethods.matches(method) && (!forImpl || !classRules.overrideMethods.matches(method))
       }
 
       override protected def clsFields(
         ctx: ClassCompiler.Context,
         forImpl: Boolean,
         includeParentFields: Boolean = false
-      ): Seq[Field] = {
-        super.clsFields(ctx, forImpl, includeParentFields).filter { field =>
-          !classRules.get(field.cls.name).exists { rules =>
-            rules.excludeFields.contains(field.cls.name + "." + field.name)
-          }
-        }
-      }
+      ): Seq[Field] =
+        super.clsFields(ctx, forImpl, includeParentFields).filterNot(classRules.excludeFields.matches)
 
       override val methodCompiler = new MethodCompiler {
         override def compile(conf: Config, cls: Cls, method: Method, mports: Imports, mangler: Mangler) = {
-          import AstDsl._
-          val methodStr = s"${cls.name}.${method.name}${method.desc}"
-          val panicImpl = method.access.isAccessNative ||
-            classRules.get(cls.name).exists(_.panicMethods.contains(methodStr))
-          if (!panicImpl) super.compile(conf, cls, method, mports, mangler) else {
-            buildFuncDecl(
-              ctx = initContext(conf, cls, method, mports, mangler, Nil),
-              stmts = Seq("panic".toIdent.call(s"Method not implemented - $methodStr".toLit.singleSeq).toStmt)
-            ).map { case (ctx, funcDecl) => ctx.imports -> funcDecl }
+          if (!method.access.isAccessNative && !classRules.bodylessMethods.matches(method)) {
+            super.compile(conf, cls, method, mports, mangler)
+          } else {
+            import AstDsl._
+            val stmts = if (method.name == "<clinit>") Nil else {
+              val methodStr = s"${method.cls.name}.${method.name}${method.desc}"
+              Seq("panic".toIdent.call(Seq(s"Method not implemented - $methodStr".toLit)).toStmt)
+            }
+            buildFuncDecl(ctx = initContext(conf, cls, method, mports, mangler, Nil), stmts = stmts).map {
+              case (ctx, funcDecl) => ctx.imports -> funcDecl
+            }
           }
         }
       }
     }
+  }
+
+  sealed trait ClassPatternMatch {
+    def matches(cls: Cls): Boolean = matches(cls.name.replace('/', '.'))
+    def matches(cls: String): Boolean
+  }
+
+  object ClassPatternMatch {
+
+    def apply(str: String): ClassPatternMatch = str.last match {
+      case '*' => StartsWithDeep(str.init)
+      case '?' => StartsWithShallow(str.init)
+      case s => Exact(str)
+    }
+
+    case class StartsWithDeep(begin: String) extends ClassPatternMatch {
+      override def matches(cls: String) = cls.startsWith(begin)
+    }
+    case class StartsWithShallow(begin: String) extends ClassPatternMatch {
+      override def matches(cls: String) = cls.lastIndexOf('.') < begin.length && cls.startsWith(begin)
+    }
+    case class Exact(str: String) extends ClassPatternMatch {
+      override def matches(cls: String) = cls == str
+    }
+  }
+
+  sealed trait MethodOrFieldMatch {
+    def matches(method: Method): Boolean
+    def matches(field: Field): Boolean
+  }
+
+  object MethodOrFieldMatch {
+    def apply(str: String): MethodOrFieldMatch = {
+      str.indexOf("::") match {
+        case -1 => SimpleName(ClassPatternMatch(str), None, None)
+        case colonIndex =>
+          val cls = ClassPatternMatch(str.substring(0, colonIndex))
+          str.indexOf('(', colonIndex + 2) match {
+            case -1 =>
+              SimpleName(cls, Some(str.substring(colonIndex + 2)), None)
+            case parenIndex =>
+              SimpleName(cls, Some(str.substring(colonIndex + 2, parenIndex)), Some(str.substring(parenIndex)))
+        }
+      }
+    }
+
+    case class SimpleName(
+      clsMatch: ClassPatternMatch,
+      name: Option[String],
+      desc: Option[String]
+    ) extends MethodOrFieldMatch {
+
+      override def matches(method: Method) =
+        clsMatch.matches(method.cls) && !name.exists(_ != method.name) && !desc.exists(_ != method.desc)
+
+      override def matches(field: Field) =
+        clsMatch.matches(field.cls) && !name.exists(_ != field.name)
+    }
+
+    case class NotContainingTypes(internalClassNames: Set[String]) extends MethodOrFieldMatch {
+      override def matches(method: Method) =
+        (method.argTypes :+ method.returnType).exists(objectTypeName(_).exists(v => !internalClassNames.contains(v)))
+
+      override def matches(field: Field) =
+        objectTypeName(IType.getType(field.desc)).exists(v => !internalClassNames.contains(v))
+
+      protected def objectTypeName(typ: IType): Option[String] = typ match {
+        case typ: IType.Simple if typ.isObject => Some(typ.internalName)
+        case typ: IType.Simple if typ.isArray => objectTypeName(typ.arrayElementType)
+        case _ => None
+      }
+    }
+
+    case object PrivateMatch extends MethodOrFieldMatch {
+      override def matches(method: Method) = method.access.isAccessPrivate
+      override def matches(field: Field) = field.access.isAccessPrivate
+    }
+  }
+
+  case class MethodOrFieldMatchers(matchers: Seq[MethodOrFieldMatch]) {
+    def matches(method: Method): Boolean = matchers.exists(_.matches(method))
+    def matches(field: Field): Boolean = matchers.exists(_.matches(field))
+
+    def `+`(rhs: MethodOrFieldMatch) = copy(matchers = matchers :+ rhs)
+  }
+
+  object MethodOrFieldMatchers {
+    def fromStrings(strs: Seq[String]) = MethodOrFieldMatchers(strs.map(MethodOrFieldMatch.apply))
   }
 }

@@ -49,7 +49,7 @@ fork in Test := true
 //)
 
 lazy val buildTestRt = taskKey[Unit]("Build the test RT lib")
-fullRunTask(buildTestRt, Runtime, "goahead.cli.Main", "build-rt", "-vv", "-o", "javalib/src/rt")
+fullRunTask(buildTestRt, Test, "goahead.cli.Main", "compile", "-v", "-c", "src/test/resources/test-rt-compile.conf")
 
 lazy val buildRt = taskKey[Unit]("Build the RT lib")
 fork in buildRt := true
@@ -59,4 +59,4 @@ javaOptions in buildRt += "-Xmx4G"
 //  "-Dcom.sun.management.jmxremote.ssl=false",
 //  "-Dcom.sun.management.jmxremote.authenticate=false"
 //)
-fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "javalib/rt-compile.conf")
+fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "libs/java/rt-compile.conf")

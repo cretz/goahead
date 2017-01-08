@@ -25,17 +25,17 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   // Create this entry for the "rt" classes and close at the end
   val javaRuntimeEntry =
     if (useTestRt) {
-      ClassPath.Entry.fromZipFile(ClassPath.Entry.javaRuntimeJarPath, "github.com/cretz/goahead/javalib/src/rt")
+      ClassPath.Entry.fromZipFile(ClassPath.Entry.javaRuntimeJarPath, "github.com/cretz/goahead/src/test/go/javalib/rt")
     } else {
       require(sys.env.contains("ZULU_JDK_HOME"), "ZULU_JDK_HOME env var required")
       ClassPath.Entry.fromZipFile(
         Paths.get(sys.env("ZULU_JDK_HOME"), "/jmods/java.base.jmod"),
-        "github.com/cretz/goahead/javalib/rt"
+        "github.com/cretz/goahead/libs/java/rt"
       )
     }
 
   val goFormatTimeout = 20.seconds
-  val goBuildTimeout = if (useTestRt) 20.seconds else 2.hours
+  val goBuildTimeout = if (useTestRt) 20.seconds else 4.hours
   val exeRunTimeout = 20.seconds
   val checkFormatting = false
 
@@ -48,6 +48,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   testCases.foreach{t => t.subject should behave like expected(t)}
 
   def expected(t: CompilerSpec.TestCase) = it should t.provideExpectedOutput in withTemporaryFolder { tempFolder =>
+    if (t.nonWindowsOnly) assume(!sys.props.get("os.name").exists(_.startsWith("Windows")))
     val testClasses = t.classes.map(ClassPath.Entry.fromLocalClass(_, ""))
 
     // Set classpath with helper classes
@@ -194,7 +195,7 @@ object CompilerSpec extends Logger {
       TestCase(classOf[InterfaceDefaults]),
       TestCase(classOf[Interfaces]),
       TestCase(classOf[Lambdas]), // TODO: test without optimization too
-      TestCase(classOf[Literals]),
+      TestCase(classOf[Literals]).asNonWindowsOnly(), // TODO: Windows too
       TestCase(classOf[LocalClasses]),
       TestCase(classOf[LocalVarReuse]),
       TestCase(classOf[NonStaticInnerClasses]),
@@ -236,7 +237,8 @@ object CompilerSpec extends Logger {
     conf: Config,
     classes: Seq[Class[_]],
     expectedOutput: Option[String],
-    warnOnFormatError: Boolean
+    warnOnFormatError: Boolean,
+    nonWindowsOnly: Boolean = false
   ) {
     def subject =
       "Compiled classes " + classes.map(_.getName).mkString(", ")
@@ -264,6 +266,8 @@ object CompilerSpec extends Logger {
       require(mains.size == 1, "Must only have a single main method")
       mains.head.getDeclaringClass
     }
+
+    def asNonWindowsOnly() = copy(nonWindowsOnly = true)
   }
 
   object TestCase {

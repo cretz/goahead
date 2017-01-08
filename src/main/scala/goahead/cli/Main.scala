@@ -6,9 +6,6 @@ import scala.util.{Failure, Success}
 
 object Main extends Logger {
   val commands = Seq[Command](
-    BuildJvmStubs,
-    BuildStubs,
-    BuildRt,
     Compile,
     FindOpcode
   )

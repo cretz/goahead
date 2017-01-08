@@ -1,0 +1,2889 @@
+// Generated from Azul Zulu packaged OpenJDK JAR and carries the same GPL license with the classpath exception
+package rt
+
+import "sync"
+
+type Java__lang__invoke__CallSite__Static struct {
+	init sync.Once
+}
+
+var Java__lang__invoke__CallSite__Var Java__lang__invoke__CallSite__Static
+
+func Java__lang__invoke__CallSite() *Java__lang__invoke__CallSite__Static {
+	Java__lang__invoke__CallSite__Var.init.Do(Java__lang__invoke__CallSite__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__CallSite__Var
+}
+
+func (this *Java__lang__invoke__CallSite__Static) New() *Java__lang__invoke__CallSite__Impl {
+	v := &Java__lang__invoke__CallSite__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__CallSite__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__CallSite__Static) Impl__Static_Init__desc____ret__V() { }
+
+func (this *Java__lang__invoke__CallSite__Static) Impl__PrivTo__Java__lang__invoke__MakeSite__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__String____obj__Java__lang__invoke__MethodType____obj__Java__lang__Object____obj__Java__lang__Class__ret____obj__Java__lang__invoke__CallSite(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__String__Instance, var2 Java__lang__invoke__MethodType__Instance, var3 Java__lang__Object__Instance, var4 Java__lang__Class__Instance) Java__lang__invoke__CallSite__Instance {
+	panic("Method not implemented - java/lang/invoke/CallSite.makeSite(Ljava/lang/invoke/MethodHandle;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/invoke/CallSite;")
+}
+
+type Java__lang__invoke__CallSite__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Instance_Init__desc____obj__Java__lang__invoke__MethodHandle__ret__V(Java__lang__invoke__MethodHandle__Instance)
+	Impl__Instance_Init__desc____obj__Java__lang__invoke__MethodType__ret__V(Java__lang__invoke__MethodType__Instance)
+	Impl__Instance_Init__desc____obj__Java__lang__invoke__MethodType____obj__Java__lang__invoke__MethodHandle__ret__V(Java__lang__invoke__MethodType__Instance, Java__lang__invoke__MethodHandle__Instance)
+	Impl__PrivTo__Java__lang__invoke__CheckTargetChange__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret__V(Java__lang__invoke__MethodHandle__Instance, Java__lang__invoke__MethodHandle__Instance)
+	Impl__DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance
+	Impl__GetTarget__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance
+	Impl__PrivTo__Java__lang__invoke__GetTargetVolatile__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance
+	Impl__PrivTo__Java__lang__invoke__MakeDynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance
+	Impl__SetTarget__desc____obj__Java__lang__invoke__MethodHandle__ret__V(Java__lang__invoke__MethodHandle__Instance)
+	Impl__PrivTo__Java__lang__invoke__SetTargetNormal__desc____obj__Java__lang__invoke__MethodHandle__ret__V(Java__lang__invoke__MethodHandle__Instance)
+	Impl__PrivTo__Java__lang__invoke__SetTargetVolatile__desc____obj__Java__lang__invoke__MethodHandle__ret__V(Java__lang__invoke__MethodHandle__Instance)
+	Impl__Type__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Java__lang__invoke__CallSite__InitDispatch(v Java__lang__invoke__CallSite__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Instance_Init__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodHandle__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0)
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Instance_Init__desc____obj__Java__lang__invoke__MethodType__ret__V(var0 Java__lang__invoke__MethodType__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__invoke__MethodType__ret__V(var0)
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Instance_Init__desc____obj__Java__lang__invoke__MethodType____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodType__Instance, var1 Java__lang__invoke__MethodHandle__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__invoke__MethodType____obj__Java__lang__invoke__MethodHandle__ret__V(var0, var1)
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) PrivTo__Java__lang__invoke__CheckTargetChange__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodHandle__Instance) {
+	this._dispatch.Impl__PrivTo__Java__lang__invoke__CheckTargetChange__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret__V(var0, var1)
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle()
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) GetTarget__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__GetTarget__desc____ret____obj__Java__lang__invoke__MethodHandle()
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) PrivTo__Java__lang__invoke__GetTargetVolatile__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__GetTargetVolatile__desc____ret____obj__Java__lang__invoke__MethodHandle()
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) PrivTo__Java__lang__invoke__MakeDynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__MakeDynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle()
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) SetTarget__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodHandle__Instance) {
+	this._dispatch.Impl__SetTarget__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0)
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) PrivTo__Java__lang__invoke__SetTargetNormal__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodHandle__Instance) {
+	this._dispatch.Impl__PrivTo__Java__lang__invoke__SetTargetNormal__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0)
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) PrivTo__Java__lang__invoke__SetTargetVolatile__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodHandle__Instance) {
+	this._dispatch.Impl__PrivTo__Java__lang__invoke__SetTargetVolatile__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0)
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Type__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__Type__desc____ret____obj__Java__lang__invoke__MethodType()
+}
+
+type Java__lang__invoke__CallSite__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	SetTarget__desc____obj__Java__lang__invoke__MethodHandle__ret__V(Java__lang__invoke__MethodHandle__Instance)
+	Finalize__desc____ret__V()
+	Type__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	GetTarget__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance
+	PrivTo__Java__lang__invoke__MakeDynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance
+	DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance
+	PrivTo__Java__lang__invoke__SetTargetVolatile__desc____obj__Java__lang__invoke__MethodHandle__ret__V(Java__lang__invoke__MethodHandle__Instance)
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	PrivTo__Java__lang__invoke__CheckTargetChange__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret__V(Java__lang__invoke__MethodHandle__Instance, Java__lang__invoke__MethodHandle__Instance)
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	PrivTo__Java__lang__invoke__SetTargetNormal__desc____obj__Java__lang__invoke__MethodHandle__ret__V(Java__lang__invoke__MethodHandle__Instance)
+	PrivTo__Java__lang__invoke__GetTargetVolatile__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	FieldGet__Java__lang__invoke__CallSite__Target() Java__lang__invoke__MethodHandle__Instance
+	FieldSet__Java__lang__invoke__CallSite__Target(v Java__lang__invoke__MethodHandle__Instance)
+	RawPtr__Java__lang__invoke__CallSite() *Java__lang__invoke__CallSite__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__CallSite__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__CallSite__Dispatch
+	Target    Java__lang__invoke__MethodHandle__Instance
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) FieldGet__Java__lang__invoke__CallSite__Target() Java__lang__invoke__MethodHandle__Instance {
+	return this.Target
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) FieldSet__Java__lang__invoke__CallSite__Target(v Java__lang__invoke__MethodHandle__Instance) {
+	this.Target = v
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__Instance_Init__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodHandle__Instance) {
+	panic("Method not implemented - java/lang/invoke/CallSite.<init>(Ljava/lang/invoke/MethodHandle;)V")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__Instance_Init__desc____obj__Java__lang__invoke__MethodType__ret__V(var0 Java__lang__invoke__MethodType__Instance) {
+	panic("Method not implemented - java/lang/invoke/CallSite.<init>(Ljava/lang/invoke/MethodType;)V")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__Instance_Init__desc____obj__Java__lang__invoke__MethodType____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodType__Instance, var1 Java__lang__invoke__MethodHandle__Instance) {
+	panic("Method not implemented - java/lang/invoke/CallSite.<init>(Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;)V")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__PrivTo__Java__lang__invoke__CheckTargetChange__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodHandle__Instance) {
+	panic("Method not implemented - java/lang/invoke/CallSite.checkTargetChange(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;)V")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__DynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/CallSite.dynamicInvoker()Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__GetTarget__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/CallSite.getTarget()Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__PrivTo__Java__lang__invoke__GetTargetVolatile__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/CallSite.getTargetVolatile()Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__PrivTo__Java__lang__invoke__MakeDynamicInvoker__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/CallSite.makeDynamicInvoker()Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__SetTarget__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodHandle__Instance) {
+	panic("Method not implemented - java/lang/invoke/CallSite.setTarget(Ljava/lang/invoke/MethodHandle;)V")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__PrivTo__Java__lang__invoke__SetTargetNormal__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodHandle__Instance) {
+	panic("Method not implemented - java/lang/invoke/CallSite.setTargetNormal(Ljava/lang/invoke/MethodHandle;)V")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__PrivTo__Java__lang__invoke__SetTargetVolatile__desc____obj__Java__lang__invoke__MethodHandle__ret__V(var0 Java__lang__invoke__MethodHandle__Instance) {
+	panic("Method not implemented - java/lang/invoke/CallSite.setTargetVolatile(Ljava/lang/invoke/MethodHandle;)V")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl__Type__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/CallSite.type()Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) RawPtr__Java__lang__invoke__CallSite() *Java__lang__invoke__CallSite__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__CallSite__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__LambdaForm__innerclass__BasicType__Static struct {
+	__dollar__assertionsDisabled bool
+	ALL_TYPES                    ObjectArray__Instance
+	ARG_TYPES                    ObjectArray__Instance
+	ARG_TYPE_LIMIT               int
+	D_TYPE                       Java__lang__invoke__LambdaForm__innerclass__BasicType__Instance
+	F_TYPE                       Java__lang__invoke__LambdaForm__innerclass__BasicType__Instance
+	I_TYPE                       Java__lang__invoke__LambdaForm__innerclass__BasicType__Instance
+	J_TYPE                       Java__lang__invoke__LambdaForm__innerclass__BasicType__Instance
+	L_TYPE                       Java__lang__invoke__LambdaForm__innerclass__BasicType__Instance
+	TYPE_LIMIT                   int
+	V_TYPE                       Java__lang__invoke__LambdaForm__innerclass__BasicType__Instance
+	init                         sync.Once
+}
+
+var Java__lang__invoke__LambdaForm__innerclass__BasicType__Var Java__lang__invoke__LambdaForm__innerclass__BasicType__Static
+
+func Java__lang__invoke__LambdaForm__innerclass__BasicType() *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static {
+	Java__lang__invoke__LambdaForm__innerclass__BasicType__Var.init.Do(Java__lang__invoke__LambdaForm__innerclass__BasicType__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__LambdaForm__innerclass__BasicType__Var
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) New() *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl {
+	v := &Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl{
+		Java__lang__Enum__Impl: Java__lang__Enum().New(),
+	}
+	v.Java__lang__invoke__LambdaForm__innerclass__BasicType__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__Static_Init__desc____ret__V() { }
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__PrivTo__Java__lang__invoke__BasicType__desc__B__ret____obj__Java__lang__invoke__LambdaForm__innerclass__BasicType(var0 int8) Java__lang__invoke__LambdaForm__innerclass__BasicType__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.basicType(B)Ljava/lang/invoke/LambdaForm$BasicType;")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__PrivTo__Java__lang__invoke__BasicType__desc__C__ret____obj__Java__lang__invoke__LambdaForm__innerclass__BasicType(var0 rune) Java__lang__invoke__LambdaForm__innerclass__BasicType__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.basicType(C)Ljava/lang/invoke/LambdaForm$BasicType;")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__PrivTo__Java__lang__invoke__BasicType__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__LambdaForm__innerclass__BasicType(var0 Java__lang__Class__Instance) Java__lang__invoke__LambdaForm__innerclass__BasicType__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.basicType(Ljava/lang/Class;)Ljava/lang/invoke/LambdaForm$BasicType;")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__PrivTo__Java__lang__invoke__BasicTypeChar__desc____obj__Java__lang__Class__ret__C(var0 Java__lang__Class__Instance) rune {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.basicTypeChar(Ljava/lang/Class;)C")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__PrivTo__Java__lang__invoke__BasicTypeDesc__desc____arr____obj__Java__lang__invoke__LambdaForm__innerclass__BasicType__ret____obj__Java__lang__String(var0 ObjectArray__Instance) Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.basicTypeDesc([Ljava/lang/invoke/LambdaForm$BasicType;)Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__PrivTo__Java__lang__invoke__BasicTypeOrds__desc____arr____obj__Java__lang__invoke__LambdaForm__innerclass__BasicType__ret____arr__I(var0 ObjectArray__Instance) IntArray__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.basicTypeOrds([Ljava/lang/invoke/LambdaForm$BasicType;)[I")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__PrivTo__Java__lang__invoke__BasicTypes__desc____obj__Java__lang__String__ret____arr____obj__Java__lang__invoke__LambdaForm__innerclass__BasicType(var0 Java__lang__String__Instance) ObjectArray__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.basicTypes(Ljava/lang/String;)[Ljava/lang/invoke/LambdaForm$BasicType;")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__PrivTo__Java__lang__invoke__BasicTypesOrd__desc____arr____obj__Java__lang__Class__ret____arr__B(var0 ObjectArray__Instance) ByteArray__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.basicTypesOrd([Ljava/lang/Class;)[B")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__PrivTo__Java__lang__invoke__IsArgBasicTypeChar__desc__C__ret__Z(var0 rune) bool {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.isArgBasicTypeChar(C)Z")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__PrivTo__Java__lang__invoke__IsBasicTypeChar__desc__C__ret__Z(var0 rune) bool {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.isBasicTypeChar(C)Z")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__ValueOf__desc____obj__Java__lang__String__ret____obj__Java__lang__invoke__LambdaForm__innerclass__BasicType(var0 Java__lang__String__Instance) Java__lang__invoke__LambdaForm__innerclass__BasicType__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.valueOf(Ljava/lang/String;)Ljava/lang/invoke/LambdaForm$BasicType;")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Static) Impl__Values__desc____ret____arr____obj__Java__lang__invoke__LambdaForm__innerclass__BasicType() ObjectArray__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.values()[Ljava/lang/invoke/LambdaForm$BasicType;")
+}
+
+type Java__lang__invoke__LambdaForm__innerclass__BasicType__Dispatch interface {
+	Java__lang__Enum__Dispatch
+	Impl__PrivTo__Java__lang__invoke__BasicTypeChar__desc____ret__C() rune
+	Impl__PrivTo__Java__lang__invoke__BasicTypeClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Impl__PrivTo__Java__lang__invoke__BasicTypeSlots__desc____ret__I() int
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) Java__lang__invoke__LambdaForm__innerclass__BasicType__InitDispatch(v Java__lang__invoke__LambdaForm__innerclass__BasicType__Dispatch) {
+	this.Java__lang__Enum__Impl.Java__lang__Enum__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) PrivTo__Java__lang__invoke__BasicTypeChar__desc____ret__C() rune {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__BasicTypeChar__desc____ret__C()
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) PrivTo__Java__lang__invoke__BasicTypeClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__BasicTypeClass__desc____ret____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) PrivTo__Java__lang__invoke__BasicTypeSlots__desc____ret__I() int {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__BasicTypeSlots__desc____ret__I()
+}
+
+type Java__lang__invoke__LambdaForm__innerclass__BasicType__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	CompareTo__desc____obj__Java__lang__Enum__ret__I(Java__lang__Enum__Instance) int
+	Ordinal__desc____ret__I() int
+	PrivTo__Java__lang__invoke__BasicTypeClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Wait__desc__J__I__ret__V(int64, int)
+	Name__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	PrivTo__Java__lang__invoke__BasicTypeChar__desc____ret__C() rune
+	Wait__desc__J__ret__V(int64)
+	PrivTo__Java__lang__invoke__BasicTypeSlots__desc____ret__I() int
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	FieldGet__Java__lang__invoke__LambdaForm__innerclass__BasicType__BtChar() rune
+	FieldSet__Java__lang__invoke__LambdaForm__innerclass__BasicType__BtChar(v rune)
+	FieldGet__Java__lang__invoke__LambdaForm__innerclass__BasicType__BtClass() Java__lang__Class__Instance
+	FieldSet__Java__lang__invoke__LambdaForm__innerclass__BasicType__BtClass(v Java__lang__Class__Instance)
+	RawPtr__Java__lang__invoke__LambdaForm__innerclass__BasicType() *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl
+	RawPtr__Java__lang__Enum() *Java__lang__Enum__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl struct {
+	*Java__lang__Enum__Impl
+	_dispatch Java__lang__invoke__LambdaForm__innerclass__BasicType__Dispatch
+	BtChar    rune
+	BtClass   Java__lang__Class__Instance
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) FieldGet__Java__lang__invoke__LambdaForm__innerclass__BasicType__BtChar() rune {
+	return this.BtChar
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) FieldSet__Java__lang__invoke__LambdaForm__innerclass__BasicType__BtChar(v rune) {
+	this.BtChar = v
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) FieldGet__Java__lang__invoke__LambdaForm__innerclass__BasicType__BtClass() Java__lang__Class__Instance {
+	return this.BtClass
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) FieldSet__Java__lang__invoke__LambdaForm__innerclass__BasicType__BtClass(v Java__lang__Class__Instance) {
+	this.BtClass = v
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) Impl__PrivTo__Java__lang__invoke__BasicTypeChar__desc____ret__C() rune {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.basicTypeChar()C")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) Impl__PrivTo__Java__lang__invoke__BasicTypeClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.basicTypeClass()Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) Impl__PrivTo__Java__lang__invoke__BasicTypeSlots__desc____ret__I() int {
+	panic("Method not implemented - java/lang/invoke/LambdaForm$BasicType.basicTypeSlots()I")
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) RawPtr__Java__lang__invoke__LambdaForm__innerclass__BasicType() *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__LambdaForm__innerclass__BasicType__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__LambdaMetafactory__Static struct {
+	FLAG_BRIDGES      int
+	FLAG_MARKERS      int
+	FLAG_SERIALIZABLE int
+	init              sync.Once
+}
+
+var Java__lang__invoke__LambdaMetafactory__Var Java__lang__invoke__LambdaMetafactory__Static
+
+func Java__lang__invoke__LambdaMetafactory() *Java__lang__invoke__LambdaMetafactory__Static {
+	Java__lang__invoke__LambdaMetafactory__Var.init.Do(Java__lang__invoke__LambdaMetafactory__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__LambdaMetafactory__Var
+}
+
+func (this *Java__lang__invoke__LambdaMetafactory__Static) New() *Java__lang__invoke__LambdaMetafactory__Impl {
+	v := &Java__lang__invoke__LambdaMetafactory__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__LambdaMetafactory__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__LambdaMetafactory__Static) Impl__Static_Init__desc____ret__V() { }
+
+func (this *Java__lang__invoke__LambdaMetafactory__Static) Impl__AltMetafactory__desc____obj__Java__lang__invoke__MethodHandles__innerclass__Lookup____obj__Java__lang__String____obj__Java__lang__invoke__MethodType____arr____obj__Java__lang__Object__ret____obj__Java__lang__invoke__CallSite(var0 Java__lang__invoke__MethodHandles__innerclass__Lookup__Instance, var1 Java__lang__String__Instance, var2 Java__lang__invoke__MethodType__Instance, var3 ObjectArray__Instance) Java__lang__invoke__CallSite__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaMetafactory.altMetafactory(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;")
+}
+
+func (this *Java__lang__invoke__LambdaMetafactory__Static) Impl__Metafactory__desc____obj__Java__lang__invoke__MethodHandles__innerclass__Lookup____obj__Java__lang__String____obj__Java__lang__invoke__MethodType____obj__Java__lang__invoke__MethodType____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__CallSite(var0 Java__lang__invoke__MethodHandles__innerclass__Lookup__Instance, var1 Java__lang__String__Instance, var2 Java__lang__invoke__MethodType__Instance, var3 Java__lang__invoke__MethodType__Instance, var4 Java__lang__invoke__MethodHandle__Instance, var5 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__CallSite__Instance {
+	panic("Method not implemented - java/lang/invoke/LambdaMetafactory.metafactory(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;")
+}
+
+type Java__lang__invoke__LambdaMetafactory__Dispatch interface {
+	Java__lang__Object__Dispatch
+}
+
+func (this *Java__lang__invoke__LambdaMetafactory__Impl) Java__lang__invoke__LambdaMetafactory__InitDispatch(v Java__lang__invoke__LambdaMetafactory__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__invoke__LambdaMetafactory__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__LambdaMetafactory() *Java__lang__invoke__LambdaMetafactory__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__LambdaMetafactory__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__LambdaMetafactory__Dispatch
+}
+
+func (this *Java__lang__invoke__LambdaMetafactory__Impl) Impl__Instance_Init__desc____ret__V() {
+	panic("Method not implemented - java/lang/invoke/LambdaMetafactory.<init>()V")
+}
+
+func (this *Java__lang__invoke__LambdaMetafactory__Impl) RawPtr__Java__lang__invoke__LambdaMetafactory() *Java__lang__invoke__LambdaMetafactory__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__LambdaMetafactory__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MemberName__innerclass__Factory__Static struct {
+	__dollar__assertionsDisabled bool
+	INSTANCE                     Java__lang__invoke__MemberName__innerclass__Factory__Instance
+	init                         sync.Once
+}
+
+var Java__lang__invoke__MemberName__innerclass__Factory__Var Java__lang__invoke__MemberName__innerclass__Factory__Static
+
+func Java__lang__invoke__MemberName__innerclass__Factory() *Java__lang__invoke__MemberName__innerclass__Factory__Static {
+	Java__lang__invoke__MemberName__innerclass__Factory__Var.init.Do(Java__lang__invoke__MemberName__innerclass__Factory__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__MemberName__innerclass__Factory__Var
+}
+
+func (this *Java__lang__invoke__MemberName__innerclass__Factory__Static) New() *Java__lang__invoke__MemberName__innerclass__Factory__Impl {
+	v := &Java__lang__invoke__MemberName__innerclass__Factory__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MemberName__innerclass__Factory__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__MemberName__innerclass__Factory__Static) Impl__Static_Init__desc____ret__V() { }
+
+type Java__lang__invoke__MemberName__innerclass__Factory__Dispatch interface {
+	Java__lang__Object__Dispatch
+}
+
+func (this *Java__lang__invoke__MemberName__innerclass__Factory__Impl) Java__lang__invoke__MemberName__innerclass__Factory__InitDispatch(v Java__lang__invoke__MemberName__innerclass__Factory__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__invoke__MemberName__innerclass__Factory__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MemberName__innerclass__Factory() *Java__lang__invoke__MemberName__innerclass__Factory__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MemberName__innerclass__Factory__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__MemberName__innerclass__Factory__Dispatch
+}
+
+func (this *Java__lang__invoke__MemberName__innerclass__Factory__Impl) RawPtr__Java__lang__invoke__MemberName__innerclass__Factory() *Java__lang__invoke__MemberName__innerclass__Factory__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MemberName__innerclass__Factory__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodHandle__Static struct {
+	__dollar__assertionsDisabled bool
+	init                         sync.Once
+}
+
+var Java__lang__invoke__MethodHandle__Var Java__lang__invoke__MethodHandle__Static
+
+func Java__lang__invoke__MethodHandle() *Java__lang__invoke__MethodHandle__Static {
+	Java__lang__invoke__MethodHandle__Var.init.Do(Java__lang__invoke__MethodHandle__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__MethodHandle__Var
+}
+
+func (this *Java__lang__invoke__MethodHandle__Static) New() *Java__lang__invoke__MethodHandle__Impl {
+	v := &Java__lang__invoke__MethodHandle__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MethodHandle__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__MethodHandle__Static) Impl__Static_Init__desc____ret__V() { }
+
+func (this *Java__lang__invoke__MethodHandle__Static) Impl__PrivTo__Java__lang__invoke__LinkToInterface__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.linkToInterface([Ljava/lang/Object;)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Static) Impl__PrivTo__Java__lang__invoke__LinkToSpecial__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.linkToSpecial([Ljava/lang/Object;)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Static) Impl__PrivTo__Java__lang__invoke__LinkToStatic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.linkToStatic([Ljava/lang/Object;)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Static) Impl__PrivTo__Java__lang__invoke__LinkToVirtual__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.linkToVirtual([Ljava/lang/Object;)Ljava/lang/Object;")
+}
+
+type Java__lang__invoke__MethodHandle__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__AsCollector__desc__I____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(int, Java__lang__Class__Instance, int) Java__lang__invoke__MethodHandle__Instance
+	Impl__AsCollector__desc____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, int) Java__lang__invoke__MethodHandle__Instance
+	Impl__PrivTo__Java__lang__invoke__AsCollectorChecks__desc____obj__Java__lang__Class__I__I__ret__Z(Java__lang__Class__Instance, int, int) bool
+	Impl__AsFixedArity__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance
+	Impl__AsSpreader__desc__I____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(int, Java__lang__Class__Instance, int) Java__lang__invoke__MethodHandle__Instance
+	Impl__AsSpreader__desc____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, int) Java__lang__invoke__MethodHandle__Instance
+	Impl__AsType__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__PrivTo__Java__lang__invoke__AsTypeUncached__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__AsVarargsCollector__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__BindTo__desc____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Object__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__PrivTo__Java__lang__invoke__Customize__desc____ret__V()
+	Impl__PrivTo__Java__lang__invoke__DebugString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__PrivTo__Java__lang__invoke__InternalCallerClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Impl__PrivTo__Java__lang__invoke__InternalProperties__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Impl__PrivTo__Java__lang__invoke__InternalValues__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Impl__PrivTo__Java__lang__invoke__IntrinsicName__desc____ret____obj__Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic() Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	Impl__Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
+	Impl__PrivTo__Java__lang__invoke__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
+	Impl__InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
+	Impl__InvokeWithArguments__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(ObjectArray__Instance) Java__lang__Object__Instance
+	Impl__PrivTo__Java__lang__invoke__IsInvokeSpecial__desc____ret__Z() bool
+	Impl__IsVarargsCollector__desc____ret__Z() bool
+	Impl__PrivTo__Java__lang__invoke__StandardString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__Type__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	Impl__PrivTo__Java__lang__invoke__ViewAsType__desc____obj__Java__lang__invoke__MethodType__Z__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__invoke__MethodType__Instance, bool) Java__lang__invoke__MethodHandle__Instance
+	Impl__PrivTo__Java__lang__invoke__ViewAsTypeChecks__desc____obj__Java__lang__invoke__MethodType__Z__ret__Z(Java__lang__invoke__MethodType__Instance, bool) bool
+	Impl__WithVarargs__desc__Z__ret____obj__Java__lang__invoke__MethodHandle(bool) Java__lang__invoke__MethodHandle__Instance
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Java__lang__invoke__MethodHandle__InitDispatch(v Java__lang__invoke__MethodHandle__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) AsCollector__desc__I____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0 int, var1 Java__lang__Class__Instance, var2 int) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__AsCollector__desc__I____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) AsCollector__desc____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 int) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__AsCollector__desc____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0, var1)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__AsCollectorChecks__desc____obj__Java__lang__Class__I__I__ret__Z(var0 Java__lang__Class__Instance, var1 int, var2 int) bool {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__AsCollectorChecks__desc____obj__Java__lang__Class__I__I__ret__Z(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) AsFixedArity__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__AsFixedArity__desc____ret____obj__Java__lang__invoke__MethodHandle()
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) AsSpreader__desc__I____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0 int, var1 Java__lang__Class__Instance, var2 int) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__AsSpreader__desc__I____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) AsSpreader__desc____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 int) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__AsSpreader__desc____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0, var1)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) AsType__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__AsType__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__AsTypeUncached__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__AsTypeUncached__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) AsVarargsCollector__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__AsVarargsCollector__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) BindTo__desc____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Object__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__BindTo__desc____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__Customize__desc____ret__V() {
+	this._dispatch.Impl__PrivTo__Java__lang__invoke__Customize__desc____ret__V()
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__DebugString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__DebugString__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__InternalCallerClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__InternalCallerClass__desc____ret____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__InternalProperties__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__InternalProperties__desc____ret____obj__Java__lang__Object()
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__InternalValues__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__InternalValues__desc____ret____obj__Java__lang__Object()
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__IntrinsicName__desc____ret____obj__Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic() Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__IntrinsicName__desc____ret____obj__Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic()
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
+	return this._dispatch.Impl__Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
+	return this._dispatch.Impl__InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) InvokeWithArguments__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ObjectArray__Instance) Java__lang__Object__Instance {
+	return this._dispatch.Impl__InvokeWithArguments__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__IsInvokeSpecial__desc____ret__Z() bool {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__IsInvokeSpecial__desc____ret__Z()
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) IsVarargsCollector__desc____ret__Z() bool {
+	return this._dispatch.Impl__IsVarargsCollector__desc____ret__Z()
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__StandardString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__StandardString__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Type__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__Type__desc____ret____obj__Java__lang__invoke__MethodType()
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__ViewAsType__desc____obj__Java__lang__invoke__MethodType__Z__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodType__Instance, var1 bool) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__ViewAsType__desc____obj__Java__lang__invoke__MethodType__Z__ret____obj__Java__lang__invoke__MethodHandle(var0, var1)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) PrivTo__Java__lang__invoke__ViewAsTypeChecks__desc____obj__Java__lang__invoke__MethodType__Z__ret__Z(var0 Java__lang__invoke__MethodType__Instance, var1 bool) bool {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__ViewAsTypeChecks__desc____obj__Java__lang__invoke__MethodType__Z__ret__Z(var0, var1)
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) WithVarargs__desc__Z__ret____obj__Java__lang__invoke__MethodHandle(var0 bool) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__WithVarargs__desc__Z__ret____obj__Java__lang__invoke__MethodHandle(var0)
+}
+
+type Java__lang__invoke__MethodHandle__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	PrivTo__Java__lang__invoke__ViewAsTypeChecks__desc____obj__Java__lang__invoke__MethodType__Z__ret__Z(Java__lang__invoke__MethodType__Instance, bool) bool
+	Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
+	PrivTo__Java__lang__invoke__AsTypeUncached__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	PrivTo__Java__lang__invoke__InternalProperties__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	AsVarargsCollector__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	Finalize__desc____ret__V()
+	PrivTo__Java__lang__invoke__AsCollectorChecks__desc____obj__Java__lang__Class__I__I__ret__Z(Java__lang__Class__Instance, int, int) bool
+	AsSpreader__desc__I____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(int, Java__lang__Class__Instance, int) Java__lang__invoke__MethodHandle__Instance
+	PrivTo__Java__lang__invoke__IntrinsicName__desc____ret____obj__Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic() Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	PrivTo__Java__lang__invoke__ViewAsType__desc____obj__Java__lang__invoke__MethodType__Z__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__invoke__MethodType__Instance, bool) Java__lang__invoke__MethodHandle__Instance
+	AsCollector__desc__I____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(int, Java__lang__Class__Instance, int) Java__lang__invoke__MethodHandle__Instance
+	PrivTo__Java__lang__invoke__StandardString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	PrivTo__Java__lang__invoke__InternalValues__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	WithVarargs__desc__Z__ret____obj__Java__lang__invoke__MethodHandle(bool) Java__lang__invoke__MethodHandle__Instance
+	Type__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	PrivTo__Java__lang__invoke__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
+	PrivTo__Java__lang__invoke__DebugString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	BindTo__desc____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Object__Instance) Java__lang__invoke__MethodHandle__Instance
+	PrivTo__Java__lang__invoke__Customize__desc____ret__V()
+	InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(...interface{}) Java__lang__Object__Instance
+	PrivTo__Java__lang__invoke__InternalCallerClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	AsFixedArity__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance
+	AsSpreader__desc____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, int) Java__lang__invoke__MethodHandle__Instance
+	Wait__desc__J__I__ret__V(int64, int)
+	AsType__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	InvokeWithArguments__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(ObjectArray__Instance) Java__lang__Object__Instance
+	AsCollector__desc____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, int) Java__lang__invoke__MethodHandle__Instance
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	IsVarargsCollector__desc____ret__Z() bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	PrivTo__Java__lang__invoke__IsInvokeSpecial__desc____ret__Z() bool
+	FieldGet__Java__lang__invoke__MethodHandle__AsTypeCache() Java__lang__invoke__MethodHandle__Instance
+	FieldSet__Java__lang__invoke__MethodHandle__AsTypeCache(v Java__lang__invoke__MethodHandle__Instance)
+	FieldGet__Java__lang__invoke__MethodHandle__CustomizationCount() int8
+	FieldSet__Java__lang__invoke__MethodHandle__CustomizationCount(v int8)
+	RawPtr__Java__lang__invoke__MethodHandle() *Java__lang__invoke__MethodHandle__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodHandle__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch          Java__lang__invoke__MethodHandle__Dispatch
+	AsTypeCache        Java__lang__invoke__MethodHandle__Instance
+	CustomizationCount int8
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) FieldGet__Java__lang__invoke__MethodHandle__AsTypeCache() Java__lang__invoke__MethodHandle__Instance {
+	return this.AsTypeCache
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) FieldSet__Java__lang__invoke__MethodHandle__AsTypeCache(v Java__lang__invoke__MethodHandle__Instance) {
+	this.AsTypeCache = v
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) FieldGet__Java__lang__invoke__MethodHandle__CustomizationCount() int8 {
+	return this.CustomizationCount
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) FieldSet__Java__lang__invoke__MethodHandle__CustomizationCount(v int8) {
+	this.CustomizationCount = v
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__AsCollector__desc__I____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0 int, var1 Java__lang__Class__Instance, var2 int) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.asCollector(ILjava/lang/Class;I)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__AsCollector__desc____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 int) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.asCollector(Ljava/lang/Class;I)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__AsCollectorChecks__desc____obj__Java__lang__Class__I__I__ret__Z(var0 Java__lang__Class__Instance, var1 int, var2 int) bool {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.asCollectorChecks(Ljava/lang/Class;II)Z")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__AsFixedArity__desc____ret____obj__Java__lang__invoke__MethodHandle() Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.asFixedArity()Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__AsSpreader__desc__I____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0 int, var1 Java__lang__Class__Instance, var2 int) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.asSpreader(ILjava/lang/Class;I)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__AsSpreader__desc____obj__Java__lang__Class__I__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 int) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.asSpreader(Ljava/lang/Class;I)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__AsType__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.asType(Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__AsTypeUncached__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.asTypeUncached(Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__AsVarargsCollector__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.asVarargsCollector(Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__BindTo__desc____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Object__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.bindTo(Ljava/lang/Object;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__Customize__desc____ret__V() {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.customize()V")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__DebugString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.debugString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__InternalCallerClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.internalCallerClass()Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__InternalProperties__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.internalProperties()Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__InternalValues__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.internalValues()Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__IntrinsicName__desc____ret____obj__Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic() Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.intrinsicName()Ljava/lang/invoke/MethodHandleImpl$Intrinsic;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__Invoke__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.invoke([Ljava/lang/Object;)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__InvokeBasic__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.invokeBasic([Ljava/lang/Object;)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__InvokeExact__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ...interface{}) Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.invokeExact([Ljava/lang/Object;)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__InvokeWithArguments__desc____arr____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 ObjectArray__Instance) Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.invokeWithArguments([Ljava/lang/Object;)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__IsInvokeSpecial__desc____ret__Z() bool {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.isInvokeSpecial()Z")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__IsVarargsCollector__desc____ret__Z() bool {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.isVarargsCollector()Z")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__StandardString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.standardString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__Type__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.type()Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__ViewAsType__desc____obj__Java__lang__invoke__MethodType__Z__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodType__Instance, var1 bool) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.viewAsType(Ljava/lang/invoke/MethodType;Z)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__PrivTo__Java__lang__invoke__ViewAsTypeChecks__desc____obj__Java__lang__invoke__MethodType__Z__ret__Z(var0 Java__lang__invoke__MethodType__Instance, var1 bool) bool {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.viewAsTypeChecks(Ljava/lang/invoke/MethodType;Z)Z")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl__WithVarargs__desc__Z__ret____obj__Java__lang__invoke__MethodHandle(var0 bool) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandle.withVarargs(Z)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) RawPtr__Java__lang__invoke__MethodHandle() *Java__lang__invoke__MethodHandle__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandle__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__Static struct{}
+
+var Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__Var Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__Static
+
+func Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature() *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__Static {
+	return &Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__Var
+}
+
+type Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	AnnotationType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Static struct{}
+
+var Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Var Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Static
+
+func Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy__() *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Static {
+	return &Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Var
+}
+
+func (this *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Static) New() *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Impl {
+	v := &Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____InitDispatch(v)
+	return v
+}
+
+type Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__AnnotationType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+}
+
+func (this *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Impl) Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____InitDispatch(v Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Impl) AnnotationType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__AnnotationType__desc____ret____obj__Java__lang__Class()
+}
+
+type Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	AnnotationType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy__() *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Dispatch
+	fn        func() Java__lang__Class__Instance
+}
+
+func (this *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Impl) RawPtr__Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy__() *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+func (_ *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__Static) DynProxy_Create(fn func() Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__Instance {
+	v := &Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+		fn:                       fn,
+	}
+	v.Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____InitDispatch(v)
+	v.Java__lang__Object__Impl.Impl__Instance_Init__desc____ret__V()
+	return v
+}
+
+func (this *Java__lang__invoke__MethodHandle__innerclass__PolymorphicSignature__dynproxy____Impl) Impl__AnnotationType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this.fn()
+}
+
+type Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Static struct {
+	GET    Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Instance
+	LENGTH Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Instance
+	SET    Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Instance
+	init   sync.Once
+}
+
+var Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Var Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Static
+
+func Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess() *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Static {
+	Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Var.init.Do(Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Var
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Static) New() *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Impl {
+	v := &Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Impl{
+		Java__lang__Enum__Impl: Java__lang__Enum().New(),
+	}
+	v.Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Static) Impl__Static_Init__desc____ret__V() { }
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Static) Impl__PrivTo__Java__lang__invoke__CacheIndex__desc____obj__Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__ret__I(var0 Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Instance) int {
+	panic("Method not implemented - java/lang/invoke/MethodHandleImpl$ArrayAccess.cacheIndex(Ljava/lang/invoke/MethodHandleImpl$ArrayAccess;)I")
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Static) Impl__PrivTo__Java__lang__invoke__Intrinsic__desc____obj__Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__ret____obj__Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic(var0 Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Instance) Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandleImpl$ArrayAccess.intrinsic(Ljava/lang/invoke/MethodHandleImpl$ArrayAccess;)Ljava/lang/invoke/MethodHandleImpl$Intrinsic;")
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Static) Impl__PrivTo__Java__lang__invoke__ObjectAccessor__desc____obj__Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandleImpl$ArrayAccess.objectAccessor(Ljava/lang/invoke/MethodHandleImpl$ArrayAccess;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Static) Impl__PrivTo__Java__lang__invoke__OpName__desc____obj__Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__ret____obj__Java__lang__String(var0 Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Instance) Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandleImpl$ArrayAccess.opName(Ljava/lang/invoke/MethodHandleImpl$ArrayAccess;)Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Static) Impl__ValueOf__desc____obj__Java__lang__String__ret____obj__Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess(var0 Java__lang__String__Instance) Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandleImpl$ArrayAccess.valueOf(Ljava/lang/String;)Ljava/lang/invoke/MethodHandleImpl$ArrayAccess;")
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Static) Impl__Values__desc____ret____arr____obj__Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess() ObjectArray__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandleImpl$ArrayAccess.values()[Ljava/lang/invoke/MethodHandleImpl$ArrayAccess;")
+}
+
+type Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Dispatch interface {
+	Java__lang__Enum__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Impl) Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__InitDispatch(v Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Dispatch) {
+	this.Java__lang__Enum__Impl.Java__lang__Enum__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	CompareTo__desc____obj__Java__lang__Enum__ret__I(Java__lang__Enum__Instance) int
+	Ordinal__desc____ret__I() int
+	Finalize__desc____ret__V()
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Wait__desc__J__I__ret__V(int64, int)
+	Name__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess() *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Impl
+	RawPtr__Java__lang__Enum() *Java__lang__Enum__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Impl struct {
+	*Java__lang__Enum__Impl
+	_dispatch Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Impl) RawPtr__Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess() *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__ArrayAccess__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Static struct {
+	ARRAY_LENGTH       Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	ARRAY_LOAD         Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	ARRAY_STORE        Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	GUARD_WITH_CATCH   Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	IDENTITY           Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	LOOP               Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	NEW_ARRAY          Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	NONE               Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	SELECT_ALTERNATIVE Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	TRY_FINALLY        Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	ZERO               Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance
+	init               sync.Once
+}
+
+var Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Var Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Static
+
+func Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic() *Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Static {
+	Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Var.init.Do(Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Var
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Static) New() *Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Impl {
+	v := &Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Impl{
+		Java__lang__Enum__Impl: Java__lang__Enum().New(),
+	}
+	v.Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Static) Impl__Static_Init__desc____ret__V() { }
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Static) Impl__ValueOf__desc____obj__Java__lang__String__ret____obj__Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic(var0 Java__lang__String__Instance) Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandleImpl$Intrinsic.valueOf(Ljava/lang/String;)Ljava/lang/invoke/MethodHandleImpl$Intrinsic;")
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Static) Impl__Values__desc____ret____arr____obj__Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic() ObjectArray__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandleImpl$Intrinsic.values()[Ljava/lang/invoke/MethodHandleImpl$Intrinsic;")
+}
+
+type Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Dispatch interface {
+	Java__lang__Enum__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Impl) Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__InitDispatch(v Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Dispatch) {
+	this.Java__lang__Enum__Impl.Java__lang__Enum__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	CompareTo__desc____obj__Java__lang__Enum__ret__I(Java__lang__Enum__Instance) int
+	Ordinal__desc____ret__I() int
+	Finalize__desc____ret__V()
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Wait__desc__J__I__ret__V(int64, int)
+	Name__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic() *Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Impl
+	RawPtr__Java__lang__Enum() *Java__lang__Enum__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Impl struct {
+	*Java__lang__Enum__Impl
+	_dispatch Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Impl) RawPtr__Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic() *Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandleImpl__innerclass__Intrinsic__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Static struct{}
+
+var Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Var Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Static
+
+func Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext() *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Static {
+	return &Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Var
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Static) New() *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Impl {
+	v := &Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Static) Impl__PrivTo__Java__lang__invoke__Make__desc____obj__Java__lang__invoke__CallSite__ret____obj__Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext(var0 Java__lang__invoke__CallSite__Instance) Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandleNatives$CallSiteContext.make(Ljava/lang/invoke/CallSite;)Ljava/lang/invoke/MethodHandleNatives$CallSiteContext;")
+}
+
+type Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Run__desc____ret__V()
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Impl) Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__InitDispatch(v Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Impl) Run__desc____ret__V() {
+	this._dispatch.Impl__Run__desc____ret__V()
+}
+
+type Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Run__desc____ret__V()
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext() *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Impl) Impl__Instance_Init__desc____ret__V() {
+	panic("Method not implemented - java/lang/invoke/MethodHandleNatives$CallSiteContext.<init>()V")
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Impl) Impl__Run__desc____ret__V() {
+	panic("Method not implemented - java/lang/invoke/MethodHandleNatives$CallSiteContext.run()V")
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Impl) RawPtr__Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext() *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__CallSiteContext__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Static struct {
+	MN_CALLER_SENSITIVE     int
+	MN_IS_CONSTRUCTOR       int
+	MN_IS_FIELD             int
+	MN_IS_METHOD            int
+	MN_IS_TYPE              int
+	MN_REFERENCE_KIND_MASK  int
+	MN_REFERENCE_KIND_SHIFT int
+	MN_SEARCH_INTERFACES    int
+	MN_SEARCH_SUPERCLASSES  int
+	REF_LIMIT               int8
+	REF_NONE                int8
+	REF_getField            int8
+	REF_getStatic           int8
+	REF_invokeInterface     int8
+	REF_invokeSpecial       int8
+	REF_invokeStatic        int8
+	REF_invokeVirtual       int8
+	REF_newInvokeSpecial    int8
+	REF_putField            int8
+	REF_putStatic           int8
+}
+
+var Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Var Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Static
+
+func Java__lang__invoke__MethodHandleNatives__innerclass__Constants() *Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Static {
+	return &Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Var
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Static) New() *Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Impl {
+	v := &Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MethodHandleNatives__innerclass__Constants__InitDispatch(v)
+	return v
+}
+
+type Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Dispatch interface {
+	Java__lang__Object__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Impl) Java__lang__invoke__MethodHandleNatives__innerclass__Constants__InitDispatch(v Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodHandleNatives__innerclass__Constants() *Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Impl) Impl__Instance_Init__desc____ret__V() {
+	panic("Method not implemented - java/lang/invoke/MethodHandleNatives$Constants.<init>()V")
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Impl) RawPtr__Java__lang__invoke__MethodHandleNatives__innerclass__Constants() *Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandleNatives__innerclass__Constants__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodHandles__Static struct {
+	__dollar__assertionsDisabled bool
+	IMPL_NAMES                   Java__lang__invoke__MemberName__innerclass__Factory__Instance
+	init                         sync.Once
+}
+
+var Java__lang__invoke__MethodHandles__Var Java__lang__invoke__MethodHandles__Static
+
+func Java__lang__invoke__MethodHandles() *Java__lang__invoke__MethodHandles__Static {
+	Java__lang__invoke__MethodHandles__Var.init.Do(Java__lang__invoke__MethodHandles__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__MethodHandles__Var
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) New() *Java__lang__invoke__MethodHandles__Impl {
+	v := &Java__lang__invoke__MethodHandles__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MethodHandles__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__Static_Init__desc____ret__V() { }
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__ArrayConstructor__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.arrayConstructor(Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__ArrayElementGetter__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.arrayElementGetter(Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__ArrayElementSetter__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.arrayElementSetter(Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__ArrayLength__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.arrayLength(Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__PrivTo__Java__lang__invoke__BasicInvoker__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.basicInvoker(Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__CatchException__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__Class____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__Class__Instance, var2 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.catchException(Ljava/lang/invoke/MethodHandle;Ljava/lang/Class;Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__CollectArguments__desc____obj__Java__lang__invoke__MethodHandle__I____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 int, var2 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.collectArguments(Ljava/lang/invoke/MethodHandle;ILjava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__Constant__desc____obj__Java__lang__Class____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__Object__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.constant(Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__CountedLoop__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodHandle__Instance, var2 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.countedLoop(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__CountedLoop__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodHandle__Instance, var2 Java__lang__invoke__MethodHandle__Instance, var3 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.countedLoop(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__DoWhileLoop__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodHandle__Instance, var2 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.doWhileLoop(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__DropArguments__desc____obj__Java__lang__invoke__MethodHandle__I____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 int, var2 ObjectArray__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.dropArguments(Ljava/lang/invoke/MethodHandle;I[Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__Empty__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.empty(Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__ExactInvoker__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.exactInvoker(Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__ExplicitCastArguments__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.explicitCastArguments(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__PrivTo__Java__lang__invoke__FilterArgument__desc____obj__Java__lang__invoke__MethodHandle__I____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 int, var2 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.filterArgument(Ljava/lang/invoke/MethodHandle;ILjava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__FilterArguments__desc____obj__Java__lang__invoke__MethodHandle__I____arr____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 int, var2 ObjectArray__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.filterArguments(Ljava/lang/invoke/MethodHandle;I[Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__FilterReturnValue__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.filterReturnValue(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__FoldArguments__desc____obj__Java__lang__invoke__MethodHandle__I____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 int, var2 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.foldArguments(Ljava/lang/invoke/MethodHandle;ILjava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__PrivTo__Java__lang__invoke__FoldArguments__desc____obj__Java__lang__invoke__MethodHandle__I____obj__Java__lang__invoke__MethodHandle____arr__I__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 int, var2 Java__lang__invoke__MethodHandle__Instance, var3 IntArray__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.foldArguments(Ljava/lang/invoke/MethodHandle;ILjava/lang/invoke/MethodHandle;[I)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__FoldArguments__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.foldArguments(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__GuardWithTest__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodHandle__Instance, var2 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.guardWithTest(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__Identity__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.identity(Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__InsertArguments__desc____obj__Java__lang__invoke__MethodHandle__I____arr____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 int, var2 ObjectArray__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.insertArguments(Ljava/lang/invoke/MethodHandle;I[Ljava/lang/Object;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__Invoker__desc____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.invoker(Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__IteratedLoop__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodHandle__Instance, var2 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.iteratedLoop(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__Lookup__desc____ret____obj__Java__lang__invoke__MethodHandles__innerclass__Lookup() Java__lang__invoke__MethodHandles__innerclass__Lookup__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.lookup()Ljava/lang/invoke/MethodHandles$Lookup;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__Loop__desc____arr____arr____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 ObjectArray__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.loop([[Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__PrivTo__Java__lang__invoke__MisMatchedTypes__desc____obj__Java__lang__String____obj__Java__lang__Object____obj__Java__lang__Object__ret____obj__Java__lang__RuntimeException(var0 Java__lang__String__Instance, var1 Java__lang__Object__Instance, var2 Java__lang__Object__Instance) Java__lang__RuntimeException__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.misMatchedTypes(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/RuntimeException;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__PermuteArguments__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodType____arr__I__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodType__Instance, var2 IntArray__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.permuteArguments(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;[I)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__PublicLookup__desc____ret____obj__Java__lang__invoke__MethodHandles__innerclass__Lookup() Java__lang__invoke__MethodHandles__innerclass__Lookup__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.publicLookup()Ljava/lang/invoke/MethodHandles$Lookup;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__SpreadInvoker__desc____obj__Java__lang__invoke__MethodType__I__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodType__Instance, var1 int) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.spreadInvoker(Ljava/lang/invoke/MethodType;I)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__PrivTo__Java__lang__invoke__SwapArguments__desc____obj__Java__lang__invoke__MethodHandle__I__I__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 int, var2 int) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.swapArguments(Ljava/lang/invoke/MethodHandle;II)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__ThrowException__desc____obj__Java__lang__Class____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.throwException(Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__TryFinally__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.tryFinally(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__VarHandleExactInvoker__desc____obj__Java__lang__invoke__VarHandle__innerclass__AccessMode____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance, var1 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.varHandleExactInvoker(Ljava/lang/invoke/VarHandle$AccessMode;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__VarHandleInvoker__desc____obj__Java__lang__invoke__VarHandle__innerclass__AccessMode____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance, var1 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.varHandleInvoker(Ljava/lang/invoke/VarHandle$AccessMode;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__WhileLoop__desc____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle____obj__Java__lang__invoke__MethodHandle__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__invoke__MethodHandle__Instance, var1 Java__lang__invoke__MethodHandle__Instance, var2 Java__lang__invoke__MethodHandle__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.whileLoop(Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__Static) Impl__Zero__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles.zero(Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+type Java__lang__invoke__MethodHandles__Dispatch interface {
+	Java__lang__Object__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandles__Impl) Java__lang__invoke__MethodHandles__InitDispatch(v Java__lang__invoke__MethodHandles__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__invoke__MethodHandles__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodHandles() *Java__lang__invoke__MethodHandles__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodHandles__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__MethodHandles__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandles__Impl) RawPtr__Java__lang__invoke__MethodHandles() *Java__lang__invoke__MethodHandles__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandles__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodHandles__innerclass__1__Static struct {
+	__dollar__SwitchMap__dollar__sun__dollar__invoke__dollar__util__dollar__Wrapper IntArray__Instance
+	init                                                                            sync.Once
+}
+
+var Java__lang__invoke__MethodHandles__innerclass__1__Var Java__lang__invoke__MethodHandles__innerclass__1__Static
+
+func Java__lang__invoke__MethodHandles__innerclass__1() *Java__lang__invoke__MethodHandles__innerclass__1__Static {
+	Java__lang__invoke__MethodHandles__innerclass__1__Var.init.Do(Java__lang__invoke__MethodHandles__innerclass__1__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__MethodHandles__innerclass__1__Var
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__1__Static) New() *Java__lang__invoke__MethodHandles__innerclass__1__Impl {
+	v := &Java__lang__invoke__MethodHandles__innerclass__1__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MethodHandles__innerclass__1__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__1__Static) Impl__Static_Init__desc____ret__V() { }
+
+type Java__lang__invoke__MethodHandles__innerclass__1__Dispatch interface {
+	Java__lang__Object__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__1__Impl) Java__lang__invoke__MethodHandles__innerclass__1__InitDispatch(v Java__lang__invoke__MethodHandles__innerclass__1__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__invoke__MethodHandles__innerclass__1__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodHandles__innerclass__1() *Java__lang__invoke__MethodHandles__innerclass__1__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodHandles__innerclass__1__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__MethodHandles__innerclass__1__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__1__Impl) RawPtr__Java__lang__invoke__MethodHandles__innerclass__1() *Java__lang__invoke__MethodHandles__innerclass__1__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__1__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodHandles__innerclass__Lookup__Static struct {
+	__dollar__assertionsDisabled bool
+	IMPL_LOOKUP                  Java__lang__invoke__MethodHandles__innerclass__Lookup__Instance
+	MODULE                       int
+	PACKAGE                      int
+	PRIVATE                      int
+	PROTECTED                    int
+	PUBLIC                       int
+	init                         sync.Once
+}
+
+var Java__lang__invoke__MethodHandles__innerclass__Lookup__Var Java__lang__invoke__MethodHandles__innerclass__Lookup__Static
+
+func Java__lang__invoke__MethodHandles__innerclass__Lookup() *Java__lang__invoke__MethodHandles__innerclass__Lookup__Static {
+	Java__lang__invoke__MethodHandles__innerclass__Lookup__Var.init.Do(Java__lang__invoke__MethodHandles__innerclass__Lookup__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__MethodHandles__innerclass__Lookup__Var
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Static) New() *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl {
+	v := &Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MethodHandles__innerclass__Lookup__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Static) Impl__Static_Init__desc____ret__V() { }
+
+type Java__lang__invoke__MethodHandles__innerclass__Lookup__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Instance_Init__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
+	Impl__Instance_Init__desc____obj__Java__lang__Class__I____obj__Java__lang__invoke__MethodHandles__innerclass__1__ret__V(Java__lang__Class__Instance, int, Java__lang__invoke__MethodHandles__innerclass__1__Instance)
+	Impl__AccessClass__desc____obj__Java__lang__Class__ret____obj__Java__lang__Class(Java__lang__Class__Instance) Java__lang__Class__Instance
+	Impl__Bind__desc____obj__Java__lang__Object____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Object__Instance, Java__lang__String__Instance, Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__PrivTo__Java__lang__invoke__CheckMethodName__desc__B____obj__Java__lang__String__ret__V(int8, Java__lang__String__Instance)
+	Impl__PrivTo__Java__lang__invoke__CheckSymbolicClass__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
+	Impl__FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
+	Impl__FindConstructor__desc____obj__Java__lang__Class____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__FindGetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__FindSetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__FindSpecial__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__invoke__MethodType__Instance, Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__FindStatic__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__FindStaticGetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__FindStaticSetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__FindVirtual__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__In__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandles__innerclass__Lookup(Java__lang__Class__Instance) Java__lang__invoke__MethodHandles__innerclass__Lookup__Instance
+	Impl__PrivTo__Java__lang__invoke__LinkMethodHandleConstant__desc__B____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(int8, Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__Object__Instance) Java__lang__invoke__MethodHandle__Instance
+	Impl__LookupClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Impl__LookupModes__desc____ret__I() int
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Java__lang__invoke__MethodHandles__innerclass__Lookup__InitDispatch(v Java__lang__invoke__MethodHandles__innerclass__Lookup__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Instance_Init__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__Class__ret__V(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Instance_Init__desc____obj__Java__lang__Class__I____obj__Java__lang__invoke__MethodHandles__innerclass__1__ret__V(var0 Java__lang__Class__Instance, var1 int, var2 Java__lang__invoke__MethodHandles__innerclass__1__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__Class__I____obj__Java__lang__invoke__MethodHandles__innerclass__1__ret__V(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) AccessClass__desc____obj__Java__lang__Class__ret____obj__Java__lang__Class(var0 Java__lang__Class__Instance) Java__lang__Class__Instance {
+	return this._dispatch.Impl__AccessClass__desc____obj__Java__lang__Class__ret____obj__Java__lang__Class(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Bind__desc____obj__Java__lang__Object____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Object__Instance, var1 Java__lang__String__Instance, var2 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__Bind__desc____obj__Java__lang__Object____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) PrivTo__Java__lang__invoke__CheckMethodName__desc__B____obj__Java__lang__String__ret__V(var0 int8, var1 Java__lang__String__Instance) {
+	this._dispatch.Impl__PrivTo__Java__lang__invoke__CheckMethodName__desc__B____obj__Java__lang__String__ret__V(var0, var1)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) PrivTo__Java__lang__invoke__CheckSymbolicClass__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
+	this._dispatch.Impl__PrivTo__Java__lang__invoke__CheckSymbolicClass__desc____obj__Java__lang__Class__ret__V(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	return this._dispatch.Impl__FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) FindConstructor__desc____obj__Java__lang__Class____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__FindConstructor__desc____obj__Java__lang__Class____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0, var1)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) FindGetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__FindGetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) FindSetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__FindSetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) FindSpecial__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__invoke__MethodType__Instance, var3 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__FindSpecial__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0, var1, var2, var3)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) FindStatic__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__FindStatic__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) FindStaticGetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__FindStaticGetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) FindStaticSetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__FindStaticSetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) FindVirtual__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__FindVirtual__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) In__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandles__innerclass__Lookup(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodHandles__innerclass__Lookup__Instance {
+	return this._dispatch.Impl__In__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandles__innerclass__Lookup(var0)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) PrivTo__Java__lang__invoke__LinkMethodHandleConstant__desc__B____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(var0 int8, var1 Java__lang__Class__Instance, var2 Java__lang__String__Instance, var3 Java__lang__Object__Instance) Java__lang__invoke__MethodHandle__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__LinkMethodHandleConstant__desc__B____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(var0, var1, var2, var3)
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) LookupClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__LookupClass__desc____ret____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) LookupModes__desc____ret__I() int {
+	return this._dispatch.Impl__LookupModes__desc____ret__I()
+}
+
+type Java__lang__invoke__MethodHandles__innerclass__Lookup__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	FindStaticSetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	Finalize__desc____ret__V()
+	AccessClass__desc____obj__Java__lang__Class__ret____obj__Java__lang__Class(Java__lang__Class__Instance) Java__lang__Class__Instance
+	NotifyAll__desc____ret__V()
+	Bind__desc____obj__Java__lang__Object____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Object__Instance, Java__lang__String__Instance, Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	FindGetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	PrivTo__Java__lang__invoke__LinkMethodHandleConstant__desc__B____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(int8, Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__Object__Instance) Java__lang__invoke__MethodHandle__Instance
+	FindStatic__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	FindSetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	LookupClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	In__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandles__innerclass__Lookup(Java__lang__Class__Instance) Java__lang__invoke__MethodHandles__innerclass__Lookup__Instance
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	LookupModes__desc____ret__I() int
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	FindStaticGetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
+	Notify__desc____ret__V()
+	PrivTo__Java__lang__invoke__CheckMethodName__desc__B____obj__Java__lang__String__ret__V(int8, Java__lang__String__Instance)
+	FindSpecial__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__invoke__MethodType__Instance, Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance
+	FindVirtual__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	FindConstructor__desc____obj__Java__lang__Class____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(Java__lang__Class__Instance, Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance
+	PrivTo__Java__lang__invoke__CheckSymbolicClass__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodHandles__innerclass__Lookup() *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__MethodHandles__innerclass__Lookup__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__Instance_Init__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.<init>(Ljava/lang/Class;)V")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__Instance_Init__desc____obj__Java__lang__Class__I____obj__Java__lang__invoke__MethodHandles__innerclass__1__ret__V(var0 Java__lang__Class__Instance, var1 int, var2 Java__lang__invoke__MethodHandles__innerclass__1__Instance) {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.<init>(Ljava/lang/Class;ILjava/lang/invoke/MethodHandles$1;)V")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__AccessClass__desc____obj__Java__lang__Class__ret____obj__Java__lang__Class(var0 Java__lang__Class__Instance) Java__lang__Class__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.accessClass(Ljava/lang/Class;)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__Bind__desc____obj__Java__lang__Object____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Object__Instance, var1 Java__lang__String__Instance, var2 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.bind(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__PrivTo__Java__lang__invoke__CheckMethodName__desc__B____obj__Java__lang__String__ret__V(var0 int8, var1 Java__lang__String__Instance) {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.checkMethodName(BLjava/lang/String;)V")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__PrivTo__Java__lang__invoke__CheckSymbolicClass__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.checkSymbolicClass(Ljava/lang/Class;)V")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.findClass(Ljava/lang/String;)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__FindConstructor__desc____obj__Java__lang__Class____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.findConstructor(Ljava/lang/Class;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__FindGetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.findGetter(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__FindSetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.findSetter(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__FindSpecial__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__invoke__MethodType__Instance, var3 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.findSpecial(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__FindStatic__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.findStatic(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__FindStaticGetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.findStaticGetter(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__FindStaticSetter__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__Class__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.findStaticSetter(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__FindVirtual__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodHandle(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.findVirtual(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__In__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodHandles__innerclass__Lookup(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodHandles__innerclass__Lookup__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.in(Ljava/lang/Class;)Ljava/lang/invoke/MethodHandles$Lookup;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__PrivTo__Java__lang__invoke__LinkMethodHandleConstant__desc__B____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__Object__ret____obj__Java__lang__invoke__MethodHandle(var0 int8, var1 Java__lang__Class__Instance, var2 Java__lang__String__Instance, var3 Java__lang__Object__Instance) Java__lang__invoke__MethodHandle__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.linkMethodHandleConstant(BLjava/lang/Class;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/invoke/MethodHandle;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__LookupClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.lookupClass()Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__LookupModes__desc____ret__I() int {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.lookupModes()I")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodHandles$Lookup.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) RawPtr__Java__lang__invoke__MethodHandles__innerclass__Lookup() *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__Lookup__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Static struct {
+	PUBLIC_LOOKUP Java__lang__invoke__MethodHandles__innerclass__Lookup__Instance
+	init          sync.Once
+}
+
+var Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Var Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Static
+
+func Java__lang__invoke__MethodHandles__innerclass__LookupHelper() *Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Static {
+	Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Var.init.Do(Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Var
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Static) New() *Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Impl {
+	v := &Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MethodHandles__innerclass__LookupHelper__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Static) Impl__Static_Init__desc____ret__V() { }
+
+type Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Dispatch interface {
+	Java__lang__Object__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Impl) Java__lang__invoke__MethodHandles__innerclass__LookupHelper__InitDispatch(v Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodHandles__innerclass__LookupHelper() *Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Impl) RawPtr__Java__lang__invoke__MethodHandles__innerclass__LookupHelper() *Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodHandles__innerclass__LookupHelper__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodType__Static struct {
+	__dollar__assertionsDisabled bool
+	MAX_JVM_ARITY                int
+	MAX_MH_ARITY                 int
+	MAX_MH_INVOKER_ARITY         int
+	NO_PTYPES                    ObjectArray__Instance
+	InternTable                  Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Instance
+	init                         sync.Once
+}
+
+var Java__lang__invoke__MethodType__Var Java__lang__invoke__MethodType__Static
+
+func Java__lang__invoke__MethodType() *Java__lang__invoke__MethodType__Static {
+	Java__lang__invoke__MethodType__Var.init.Do(Java__lang__invoke__MethodType__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__MethodType__Var
+}
+
+func (this *Java__lang__invoke__MethodType__Static) New() *Java__lang__invoke__MethodType__Impl {
+	v := &Java__lang__invoke__MethodType__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MethodType__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__Static_Init__desc____ret__V() { }
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__PrivTo__Java__lang__invoke__CanConvert__desc____obj__Java__lang__Class____obj__Java__lang__Class__ret__Z(var0 Java__lang__Class__Instance, var1 Java__lang__Class__Instance) bool {
+	panic("Method not implemented - java/lang/invoke/MethodType.canConvert(Ljava/lang/Class;Ljava/lang/Class;)Z")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__PrivTo__Java__lang__invoke__CheckSlotCount__desc__I__ret__V(var0 int) {
+	panic("Method not implemented - java/lang/invoke/MethodType.checkSlotCount(I)V")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__PrivTo__Java__lang__invoke__FromDescriptor__desc____obj__Java__lang__String____obj__Java__lang__ClassLoader__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__String__Instance, var1 Java__lang__ClassLoader__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.fromDescriptor(Ljava/lang/String;Ljava/lang/ClassLoader;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__FromMethodDescriptorString__desc____obj__Java__lang__String____obj__Java__lang__ClassLoader__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__String__Instance, var1 Java__lang__ClassLoader__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.fromMethodDescriptorString(Ljava/lang/String;Ljava/lang/ClassLoader;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__GenericMethodType__desc__I__ret____obj__Java__lang__invoke__MethodType(var0 int) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.genericMethodType(I)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__GenericMethodType__desc__I__Z__ret____obj__Java__lang__invoke__MethodType(var0 int, var1 bool) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.genericMethodType(IZ)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__PrivTo__Java__lang__invoke__MakeImpl__desc____obj__Java__lang__Class____arr____obj__Java__lang__Class__Z__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance, var1 ObjectArray__Instance, var2 bool) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.makeImpl(Ljava/lang/Class;[Ljava/lang/Class;Z)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__MethodType__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.methodType(Ljava/lang/Class;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__MethodType__desc____obj__Java__lang__Class____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance, var1 Java__lang__Class__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.methodType(Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__MethodType__desc____obj__Java__lang__Class____obj__Java__lang__Class____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance, var1 Java__lang__Class__Instance, var2 ObjectArray__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.methodType(Ljava/lang/Class;Ljava/lang/Class;[Ljava/lang/Class;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__MethodType__desc____obj__Java__lang__Class____obj__Java__lang__invoke__MethodType__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance, var1 Java__lang__invoke__MethodType__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.methodType(Ljava/lang/Class;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__MethodType__desc____obj__Java__lang__Class____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance, var1 ObjectArray__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.methodType(Ljava/lang/Class;[Ljava/lang/Class;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Static) Impl__PrivTo__Java__lang__invoke__ToFieldDescriptorString__desc____obj__Java__lang__Class__ret____obj__Java__lang__String(var0 Java__lang__Class__Instance) Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.toFieldDescriptorString(Ljava/lang/Class;)Ljava/lang/String;")
+}
+
+type Java__lang__invoke__MethodType__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__AppendParameterTypes__desc____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(ObjectArray__Instance) Java__lang__invoke__MethodType__Instance
+	Impl__PrivTo__Java__lang__invoke__AsCollectorType__desc____obj__Java__lang__Class__I__I__ret____obj__Java__lang__invoke__MethodType(Java__lang__Class__Instance, int, int) Java__lang__invoke__MethodType__Instance
+	Impl__PrivTo__Java__lang__invoke__AsSpreaderType__desc____obj__Java__lang__Class__I__I__ret____obj__Java__lang__invoke__MethodType(Java__lang__Class__Instance, int, int) Java__lang__invoke__MethodType__Instance
+	Impl__PrivTo__Java__lang__invoke__BasicType__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	Impl__ChangeParameterType__desc__I____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(int, Java__lang__Class__Instance) Java__lang__invoke__MethodType__Instance
+	Impl__ChangeReturnType__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(Java__lang__Class__Instance) Java__lang__invoke__MethodType__Instance
+	Impl__DropParameterTypes__desc__I__I__ret____obj__Java__lang__invoke__MethodType(int, int) Java__lang__invoke__MethodType__Instance
+	Impl__Erase__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	Impl__PrivTo__Java__lang__invoke__ExplicitCastEquivalentToAsType__desc____obj__Java__lang__invoke__MethodType__ret__Z(Java__lang__invoke__MethodType__Instance) bool
+	Impl__Generic__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	Impl__HasPrimitives__desc____ret__Z() bool
+	Impl__HasWrappers__desc____ret__Z() bool
+	Impl__InsertParameterTypes__desc__I____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(int, ObjectArray__Instance) Java__lang__invoke__MethodType__Instance
+	Impl__PrivTo__Java__lang__invoke__InvokerType__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	Impl__PrivTo__Java__lang__invoke__IsConvertibleTo__desc____obj__Java__lang__invoke__MethodType__ret__Z(Java__lang__invoke__MethodType__Instance) bool
+	Impl__PrivTo__Java__lang__invoke__IsGeneric__desc____ret__Z() bool
+	Impl__PrivTo__Java__lang__invoke__IsViewableAs__desc____obj__Java__lang__invoke__MethodType__Z__ret__Z(Java__lang__invoke__MethodType__Instance, bool) bool
+	Impl__PrivTo__Java__lang__invoke__LastParameterType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Impl__PrivTo__Java__lang__invoke__LeadingReferenceParameter__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Impl__ParameterArray__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
+	Impl__ParameterCount__desc____ret__I() int
+	Impl__PrivTo__Java__lang__invoke__ParameterSlotCount__desc____ret__I() int
+	Impl__PrivTo__Java__lang__invoke__ParameterSlotDepth__desc__I__ret__I(int) int
+	Impl__ParameterType__desc__I__ret____obj__Java__lang__Class(int) Java__lang__Class__Instance
+	Impl__PrivTo__Java__lang__invoke__Ptypes__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
+	Impl__PrivTo__Java__lang__invoke__ReplaceParameterTypes__desc__I__I____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(int, int, ObjectArray__Instance) Java__lang__invoke__MethodType__Instance
+	Impl__PrivTo__Java__lang__invoke__ReturnSlotCount__desc____ret__I() int
+	Impl__ReturnType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Impl__PrivTo__Java__lang__invoke__Rtype__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Impl__ToMethodDescriptorString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__Unwrap__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	Impl__Wrap__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Java__lang__invoke__MethodType__InitDispatch(v Java__lang__invoke__MethodType__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) AppendParameterTypes__desc____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 ObjectArray__Instance) Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__AppendParameterTypes__desc____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__AsCollectorType__desc____obj__Java__lang__Class__I__I__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance, var1 int, var2 int) Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__AsCollectorType__desc____obj__Java__lang__Class__I__I__ret____obj__Java__lang__invoke__MethodType(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__AsSpreaderType__desc____obj__Java__lang__Class__I__I__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance, var1 int, var2 int) Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__AsSpreaderType__desc____obj__Java__lang__Class__I__I__ret____obj__Java__lang__invoke__MethodType(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__BasicType__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__BasicType__desc____ret____obj__Java__lang__invoke__MethodType()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) ChangeParameterType__desc__I____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 int, var1 Java__lang__Class__Instance) Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__ChangeParameterType__desc__I____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0, var1)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) ChangeReturnType__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__ChangeReturnType__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) DropParameterTypes__desc__I__I__ret____obj__Java__lang__invoke__MethodType(var0 int, var1 int) Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__DropParameterTypes__desc__I__I__ret____obj__Java__lang__invoke__MethodType(var0, var1)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Erase__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__Erase__desc____ret____obj__Java__lang__invoke__MethodType()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__ExplicitCastEquivalentToAsType__desc____obj__Java__lang__invoke__MethodType__ret__Z(var0 Java__lang__invoke__MethodType__Instance) bool {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__ExplicitCastEquivalentToAsType__desc____obj__Java__lang__invoke__MethodType__ret__Z(var0)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Generic__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__Generic__desc____ret____obj__Java__lang__invoke__MethodType()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) HasPrimitives__desc____ret__Z() bool {
+	return this._dispatch.Impl__HasPrimitives__desc____ret__Z()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) HasWrappers__desc____ret__Z() bool {
+	return this._dispatch.Impl__HasWrappers__desc____ret__Z()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) InsertParameterTypes__desc__I____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 int, var1 ObjectArray__Instance) Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__InsertParameterTypes__desc__I____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0, var1)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__InvokerType__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__InvokerType__desc____ret____obj__Java__lang__invoke__MethodType()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__IsConvertibleTo__desc____obj__Java__lang__invoke__MethodType__ret__Z(var0 Java__lang__invoke__MethodType__Instance) bool {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__IsConvertibleTo__desc____obj__Java__lang__invoke__MethodType__ret__Z(var0)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__IsGeneric__desc____ret__Z() bool {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__IsGeneric__desc____ret__Z()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__IsViewableAs__desc____obj__Java__lang__invoke__MethodType__Z__ret__Z(var0 Java__lang__invoke__MethodType__Instance, var1 bool) bool {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__IsViewableAs__desc____obj__Java__lang__invoke__MethodType__Z__ret__Z(var0, var1)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__LastParameterType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__LastParameterType__desc____ret____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__LeadingReferenceParameter__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__LeadingReferenceParameter__desc____ret____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) ParameterArray__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
+	return this._dispatch.Impl__ParameterArray__desc____ret____arr____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) ParameterCount__desc____ret__I() int {
+	return this._dispatch.Impl__ParameterCount__desc____ret__I()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__ParameterSlotCount__desc____ret__I() int {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__ParameterSlotCount__desc____ret__I()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__ParameterSlotDepth__desc__I__ret__I(var0 int) int {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__ParameterSlotDepth__desc__I__ret__I(var0)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) ParameterType__desc__I__ret____obj__Java__lang__Class(var0 int) Java__lang__Class__Instance {
+	return this._dispatch.Impl__ParameterType__desc__I__ret____obj__Java__lang__Class(var0)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__Ptypes__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__Ptypes__desc____ret____arr____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__ReplaceParameterTypes__desc__I__I____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 int, var1 int, var2 ObjectArray__Instance) Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__ReplaceParameterTypes__desc__I__I____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0, var1, var2)
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__ReturnSlotCount__desc____ret__I() int {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__ReturnSlotCount__desc____ret__I()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) ReturnType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__ReturnType__desc____ret____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) PrivTo__Java__lang__invoke__Rtype__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__invoke__Rtype__desc____ret____obj__Java__lang__Class()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) ToMethodDescriptorString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__ToMethodDescriptorString__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Unwrap__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__Unwrap__desc____ret____obj__Java__lang__invoke__MethodType()
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Wrap__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	return this._dispatch.Impl__Wrap__desc____ret____obj__Java__lang__invoke__MethodType()
+}
+
+type Java__lang__invoke__MethodType__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Erase__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	Finalize__desc____ret__V()
+	PrivTo__Java__lang__invoke__Ptypes__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
+	ParameterCount__desc____ret__I() int
+	PrivTo__Java__lang__invoke__BasicType__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	PrivTo__Java__lang__invoke__ReplaceParameterTypes__desc__I__I____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(int, int, ObjectArray__Instance) Java__lang__invoke__MethodType__Instance
+	AppendParameterTypes__desc____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(ObjectArray__Instance) Java__lang__invoke__MethodType__Instance
+	HasWrappers__desc____ret__Z() bool
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	PrivTo__Java__lang__invoke__IsConvertibleTo__desc____obj__Java__lang__invoke__MethodType__ret__Z(Java__lang__invoke__MethodType__Instance) bool
+	PrivTo__Java__lang__invoke__IsViewableAs__desc____obj__Java__lang__invoke__MethodType__Z__ret__Z(Java__lang__invoke__MethodType__Instance, bool) bool
+	PrivTo__Java__lang__invoke__LastParameterType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	PrivTo__Java__lang__invoke__IsGeneric__desc____ret__Z() bool
+	PrivTo__Java__lang__invoke__ReturnSlotCount__desc____ret__I() int
+	Unwrap__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	PrivTo__Java__lang__invoke__Rtype__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	PrivTo__Java__lang__invoke__LeadingReferenceParameter__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	DropParameterTypes__desc__I__I__ret____obj__Java__lang__invoke__MethodType(int, int) Java__lang__invoke__MethodType__Instance
+	HasPrimitives__desc____ret__Z() bool
+	Generic__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	ToMethodDescriptorString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	PrivTo__Java__lang__invoke__ExplicitCastEquivalentToAsType__desc____obj__Java__lang__invoke__MethodType__ret__Z(Java__lang__invoke__MethodType__Instance) bool
+	ReturnType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	ChangeParameterType__desc__I____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(int, Java__lang__Class__Instance) Java__lang__invoke__MethodType__Instance
+	Wrap__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	Wait__desc__J__I__ret__V(int64, int)
+	PrivTo__Java__lang__invoke__InvokerType__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance
+	PrivTo__Java__lang__invoke__ParameterSlotCount__desc____ret__I() int
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	ParameterType__desc__I__ret____obj__Java__lang__Class(int) Java__lang__Class__Instance
+	InsertParameterTypes__desc__I____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(int, ObjectArray__Instance) Java__lang__invoke__MethodType__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	PrivTo__Java__lang__invoke__ParameterSlotDepth__desc__I__ret__I(int) int
+	Notify__desc____ret__V()
+	ChangeReturnType__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(Java__lang__Class__Instance) Java__lang__invoke__MethodType__Instance
+	PrivTo__Java__lang__invoke__AsSpreaderType__desc____obj__Java__lang__Class__I__I__ret____obj__Java__lang__invoke__MethodType(Java__lang__Class__Instance, int, int) Java__lang__invoke__MethodType__Instance
+	ParameterArray__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
+	PrivTo__Java__lang__invoke__AsCollectorType__desc____obj__Java__lang__Class__I__I__ret____obj__Java__lang__invoke__MethodType(Java__lang__Class__Instance, int, int) Java__lang__invoke__MethodType__Instance
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodType() *Java__lang__invoke__MethodType__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodType__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__MethodType__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__AppendParameterTypes__desc____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 ObjectArray__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.appendParameterTypes([Ljava/lang/Class;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__AsCollectorType__desc____obj__Java__lang__Class__I__I__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance, var1 int, var2 int) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.asCollectorType(Ljava/lang/Class;II)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__AsSpreaderType__desc____obj__Java__lang__Class__I__I__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance, var1 int, var2 int) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.asSpreaderType(Ljava/lang/Class;II)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__BasicType__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.basicType()Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__ChangeParameterType__desc__I____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 int, var1 Java__lang__Class__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.changeParameterType(ILjava/lang/Class;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__ChangeReturnType__desc____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 Java__lang__Class__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.changeReturnType(Ljava/lang/Class;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__DropParameterTypes__desc__I__I__ret____obj__Java__lang__invoke__MethodType(var0 int, var1 int) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.dropParameterTypes(II)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__Equals__desc____obj__Java__lang__Object__ret__Z(var0 Java__lang__Object__Instance) bool {
+	panic("Method not implemented - java/lang/invoke/MethodType.equals(Ljava/lang/Object;)Z")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__Erase__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.erase()Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__ExplicitCastEquivalentToAsType__desc____obj__Java__lang__invoke__MethodType__ret__Z(var0 Java__lang__invoke__MethodType__Instance) bool {
+	panic("Method not implemented - java/lang/invoke/MethodType.explicitCastEquivalentToAsType(Ljava/lang/invoke/MethodType;)Z")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__Generic__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.generic()Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__HasPrimitives__desc____ret__Z() bool {
+	panic("Method not implemented - java/lang/invoke/MethodType.hasPrimitives()Z")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__HasWrappers__desc____ret__Z() bool {
+	panic("Method not implemented - java/lang/invoke/MethodType.hasWrappers()Z")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__HashCode__desc____ret__I() int {
+	panic("Method not implemented - java/lang/invoke/MethodType.hashCode()I")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__InsertParameterTypes__desc__I____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 int, var1 ObjectArray__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.insertParameterTypes(I[Ljava/lang/Class;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__InvokerType__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.invokerType()Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__IsConvertibleTo__desc____obj__Java__lang__invoke__MethodType__ret__Z(var0 Java__lang__invoke__MethodType__Instance) bool {
+	panic("Method not implemented - java/lang/invoke/MethodType.isConvertibleTo(Ljava/lang/invoke/MethodType;)Z")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__IsGeneric__desc____ret__Z() bool {
+	panic("Method not implemented - java/lang/invoke/MethodType.isGeneric()Z")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__IsViewableAs__desc____obj__Java__lang__invoke__MethodType__Z__ret__Z(var0 Java__lang__invoke__MethodType__Instance, var1 bool) bool {
+	panic("Method not implemented - java/lang/invoke/MethodType.isViewableAs(Ljava/lang/invoke/MethodType;Z)Z")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__LastParameterType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.lastParameterType()Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__LeadingReferenceParameter__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.leadingReferenceParameter()Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__ParameterArray__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.parameterArray()[Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__ParameterCount__desc____ret__I() int {
+	panic("Method not implemented - java/lang/invoke/MethodType.parameterCount()I")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__ParameterSlotCount__desc____ret__I() int {
+	panic("Method not implemented - java/lang/invoke/MethodType.parameterSlotCount()I")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__ParameterSlotDepth__desc__I__ret__I(var0 int) int {
+	panic("Method not implemented - java/lang/invoke/MethodType.parameterSlotDepth(I)I")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__ParameterType__desc__I__ret____obj__Java__lang__Class(var0 int) Java__lang__Class__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.parameterType(I)Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__Ptypes__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.ptypes()[Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__ReplaceParameterTypes__desc__I__I____arr____obj__Java__lang__Class__ret____obj__Java__lang__invoke__MethodType(var0 int, var1 int, var2 ObjectArray__Instance) Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.replaceParameterTypes(II[Ljava/lang/Class;)Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__ReturnSlotCount__desc____ret__I() int {
+	panic("Method not implemented - java/lang/invoke/MethodType.returnSlotCount()I")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__ReturnType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.returnType()Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__PrivTo__Java__lang__invoke__Rtype__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.rtype()Ljava/lang/Class;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__ToMethodDescriptorString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.toMethodDescriptorString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__Unwrap__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.unwrap()Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl__Wrap__desc____ret____obj__Java__lang__invoke__MethodType() Java__lang__invoke__MethodType__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType.wrap()Ljava/lang/invoke/MethodType;")
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) RawPtr__Java__lang__invoke__MethodType() *Java__lang__invoke__MethodType__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodType__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Static struct{}
+
+var Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Var Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Static
+
+func Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet() *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Static {
+	return &Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Var
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Static) New() *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl {
+	v := &Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__InitDispatch(v)
+	return v
+}
+
+type Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Add__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance) Java__lang__Object__Instance
+	Impl__Get__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance) Java__lang__Object__Instance
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl) Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__InitDispatch(v Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl) Add__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 Java__lang__Object__Instance) Java__lang__Object__Instance {
+	return this._dispatch.Impl__Add__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0)
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl) Get__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 Java__lang__Object__Instance) Java__lang__Object__Instance {
+	return this._dispatch.Impl__Get__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0)
+}
+
+type Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Get__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance) Java__lang__Object__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	Add__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance) Java__lang__Object__Instance
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet() *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl) Impl__Instance_Init__desc____ret__V() {
+	panic("Method not implemented - java/lang/invoke/MethodType$ConcurrentWeakInternSet.<init>()V")
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl) Impl__Add__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 Java__lang__Object__Instance) Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType$ConcurrentWeakInternSet.add(Ljava/lang/Object;)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl) Impl__Get__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(var0 Java__lang__Object__Instance) Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/MethodType$ConcurrentWeakInternSet.get(Ljava/lang/Object;)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl) RawPtr__Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet() *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__ConcurrentWeakInternSet__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__MethodType__innerclass__OffsetHolder__Static struct {
+	init sync.Once
+}
+
+var Java__lang__invoke__MethodType__innerclass__OffsetHolder__Var Java__lang__invoke__MethodType__innerclass__OffsetHolder__Static
+
+func Java__lang__invoke__MethodType__innerclass__OffsetHolder() *Java__lang__invoke__MethodType__innerclass__OffsetHolder__Static {
+	Java__lang__invoke__MethodType__innerclass__OffsetHolder__Var.init.Do(Java__lang__invoke__MethodType__innerclass__OffsetHolder__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__MethodType__innerclass__OffsetHolder__Var
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__OffsetHolder__Static) New() *Java__lang__invoke__MethodType__innerclass__OffsetHolder__Impl {
+	v := &Java__lang__invoke__MethodType__innerclass__OffsetHolder__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__MethodType__innerclass__OffsetHolder__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__OffsetHolder__Static) Impl__Static_Init__desc____ret__V() { }
+
+func (this *Java__lang__invoke__MethodType__innerclass__OffsetHolder__Static) Impl__PrivTo__Java__lang__invoke__Access__dollar__000__desc____ret__J() int64 {
+	panic("Method not implemented - java/lang/invoke/MethodType$OffsetHolder.access$000()J")
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__OffsetHolder__Static) Impl__PrivTo__Java__lang__invoke__Access__dollar__100__desc____ret__J() int64 {
+	panic("Method not implemented - java/lang/invoke/MethodType$OffsetHolder.access$100()J")
+}
+
+type Java__lang__invoke__MethodType__innerclass__OffsetHolder__Dispatch interface {
+	Java__lang__Object__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__OffsetHolder__Impl) Java__lang__invoke__MethodType__innerclass__OffsetHolder__InitDispatch(v Java__lang__invoke__MethodType__innerclass__OffsetHolder__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+type Java__lang__invoke__MethodType__innerclass__OffsetHolder__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__MethodType__innerclass__OffsetHolder() *Java__lang__invoke__MethodType__innerclass__OffsetHolder__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__MethodType__innerclass__OffsetHolder__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__MethodType__innerclass__OffsetHolder__Dispatch
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__OffsetHolder__Impl) RawPtr__Java__lang__invoke__MethodType__innerclass__OffsetHolder() *Java__lang__invoke__MethodType__innerclass__OffsetHolder__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__MethodType__innerclass__OffsetHolder__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__SerializedLambda__Static struct{}
+
+var Java__lang__invoke__SerializedLambda__Var Java__lang__invoke__SerializedLambda__Static
+
+func Java__lang__invoke__SerializedLambda() *Java__lang__invoke__SerializedLambda__Static {
+	return &Java__lang__invoke__SerializedLambda__Var
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Static) New() *Java__lang__invoke__SerializedLambda__Impl {
+	v := &Java__lang__invoke__SerializedLambda__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__SerializedLambda__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Static) Impl__PrivTo__Java__lang__invoke__Access__dollar__000__desc____obj__Java__lang__invoke__SerializedLambda__ret____obj__Java__lang__Class(var0 Java__lang__invoke__SerializedLambda__Instance) Java__lang__Class__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.access$000(Ljava/lang/invoke/SerializedLambda;)Ljava/lang/Class;")
+}
+
+type Java__lang__invoke__SerializedLambda__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Instance_Init__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String__I____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____arr____obj__Java__lang__Object__ret__V(Java__lang__Class__Instance, Java__lang__String__Instance, Java__lang__String__Instance, Java__lang__String__Instance, int, Java__lang__String__Instance, Java__lang__String__Instance, Java__lang__String__Instance, Java__lang__String__Instance, ObjectArray__Instance)
+	Impl__GetCapturedArg__desc__I__ret____obj__Java__lang__Object(int) Java__lang__Object__Instance
+	Impl__GetCapturedArgCount__desc____ret__I() int
+	Impl__GetCapturingClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetFunctionalInterfaceClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetFunctionalInterfaceMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetFunctionalInterfaceMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetImplClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetImplMethodKind__desc____ret__I() int
+	Impl__GetImplMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetImplMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Impl__GetInstantiatedMethodType__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Java__lang__invoke__SerializedLambda__InitDispatch(v Java__lang__invoke__SerializedLambda__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Instance_Init__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String__I____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____arr____obj__Java__lang__Object__ret__V(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__String__Instance, var3 Java__lang__String__Instance, var4 int, var5 Java__lang__String__Instance, var6 Java__lang__String__Instance, var7 Java__lang__String__Instance, var8 Java__lang__String__Instance, var9 ObjectArray__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String__I____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____arr____obj__Java__lang__Object__ret__V(var0, var1, var2, var3, var4, var5, var6, var7, var8, var9)
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetCapturedArg__desc__I__ret____obj__Java__lang__Object(var0 int) Java__lang__Object__Instance {
+	return this._dispatch.Impl__GetCapturedArg__desc__I__ret____obj__Java__lang__Object(var0)
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetCapturedArgCount__desc____ret__I() int {
+	return this._dispatch.Impl__GetCapturedArgCount__desc____ret__I()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetCapturingClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetCapturingClass__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetFunctionalInterfaceClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetFunctionalInterfaceClass__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetFunctionalInterfaceMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetFunctionalInterfaceMethodName__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetFunctionalInterfaceMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetFunctionalInterfaceMethodSignature__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetImplClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetImplClass__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetImplMethodKind__desc____ret__I() int {
+	return this._dispatch.Impl__GetImplMethodKind__desc____ret__I()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetImplMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetImplMethodName__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetImplMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetImplMethodSignature__desc____ret____obj__Java__lang__String()
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) GetInstantiatedMethodType__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__GetInstantiatedMethodType__desc____ret____obj__Java__lang__String()
+}
+
+type Java__lang__invoke__SerializedLambda__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	GetInstantiatedMethodType__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Finalize__desc____ret__V()
+	GetFunctionalInterfaceClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetFunctionalInterfaceMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetCapturedArgCount__desc____ret__I() int
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	GetImplMethodKind__desc____ret__I() int
+	GetCapturingClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetCapturedArg__desc__I__ret____obj__Java__lang__Object(int) Java__lang__Object__Instance
+	Wait__desc__J__I__ret__V(int64, int)
+	GetFunctionalInterfaceMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	GetImplClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	GetImplMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	GetImplMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__invoke__SerializedLambda() *Java__lang__invoke__SerializedLambda__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__SerializedLambda__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__lang__invoke__SerializedLambda__Dispatch
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__Instance_Init__desc____obj__Java__lang__Class____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String__I____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____obj__Java__lang__String____arr____obj__Java__lang__Object__ret__V(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 Java__lang__String__Instance, var3 Java__lang__String__Instance, var4 int, var5 Java__lang__String__Instance, var6 Java__lang__String__Instance, var7 Java__lang__String__Instance, var8 Java__lang__String__Instance, var9 ObjectArray__Instance) {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.<init>(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetCapturedArg__desc__I__ret____obj__Java__lang__Object(var0 int) Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.getCapturedArg(I)Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetCapturedArgCount__desc____ret__I() int {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.getCapturedArgCount()I")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetCapturingClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.getCapturingClass()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetFunctionalInterfaceClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.getFunctionalInterfaceClass()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetFunctionalInterfaceMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.getFunctionalInterfaceMethodName()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetFunctionalInterfaceMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.getFunctionalInterfaceMethodSignature()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetImplClass__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.getImplClass()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetImplMethodKind__desc____ret__I() int {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.getImplMethodKind()I")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetImplMethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.getImplMethodName()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetImplMethodSignature__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.getImplMethodSignature()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__GetInstantiatedMethodType__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.getInstantiatedMethodType()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl__ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda.toString()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) RawPtr__Java__lang__invoke__SerializedLambda() *Java__lang__invoke__SerializedLambda__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__SerializedLambda__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__SerializedLambda__innerclass__1__Static struct{}
+
+var Java__lang__invoke__SerializedLambda__innerclass__1__Var Java__lang__invoke__SerializedLambda__innerclass__1__Static
+
+func Java__lang__invoke__SerializedLambda__innerclass__1() *Java__lang__invoke__SerializedLambda__innerclass__1__Static {
+	return &Java__lang__invoke__SerializedLambda__innerclass__1__Var
+}
+
+func (this *Java__lang__invoke__SerializedLambda__innerclass__1__Static) New() *Java__lang__invoke__SerializedLambda__innerclass__1__Impl {
+	v := &Java__lang__invoke__SerializedLambda__innerclass__1__Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__lang__invoke__SerializedLambda__innerclass__1__InitDispatch(v)
+	return v
+}
+
+type Java__lang__invoke__SerializedLambda__innerclass__1__Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Instance_Init__desc____obj__Java__lang__invoke__SerializedLambda__ret__V(Java__lang__invoke__SerializedLambda__Instance)
+	Impl__Run__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+}
+
+func (this *Java__lang__invoke__SerializedLambda__innerclass__1__Impl) Java__lang__invoke__SerializedLambda__innerclass__1__InitDispatch(v Java__lang__invoke__SerializedLambda__innerclass__1__Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__SerializedLambda__innerclass__1__Impl) Instance_Init__desc____obj__Java__lang__invoke__SerializedLambda__ret__V(var0 Java__lang__invoke__SerializedLambda__Instance) {
+	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__invoke__SerializedLambda__ret__V(var0)
+}
+
+func (this *Java__lang__invoke__SerializedLambda__innerclass__1__Impl) Run__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance {
+	return this._dispatch.Impl__Run__desc____ret____obj__Java__lang__Object()
+}
+
+type Java__lang__invoke__SerializedLambda__innerclass__1__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Run__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	FieldGet__Java__lang__invoke__SerializedLambda__innerclass__1__This__dollar__0() Java__lang__invoke__SerializedLambda__Instance
+	FieldSet__Java__lang__invoke__SerializedLambda__innerclass__1__This__dollar__0(v Java__lang__invoke__SerializedLambda__Instance)
+	RawPtr__Java__lang__invoke__SerializedLambda__innerclass__1() *Java__lang__invoke__SerializedLambda__innerclass__1__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__SerializedLambda__innerclass__1__Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch       Java__lang__invoke__SerializedLambda__innerclass__1__Dispatch
+	This__dollar__0 Java__lang__invoke__SerializedLambda__Instance
+}
+
+func (this *Java__lang__invoke__SerializedLambda__innerclass__1__Impl) FieldGet__Java__lang__invoke__SerializedLambda__innerclass__1__This__dollar__0() Java__lang__invoke__SerializedLambda__Instance {
+	return this.This__dollar__0
+}
+
+func (this *Java__lang__invoke__SerializedLambda__innerclass__1__Impl) FieldSet__Java__lang__invoke__SerializedLambda__innerclass__1__This__dollar__0(v Java__lang__invoke__SerializedLambda__Instance) {
+	this.This__dollar__0 = v
+}
+
+func (this *Java__lang__invoke__SerializedLambda__innerclass__1__Impl) Impl__Instance_Init__desc____obj__Java__lang__invoke__SerializedLambda__ret__V(var0 Java__lang__invoke__SerializedLambda__Instance) {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda$1.<init>(Ljava/lang/invoke/SerializedLambda;)V")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__innerclass__1__Impl) Impl__Run__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance {
+	panic("Method not implemented - java/lang/invoke/SerializedLambda$1.run()Ljava/lang/Object;")
+}
+
+func (this *Java__lang__invoke__SerializedLambda__innerclass__1__Impl) RawPtr__Java__lang__invoke__SerializedLambda__innerclass__1() *Java__lang__invoke__SerializedLambda__innerclass__1__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__SerializedLambda__innerclass__1__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+type Java__lang__invoke__VarHandle__innerclass__AccessMode__Static struct {
+	__dollar__assertionsDisabled bool
+	COMPARE_AND_EXCHANGE         Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	COMPARE_AND_EXCHANGE_ACQUIRE Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	COMPARE_AND_EXCHANGE_RELEASE Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	COMPARE_AND_SET              Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET                          Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_ACQUIRE                  Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_ADD                  Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_ADD_ACQUIRE          Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_ADD_RELEASE          Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_BITWISE_AND          Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_BITWISE_AND_ACQUIRE  Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_BITWISE_AND_RELEASE  Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_BITWISE_OR           Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_BITWISE_OR_ACQUIRE   Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_BITWISE_OR_RELEASE   Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_BITWISE_XOR          Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_BITWISE_XOR_ACQUIRE  Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_BITWISE_XOR_RELEASE  Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_SET                  Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_SET_ACQUIRE          Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_AND_SET_RELEASE          Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_OPAQUE                   Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	GET_VOLATILE                 Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	SET                          Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	SET_OPAQUE                   Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	SET_RELEASE                  Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	SET_VOLATILE                 Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	WEAK_COMPARE_AND_SET         Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	WEAK_COMPARE_AND_SET_ACQUIRE Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	WEAK_COMPARE_AND_SET_PLAIN   Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	WEAK_COMPARE_AND_SET_RELEASE Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance
+	MethodNameToAccessMode       Java__util__Map__Instance
+	init                         sync.Once
+}
+
+var Java__lang__invoke__VarHandle__innerclass__AccessMode__Var Java__lang__invoke__VarHandle__innerclass__AccessMode__Static
+
+func Java__lang__invoke__VarHandle__innerclass__AccessMode() *Java__lang__invoke__VarHandle__innerclass__AccessMode__Static {
+	Java__lang__invoke__VarHandle__innerclass__AccessMode__Var.init.Do(Java__lang__invoke__VarHandle__innerclass__AccessMode__Var.Impl__Static_Init__desc____ret__V)
+	return &Java__lang__invoke__VarHandle__innerclass__AccessMode__Var
+}
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Static) New() *Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl {
+	v := &Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl{
+		Java__lang__Enum__Impl: Java__lang__Enum().New(),
+	}
+	v.Java__lang__invoke__VarHandle__innerclass__AccessMode__InitDispatch(v)
+	return v
+}
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Static) Impl__Static_Init__desc____ret__V() { }
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Static) Impl__ValueFromMethodName__desc____obj__Java__lang__String__ret____obj__Java__lang__invoke__VarHandle__innerclass__AccessMode(var0 Java__lang__String__Instance) Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance {
+	panic("Method not implemented - java/lang/invoke/VarHandle$AccessMode.valueFromMethodName(Ljava/lang/String;)Ljava/lang/invoke/VarHandle$AccessMode;")
+}
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Static) Impl__ValueOf__desc____obj__Java__lang__String__ret____obj__Java__lang__invoke__VarHandle__innerclass__AccessMode(var0 Java__lang__String__Instance) Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance {
+	panic("Method not implemented - java/lang/invoke/VarHandle$AccessMode.valueOf(Ljava/lang/String;)Ljava/lang/invoke/VarHandle$AccessMode;")
+}
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Static) Impl__Values__desc____ret____arr____obj__Java__lang__invoke__VarHandle__innerclass__AccessMode() ObjectArray__Instance {
+	panic("Method not implemented - java/lang/invoke/VarHandle$AccessMode.values()[Ljava/lang/invoke/VarHandle$AccessMode;")
+}
+
+type Java__lang__invoke__VarHandle__innerclass__AccessMode__Dispatch interface {
+	Java__lang__Enum__Dispatch
+	Impl__MethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+}
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl) Java__lang__invoke__VarHandle__innerclass__AccessMode__InitDispatch(v Java__lang__invoke__VarHandle__innerclass__AccessMode__Dispatch) {
+	this.Java__lang__Enum__Impl.Java__lang__Enum__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl) MethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	return this._dispatch.Impl__MethodName__desc____ret____obj__Java__lang__String()
+}
+
+type Java__lang__invoke__VarHandle__innerclass__AccessMode__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	CompareTo__desc____obj__Java__lang__Enum__ret__I(Java__lang__Enum__Instance) int
+	Ordinal__desc____ret__I() int
+	Finalize__desc____ret__V()
+	CompareTo__desc____obj__Java__lang__Object__ret__I(Java__lang__Object__Instance) int
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	MethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Wait__desc__J__I__ret__V(int64, int)
+	Name__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	FieldGet__Java__lang__invoke__VarHandle__innerclass__AccessMode__MethodName() Java__lang__String__Instance
+	FieldSet__Java__lang__invoke__VarHandle__innerclass__AccessMode__MethodName(v Java__lang__String__Instance)
+	RawPtr__Java__lang__invoke__VarHandle__innerclass__AccessMode() *Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl
+	RawPtr__Java__lang__Enum() *Java__lang__Enum__Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl struct {
+	*Java__lang__Enum__Impl
+	_dispatch  Java__lang__invoke__VarHandle__innerclass__AccessMode__Dispatch
+	MethodName Java__lang__String__Instance
+}
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl) FieldGet__Java__lang__invoke__VarHandle__innerclass__AccessMode__MethodName() Java__lang__String__Instance {
+	return this.MethodName
+}
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl) FieldSet__Java__lang__invoke__VarHandle__innerclass__AccessMode__MethodName(v Java__lang__String__Instance) {
+	this.MethodName = v
+}
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl) Impl__MethodName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
+	panic("Method not implemented - java/lang/invoke/VarHandle$AccessMode.methodName()Ljava/lang/String;")
+}
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl) RawPtr__Java__lang__invoke__VarHandle__innerclass__AccessMode() *Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl {
+	return this
+}
+
+func (this *Java__lang__invoke__VarHandle__innerclass__AccessMode__Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}

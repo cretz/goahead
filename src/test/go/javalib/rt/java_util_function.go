@@ -1,5 +1,4 @@
-// Generated from Azul Zulu packaged OpenJDK JAR and carries the same
-// GPL license with the classpath exception
+// Generated from Azul Zulu packaged OpenJDK JAR and carries the same GPL license with the classpath exception
 package rt
 
 type Java__util__function__BiConsumer__Static struct{}
@@ -11,24 +10,24 @@ func Java__util__function__BiConsumer() *Java__util__function__BiConsumer__Stati
 }
 
 type Java__util__function__BiConsumer__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
 	Accept__desc____obj__Java__lang__Object____obj__Java__lang__Object__ret__V(Java__lang__Object__Instance, Java__lang__Object__Instance)
+	Wait__desc__J__I__ret__V(int64, int)
 	AndThen__desc____obj__Java__util__function__BiConsumer__ret____obj__Java__util__function__BiConsumer(Java__util__function__BiConsumer__Instance) Java__util__function__BiConsumer__Instance
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	Finalize__desc____ret__V()
-	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	HashCode__desc____ret__I() int
-	Notify__desc____ret__V()
-	NotifyAll__desc____ret__V()
-	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
-	Wait__desc__J__I__ret__V(int64, int)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 func Java__util__function__BiConsumer__defaultmethod__AndThen__desc____obj__Java__util__function__BiConsumer__ret____obj__Java__util__function__BiConsumer(this Java__util__function__BiConsumer__Instance, var0 Java__util__function__BiConsumer__Instance) Java__util__function__BiConsumer__Instance {
-	panic("Not Implemented - java/util/function/BiConsumer.andThen(Ljava/util/function/BiConsumer;)Ljava/util/function/BiConsumer;")
+	panic("Method not implemented - java/util/function/BiConsumer.andThen(Ljava/util/function/BiConsumer;)Ljava/util/function/BiConsumer;")
 }
 
 type Java__util__function__BiConsumer__dynproxy____Static struct{}
@@ -67,19 +66,19 @@ func (this *Java__util__function__BiConsumer__dynproxy____Impl) AndThen__desc___
 }
 
 type Java__util__function__BiConsumer__dynproxy____Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
 	Accept__desc____obj__Java__lang__Object____obj__Java__lang__Object__ret__V(Java__lang__Object__Instance, Java__lang__Object__Instance)
+	Wait__desc__J__I__ret__V(int64, int)
 	AndThen__desc____obj__Java__util__function__BiConsumer__ret____obj__Java__util__function__BiConsumer(Java__util__function__BiConsumer__Instance) Java__util__function__BiConsumer__Instance
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	Finalize__desc____ret__V()
-	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	HashCode__desc____ret__I() int
-	Notify__desc____ret__V()
-	NotifyAll__desc____ret__V()
-	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	Wait__desc____ret__V()
 	Wait__desc__J__ret__V(int64)
-	Wait__desc__J__I__ret__V(int64, int)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	RawPtr__Java__util__function__BiConsumer__dynproxy__() *Java__util__function__BiConsumer__dynproxy____Impl
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
@@ -125,24 +124,24 @@ func Java__util__function__BiFunction() *Java__util__function__BiFunction__Stati
 }
 
 type Java__util__function__BiFunction__Instance interface {
-	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__BiFunction(Java__util__function__Function__Instance) Java__util__function__BiFunction__Instance
-	Apply__desc____obj__Java__lang__Object____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance, Java__lang__Object__Instance) Java__lang__Object__Instance
-	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	Finalize__desc____ret__V()
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	HashCode__desc____ret__I() int
-	Notify__desc____ret__V()
+	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__BiFunction(Java__util__function__Function__Instance) Java__util__function__BiFunction__Instance
+	Finalize__desc____ret__V()
 	NotifyAll__desc____ret__V()
-	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Wait__desc____ret__V()
-	Wait__desc__J__ret__V(int64)
+	HashCode__desc____ret__I() int
+	Apply__desc____obj__Java__lang__Object____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance, Java__lang__Object__Instance) Java__lang__Object__Instance
 	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 func Java__util__function__BiFunction__defaultmethod__AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__BiFunction(this Java__util__function__BiFunction__Instance, var0 Java__util__function__Function__Instance) Java__util__function__BiFunction__Instance {
-	panic("Not Implemented - java/util/function/BiFunction.andThen(Ljava/util/function/Function;)Ljava/util/function/BiFunction;")
+	panic("Method not implemented - java/util/function/BiFunction.andThen(Ljava/util/function/Function;)Ljava/util/function/BiFunction;")
 }
 
 type Java__util__function__BiFunction__dynproxy____Static struct{}
@@ -181,19 +180,19 @@ func (this *Java__util__function__BiFunction__dynproxy____Impl) Apply__desc____o
 }
 
 type Java__util__function__BiFunction__dynproxy____Instance interface {
-	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__BiFunction(Java__util__function__Function__Instance) Java__util__function__BiFunction__Instance
-	Apply__desc____obj__Java__lang__Object____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance, Java__lang__Object__Instance) Java__lang__Object__Instance
-	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	Finalize__desc____ret__V()
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	HashCode__desc____ret__I() int
-	Notify__desc____ret__V()
+	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__BiFunction(Java__util__function__Function__Instance) Java__util__function__BiFunction__Instance
+	Finalize__desc____ret__V()
 	NotifyAll__desc____ret__V()
-	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Wait__desc____ret__V()
-	Wait__desc__J__ret__V(int64)
+	HashCode__desc____ret__I() int
+	Apply__desc____obj__Java__lang__Object____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance, Java__lang__Object__Instance) Java__lang__Object__Instance
 	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	RawPtr__Java__util__function__BiFunction__dynproxy__() *Java__util__function__BiFunction__dynproxy____Impl
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
@@ -238,20 +237,28 @@ func Java__util__function__BinaryOperator() *Java__util__function__BinaryOperato
 	return &Java__util__function__BinaryOperator__Var
 }
 
+func (this *Java__util__function__BinaryOperator__Static) Impl__MaxBy__desc____obj__Java__util__Comparator__ret____obj__Java__util__function__BinaryOperator(var0 Java__util__Comparator__Instance) Java__util__function__BinaryOperator__Instance {
+	panic("Method not implemented - java/util/function/BinaryOperator.maxBy(Ljava/util/Comparator;)Ljava/util/function/BinaryOperator;")
+}
+
+func (this *Java__util__function__BinaryOperator__Static) Impl__MinBy__desc____obj__Java__util__Comparator__ret____obj__Java__util__function__BinaryOperator(var0 Java__util__Comparator__Instance) Java__util__function__BinaryOperator__Instance {
+	panic("Method not implemented - java/util/function/BinaryOperator.minBy(Ljava/util/Comparator;)Ljava/util/function/BinaryOperator;")
+}
+
 type Java__util__function__BinaryOperator__Instance interface {
-	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__BiFunction(Java__util__function__Function__Instance) Java__util__function__BiFunction__Instance
-	Apply__desc____obj__Java__lang__Object____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance, Java__lang__Object__Instance) Java__lang__Object__Instance
-	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	Finalize__desc____ret__V()
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	HashCode__desc____ret__I() int
-	Notify__desc____ret__V()
+	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__BiFunction(Java__util__function__Function__Instance) Java__util__function__BiFunction__Instance
+	Finalize__desc____ret__V()
 	NotifyAll__desc____ret__V()
-	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Wait__desc____ret__V()
-	Wait__desc__J__ret__V(int64)
+	HashCode__desc____ret__I() int
+	Apply__desc____obj__Java__lang__Object____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance, Java__lang__Object__Instance) Java__lang__Object__Instance
 	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
@@ -291,19 +298,19 @@ func (this *Java__util__function__BinaryOperator__dynproxy____Impl) Apply__desc_
 }
 
 type Java__util__function__BinaryOperator__dynproxy____Instance interface {
-	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__BiFunction(Java__util__function__Function__Instance) Java__util__function__BiFunction__Instance
-	Apply__desc____obj__Java__lang__Object____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance, Java__lang__Object__Instance) Java__lang__Object__Instance
-	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	Finalize__desc____ret__V()
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	HashCode__desc____ret__I() int
-	Notify__desc____ret__V()
+	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__BiFunction(Java__util__function__Function__Instance) Java__util__function__BiFunction__Instance
+	Finalize__desc____ret__V()
 	NotifyAll__desc____ret__V()
-	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Wait__desc____ret__V()
-	Wait__desc__J__ret__V(int64)
+	HashCode__desc____ret__I() int
+	Apply__desc____obj__Java__lang__Object____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance, Java__lang__Object__Instance) Java__lang__Object__Instance
 	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	RawPtr__Java__util__function__BinaryOperator__dynproxy__() *Java__util__function__BinaryOperator__dynproxy____Impl
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
@@ -340,6 +347,120 @@ func (this *Java__util__function__BinaryOperator__dynproxy____Impl) Impl__Apply_
 	return this.fn(var0, var1)
 }
 
+type Java__util__function__Consumer__Static struct{}
+
+var Java__util__function__Consumer__Var Java__util__function__Consumer__Static
+
+func Java__util__function__Consumer() *Java__util__function__Consumer__Static {
+	return &Java__util__function__Consumer__Var
+}
+
+type Java__util__function__Consumer__Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Accept__desc____obj__Java__lang__Object__ret__V(Java__lang__Object__Instance)
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	AndThen__desc____obj__Java__util__function__Consumer__ret____obj__Java__util__function__Consumer(Java__util__function__Consumer__Instance) Java__util__function__Consumer__Instance
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+func Java__util__function__Consumer__defaultmethod__AndThen__desc____obj__Java__util__function__Consumer__ret____obj__Java__util__function__Consumer(this Java__util__function__Consumer__Instance, var0 Java__util__function__Consumer__Instance) Java__util__function__Consumer__Instance {
+	panic("Method not implemented - java/util/function/Consumer.andThen(Ljava/util/function/Consumer;)Ljava/util/function/Consumer;")
+}
+
+type Java__util__function__Consumer__dynproxy____Static struct{}
+
+var Java__util__function__Consumer__dynproxy____Var Java__util__function__Consumer__dynproxy____Static
+
+func Java__util__function__Consumer__dynproxy__() *Java__util__function__Consumer__dynproxy____Static {
+	return &Java__util__function__Consumer__dynproxy____Var
+}
+
+func (this *Java__util__function__Consumer__dynproxy____Static) New() *Java__util__function__Consumer__dynproxy____Impl {
+	v := &Java__util__function__Consumer__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+	}
+	v.Java__util__function__Consumer__dynproxy____InitDispatch(v)
+	return v
+}
+
+type Java__util__function__Consumer__dynproxy____Dispatch interface {
+	Java__lang__Object__Dispatch
+	Impl__Accept__desc____obj__Java__lang__Object__ret__V(Java__lang__Object__Instance)
+	Impl__AndThen__desc____obj__Java__util__function__Consumer__ret____obj__Java__util__function__Consumer(Java__util__function__Consumer__Instance) Java__util__function__Consumer__Instance
+}
+
+func (this *Java__util__function__Consumer__dynproxy____Impl) Java__util__function__Consumer__dynproxy____InitDispatch(v Java__util__function__Consumer__dynproxy____Dispatch) {
+	this.Java__lang__Object__Impl.Java__lang__Object__InitDispatch(v)
+	this._dispatch = v
+}
+
+func (this *Java__util__function__Consumer__dynproxy____Impl) Accept__desc____obj__Java__lang__Object__ret__V(var0 Java__lang__Object__Instance) {
+	this._dispatch.Impl__Accept__desc____obj__Java__lang__Object__ret__V(var0)
+}
+
+func (this *Java__util__function__Consumer__dynproxy____Impl) AndThen__desc____obj__Java__util__function__Consumer__ret____obj__Java__util__function__Consumer(var0 Java__util__function__Consumer__Instance) Java__util__function__Consumer__Instance {
+	return this._dispatch.Impl__AndThen__desc____obj__Java__util__function__Consumer__ret____obj__Java__util__function__Consumer(var0)
+}
+
+type Java__util__function__Consumer__dynproxy____Instance interface {
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	Accept__desc____obj__Java__lang__Object__ret__V(Java__lang__Object__Instance)
+	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	AndThen__desc____obj__Java__util__function__Consumer__ret____obj__Java__util__function__Consumer(Java__util__function__Consumer__Instance) Java__util__function__Consumer__Instance
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
+	RawPtr__Java__util__function__Consumer__dynproxy__() *Java__util__function__Consumer__dynproxy____Impl
+	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
+}
+
+type Java__util__function__Consumer__dynproxy____Impl struct {
+	*Java__lang__Object__Impl
+	_dispatch Java__util__function__Consumer__dynproxy____Dispatch
+	fn        func(Java__lang__Object__Instance)
+}
+
+func (this *Java__util__function__Consumer__dynproxy____Impl) RawPtr__Java__util__function__Consumer__dynproxy__() *Java__util__function__Consumer__dynproxy____Impl {
+	return this
+}
+
+func (this *Java__util__function__Consumer__dynproxy____Impl) Impl_Self() Java__lang__Object__Instance {
+	return this
+}
+
+func (this *Java__util__function__Consumer__dynproxy____Impl) Impl__AndThen__desc____obj__Java__util__function__Consumer__ret____obj__Java__util__function__Consumer(var0 Java__util__function__Consumer__Instance) Java__util__function__Consumer__Instance {
+	return Java__util__function__Consumer__defaultmethod__AndThen__desc____obj__Java__util__function__Consumer__ret____obj__Java__util__function__Consumer(this, var0)
+}
+
+func (_ *Java__util__function__Consumer__Static) DynProxy_Create(fn func(Java__lang__Object__Instance)) Java__util__function__Consumer__Instance {
+	v := &Java__util__function__Consumer__dynproxy____Impl{
+		Java__lang__Object__Impl: Java__lang__Object().New(),
+		fn:                       fn,
+	}
+	v.Java__util__function__Consumer__dynproxy____InitDispatch(v)
+	v.Java__lang__Object__Impl.Impl__Instance_Init__desc____ret__V()
+	return v
+}
+
+func (this *Java__util__function__Consumer__dynproxy____Impl) Impl__Accept__desc____obj__Java__lang__Object__ret__V(var0 Java__lang__Object__Instance) {
+	this.fn(var0)
+}
+
 type Java__util__function__Function__Static struct{}
 
 var Java__util__function__Function__Var Java__util__function__Function__Static
@@ -349,33 +470,33 @@ func Java__util__function__Function() *Java__util__function__Function__Static {
 }
 
 func (this *Java__util__function__Function__Static) Impl__Identity__desc____ret____obj__Java__util__function__Function() Java__util__function__Function__Instance {
-	panic("Not Implemented - java/util/function/Function.identity()Ljava/util/function/Function;")
+	panic("Method not implemented - java/util/function/Function.identity()Ljava/util/function/Function;")
 }
 
 type Java__util__function__Function__Instance interface {
-	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__Function(Java__util__function__Function__Instance) Java__util__function__Function__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
 	Apply__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance) Java__lang__Object__Instance
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__Function(Java__util__function__Function__Instance) Java__util__function__Function__Instance
+	Wait__desc__J__I__ret__V(int64, int)
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
 	Compose__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__Function(Java__util__function__Function__Instance) Java__util__function__Function__Instance
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	Finalize__desc____ret__V()
-	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	HashCode__desc____ret__I() int
 	Notify__desc____ret__V()
-	NotifyAll__desc____ret__V()
 	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	Wait__desc____ret__V()
-	Wait__desc__J__ret__V(int64)
-	Wait__desc__J__I__ret__V(int64, int)
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
 func Java__util__function__Function__defaultmethod__AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__Function(this Java__util__function__Function__Instance, var0 Java__util__function__Function__Instance) Java__util__function__Function__Instance {
-	panic("Not Implemented - java/util/function/Function.andThen(Ljava/util/function/Function;)Ljava/util/function/Function;")
+	panic("Method not implemented - java/util/function/Function.andThen(Ljava/util/function/Function;)Ljava/util/function/Function;")
 }
 
 func Java__util__function__Function__defaultmethod__Compose__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__Function(this Java__util__function__Function__Instance, var0 Java__util__function__Function__Instance) Java__util__function__Function__Instance {
-	panic("Not Implemented - java/util/function/Function.compose(Ljava/util/function/Function;)Ljava/util/function/Function;")
+	panic("Method not implemented - java/util/function/Function.compose(Ljava/util/function/Function;)Ljava/util/function/Function;")
 }
 
 type Java__util__function__Function__dynproxy____Static struct{}
@@ -419,20 +540,20 @@ func (this *Java__util__function__Function__dynproxy____Impl) Compose__desc____o
 }
 
 type Java__util__function__Function__dynproxy____Instance interface {
-	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__Function(Java__util__function__Function__Instance) Java__util__function__Function__Instance
+	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
+	Finalize__desc____ret__V()
 	Apply__desc____obj__Java__lang__Object__ret____obj__Java__lang__Object(Java__lang__Object__Instance) Java__lang__Object__Instance
+	NotifyAll__desc____ret__V()
+	Wait__desc____ret__V()
+	HashCode__desc____ret__I() int
+	AndThen__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__Function(Java__util__function__Function__Instance) Java__util__function__Function__Instance
+	Wait__desc__J__I__ret__V(int64, int)
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
 	Compose__desc____obj__Java__util__function__Function__ret____obj__Java__util__function__Function(Java__util__function__Function__Instance) Java__util__function__Function__Instance
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	Finalize__desc____ret__V()
-	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	HashCode__desc____ret__I() int
 	Notify__desc____ret__V()
-	NotifyAll__desc____ret__V()
 	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	Wait__desc____ret__V()
-	Wait__desc__J__ret__V(int64)
-	Wait__desc__J__I__ret__V(int64, int)
 	RawPtr__Java__util__function__Function__dynproxy__() *Java__util__function__Function__dynproxy____Impl
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
@@ -482,18 +603,18 @@ func Java__util__function__IntFunction() *Java__util__function__IntFunction__Sta
 }
 
 type Java__util__function__IntFunction__Instance interface {
-	Apply__desc__I__ret____obj__Java__lang__Object(int) Java__lang__Object__Instance
-	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	Finalize__desc____ret__V()
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	HashCode__desc____ret__I() int
-	Notify__desc____ret__V()
+	Finalize__desc____ret__V()
+	Apply__desc__I__ret____obj__Java__lang__Object(int) Java__lang__Object__Instance
 	NotifyAll__desc____ret__V()
-	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Wait__desc____ret__V()
-	Wait__desc__J__ret__V(int64)
+	HashCode__desc____ret__I() int
 	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }
 
@@ -528,18 +649,18 @@ func (this *Java__util__function__IntFunction__dynproxy____Impl) Apply__desc__I_
 }
 
 type Java__util__function__IntFunction__dynproxy____Instance interface {
-	Apply__desc__I__ret____obj__Java__lang__Object(int) Java__lang__Object__Instance
-	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
-	Finalize__desc____ret__V()
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	HashCode__desc____ret__I() int
-	Notify__desc____ret__V()
+	Finalize__desc____ret__V()
+	Apply__desc__I__ret____obj__Java__lang__Object(int) Java__lang__Object__Instance
 	NotifyAll__desc____ret__V()
-	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Wait__desc____ret__V()
-	Wait__desc__J__ret__V(int64)
+	HashCode__desc____ret__I() int
 	Wait__desc__J__I__ret__V(int64, int)
+	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
+	Wait__desc__J__ret__V(int64)
+	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
+	Notify__desc____ret__V()
+	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	RawPtr__Java__util__function__IntFunction__dynproxy__() *Java__util__function__IntFunction__dynproxy____Impl
 	RawPtr__Java__lang__Object() *Java__lang__Object__Impl
 }

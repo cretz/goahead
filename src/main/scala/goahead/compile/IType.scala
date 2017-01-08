@@ -126,6 +126,9 @@ object IType extends Logger {
         case _ => typ.getElementType.getDescriptor
       })
     }
+
+    // Actual non-array element type regardless of dimension count
+    def arrayElementType = IType(typ.getElementType)
   }
 
   case object NullType extends IType {
