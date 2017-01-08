@@ -21,7 +21,7 @@ trait SignatureCompiler {
 
         ctx -> funcDecl(
           rec = Some(field("this", recTyp)),
-          name = nameOverride.getOrElse(ctx.mangler.implMethodName(method.name, method.desc)),
+          name = nameOverride.getOrElse(ctx.mangler.implMethodName(method)),
           funcType = funcType,
           stmts = stmts
         )

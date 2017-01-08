@@ -44,12 +44,21 @@ object MethodSetManager {
     protected def dispatchMethods(classPath: ClassPath, cls: Cls): MethodSet = {
       // Includes default forwarder methods
       val defaultForwarders = defaultForwarderMethods(classPath, cls)
-      // All methods not in parent classes and not static and not private
+      // Can't include static, private, or private to another package
+      val allMyMethods = allMethods(classPath, cls).filterNot { m =>
+        m.access.isAccessStatic || m.access.isAccessPrivate ||
+          (m.access.isAccessPackagePrivate && m.cls.packageName != cls.packageName)
+      }
+      val allMyPackagePrivateVisibilityIncreases = allMyMethods.myPackagePrivateVisibilityIncreases(cls).map(_._1)
+      // All methods not in parent classes
       val parentDispatchInterfaces = classPath.allSuperTypes(cls.name).foldLeft(MethodSet(classPath, Nil)) {
         case (set, clsDet) => set ++ dispatchMethods(classPath, clsDet.cls)
       }
-      (allMethods(classPath, cls).filterNot(m => m.access.isAccessStatic || m.access.isAccessPrivate) ++
-        defaultForwarders) -- parentDispatchInterfaces
+      // Exclude package private ones from the parent because we don't want to exclude them
+      val toExclude = parentDispatchInterfaces.filterNot { m =>
+        m.name != "<init>" && m.access.isAccessPackagePrivate && m.cls.packageName != cls.packageName
+      }
+      ((allMyMethods ++ defaultForwarders) -- toExclude) ++ MethodSet(classPath, allMyPackagePrivateVisibilityIncreases)
     }
 
     override def dispatchInterfaceMethods(classPath: ClassPath, cls: Cls): MethodSet = {
@@ -75,10 +84,12 @@ object MethodSetManager {
     }
 
     override def implMethods(classPath: ClassPath, cls: Cls): MethodSet = {
-      // All of mine, non-static + all non-default-forwarder abstracts
+      val allMethodSet = allMethods(classPath, cls)
+      // All of mine, non-static + all non-default-forwarder abstracts + all parent package priv increase
       allMyMethods(classPath, cls).filterNot(_.access.isAccessStatic) ++
-        (allMethods(classPath, cls).filterIncludingReturnDuplicates(_.access.isAccessAbstract) --
-          defaultForwarderMethods(classPath, cls))
+        (allMethodSet.filterIncludingReturnDuplicates(_.access.isAccessAbstract) --
+          defaultForwarderMethods(classPath, cls)) ++
+        MethodSet(classPath, allMethodSet.myPackagePrivateVisibilityIncreases(cls).map(_._2))
     }
 
     protected def defaultForwarderMethods(classPath: ClassPath, cls: Cls): MethodSet = {
@@ -153,7 +164,13 @@ object MethodSetManager {
       map.values.flatMap(m => m.primary +: m.covariantReturnTypes).toSeq.sortBy(m => m.name -> m.desc)
     }
 
-    private def allMethods = map.values.flatMap(m => m.primary +: (m.covariantReturnTypes ++ m.regularDupes))
+    def methodsWithDupes = map.values
+
+    def packagePrivateVisibilityIncreases = map.values.flatMap(_.packagePrivateVisibilityIncreases)
+
+    def myPackagePrivateVisibilityIncreases(cls: Cls) = map.values.flatMap(_.myPackagePrivateVisibilityIncreases(cls))
+
+    def allMethods = map.values.flatMap(m => m.primary +: (m.covariantReturnTypes ++ m.regularDupes))
 
     def `++`(other: MethodSet) = MethodSet(classPath, allMethods ++ other.allMethods)
 
@@ -218,5 +235,24 @@ object MethodSetManager {
     primary: Method,
     covariantReturnTypes: Seq[Method],
     regularDupes: Seq[Method]
-  )
+  ) {
+
+
+    def myPackagePrivateVisibilityIncreases(cls: Cls): Option[(Method, Method)] = {
+      packagePrivateVisibilityIncreases.filter(_._1.cls.name == cls.name)
+    }
+
+    def packagePrivateVisibilityIncreases: Option[(Method, Method)] = {
+      val primaryNotInit = !primary.access.isAccessStatic && primary.name != "<init>"
+      val mineIsVisible = primary.access.isAccessPublic || primary.access.isAccessProtected
+      val noParentsAreVisible = !regularDupes.exists(m => m.access.isAccessPublic || m.access.isAccessProtected)
+      val parentPackagePrivate = regularDupes.find(m =>
+        m.access.isAccessPackagePrivate && m.cls.packageName == primary.cls.packageName
+      )
+      parentPackagePrivate match {
+        case Some(p) if primaryNotInit && mineIsVisible && noParentsAreVisible => Some(primary -> p)
+        case _ => None
+      }
+    }
+  }
 }

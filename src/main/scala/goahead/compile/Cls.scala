@@ -27,7 +27,7 @@ object Cls {
     @inline override def name = node.name
     @inline override def access = node.access
 
-    override def packageName = name.lastIndexOf('/') match {
+    override lazy val packageName = name.lastIndexOf('/') match {
       case -1 => ""
       case index => name.substring(0, index)
     }

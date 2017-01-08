@@ -29,7 +29,7 @@ type Java__lang__AbstractStringBuilder__Dispatch interface {
 	Impl__Append__desc__F__ret____obj__Java__lang__AbstractStringBuilder(float32) Java__lang__AbstractStringBuilder__Instance
 	Impl__Append__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	Impl__Append__desc__J__ret____obj__Java__lang__AbstractStringBuilder(int64) Java__lang__AbstractStringBuilder__Instance
-	Impl__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance
+	Impl__PrivTo__Java__lang__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance
 	Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__CharSequence__Instance) Java__lang__AbstractStringBuilder__Instance
 	Impl__Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance
 	Impl__Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__CharSequence__Instance, int, int) Java__lang__AbstractStringBuilder__Instance
@@ -49,7 +49,7 @@ type Java__lang__AbstractStringBuilder__Dispatch interface {
 	Impl__DeleteCharAt__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	Impl__EnsureCapacity__desc__I__ret__V(int)
 	Impl__GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
-	Impl__GetValue__desc____ret____arr__C() CharArray__Instance
+	Impl__PrivTo__Java__lang__GetValue__desc____ret____arr__C() CharArray__Instance
 	Impl__IndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	Impl__IndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
 	Impl__Insert__desc__I__C__ret____obj__Java__lang__AbstractStringBuilder(int, rune) Java__lang__AbstractStringBuilder__Instance
@@ -111,8 +111,8 @@ func (this *Java__lang__AbstractStringBuilder__Impl) Append__desc__J__ret____obj
 	return this._dispatch.Impl__Append__desc__J__ret____obj__Java__lang__AbstractStringBuilder(var0)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance {
-	return this._dispatch.Impl__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(var0)
+func (this *Java__lang__AbstractStringBuilder__Impl) PrivTo__Java__lang__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(var0)
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__CharSequence__Instance) Java__lang__AbstractStringBuilder__Instance {
@@ -191,8 +191,8 @@ func (this *Java__lang__AbstractStringBuilder__Impl) GetChars__desc__I__I____arr
 	this._dispatch.Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0, var1, var2, var3)
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) GetValue__desc____ret____arr__C() CharArray__Instance {
-	return this._dispatch.Impl__GetValue__desc____ret____arr__C()
+func (this *Java__lang__AbstractStringBuilder__Impl) PrivTo__Java__lang__GetValue__desc____ret____arr__C() CharArray__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__GetValue__desc____ret____arr__C()
 }
 
 func (this *Java__lang__AbstractStringBuilder__Impl) IndexOf__desc____obj__Java__lang__String__ret__I(var0 Java__lang__String__Instance) int {
@@ -306,7 +306,7 @@ type Java__lang__AbstractStringBuilder__Instance interface {
 	Append__desc__F__ret____obj__Java__lang__AbstractStringBuilder(float32) Java__lang__AbstractStringBuilder__Instance
 	Append__desc__I__ret____obj__Java__lang__AbstractStringBuilder(int) Java__lang__AbstractStringBuilder__Instance
 	Append__desc__J__ret____obj__Java__lang__AbstractStringBuilder(int64) Java__lang__AbstractStringBuilder__Instance
-	Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance
+	PrivTo__Java__lang__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance
 	Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__CharSequence__Instance) Java__lang__AbstractStringBuilder__Instance
 	Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance
 	Append__desc____obj__Java__lang__CharSequence__I__I__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__CharSequence__Instance, int, int) Java__lang__AbstractStringBuilder__Instance
@@ -330,7 +330,7 @@ type Java__lang__AbstractStringBuilder__Instance interface {
 	Finalize__desc____ret__V()
 	GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	GetValue__desc____ret____arr__C() CharArray__Instance
+	PrivTo__Java__lang__GetValue__desc____ret____arr__C() CharArray__Instance
 	HashCode__desc____ret__I() int
 	IndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	IndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
@@ -423,7 +423,7 @@ func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc__J__ret_
 	panic("Not Implemented - java/lang/AbstractStringBuilder.append(J)Ljava/lang/AbstractStringBuilder;")
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Impl__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance {
+func (this *Java__lang__AbstractStringBuilder__Impl) Impl__PrivTo__Java__lang__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(var0 Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance {
 	panic("Not Implemented - java/lang/AbstractStringBuilder.append(Ljava/lang/AbstractStringBuilder;)Ljava/lang/AbstractStringBuilder;")
 }
 
@@ -495,7 +495,7 @@ func (this *Java__lang__AbstractStringBuilder__Impl) Impl__GetChars__desc__I__I_
 	panic("Not Implemented - java/lang/AbstractStringBuilder.getChars(II[CI)V")
 }
 
-func (this *Java__lang__AbstractStringBuilder__Impl) Impl__GetValue__desc____ret____arr__C() CharArray__Instance {
+func (this *Java__lang__AbstractStringBuilder__Impl) Impl__PrivTo__Java__lang__GetValue__desc____ret____arr__C() CharArray__Instance {
 	panic("Not Implemented - java/lang/AbstractStringBuilder.getValue()[C")
 }
 
@@ -1242,7 +1242,7 @@ func (this *Java__lang__Character__Static) Impl__CodePointAt__desc____arr__C__I_
 	panic("Not Implemented - java/lang/Character.codePointAt([CII)I")
 }
 
-func (this *Java__lang__Character__Static) Impl__CodePointAtImpl__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
+func (this *Java__lang__Character__Static) Impl__PrivTo__Java__lang__CodePointAtImpl__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
 	panic("Not Implemented - java/lang/Character.codePointAtImpl([CII)I")
 }
 
@@ -1258,7 +1258,7 @@ func (this *Java__lang__Character__Static) Impl__CodePointBefore__desc____arr__C
 	panic("Not Implemented - java/lang/Character.codePointBefore([CII)I")
 }
 
-func (this *Java__lang__Character__Static) Impl__CodePointBeforeImpl__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
+func (this *Java__lang__Character__Static) Impl__PrivTo__Java__lang__CodePointBeforeImpl__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
 	panic("Not Implemented - java/lang/Character.codePointBeforeImpl([CII)I")
 }
 
@@ -1270,7 +1270,7 @@ func (this *Java__lang__Character__Static) Impl__CodePointCount__desc____arr__C_
 	panic("Not Implemented - java/lang/Character.codePointCount([CII)I")
 }
 
-func (this *Java__lang__Character__Static) Impl__CodePointCountImpl__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
+func (this *Java__lang__Character__Static) Impl__PrivTo__Java__lang__CodePointCountImpl__desc____arr__C__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int) int {
 	panic("Not Implemented - java/lang/Character.codePointCountImpl([CII)I")
 }
 
@@ -1514,7 +1514,7 @@ func (this *Java__lang__Character__Static) Impl__OffsetByCodePoints__desc____arr
 	panic("Not Implemented - java/lang/Character.offsetByCodePoints([CIIII)I")
 }
 
-func (this *Java__lang__Character__Static) Impl__OffsetByCodePointsImpl__desc____arr__C__I__I__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 int, var4 int) int {
+func (this *Java__lang__Character__Static) Impl__PrivTo__Java__lang__OffsetByCodePointsImpl__desc____arr__C__I__I__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 int, var4 int) int {
 	panic("Not Implemented - java/lang/Character.offsetByCodePointsImpl([CIIII)I")
 }
 
@@ -1546,7 +1546,7 @@ func (this *Java__lang__Character__Static) Impl__ToString__desc__C__ret____obj__
 	panic("Not Implemented - java/lang/Character.toString(C)Ljava/lang/String;")
 }
 
-func (this *Java__lang__Character__Static) Impl__ToSurrogates__desc__I____arr__C__I__ret__V(var0 int, var1 CharArray__Instance, var2 int) {
+func (this *Java__lang__Character__Static) Impl__PrivTo__Java__lang__ToSurrogates__desc__I____arr__C__I__ret__V(var0 int, var1 CharArray__Instance, var2 int) {
 	panic("Not Implemented - java/lang/Character.toSurrogates(I[CI)V")
 }
 
@@ -1566,11 +1566,11 @@ func (this *Java__lang__Character__Static) Impl__ToUpperCase__desc__I__ret__I(va
 	panic("Not Implemented - java/lang/Character.toUpperCase(I)I")
 }
 
-func (this *Java__lang__Character__Static) Impl__ToUpperCaseCharArray__desc__I__ret____arr__C(var0 int) CharArray__Instance {
+func (this *Java__lang__Character__Static) Impl__PrivTo__Java__lang__ToUpperCaseCharArray__desc__I__ret____arr__C(var0 int) CharArray__Instance {
 	panic("Not Implemented - java/lang/Character.toUpperCaseCharArray(I)[C")
 }
 
-func (this *Java__lang__Character__Static) Impl__ToUpperCaseEx__desc__I__ret__I(var0 int) int {
+func (this *Java__lang__Character__Static) Impl__PrivTo__Java__lang__ToUpperCaseEx__desc__I__ret__I(var0 int) int {
 	panic("Not Implemented - java/lang/Character.toUpperCaseEx(I)I")
 }
 
@@ -1691,15 +1691,15 @@ func (this *Java__lang__Class__Static) Impl__Static_Init__desc____ret__V() {
 	
 }
 
-func (this *Java__lang__Class__Static) Impl__Access__dollar__300__desc____arr____obj__Java__lang__Object____arr____obj__Java__lang__Object__ret__Z(var0 ObjectArray__Instance, var1 ObjectArray__Instance) bool {
+func (this *Java__lang__Class__Static) Impl__PrivTo__Java__lang__Access__dollar__300__desc____arr____obj__Java__lang__Object____arr____obj__Java__lang__Object__ret__Z(var0 ObjectArray__Instance, var1 ObjectArray__Instance) bool {
 	panic("Not Implemented - java/lang/Class.access$300([Ljava/lang/Object;[Ljava/lang/Object;)Z")
 }
 
-func (this *Java__lang__Class__Static) Impl__Access__dollar__402__desc__Z__ret__Z(var0 bool) bool {
+func (this *Java__lang__Class__Static) Impl__PrivTo__Java__lang__Access__dollar__402__desc__Z__ret__Z(var0 bool) bool {
 	panic("Not Implemented - java/lang/Class.access$402(Z)Z")
 }
 
-func (this *Java__lang__Class__Static) Impl__Access__dollar__502__desc__Z__ret__Z(var0 bool) bool {
+func (this *Java__lang__Class__Static) Impl__PrivTo__Java__lang__Access__dollar__502__desc__Z__ret__Z(var0 bool) bool {
 	panic("Not Implemented - java/lang/Class.access$502(Z)Z")
 }
 
@@ -1711,7 +1711,7 @@ func (this *Java__lang__Class__Static) Impl__ForName__desc____obj__Java__lang__S
 	panic("Not Implemented - java/lang/Class.forName(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;")
 }
 
-func (this *Java__lang__Class__Static) Impl__GetPrimitiveClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
+func (this *Java__lang__Class__Static) Impl__PrivTo__Java__lang__GetPrimitiveClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
 	panic("Not Implemented - java/lang/Class.getPrimitiveClass(Ljava/lang/String;)Ljava/lang/Class;")
 }
 
@@ -1722,21 +1722,21 @@ type Java__lang__Class__Dispatch interface {
 	Impl__DesiredAssertionStatus__desc____ret__Z() bool
 	Impl__GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Impl__GetClassLoader__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
-	Impl__GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
+	Impl__PrivTo__Java__lang__GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
 	Impl__GetClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	Impl__GetComponentType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	Impl__GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	Impl__GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	Impl__GetEnclosingClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	Impl__GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
-	Impl__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
+	Impl__PrivTo__Java__lang__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
 	Impl__GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() ObjectArray__Instance
 	Impl__GetGenericSuperclass__desc____ret____obj__Java__lang__reflect__Type() Java__lang__reflect__Type__Instance
 	Impl__GetInterfaces__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	Impl__GetModifiers__desc____ret__I() int
 	Impl__GetName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	Impl__GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance
-	Impl__GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance
+	Impl__PrivTo__Java__lang__GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance
+	Impl__PrivTo__Java__lang__GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance
 	Impl__GetSigners__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
 	Impl__GetSimpleName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Impl__GetSuperclass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
@@ -1754,7 +1754,7 @@ type Java__lang__Class__Dispatch interface {
 	Impl__IsPrimitive__desc____ret__Z() bool
 	Impl__IsSynthetic__desc____ret__Z() bool
 	Impl__NewInstance__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
-	Impl__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(ObjectArray__Instance)
+	Impl__PrivTo__Java__lang__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(ObjectArray__Instance)
 	Impl__ToGenericString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 }
 
@@ -1783,8 +1783,8 @@ func (this *Java__lang__Class__Impl) GetClassLoader__desc____ret____obj__Java__l
 	return this._dispatch.Impl__GetClassLoader__desc____ret____obj__Java__lang__ClassLoader()
 }
 
-func (this *Java__lang__Class__Impl) GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance {
-	return this._dispatch.Impl__GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader()
+func (this *Java__lang__Class__Impl) PrivTo__Java__lang__GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader()
 }
 
 func (this *Java__lang__Class__Impl) GetClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance {
@@ -1811,8 +1811,8 @@ func (this *Java__lang__Class__Impl) GetEnumConstants__desc____ret____arr____obj
 	return this._dispatch.Impl__GetEnumConstants__desc____ret____arr____obj__Java__lang__Object()
 }
 
-func (this *Java__lang__Class__Impl) GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance {
-	return this._dispatch.Impl__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object()
+func (this *Java__lang__Class__Impl) PrivTo__Java__lang__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object()
 }
 
 func (this *Java__lang__Class__Impl) GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() ObjectArray__Instance {
@@ -1835,12 +1835,12 @@ func (this *Java__lang__Class__Impl) GetName__desc____ret____obj__Java__lang__St
 	return this._dispatch.Impl__GetName__desc____ret____obj__Java__lang__String()
 }
 
-func (this *Java__lang__Class__Impl) GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance {
-	return this._dispatch.Impl__GetRawAnnotations__desc____ret____arr__B()
+func (this *Java__lang__Class__Impl) PrivTo__Java__lang__GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__GetRawAnnotations__desc____ret____arr__B()
 }
 
-func (this *Java__lang__Class__Impl) GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance {
-	return this._dispatch.Impl__GetRawTypeAnnotations__desc____ret____arr__B()
+func (this *Java__lang__Class__Impl) PrivTo__Java__lang__GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance {
+	return this._dispatch.Impl__PrivTo__Java__lang__GetRawTypeAnnotations__desc____ret____arr__B()
 }
 
 func (this *Java__lang__Class__Impl) GetSigners__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance {
@@ -1911,8 +1911,8 @@ func (this *Java__lang__Class__Impl) NewInstance__desc____ret____obj__Java__lang
 	return this._dispatch.Impl__NewInstance__desc____ret____obj__Java__lang__Object()
 }
 
-func (this *Java__lang__Class__Impl) SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0 ObjectArray__Instance) {
-	this._dispatch.Impl__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0)
+func (this *Java__lang__Class__Impl) PrivTo__Java__lang__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0 ObjectArray__Instance) {
+	this._dispatch.Impl__PrivTo__Java__lang__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0)
 }
 
 func (this *Java__lang__Class__Impl) ToGenericString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance {
@@ -1929,21 +1929,21 @@ type Java__lang__Class__Instance interface {
 	GetCanonicalName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetClassLoader__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
-	GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
+	PrivTo__Java__lang__GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
 	GetClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	GetComponentType__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetDeclaredClasses__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	GetDeclaringClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetEnclosingClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetEnumConstants__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
-	GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
+	PrivTo__Java__lang__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
 	GetGenericInterfaces__desc____ret____arr____obj__Java__lang__reflect__Type() ObjectArray__Instance
 	GetGenericSuperclass__desc____ret____obj__Java__lang__reflect__Type() Java__lang__reflect__Type__Instance
 	GetInterfaces__desc____ret____arr____obj__Java__lang__Class() ObjectArray__Instance
 	GetModifiers__desc____ret__I() int
 	GetName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance
-	GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance
+	PrivTo__Java__lang__GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance
+	PrivTo__Java__lang__GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance
 	GetSigners__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance
 	GetSimpleName__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetSuperclass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
@@ -1964,7 +1964,7 @@ type Java__lang__Class__Instance interface {
 	NewInstance__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	Notify__desc____ret__V()
 	NotifyAll__desc____ret__V()
-	SetSigners__desc____arr____obj__Java__lang__Object__ret__V(ObjectArray__Instance)
+	PrivTo__Java__lang__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(ObjectArray__Instance)
 	ToGenericString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	ToString__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Wait__desc____ret__V()
@@ -1999,7 +1999,7 @@ func (this *Java__lang__Class__Impl) Impl__GetClassLoader__desc____ret____obj__J
 	panic("Not Implemented - java/lang/Class.getClassLoader()Ljava/lang/ClassLoader;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance {
+func (this *Java__lang__Class__Impl) Impl__PrivTo__Java__lang__GetClassLoader0__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance {
 	panic("Not Implemented - java/lang/Class.getClassLoader0()Ljava/lang/ClassLoader;")
 }
 
@@ -2027,7 +2027,7 @@ func (this *Java__lang__Class__Impl) Impl__GetEnumConstants__desc____ret____arr_
 	panic("Not Implemented - java/lang/Class.getEnumConstants()[Ljava/lang/Object;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance {
+func (this *Java__lang__Class__Impl) Impl__PrivTo__Java__lang__GetEnumConstantsShared__desc____ret____arr____obj__Java__lang__Object() ObjectArray__Instance {
 	panic("Not Implemented - java/lang/Class.getEnumConstantsShared()[Ljava/lang/Object;")
 }
 
@@ -2051,11 +2051,11 @@ func (this *Java__lang__Class__Impl) Impl__GetName__desc____ret____obj__Java__la
 	panic("Not Implemented - java/lang/Class.getName()Ljava/lang/String;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance {
+func (this *Java__lang__Class__Impl) Impl__PrivTo__Java__lang__GetRawAnnotations__desc____ret____arr__B() ByteArray__Instance {
 	panic("Not Implemented - java/lang/Class.getRawAnnotations()[B")
 }
 
-func (this *Java__lang__Class__Impl) Impl__GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance {
+func (this *Java__lang__Class__Impl) Impl__PrivTo__Java__lang__GetRawTypeAnnotations__desc____ret____arr__B() ByteArray__Instance {
 	panic("Not Implemented - java/lang/Class.getRawTypeAnnotations()[B")
 }
 
@@ -2127,7 +2127,7 @@ func (this *Java__lang__Class__Impl) Impl__NewInstance__desc____ret____obj__Java
 	panic("Not Implemented - java/lang/Class.newInstance()Ljava/lang/Object;")
 }
 
-func (this *Java__lang__Class__Impl) Impl__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0 ObjectArray__Instance) {
+func (this *Java__lang__Class__Impl) Impl__PrivTo__Java__lang__SetSigners__desc____arr____obj__Java__lang__Object__ret__V(var0 ObjectArray__Instance) {
 	panic("Not Implemented - java/lang/Class.setSigners([Ljava/lang/Object;)V")
 }
 
@@ -2182,7 +2182,7 @@ type Java__lang__ClassCastException__Instance interface {
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetStackTraceDepth__desc____ret__I() int
+	PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int
 	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
@@ -2241,15 +2241,15 @@ func (this *Java__lang__ClassLoader__Static) Impl__Static_Init__desc____ret__V()
 	
 }
 
-func (this *Java__lang__ClassLoader__Static) Impl__CheckClassLoaderPermission__desc____obj__Java__lang__ClassLoader____obj__Java__lang__Class__ret__V(var0 Java__lang__ClassLoader__Instance, var1 Java__lang__Class__Instance) {
+func (this *Java__lang__ClassLoader__Static) Impl__PrivTo__Java__lang__CheckClassLoaderPermission__desc____obj__Java__lang__ClassLoader____obj__Java__lang__Class__ret__V(var0 Java__lang__ClassLoader__Instance, var1 Java__lang__Class__Instance) {
 	panic("Not Implemented - java/lang/ClassLoader.checkClassLoaderPermission(Ljava/lang/ClassLoader;Ljava/lang/Class;)V")
 }
 
-func (this *Java__lang__ClassLoader__Static) Impl__FindNative__desc____obj__Java__lang__ClassLoader____obj__Java__lang__String__ret__J(var0 Java__lang__ClassLoader__Instance, var1 Java__lang__String__Instance) int64 {
+func (this *Java__lang__ClassLoader__Static) Impl__PrivTo__Java__lang__FindNative__desc____obj__Java__lang__ClassLoader____obj__Java__lang__String__ret__J(var0 Java__lang__ClassLoader__Instance, var1 Java__lang__String__Instance) int64 {
 	panic("Not Implemented - java/lang/ClassLoader.findNative(Ljava/lang/ClassLoader;Ljava/lang/String;)J")
 }
 
-func (this *Java__lang__ClassLoader__Static) Impl__GetClassLoader__desc____obj__Java__lang__Class__ret____obj__Java__lang__ClassLoader(var0 Java__lang__Class__Instance) Java__lang__ClassLoader__Instance {
+func (this *Java__lang__ClassLoader__Static) Impl__PrivTo__Java__lang__GetClassLoader__desc____obj__Java__lang__Class__ret____obj__Java__lang__ClassLoader(var0 Java__lang__Class__Instance) Java__lang__ClassLoader__Instance {
 	panic("Not Implemented - java/lang/ClassLoader.getClassLoader(Ljava/lang/Class;)Ljava/lang/ClassLoader;")
 }
 
@@ -2257,7 +2257,7 @@ func (this *Java__lang__ClassLoader__Static) Impl__GetSystemClassLoader__desc___
 	panic("Not Implemented - java/lang/ClassLoader.getSystemClassLoader()Ljava/lang/ClassLoader;")
 }
 
-func (this *Java__lang__ClassLoader__Static) Impl__LoadLibrary__desc____obj__Java__lang__Class____obj__Java__lang__String__Z__ret__V(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 bool) {
+func (this *Java__lang__ClassLoader__Static) Impl__PrivTo__Java__lang__LoadLibrary__desc____obj__Java__lang__Class____obj__Java__lang__String__Z__ret__V(var0 Java__lang__Class__Instance, var1 Java__lang__String__Instance, var2 bool) {
 	panic("Not Implemented - java/lang/ClassLoader.loadLibrary(Ljava/lang/Class;Ljava/lang/String;Z)V")
 }
 
@@ -2268,18 +2268,18 @@ func (this *Java__lang__ClassLoader__Static) Impl__RegisterAsParallelCapable__de
 type Java__lang__ClassLoader__Dispatch interface {
 	Java__lang__Object__Dispatch
 	Impl__Instance_Init__desc____obj__Java__lang__ClassLoader__ret__V(Java__lang__ClassLoader__Instance)
-	Impl__AddClass__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
+	Impl__PrivTo__Java__lang__AddClass__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
 	Impl__ClearAssertionStatus__desc____ret__V()
 	Impl__DefineClass__desc____obj__Java__lang__String____arr__B__I__I__ret____obj__Java__lang__Class(Java__lang__String__Instance, ByteArray__Instance, int, int) Java__lang__Class__Instance
 	Impl__DefineClass__desc____arr__B__I__I__ret____obj__Java__lang__Class(ByteArray__Instance, int, int) Java__lang__Class__Instance
-	Impl__DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
+	Impl__PrivTo__Java__lang__DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
 	Impl__FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
 	Impl__FindLibrary__desc____obj__Java__lang__String__ret____obj__Java__lang__String(Java__lang__String__Instance) Java__lang__String__Instance
 	Impl__FindLoadedClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
 	Impl__FindSystemClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
 	Impl__GetClassLoadingLock__desc____obj__Java__lang__String__ret____obj__Java__lang__Object(Java__lang__String__Instance) Java__lang__Object__Instance
 	Impl__GetParent__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
-	Impl__IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(Java__lang__ClassLoader__Instance) bool
+	Impl__PrivTo__Java__lang__IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(Java__lang__ClassLoader__Instance) bool
 	Impl__LoadClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
 	Impl__LoadClass__desc____obj__Java__lang__String__Z__ret____obj__Java__lang__Class(Java__lang__String__Instance, bool) Java__lang__Class__Instance
 	Impl__ResolveClass__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
@@ -2298,8 +2298,8 @@ func (this *Java__lang__ClassLoader__Impl) Instance_Init__desc____obj__Java__lan
 	this._dispatch.Impl__Instance_Init__desc____obj__Java__lang__ClassLoader__ret__V(var0)
 }
 
-func (this *Java__lang__ClassLoader__Impl) AddClass__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
-	this._dispatch.Impl__AddClass__desc____obj__Java__lang__Class__ret__V(var0)
+func (this *Java__lang__ClassLoader__Impl) PrivTo__Java__lang__AddClass__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
+	this._dispatch.Impl__PrivTo__Java__lang__AddClass__desc____obj__Java__lang__Class__ret__V(var0)
 }
 
 func (this *Java__lang__ClassLoader__Impl) ClearAssertionStatus__desc____ret__V() {
@@ -2314,8 +2314,8 @@ func (this *Java__lang__ClassLoader__Impl) DefineClass__desc____arr__B__I__I__re
 	return this._dispatch.Impl__DefineClass__desc____arr__B__I__I__ret____obj__Java__lang__Class(var0, var1, var2)
 }
 
-func (this *Java__lang__ClassLoader__Impl) DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
-	return this._dispatch.Impl__DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(var0)
+func (this *Java__lang__ClassLoader__Impl) PrivTo__Java__lang__DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
+	return this._dispatch.Impl__PrivTo__Java__lang__DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(var0)
 }
 
 func (this *Java__lang__ClassLoader__Impl) FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
@@ -2342,8 +2342,8 @@ func (this *Java__lang__ClassLoader__Impl) GetParent__desc____ret____obj__Java__
 	return this._dispatch.Impl__GetParent__desc____ret____obj__Java__lang__ClassLoader()
 }
 
-func (this *Java__lang__ClassLoader__Impl) IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(var0 Java__lang__ClassLoader__Instance) bool {
-	return this._dispatch.Impl__IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(var0)
+func (this *Java__lang__ClassLoader__Impl) PrivTo__Java__lang__IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(var0 Java__lang__ClassLoader__Instance) bool {
+	return this._dispatch.Impl__PrivTo__Java__lang__IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(var0)
 }
 
 func (this *Java__lang__ClassLoader__Impl) LoadClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(var0 Java__lang__String__Instance) Java__lang__Class__Instance {
@@ -2375,12 +2375,12 @@ func (this *Java__lang__ClassLoader__Impl) SetSigners__desc____obj__Java__lang__
 }
 
 type Java__lang__ClassLoader__Instance interface {
-	AddClass__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
+	PrivTo__Java__lang__AddClass__desc____obj__Java__lang__Class__ret__V(Java__lang__Class__Instance)
 	ClearAssertionStatus__desc____ret__V()
 	Clone__desc____ret____obj__Java__lang__Object() Java__lang__Object__Instance
 	DefineClass__desc____obj__Java__lang__String____arr__B__I__I__ret____obj__Java__lang__Class(Java__lang__String__Instance, ByteArray__Instance, int, int) Java__lang__Class__Instance
 	DefineClass__desc____arr__B__I__I__ret____obj__Java__lang__Class(ByteArray__Instance, int, int) Java__lang__Class__Instance
-	DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
+	PrivTo__Java__lang__DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(Java__lang__String__Instance) bool
 	Equals__desc____obj__Java__lang__Object__ret__Z(Java__lang__Object__Instance) bool
 	Finalize__desc____ret__V()
 	FindClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
@@ -2391,7 +2391,7 @@ type Java__lang__ClassLoader__Instance interface {
 	GetClassLoadingLock__desc____obj__Java__lang__String__ret____obj__Java__lang__Object(Java__lang__String__Instance) Java__lang__Object__Instance
 	GetParent__desc____ret____obj__Java__lang__ClassLoader() Java__lang__ClassLoader__Instance
 	HashCode__desc____ret__I() int
-	IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(Java__lang__ClassLoader__Instance) bool
+	PrivTo__Java__lang__IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(Java__lang__ClassLoader__Instance) bool
 	LoadClass__desc____obj__Java__lang__String__ret____obj__Java__lang__Class(Java__lang__String__Instance) Java__lang__Class__Instance
 	LoadClass__desc____obj__Java__lang__String__Z__ret____obj__Java__lang__Class(Java__lang__String__Instance, bool) Java__lang__Class__Instance
 	Notify__desc____ret__V()
@@ -2433,7 +2433,7 @@ func (this *Java__lang__ClassLoader__Impl) Impl__Instance_Init__desc____obj__Jav
 	panic("Not Implemented - java/lang/ClassLoader.<init>(Ljava/lang/ClassLoader;)V")
 }
 
-func (this *Java__lang__ClassLoader__Impl) Impl__AddClass__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
+func (this *Java__lang__ClassLoader__Impl) Impl__PrivTo__Java__lang__AddClass__desc____obj__Java__lang__Class__ret__V(var0 Java__lang__Class__Instance) {
 	panic("Not Implemented - java/lang/ClassLoader.addClass(Ljava/lang/Class;)V")
 }
 
@@ -2449,7 +2449,7 @@ func (this *Java__lang__ClassLoader__Impl) Impl__DefineClass__desc____arr__B__I_
 	panic("Not Implemented - java/lang/ClassLoader.defineClass([BII)Ljava/lang/Class;")
 }
 
-func (this *Java__lang__ClassLoader__Impl) Impl__DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
+func (this *Java__lang__ClassLoader__Impl) Impl__PrivTo__Java__lang__DesiredAssertionStatus__desc____obj__Java__lang__String__ret__Z(var0 Java__lang__String__Instance) bool {
 	panic("Not Implemented - java/lang/ClassLoader.desiredAssertionStatus(Ljava/lang/String;)Z")
 }
 
@@ -2477,7 +2477,7 @@ func (this *Java__lang__ClassLoader__Impl) Impl__GetParent__desc____ret____obj__
 	panic("Not Implemented - java/lang/ClassLoader.getParent()Ljava/lang/ClassLoader;")
 }
 
-func (this *Java__lang__ClassLoader__Impl) Impl__IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(var0 Java__lang__ClassLoader__Instance) bool {
+func (this *Java__lang__ClassLoader__Impl) Impl__PrivTo__Java__lang__IsAncestor__desc____obj__Java__lang__ClassLoader__ret__Z(var0 Java__lang__ClassLoader__Instance) bool {
 	panic("Not Implemented - java/lang/ClassLoader.isAncestor(Ljava/lang/ClassLoader;)Z")
 }
 
@@ -2891,7 +2891,7 @@ type Java__lang__Error__Instance interface {
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetStackTraceDepth__desc____ret__I() int
+	PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int
 	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
@@ -2978,7 +2978,7 @@ type Java__lang__Exception__Instance interface {
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetStackTraceDepth__desc____ret__I() int
+	PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int
 	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
@@ -3302,7 +3302,7 @@ type Java__lang__IllegalArgumentException__Instance interface {
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetStackTraceDepth__desc____ret__I() int
+	PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int
 	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
@@ -3385,7 +3385,7 @@ type Java__lang__IllegalMonitorStateException__Instance interface {
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetStackTraceDepth__desc____ret__I() int
+	PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int
 	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
@@ -3473,11 +3473,11 @@ func (this *Java__lang__Integer__Static) Impl__DivideUnsigned__desc__I__I__ret__
 	panic("Not Implemented - java/lang/Integer.divideUnsigned(II)I")
 }
 
-func (this *Java__lang__Integer__Static) Impl__FormatUnsignedInt__desc__I__I____arr__C__I__I__ret__I(var0 int, var1 int, var2 CharArray__Instance, var3 int, var4 int) int {
+func (this *Java__lang__Integer__Static) Impl__PrivTo__Java__lang__FormatUnsignedInt__desc__I__I____arr__C__I__I__ret__I(var0 int, var1 int, var2 CharArray__Instance, var3 int, var4 int) int {
 	panic("Not Implemented - java/lang/Integer.formatUnsignedInt(II[CII)I")
 }
 
-func (this *Java__lang__Integer__Static) Impl__GetChars__desc__I__I____arr__C__ret__V(var0 int, var1 int, var2 CharArray__Instance) {
+func (this *Java__lang__Integer__Static) Impl__PrivTo__Java__lang__GetChars__desc__I__I____arr__C__ret__V(var0 int, var1 int, var2 CharArray__Instance) {
 	panic("Not Implemented - java/lang/Integer.getChars(II[C)V")
 }
 
@@ -3561,7 +3561,7 @@ func (this *Java__lang__Integer__Static) Impl__Signum__desc__I__ret__I(var0 int)
 	panic("Not Implemented - java/lang/Integer.signum(I)I")
 }
 
-func (this *Java__lang__Integer__Static) Impl__StringSize__desc__I__ret__I(var0 int) int {
+func (this *Java__lang__Integer__Static) Impl__PrivTo__Java__lang__StringSize__desc__I__ret__I(var0 int) int {
 	panic("Not Implemented - java/lang/Integer.stringSize(I)I")
 }
 
@@ -3781,11 +3781,11 @@ func (this *Java__lang__Long__Static) Impl__DivideUnsigned__desc__J__J__ret__J(v
 	panic("Not Implemented - java/lang/Long.divideUnsigned(JJ)J")
 }
 
-func (this *Java__lang__Long__Static) Impl__FormatUnsignedLong__desc__J__I____arr__C__I__I__ret__I(var0 int64, var1 int, var2 CharArray__Instance, var3 int, var4 int) int {
+func (this *Java__lang__Long__Static) Impl__PrivTo__Java__lang__FormatUnsignedLong__desc__J__I____arr__C__I__I__ret__I(var0 int64, var1 int, var2 CharArray__Instance, var3 int, var4 int) int {
 	panic("Not Implemented - java/lang/Long.formatUnsignedLong(JI[CII)I")
 }
 
-func (this *Java__lang__Long__Static) Impl__GetChars__desc__J__I____arr__C__ret__V(var0 int64, var1 int, var2 CharArray__Instance) {
+func (this *Java__lang__Long__Static) Impl__PrivTo__Java__lang__GetChars__desc__J__I____arr__C__ret__V(var0 int64, var1 int, var2 CharArray__Instance) {
 	panic("Not Implemented - java/lang/Long.getChars(JI[C)V")
 }
 
@@ -3869,7 +3869,7 @@ func (this *Java__lang__Long__Static) Impl__Signum__desc__J__ret__I(var0 int64) 
 	panic("Not Implemented - java/lang/Long.signum(J)I")
 }
 
-func (this *Java__lang__Long__Static) Impl__StringSize__desc__J__ret__I(var0 int64) int {
+func (this *Java__lang__Long__Static) Impl__PrivTo__Java__lang__StringSize__desc__J__ret__I(var0 int64) int {
 	panic("Not Implemented - java/lang/Long.stringSize(J)I")
 }
 
@@ -3905,7 +3905,7 @@ func (this *Java__lang__Long__Static) Impl__ToUnsignedString__desc__J__I__ret___
 	panic("Not Implemented - java/lang/Long.toUnsignedString(JI)Ljava/lang/String;")
 }
 
-func (this *Java__lang__Long__Static) Impl__ToUnsignedString0__desc__J__I__ret____obj__Java__lang__String(var0 int64, var1 int) Java__lang__String__Instance {
+func (this *Java__lang__Long__Static) Impl__PrivTo__Java__lang__ToUnsignedString0__desc__J__I__ret____obj__Java__lang__String(var0 int64, var1 int) Java__lang__String__Instance {
 	panic("Not Implemented - java/lang/Long.toUnsignedString0(JI)Ljava/lang/String;")
 }
 
@@ -4064,7 +4064,7 @@ type Java__lang__NegativeArraySizeException__Instance interface {
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetStackTraceDepth__desc____ret__I() int
+	PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int
 	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
@@ -4135,7 +4135,7 @@ type Java__lang__NullPointerException__Instance interface {
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetStackTraceDepth__desc____ret__I() int
+	PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int
 	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
@@ -4482,7 +4482,7 @@ type Java__lang__RuntimeException__Instance interface {
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetStackTraceDepth__desc____ret__I() int
+	PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int
 	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
@@ -4764,11 +4764,11 @@ func (this *Java__lang__String__Static) Impl__Format__desc____obj__Java__lang__S
 	panic("Not Implemented - java/lang/String.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;")
 }
 
-func (this *Java__lang__String__Static) Impl__IndexOf__desc____arr__C__I__I____obj__Java__lang__String__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 Java__lang__String__Instance, var4 int) int {
+func (this *Java__lang__String__Static) Impl__PrivTo__Java__lang__IndexOf__desc____arr__C__I__I____obj__Java__lang__String__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 Java__lang__String__Instance, var4 int) int {
 	panic("Not Implemented - java/lang/String.indexOf([CIILjava/lang/String;I)I")
 }
 
-func (this *Java__lang__String__Static) Impl__IndexOf__desc____arr__C__I__I____arr__C__I__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 CharArray__Instance, var4 int, var5 int, var6 int) int {
+func (this *Java__lang__String__Static) Impl__PrivTo__Java__lang__IndexOf__desc____arr__C__I__I____arr__C__I__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 CharArray__Instance, var4 int, var5 int, var6 int) int {
 	panic("Not Implemented - java/lang/String.indexOf([CII[CIII)I")
 }
 
@@ -4776,11 +4776,11 @@ func (this *Java__lang__String__Static) Impl__Join__desc____obj__Java__lang__Cha
 	panic("Not Implemented - java/lang/String.join(Ljava/lang/CharSequence;[Ljava/lang/CharSequence;)Ljava/lang/String;")
 }
 
-func (this *Java__lang__String__Static) Impl__LastIndexOf__desc____arr__C__I__I____obj__Java__lang__String__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 Java__lang__String__Instance, var4 int) int {
+func (this *Java__lang__String__Static) Impl__PrivTo__Java__lang__LastIndexOf__desc____arr__C__I__I____obj__Java__lang__String__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 Java__lang__String__Instance, var4 int) int {
 	panic("Not Implemented - java/lang/String.lastIndexOf([CIILjava/lang/String;I)I")
 }
 
-func (this *Java__lang__String__Static) Impl__LastIndexOf__desc____arr__C__I__I____arr__C__I__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 CharArray__Instance, var4 int, var5 int, var6 int) int {
+func (this *Java__lang__String__Static) Impl__PrivTo__Java__lang__LastIndexOf__desc____arr__C__I__I____arr__C__I__I__I__ret__I(var0 CharArray__Instance, var1 int, var2 int, var3 CharArray__Instance, var4 int, var5 int, var6 int) int {
 	panic("Not Implemented - java/lang/String.lastIndexOf([CII[CIII)I")
 }
 
@@ -4850,7 +4850,7 @@ type Java__lang__String__Dispatch interface {
 	Impl__GetBytes__desc__I__I____arr__B__I__ret__V(int, int, ByteArray__Instance, int)
 	Impl__GetBytes__desc____obj__Java__lang__String__ret____arr__B(Java__lang__String__Instance) ByteArray__Instance
 	Impl__GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
-	Impl__GetChars__desc____arr__C__I__ret__V(CharArray__Instance, int)
+	Impl__PrivTo__Java__lang__GetChars__desc____arr__C__I__ret__V(CharArray__Instance, int)
 	Impl__IndexOf__desc__I__ret__I(int) int
 	Impl__IndexOf__desc__I__I__ret__I(int, int) int
 	Impl__IndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
@@ -5000,8 +5000,8 @@ func (this *Java__lang__String__Impl) GetChars__desc__I__I____arr__C__I__ret__V(
 	this._dispatch.Impl__GetChars__desc__I__I____arr__C__I__ret__V(var0, var1, var2, var3)
 }
 
-func (this *Java__lang__String__Impl) GetChars__desc____arr__C__I__ret__V(var0 CharArray__Instance, var1 int) {
-	this._dispatch.Impl__GetChars__desc____arr__C__I__ret__V(var0, var1)
+func (this *Java__lang__String__Impl) PrivTo__Java__lang__GetChars__desc____arr__C__I__ret__V(var0 CharArray__Instance, var1 int) {
+	this._dispatch.Impl__PrivTo__Java__lang__GetChars__desc____arr__C__I__ret__V(var0, var1)
 }
 
 func (this *Java__lang__String__Impl) IndexOf__desc__I__ret__I(var0 int) int {
@@ -5144,7 +5144,7 @@ type Java__lang__String__Instance interface {
 	GetBytes__desc__I__I____arr__B__I__ret__V(int, int, ByteArray__Instance, int)
 	GetBytes__desc____obj__Java__lang__String__ret____arr__B(Java__lang__String__Instance) ByteArray__Instance
 	GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
-	GetChars__desc____arr__C__I__ret__V(CharArray__Instance, int)
+	PrivTo__Java__lang__GetChars__desc____arr__C__I__ret__V(CharArray__Instance, int)
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	HashCode__desc____ret__I() int
 	IndexOf__desc__I__ret__I(int) int
@@ -5313,7 +5313,7 @@ func (this *Java__lang__String__Impl) Impl__GetChars__desc__I__I____arr__C__I__r
 	panic("Not Implemented - java/lang/String.getChars(II[CI)V")
 }
 
-func (this *Java__lang__String__Impl) Impl__GetChars__desc____arr__C__I__ret__V(var0 CharArray__Instance, var1 int) {
+func (this *Java__lang__String__Impl) Impl__PrivTo__Java__lang__GetChars__desc____arr__C__I__ret__V(var0 CharArray__Instance, var1 int) {
 	panic("Not Implemented - java/lang/String.getChars([CI)V")
 }
 
@@ -5647,7 +5647,7 @@ type Java__lang__StringBuilder__Instance interface {
 	Append__desc__I__ret____obj__Java__lang__StringBuilder(int) Java__lang__StringBuilder__Instance
 	Append__desc__J__ret____obj__Java__lang__AbstractStringBuilder(int64) Java__lang__AbstractStringBuilder__Instance
 	Append__desc__J__ret____obj__Java__lang__StringBuilder(int64) Java__lang__StringBuilder__Instance
-	Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance
+	PrivTo__Java__lang__Append__desc____obj__Java__lang__AbstractStringBuilder__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__AbstractStringBuilder__Instance) Java__lang__AbstractStringBuilder__Instance
 	Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__AbstractStringBuilder(Java__lang__CharSequence__Instance) Java__lang__AbstractStringBuilder__Instance
 	Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__Appendable(Java__lang__CharSequence__Instance) Java__lang__Appendable__Instance
 	Append__desc____obj__Java__lang__CharSequence__ret____obj__Java__lang__StringBuilder(Java__lang__CharSequence__Instance) Java__lang__StringBuilder__Instance
@@ -5681,7 +5681,7 @@ type Java__lang__StringBuilder__Instance interface {
 	Finalize__desc____ret__V()
 	GetChars__desc__I__I____arr__C__I__ret__V(int, int, CharArray__Instance, int)
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
-	GetValue__desc____ret____arr__C() CharArray__Instance
+	PrivTo__Java__lang__GetValue__desc____ret____arr__C() CharArray__Instance
 	HashCode__desc____ret__I() int
 	IndexOf__desc____obj__Java__lang__String__ret__I(Java__lang__String__Instance) int
 	IndexOf__desc____obj__Java__lang__String__I__ret__I(Java__lang__String__Instance, int) int
@@ -6242,7 +6242,7 @@ type Java__lang__Throwable__Dispatch interface {
 	Impl__GetCause__desc____ret____obj__Java__lang__Throwable() Java__lang__Throwable__Instance
 	Impl__GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	Impl__GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	Impl__GetStackTraceDepth__desc____ret__I() int
+	Impl__PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int
 	Impl__GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	Impl__InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
 	Impl__PrintStackTrace__desc____ret__V()
@@ -6290,8 +6290,8 @@ func (this *Java__lang__Throwable__Impl) GetMessage__desc____ret____obj__Java__l
 	return this._dispatch.Impl__GetMessage__desc____ret____obj__Java__lang__String()
 }
 
-func (this *Java__lang__Throwable__Impl) GetStackTraceDepth__desc____ret__I() int {
-	return this._dispatch.Impl__GetStackTraceDepth__desc____ret__I()
+func (this *Java__lang__Throwable__Impl) PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int {
+	return this._dispatch.Impl__PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I()
 }
 
 func (this *Java__lang__Throwable__Impl) GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance {
@@ -6320,7 +6320,7 @@ type Java__lang__Throwable__Instance interface {
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetStackTraceDepth__desc____ret__I() int
+	PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int
 	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance
@@ -6374,7 +6374,7 @@ func (this *Java__lang__Throwable__Impl) Impl__GetLocalizedMessage__desc____ret_
 	panic("Not Implemented - java/lang/Throwable.getLocalizedMessage()Ljava/lang/String;")
 }
 
-func (this *Java__lang__Throwable__Impl) Impl__GetStackTraceDepth__desc____ret__I() int {
+func (this *Java__lang__Throwable__Impl) Impl__PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int {
 	panic("Not Implemented - java/lang/Throwable.getStackTraceDepth()I")
 }
 
@@ -6441,7 +6441,7 @@ type Java__lang__VirtualMachineError__Instance interface {
 	GetClass__desc____ret____obj__Java__lang__Class() Java__lang__Class__Instance
 	GetLocalizedMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
 	GetMessage__desc____ret____obj__Java__lang__String() Java__lang__String__Instance
-	GetStackTraceDepth__desc____ret__I() int
+	PrivTo__Java__lang__GetStackTraceDepth__desc____ret__I() int
 	GetSuppressed__desc____ret____arr____obj__Java__lang__Throwable() ObjectArray__Instance
 	HashCode__desc____ret__I() int
 	InitCause__desc____obj__Java__lang__Throwable__ret____obj__Java__lang__Throwable(Java__lang__Throwable__Instance) Java__lang__Throwable__Instance

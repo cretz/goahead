@@ -235,6 +235,9 @@ object Helpers extends Logger {
     def isAccessInterface = isAccess(Opcodes.ACC_INTERFACE)
     def isAccessNative = isAccess(Opcodes.ACC_NATIVE)
     def isAccessPrivate = isAccess(Opcodes.ACC_PRIVATE)
+    def isAccessProtected = isAccess(Opcodes.ACC_PROTECTED)
+    def isAccessPublic = isAccess(Opcodes.ACC_PUBLIC)
+    def isAccessPackagePrivate = !isAccessPrivate && !isAccessProtected && !isAccessPublic
     def isAccessStatic = isAccess(Opcodes.ACC_STATIC)
     def isAccessSuper = isAccess(Opcodes.ACC_SUPER)
     def isAccessVarargs = isAccess(Opcodes.ACC_VARARGS)
@@ -343,7 +346,7 @@ object Helpers extends Logger {
       ctx.staticInstRefExpr("java/lang/Class").map { case (ctx, staticInstExpr) =>
         ctx.newString(typ.className).map { case (ctx, className) =>
           ctx -> staticInstExpr.sel(
-            ctx.mangler.implMethodName("forName", "(Ljava/lang/String;)Ljava/lang/Class;")
+            ctx.mangler.implMethodName("forName", "(Ljava/lang/String;)Ljava/lang/Class;", None)
           ).call(Seq(className))
         }
       }
@@ -493,7 +496,7 @@ object Helpers extends Logger {
               m.returnType == primitiveWrapper && m.argTypes == Seq(oldTyp)
           ).getOrElse(sys.error(s"Unable to find valueOf on primitive wrapper for $primitiveWrapper"))
           ctx.staticInstRefExpr(primitiveWrapper.internalName).map { case (ctx, staticInst) =>
-            ctx -> staticInst.sel(ctx.mangler.implMethodName(method.name, method.desc)).call(expr.expr.singleSeq)
+            ctx -> staticInst.sel(ctx.mangler.implMethodName(method)).call(expr.expr.singleSeq)
           }
         // Auto-unbox
         case (oldTyp: IType.Simple, newTyp: IType.Simple) if oldTyp.isObject && newTyp.isPrimitive =>
@@ -503,7 +506,7 @@ object Helpers extends Logger {
             !m.access.isAccessStatic && m.name == methodName && m.returnType == newTyp
           ).getOrElse(sys.error(s"Unable to find $methodName on primitive wrapper for $primitiveWrapper"))
           toExprNode(ctx, primitiveWrapper).map { case (ctx, boxed) =>
-            ctx -> boxed.sel(ctx.mangler.forwardMethodName(method.name, method.desc)).call()
+            ctx -> boxed.sel(ctx.mangler.forwardMethodName(method)).call()
           }
         case (oldTyp, newTyp) =>
           sys.error(s"Unable to assign types: $oldTyp -> $newTyp")

@@ -99,7 +99,7 @@ trait ClassCompiler extends Logger {
     val initStmtOpt = if (!ctx.cls.hasStaticInit) None else Some {
       val syncOnceField = staticVarName.sel("init")
       syncOnceField.sel("Do").call(
-        staticVarName.sel(ctx.mangler.implMethodName("<clinit>", "()V")).singleSeq
+        staticVarName.sel(ctx.mangler.implMethodName("<clinit>", "()V", None)).singleSeq
       ).toStmt
     }
     ctx.staticInstTypeExpr(ctx.cls.name).map { case (ctx, staticTyp) =>
@@ -152,7 +152,7 @@ trait ClassCompiler extends Logger {
 
       // As a special case, we have to combine all static inits, so we'll do it with anon
       // functions if there is more than one
-      val staticMethodName = ctx.mangler.implMethodName("<clinit>", "()V")
+      val staticMethodName = ctx.mangler.implMethodName("<clinit>", "()V", None)
       val (staticInitFns, otherFns) = funcs.partition(_.name.name == staticMethodName)
       val staticFuncs = if (staticInitFns.length <= 1) funcs else {
         val newStaticInitFn = staticInitFns.head.copy(
@@ -216,7 +216,7 @@ trait ClassCompiler extends Logger {
           // Take the impl struct and add a field to it for the function
           // Also remove the abstract method if present since we're gonna make our own (which
           // means any imports caused by what we're removing will be ok)
-          val ifaceMethodName = ctx.mangler.implMethodName(ifaceMethod.name, ifaceMethod.desc)
+          val ifaceMethodName = ctx.mangler.implMethodName(ifaceMethod)
           val implStructName = ctx.mangler.implObjectName(extensionCls.name)
           val ctxAndDecls = decls.foldLeft(ctx -> Seq.empty[Node.Declaration]) {
             case ((ctx, decls), Node.GenericDeclaration(
@@ -262,7 +262,7 @@ trait ClassCompiler extends Logger {
               ctx.mangler.dispatchInitMethodName(extension.name)
             ).call("v".toIdent.singleSeq).toStmt
             val constructStmt = "v".toIdent.sel(parentImplObjName).
-              sel(ctx.mangler.implMethodName("<init>", "()V")).call().toStmt
+              sel(ctx.mangler.implMethodName("<init>", "()V", None)).call().toStmt
             val retStmt = "v".toIdent.ret
             ctx -> funcDecl(
               rec = Some("_" -> staticTyp),
@@ -294,14 +294,14 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileInstInterface(ctx: Context): (Context, Node.Declaration) = {
-    // Only non-private, non-init methods including parents
-    // Note, the set of methods also includes covariant returns
-    val methods = methodSetManager.instInterfaceMethods(ctx.classPath, ctx.cls).methodsWithCovariantReturnDuplicates
+    val methodSet = methodSetManager.instInterfaceMethods(ctx.classPath, ctx.cls)
+    // Just take all methods and dedupe by name + desc + privateTo
+    val methods = methodSet.allMethods.groupBy(m => m.name -> m.desc -> m.privateTo).values.map(_.head)
     val ctxAndMethodSigs = methods.foldLeft(ctx -> Seq.empty[Node.Field]) {
       case ((ctx, methodSigs), method) =>
         signatureCompiler.buildFuncType(ctx, method, includeParamNames = false).map {
           case (ctx, funcType) =>
-            ctx -> (methodSigs :+ field(ctx.mangler.forwardMethodName(method.name, method.desc), funcType))
+            ctx -> (methodSigs :+ field(ctx.mangler.forwardMethodName(method), funcType))
         }
     }
 
@@ -377,11 +377,13 @@ trait ClassCompiler extends Logger {
       compileMethods(ctx, methodSet.methods).map { case (ctx, methodDecls) =>
         compileInvokeDynamicSyncVars(ctx, methodSet.methods).map { case (ctx, invokeDynVars) =>
           compileImplRawPointerMethod(ctx).map { case (ctx, rawPointerMethod) =>
-            compileImplSelfMethod(ctx).map { case (ctx, selfMethod) =>
-              compileImplCovariantReturnDuplicateForwarders(ctx, methodSet.covariantReturnDuplicates).map {
-                case (ctx, covariantMethodDecls) =>
-                  ctx -> (accessorDecls ++ methodDecls ++ invokeDynVars ++
-                    covariantMethodDecls :+ rawPointerMethod :+ selfMethod)
+            compileImplPackagePrivateVisibilityIncreasers(ctx, methodSet).map { case (ctx, visibilityIncreaseMethods) =>
+              compileImplSelfMethod(ctx).map { case (ctx, selfMethod) =>
+                compileImplCovariantReturnDuplicateForwarders(ctx, methodSet.covariantReturnDuplicates).map {
+                  case (ctx, covariantMethodDecls) =>
+                    ctx -> (accessorDecls ++ methodDecls ++ invokeDynVars ++ visibilityIncreaseMethods ++
+                      covariantMethodDecls :+ rawPointerMethod :+ selfMethod)
+                }
               }
             }
           }
@@ -396,7 +398,7 @@ trait ClassCompiler extends Logger {
   ): (Context, Seq[Node.FunctionDeclaration]) = {
     methods.foldLeft(ctx -> Seq.empty[Node.FunctionDeclaration]) { case ((ctx, funcDecls), (target, dupes)) =>
       dupes.foldLeft(ctx -> funcDecls) { case ((ctx, funcDecls), dupe) =>
-        val call = "this".toIdent.sel(ctx.mangler.implMethodName(target.name, target.desc)).
+        val call = "this".toIdent.sel(ctx.mangler.implMethodName(target)).
           call(IType.getArgumentTypes(target.desc).indices.map(i => s"var$i".toIdent))
         signatureCompiler.buildFuncDecl(ctx, dupe, Seq(call.ret)).map { case (ctx, funcDecl) =>
           ctx -> (funcDecls :+ funcDecl)
@@ -413,6 +415,34 @@ trait ClassCompiler extends Logger {
       results = Some(ctx.mangler.implObjectName(ctx.cls.name).toIdent.star),
       stmts = "this".toIdent.ret.singleSeq
     )
+  }
+
+  protected def compileImplPackagePrivateVisibilityIncreasers(
+    ctx: Context,
+    methodSet: MethodSetManager.MethodSet
+  ): (Context, Seq[Node.FunctionDeclaration]) = {
+    // All we do is get the ones that increased visibility on package private (which changes the method name)
+    // and forward them to the non package private dispatcher
+    methodSet.myPackagePrivateVisibilityIncreases(ctx.cls).foldLeft(ctx -> Seq.empty[Node.FunctionDeclaration]) {
+      case ((ctx, funcDecls), (newMethod, oldMethod)) =>
+        ctx.implTypeExpr(ctx.cls.name).map { case (ctx, recTyp) =>
+          signatureCompiler.buildFuncType(ctx, oldMethod, includeParamNames = true).map { case (ctx, funcType) =>
+            val call = "this".toIdent.sel(ctx.mangler.forwardMethodName(newMethod)).call(
+              newMethod.argTypes.indices.map(i => s"var$i".toIdent)
+            )
+            val callStmt = newMethod.returnType match {
+              case IType.VoidType => call.toStmt
+              case _ => call.ret
+            }
+            ctx -> (funcDecls :+ funcDecl(
+              rec = Some(field("this", recTyp)),
+              name = ctx.mangler.implMethodName(oldMethod),
+              funcType = funcType,
+              stmts = callStmt.singleSeq
+            ))
+          }
+        }
+    }
   }
 
   protected def compileImplSelfMethod(ctx: Context): (Context, Node.FunctionDeclaration) = {
@@ -576,13 +606,13 @@ trait ClassCompiler extends Logger {
       }
     }
     ctxAndSuperDispatchRefs.map { case (ctx, superDispatchRefs) =>
-      val dispatchMethodNodes =
-        methodSetManager.dispatchInterfaceMethods(ctx.classPath, ctx.cls).methodsWithCovariantReturnDuplicates
+      val dispatchMethodSet = methodSetManager.dispatchInterfaceMethods(ctx.classPath, ctx.cls)
+      val dispatchMethodNodes = dispatchMethodSet.methodsWithCovariantReturnDuplicates
       val ctxAndDispatchMethods = dispatchMethodNodes.foldLeft(ctx -> Seq.empty[Node.Field]) {
         case ((ctx, fields), methodNode) =>
           signatureCompiler.buildFuncType(ctx, methodNode, includeParamNames = false).map {
             case (ctx, funcType) =>
-              ctx -> (fields :+ field(ctx.mangler.implMethodName(methodNode.name, methodNode.desc), funcType))
+              ctx -> (fields :+ field(ctx.mangler.implMethodName(methodNode), funcType))
           }
       }
 
@@ -638,7 +668,7 @@ trait ClassCompiler extends Logger {
       val methodSet = methodSetManager.dispatchForwardingMethods(ctx.classPath, ctx.cls)
       val methods = methodSet.methodsWithCovariantReturnDuplicates
       methods.foldLeft(ctx -> Seq.empty[Node.Declaration]) { case ((ctx, methods), method) =>
-        val call = "this".toIdent.sel("_dispatch").sel(ctx.mangler.implMethodName(method.name, method.desc)).call(
+        val call = "this".toIdent.sel("_dispatch").sel(ctx.mangler.implMethodName(method)).call(
           IType.getArgumentTypes(method.desc).zipWithIndex.map("var" + _._2).map(_.toIdent)
         )
         val stmt = if (IType.getReturnType(method.desc) == IType.VoidType) call.toStmt else call.ret
@@ -646,7 +676,7 @@ trait ClassCompiler extends Logger {
           ctx = ctx,
           method = method,
           stmts = stmt.singleSeq,
-          nameOverride = Some(ctx.mangler.forwardMethodName(method.name, method.desc))
+          nameOverride = Some(ctx.mangler.forwardMethodName(method))
         ).map { case (ctx, funcDecl) =>
           ctx -> (methods :+ funcDecl)
         }

@@ -7,11 +7,15 @@ trait Mangler {
   def fieldGetterName(owner: String, name: String): String
   def fieldSetterName(owner: String, name: String): String
   def implObjectName(internalName: String): String
-  def implMethodName(name: String, desc: String): String
+  def implMethodName(method: Method): String =
+    implMethodName(method.name, method.desc, method.privateTo)
+  def implMethodName(name: String, desc: String, privateTo: Option[String]): String
   def dispatchInterfaceName(internalName: String): String
   def instanceInterfaceName(internalName: String): String
   def instanceRawPointerMethodName(internalName: String): String
-  def forwardMethodName(name: String, desc: String): String
+  def forwardMethodName(method: Method): String =
+    forwardMethodName(method.name, method.desc, method.privateTo)
+  def forwardMethodName(name: String, desc: String, privateTo: Option[String]): String
   def interfaceDefaultMethodName(owner: String, name: String, desc: String): String
   def dispatchInitMethodName(classInternalName: String): String
   def staticAccessorName(internalName: String): String
@@ -32,8 +36,6 @@ object Mangler {
   object Simple extends Simple
   trait Simple extends Mangler {
 
-    // TODO: I added "private[this]" to get rid of all unused later
-
     private[this] def classSuffix(simpleName: String): String = "__" + simpleName.replace("$", "__innerclass__")
 
     override def dispatchInterfaceName(internalName: String): String =
@@ -45,11 +47,11 @@ object Mangler {
     override def instanceRawPointerMethodName(internalName: String): String =
       "RawPtr__" + objectNamePrefix(internalName)
 
-    override def forwardMethodName(name: String, desc: String): String =
-      methodName(name, desc)
+    override def forwardMethodName(name: String, desc: String, privateTo: Option[String]): String =
+      methodName(name, desc, privateTo)
 
     override def interfaceDefaultMethodName(owner: String, name: String, desc: String): String =
-      objectNamePrefix(owner) + "__defaultmethod__" + methodName(name, desc)
+      objectNamePrefix(owner) + "__defaultmethod__" + methodName(name, desc, None)
 
     override def dispatchInitMethodName(classInternalName: String): String =
       objectNamePrefix(classInternalName) + "__InitDispatch"
@@ -64,27 +66,21 @@ object Mangler {
 
     override def implObjectName(internalName: String) = objectNamePrefix(internalName) + "__Impl"
 
-    override def implMethodName(name: String, desc: String): String =
-      "Impl__" + methodName(name, desc)
+    override def implMethodName(name: String, desc: String, privateTo: Option[String]): String =
+      "Impl__" + methodName(name, desc, privateTo)
 
-    private[this] def methodName(name: String, desc: String): String =
-      methodPrefix(name) + "__desc__" + methodSuffix(desc)
+    private[this] def methodName(name: String, desc: String, privateTo: Option[String]): String =
+      methodPrefix(name, privateTo) + "__desc__" + methodSuffix(desc)
 
-    private[this] def methodName(name: String, desc: Type): String =
-      methodName(name, desc.getDescriptor)
-
-    private[this] def methodNameFromClasses(name: String, returnType: Class[_], argumentTypes: Class[_]*): String =
-      methodName(name, Type.getMethodDescriptor(Type.getType(returnType), argumentTypes.map(Type.getType): _*))
-
-    private[this] def methodNameFromTypes(name: String, returnType: Type, argumentTypes: Type*): String =
-      methodName(name, Type.getMethodDescriptor(returnType, argumentTypes: _*))
-
-    private[this] def methodPrefix(name: String): String = name match {
-      case "<init>" => "Instance_Init"
-      case "<clinit>" => "Static_Init"
-      // We do this to disambiguate two methods of the same case-insensitive name
-      case _ if name.head.isUpper => s"Capitalized__${name.capitalize}"
-      case _ => name.capitalize
+    private[this] def methodPrefix(name: String, privateTo: Option[String]): String = {
+      def privPrefix = privateTo.map(v => "PrivTo__" + objectNamePrefix(v) + "__").getOrElse("")
+      name match {
+        case "<init>" => "Instance_Init"
+        case "<clinit>" => "Static_Init"
+        // We do this to disambiguate two methods of the same case-insensitive name
+        case _ if name.head.isUpper => s"${privPrefix}Capitalized__${name.capitalize}"
+        case _ => privPrefix + name.capitalize
+      }
     }
 
     private[this] def methodSuffix(desc: String): String = {
@@ -131,14 +127,14 @@ object Mangler {
       methName: String,
       methDesc: String,
       insnIndex: Int
-    ): String = "_" + objectNamePrefix(owner) + s"__invokedynsync${insnIndex}__" + methodName(methName, methDesc)
+    ): String = "_" + objectNamePrefix(owner) + s"__invokedynsync${insnIndex}__" + methodName(methName, methDesc, None)
 
     override def invokeDynamicCallSiteVarName(
       owner: String,
       methName: String,
       methDesc: String,
       insnIndex: Int
-    ): String = "_" + objectNamePrefix(owner) + s"__invokedynsite${insnIndex}__" + methodName(methName, methDesc)
+    ): String = "_" + objectNamePrefix(owner) + s"__invokedynsite${insnIndex}__" + methodName(methName, methDesc, None)
 
     override def funcInterfaceProxySuffix(internalName: String): String =
       "__dynproxy__"

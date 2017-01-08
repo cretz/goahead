@@ -1,6 +1,7 @@
 package goahead.compile
 
 import java.io._
+import java.lang.reflect.Modifier
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths}
 
@@ -70,7 +71,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     writeGoCode(t, codeFile, compiled)
 
     // Write the main call
-    val className = t.classes.find(c => Try(c.getMethod("main", classOf[Array[String]])).isSuccess).get.getName
+    val className = t.classWithMain.getName
     val mainCode = GoAheadCompiler.compileMainFile(t.conf, "./spectest", className.replace('.', '/'), classPath)
     writeGoCode(t, tempFolder.resolve("main.go"), mainCode)
 
@@ -254,6 +255,14 @@ object CompilerSpec extends Logger {
 
     lazy val expectedOpcodes = {
       classes.flatMap(c => Option(c.getAnnotation(classOf[ExpectOpcodes]))).flatMap(_.value()).toSet
+    }
+
+    def classWithMain = {
+      val mains = classes.flatMap(c =>
+        Try(c.getDeclaredMethod("main", classOf[Array[String]])).toOption
+      ).filter(m => Modifier.isStatic(m.getModifiers))
+      require(mains.size == 1, "Must only have a single main method")
+      mains.head.getDeclaringClass
     }
   }
 

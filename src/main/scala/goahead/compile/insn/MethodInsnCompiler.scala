@@ -63,7 +63,7 @@ trait MethodInsnCompiler {
     // The method can be on a parent class actually
     val method = resolveMethod(ctx, name, desc, owner, static = true)
     ctx.staticInstRefExpr(method.cls.name).map { case (ctx, staticInstExpr) =>
-      ctx -> (method -> staticInstExpr.sel(ctx.mangler.implMethodName(method.name, method.desc)))
+      ctx -> (method -> staticInstExpr.sel(ctx.mangler.implMethodName(method)))
     }
   }
 
@@ -115,8 +115,8 @@ trait MethodInsnCompiler {
     } else {
       // Virtual calls forward the method, otherwise do a direct impl reference
       val methodName =
-        if (virtual) ctx.mangler.forwardMethodName(method.name, method.desc)
-        else ctx.mangler.implMethodName(method.name, method.desc)
+        if (virtual) ctx.mangler.forwardMethodName(method)
+        else ctx.mangler.implMethodName(method)
       // Interfaces are simple type assertions (unless "this" which is already a pointer),
       // whereas non ifaces fetch the pointer
       val ctxAndSubject =
