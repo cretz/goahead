@@ -4,6 +4,19 @@ case class Package(name: String, decls: Seq[Package.Decl])
 
 object Package {
 
+  sealed trait VarMember {
+    def name: String
+    def typ: Type
+    def const: Boolean
+  }
+
+  sealed trait FuncMember {
+    def name: String
+    def params: Seq[NamedType]
+    def results: Seq[NamedType]
+    def variadic: Boolean
+  }
+
   def fromJson(json: String): Package = {
     import io.circe._, io.circe.parser._
     val decoded = decode[Json](json).right.flatMap { json =>
@@ -71,19 +84,23 @@ object Package {
     name: String,
     typ: Type,
     value: String
-  ) extends Decl
+  ) extends Decl with VarMember {
+    override def const = true
+  }
 
   case class VarDecl(
     name: String,
     typ: Type
-  ) extends Decl
+  ) extends Decl with VarMember {
+    override def const = false
+  }
 
   case class FuncDecl(
     name: String,
     params: Seq[NamedType],
     results: Seq[NamedType],
     variadic: Boolean
-  ) extends Decl
+  ) extends Decl with FuncMember
 
   case class StructDecl(
     name: String,
@@ -111,7 +128,7 @@ object Package {
     params: Seq[NamedType],
     results: Seq[NamedType],
     variadic: Boolean
-  )
+  ) extends FuncMember
 
   sealed trait Type
 

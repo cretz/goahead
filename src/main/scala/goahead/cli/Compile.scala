@@ -52,7 +52,7 @@ trait Compile extends Command with Logger {
     object FileGrouping {
       def apply(name: String): FileGrouping = name match {
         case "class" => Cls
-        case "class-sans-inner" => Cls
+        case "class-sans-inner" => ClsSansInner
         case "package" => Pkg
         case str if str.startsWith("first-packages-") => FirstXPkgs(str.substring("first-packages-".length).toInt)
         case _ => sys.error(s"Unrecognized file grouping: $name")

@@ -5,7 +5,7 @@ version := "1.0"
 scalaVersion := "2.11.8"
 
 libraryDependencies ++= Seq(
-  //"org.ow2.asm" % "asm-all" % "5.1",
+  "com.squareup" % "javapoet" % "1.8.0",
   "org.ow2.asm" % "asm-all" % "6.0_ALPHA",
   "io.circe" %% "circe-core" % "0.6.1",
   "io.circe" %% "circe-generic" % "0.6.1",

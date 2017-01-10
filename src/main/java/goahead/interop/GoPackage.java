@@ -8,5 +8,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.PACKAGE)
 public @interface GoPackage {
     String name();
-    Class<?>[] topLevelFunctionClasses() default {};
+    Class<?> topLevel();
+    Class<?>[] types() default {};
 }

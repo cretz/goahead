@@ -28,3 +28,5 @@ Ok, here's what we're going to do:
   * E.g. my own java.lang.String maybe at whatever.String might have an annotation that is @Replaces since it replaces
     the entire thing whereas my own java.lang.SomethingElse might just @Overrides
 * Have to complete the golang interop for this to work which I don't think will be too hard
+  * I was wrong, this is actually a ton of work to replicate all semantics of Go in JVM
+* Rethinking, let's just go a piece at a time
