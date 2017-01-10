@@ -1,0 +1,4 @@
+We will interop that allows Go code to be called from a JVM language...how:
+
+* Generator basically obtains all fields/types/etc from Go package
+* Start with builtin and work outwards

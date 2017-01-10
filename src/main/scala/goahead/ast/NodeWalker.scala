@@ -33,6 +33,15 @@ object NodeWalker {
   def flatMapAllNonRecursive[A <: Node](n: Seq[A])(pf: PartialFunction[Node, Option[Node]]) =
     flatMappedNonRecursive(pf).applyAll(n)
 
+  def flatMappedSeqNonRecursive(pf: PartialFunction[Node, Seq[Node]]) = new NodeWalker {
+    override def applyAll[A <: Node](n: Seq[A]) = n.flatMap { v =>
+      pf.applyOrElse(v, (n: A) => super.apply(n).toSeq).asInstanceOf[Seq[A]]
+    }
+  }
+
+  def flatMapAllSeqNonRecursive[A <: Node](n: Seq[A])(pf: PartialFunction[Node, Seq[Node]]) =
+    flatMappedSeqNonRecursive(pf).applyAll(n)
+
   def mappedNonRecursive(pf: PartialFunction[Node, Node]) = new NodeWalker {
     override def apply[B <: Node](n: B) = pf.lift(n) match {
       case v: Some[_] => v.asInstanceOf[Some[B]]

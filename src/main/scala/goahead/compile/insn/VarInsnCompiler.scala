@@ -29,7 +29,7 @@ trait VarInsnCompiler {
       val ctxAndTypedLocal =
         if (local.isThis) ctx -> local
         else local.toExprNode(ctx, typ).map { case (ctx, typedLocal) =>
-          ctx -> TypedExpression(typedLocal, typ, cheapRef = false)
+          ctx -> TypedExpression(typedLocal, typ, cheapRef = local.cheapRef)
         }
       ctxAndTypedLocal.map { case (ctx, typedLocal) =>
         ctx.stackPushed(typedLocal) -> Seq.empty[Node.Statement]

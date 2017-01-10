@@ -39,7 +39,8 @@ trait Compile extends Command with Logger {
     onlyMethodsReferencingClasses: Boolean = false,
     onlyFieldsReferencingClasses: Boolean = false,
     excludePrivateMethods: Boolean = false,
-    excludePrivateFields: Boolean = false
+    excludePrivateFields: Boolean = false,
+    showExclusions: Boolean = false
   ) {
     lazy val manglerInst = mangler.map(Class.forName(_).newInstance().asInstanceOf[Mangler]).getOrElse(Mangler.Simple)
   }
@@ -171,10 +172,13 @@ trait Compile extends Command with Logger {
       excludeFields = MethodOrFieldMatchers.fromStrings(conf.excludeFields),
       excludeMethods = MethodOrFieldMatchers.fromStrings(conf.excludeMethods),
       overrideMethods = MethodOrFieldMatchers.fromStrings(conf.overrideMethods),
-      bodylessMethods = MethodOrFieldMatchers.fromStrings(conf.bodylessMethods)
+      bodylessMethods = MethodOrFieldMatchers.fromStrings(conf.bodylessMethods) + MethodOrFieldMatch.NativeMatch
     )
     if (conf.onlyMethodsReferencingClasses || conf.onlyFieldsReferencingClasses) {
-      val matcher = MethodOrFieldMatch.NotContainingTypes(classEntries.flatMap(_._2.map(_.cls.name)).toSet)
+      val matcher = MethodOrFieldMatch.NotContainingTypes(
+        internalClassNames = classEntries.flatMap(_._2.map(_.cls.name)).toSet,
+        alsoCheckInstructionsOfMethodsNotMatching = classRules.bodylessMethods
+      )
       if (conf.onlyMethodsReferencingClasses)
         classRules = classRules.copy(excludeMethods = classRules.excludeMethods + matcher)
       if (conf.onlyFieldsReferencingClasses)
@@ -185,7 +189,7 @@ trait Compile extends Command with Logger {
     if (conf.excludePrivateFields)
       classRules = classRules.copy(excludeFields = classRules.excludeFields + MethodOrFieldMatch.PrivateMatch)
     val fileTransformers = conf.fileTransformers.map(c => Class.forName(c).newInstance().asInstanceOf[FileTransformer])
-    val compiler = new Compile.FilteringCompiler(classRules, fileTransformers)
+    val compiler = new Compile.FilteringCompiler(classRules, fileTransformers, conf.showExclusions)
 
     // Compile
     // TODO: Maybe something like monix would be better so I can do gatherUnordered?
@@ -265,7 +269,11 @@ object Compile extends Compile {
     bodylessMethods: MethodOrFieldMatchers
   )
 
-  class FilteringCompiler(classRules: ClassRules, fileTransfomers: Seq[FileTransformer]) extends GoAheadCompiler {
+  class FilteringCompiler(
+    classRules: ClassRules,
+    fileTransfomers: Seq[FileTransformer],
+    showExclusions: Boolean
+  ) extends GoAheadCompiler {
 
     override protected def compileClasses(conf: Config, classes: Seq[Cls], classPath: ClassPath, mangler: Mangler) =
       fileTransfomers.foldLeft(super.compileClasses(conf, classes, classPath, mangler)) {
@@ -275,8 +283,19 @@ object Compile extends Compile {
     override val classCompiler = new ClassCompiler {
 
       override protected val methodSetManager = new MethodSetManager.Filtered() {
-        override def filter(method: Method, forImpl: Boolean) =
-          !classRules.excludeMethods.matches(method) && (!forImpl || !classRules.overrideMethods.matches(method))
+        override def filter(method: Method, forImpl: Boolean) = {
+          val excludeReasons = classRules.excludeMethods.matchReasons(method)
+          if (excludeReasons.nonEmpty) {
+            if (showExclusions)
+              excludeReasons.foreach(r => logger.info(s"Excluding method $method because it $r"))
+            false
+          } else if (forImpl) {
+            val overrideReasons = classRules.overrideMethods.matchReasons(method)
+            if (showExclusions)
+              overrideReasons.foreach(r => logger.info(s"Exclude method $method impl for override because it $r"))
+            overrideReasons.isEmpty
+          } else true
+        }
       }
 
       override protected def clsFields(
@@ -284,13 +303,21 @@ object Compile extends Compile {
         forImpl: Boolean,
         includeParentFields: Boolean = false
       ): Seq[Field] =
-        super.clsFields(ctx, forImpl, includeParentFields).filterNot(classRules.excludeFields.matches)
+        super.clsFields(ctx, forImpl, includeParentFields).filter { field =>
+          val excludeReasons = classRules.excludeFields.matchReasons(field)
+          if (showExclusions)
+            excludeReasons.foreach(r => logger.info(s"Excluding field $field because it $r"))
+          excludeReasons.isEmpty
+        }
 
       override val methodCompiler = new MethodCompiler {
         override def compile(conf: Config, cls: Cls, method: Method, mports: Imports, mangler: Mangler) = {
-          if (!method.access.isAccessNative && !classRules.bodylessMethods.matches(method)) {
+          val excludeReasons = classRules.bodylessMethods.matchReasons(method)
+          if (excludeReasons.isEmpty) {
             super.compile(conf, cls, method, mports, mangler)
           } else {
+            if (showExclusions)
+              excludeReasons.foreach(r => logger.info(s"Skipping body of method $method because it $r"))
             import AstDsl._
             val stmts = if (method.name == "<clinit>") Nil else {
               val methodStr = s"${method.cls.name}.${method.name}${method.desc}"
@@ -330,8 +357,8 @@ object Compile extends Compile {
   }
 
   sealed trait MethodOrFieldMatch {
-    def matches(method: Method): Boolean
-    def matches(field: Field): Boolean
+    def matchReason(method: Method): Option[String]
+    def matchReason(field: Field): Option[String]
   }
 
   object MethodOrFieldMatch {
@@ -355,19 +382,40 @@ object Compile extends Compile {
       desc: Option[String]
     ) extends MethodOrFieldMatch {
 
-      override def matches(method: Method) =
-        clsMatch.matches(method.cls) && !name.exists(_ != method.name) && !desc.exists(_ != method.desc)
+      override def matchReason(method: Method) = {
+        if (clsMatch.matches(method.cls) && !name.exists(_ != method.name) && !desc.exists(_ != method.desc)) {
+          Some("matches name filter")
+        } else None
+      }
 
-      override def matches(field: Field) =
-        clsMatch.matches(field.cls) && !name.exists(_ != field.name)
+      override def matchReason(field: Field) = {
+        if (clsMatch.matches(field.cls) && !name.exists(_ != field.name)) {
+          Some("matches name filter")
+        } else None
+      }
     }
 
-    case class NotContainingTypes(internalClassNames: Set[String]) extends MethodOrFieldMatch {
-      override def matches(method: Method) =
-        (method.argTypes :+ method.returnType).exists(objectTypeName(_).exists(v => !internalClassNames.contains(v)))
+    case class NotContainingTypes(
+      internalClassNames: Set[String],
+      alsoCheckInstructionsOfMethodsNotMatching: MethodOrFieldMatchers
+    ) extends MethodOrFieldMatch {
+      override def matchReason(method: Method) = {
+        var typesToCheck = method.argTypes.toSet + method.returnType
+        if (alsoCheckInstructionsOfMethodsNotMatching.matchReasons(method).isEmpty) {
+          typesToCheck ++= method.instructionRefTypes()
+        }
+        typeReason(typesToCheck)
+      }
 
-      override def matches(field: Field) =
-        objectTypeName(IType.getType(field.desc)).exists(v => !internalClassNames.contains(v))
+      override def matchReason(field: Field) = typeReason(Set(IType.getType(field.desc)))
+
+      protected def typeReason(types: Set[IType]) = badClassReferences(types) match {
+        case s if s.isEmpty => None
+        case s => Some(s"references classes: ${s.mkString(", ")}")
+      }
+
+      protected def badClassReferences(types: Set[IType]) =
+        types.flatMap(objectTypeName).diff(internalClassNames).toSeq.sorted
 
       protected def objectTypeName(typ: IType): Option[String] = typ match {
         case typ: IType.Simple if typ.isObject => Some(typ.internalName)
@@ -377,14 +425,23 @@ object Compile extends Compile {
     }
 
     case object PrivateMatch extends MethodOrFieldMatch {
-      override def matches(method: Method) = method.access.isAccessPrivate
-      override def matches(field: Field) = field.access.isAccessPrivate
+      override def matchReason(method: Method) =
+        if (method.access.isAccessPrivate) Some("is private") else None
+      override def matchReason(field: Field) =
+        if (field.access.isAccessPrivate) Some("is private") else None
+    }
+
+    case object NativeMatch extends MethodOrFieldMatch {
+      override def matchReason(method: Method) =
+        if (method.access.isAccessNative) Some("is native") else None
+      override def matchReason(field: Field) =
+        if (field.access.isAccessNative) Some("is native") else None
     }
   }
 
   case class MethodOrFieldMatchers(matchers: Seq[MethodOrFieldMatch]) {
-    def matches(method: Method): Boolean = matchers.exists(_.matches(method))
-    def matches(field: Field): Boolean = matchers.exists(_.matches(field))
+    def matchReasons(method: Method): Seq[String] = matchers.flatMap(_.matchReason(method))
+    def matchReasons(field: Field): Seq[String] = matchers.flatMap(_.matchReason(field))
 
     def `+`(rhs: MethodOrFieldMatch) = copy(matchers = matchers :+ rhs)
   }

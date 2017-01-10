@@ -148,20 +148,6 @@ object Helpers extends Logger {
       ctx -> inst.sel(ctx.mangler.instanceRawPointerMethodName(implOf)).call()
     }
 
-    def frameStack(frame: FrameNode): Seq[IType] = Option(frame.stack) match {
-      case None => Nil
-      case Some(stack) =>
-        import scala.collection.JavaConverters._
-        stack.asScala.map(IType.fromFrameVarType(ctx.cls, _))
-    }
-
-    def frameLocals(frame: FrameNode): Seq[IType] = Option(frame.local) match {
-      case None => Nil
-      case Some(locals) =>
-        import scala.collection.JavaConverters._
-        locals.asScala.map(IType.fromFrameVarType(ctx.cls, _))
-    }
-
     def createVarDecl(vars: Seq[TypedExpression]): (T, Node.Statement) = {
       // Collect them all and then send at once to a single var decl
       val ctxAndNamedTypes = vars.foldLeft(ctx -> Seq.empty[(String, Node.Expression)]) {
@@ -188,6 +174,20 @@ object Helpers extends Logger {
 
   implicit class RichCls(val cls: Cls) extends AnyVal {
     def hasStaticInit = cls.methods.exists(_.name == "<clinit>")
+
+    def frameStack(frame: FrameNode): Seq[IType] = Option(frame.stack) match {
+      case None => Nil
+      case Some(stack) =>
+        import scala.collection.JavaConverters._
+        stack.asScala.map(IType.fromFrameVarType(cls, _))
+    }
+
+    def frameLocals(frame: FrameNode): Seq[IType] = Option(frame.local) match {
+      case None => Nil
+      case Some(locals) =>
+        import scala.collection.JavaConverters._
+        locals.asScala.map(IType.fromFrameVarType(cls, _))
+    }
   }
 
   implicit class RichDouble(val double: Double) extends AnyVal {
@@ -330,7 +330,7 @@ object Helpers extends Logger {
       ctx.sets.find(_.label.getLabel == label.getLabel).get.newFrame match {
         case None => ctx -> Nil
         case Some(otherFrame) =>
-          ctx.frameStack(otherFrame).zipWithIndex.foldLeft(ctx -> Seq.empty[Node.Statement]) {
+          ctx.cls.frameStack(otherFrame).zipWithIndex.foldLeft(ctx -> Seq.empty[Node.Statement]) {
             case ((ctx, prevStmts), (frameType, index)) =>
               ctx.stack.items.lift(index) match {
                 case None => ctx -> prevStmts

@@ -112,7 +112,7 @@ trait MethodCompiler extends Logger {
       case Some(frame) =>
         // Add a stack variable for each stack item here
         val initCtx = origCtx.copy(stack = Stack.empty)
-        val ctx = origCtx.frameStack(frame).zipWithIndex.foldLeft(initCtx) {
+        val ctx = origCtx.cls.frameStack(frame).zipWithIndex.foldLeft(initCtx) {
           case (ctx, (stackType, index)) =>
             val stackVar = TypedExpression.namedVar(s"${labelSet.label.getLabel}_stack$index", stackType)
             ctx.copy(functionVars = ctx.functionVars :+ stackVar).stackPushed(stackVar)
@@ -123,13 +123,13 @@ trait MethodCompiler extends Logger {
           case Opcodes.F_SAME1 | Opcodes.F_SAME =>
             ctx
           case Opcodes.F_APPEND =>
-            ctx.frameLocals(frame).foldLeft(ctx) { case (ctx, localType) =>
+            ctx.cls.frameLocals(frame).foldLeft(ctx) { case (ctx, localType) =>
               ctx.appendLocalVar(localType)._1
             }
           case Opcodes.F_CHOP =>
             ctx.dropLocalVars(frame.local.size())
           case Opcodes.F_FULL =>
-            val locals = ctx.frameLocals(frame)
+            val locals = ctx.cls.frameLocals(frame)
             if (locals.length == ctx.localVars.size) ctx
             else if (locals.length < ctx.localVars.size) ctx.takeLocalVars(locals.length)
             else locals.drop(ctx.localVars.size).foldLeft(ctx) { case (ctx, localType) =>
@@ -155,8 +155,11 @@ trait MethodCompiler extends Logger {
     val tempVarsOnStackAndNotAtFuncLevel = tempVarsOnStack.filterNot(ctx.functionVars.contains)
     // Make local decls out of ones not on stack and not already in function vars
     val tempVarsNotOnStackAndNotAtFuncLevel = tempVarsNotOnStack.filterNot(ctx.functionVars.contains)
+    val varsToDefAtFuncLevel =
+      if (ctx.conf.localizeTempVarUsage) tempVarsNotOnStackAndNotAtFuncLevel
+      else tempVarsNotOnStack
     val ctxAndVarDecl =
-      if (tempVarsNotOnStackAndNotAtFuncLevel.isEmpty) ctx -> None
+      if (!ctx.conf.localizeTempVarUsage || tempVarsNotOnStackAndNotAtFuncLevel.isEmpty) ctx -> None
       else ctx.createVarDecl(tempVarsNotOnStackAndNotAtFuncLevel).map(_ -> Some(_))
 
     // Leave the existing ones on the stack and in the temp set and add them to func-level vars
@@ -174,7 +177,7 @@ trait MethodCompiler extends Logger {
         val maybeComment = labelSet.line.map(line => comment(s"Line number $line").toStmt)
         ctx.copy(
           localTempVars = tempVarsOnStack.toIndexedSeq,
-          functionVars = ctx.functionVars ++ tempVarsOnStackAndNotAtFuncLevel
+          functionVars = ctx.functionVars ++ varsToDefAtFuncLevel
         ) -> labeled(labelSet.label.getLabel.uniqueStr, maybeComment.toSeq ++ maybeDecl.toSeq ++ stmts ++ addOnStmts)
       }
     }
@@ -183,7 +186,8 @@ trait MethodCompiler extends Logger {
   protected def statementPostProcessors: Seq[PostProcessor] = Seq(
     postprocess.ApplyTryCatch,
     postprocess.AddFunctionVars,
-    postprocess.RemoveUnusedLabels
+    postprocess.RemoveUnusedLabels,
+    postprocess.ReduceCodeSize
   )
 
   protected def postProcessStatements(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {

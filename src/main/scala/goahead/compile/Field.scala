@@ -22,5 +22,7 @@ object Field {
 
     @inline
     override def access = node.access
+
+    override def toString = s"${cls.name}::${node.name}"
   }
 }

@@ -1,0 +1,30 @@
+Here are some thoughts, issues about the stdlib:
+
+* The regular stdlib is just too large for Go to compile regularly
+  * Even JDK9 java.base mod is 140MB compiled, 114MB leaving some class methods empty, 92MB emptying all non java*
+    class methods
+  * After some trimming, we got it down to 89MB
+  * Go 1.8 does not help here, nor does -gcflags=-N or -gcflags=-l per
+    https://groups.google.com/forum/#!topic/golang-nuts/sBBkQ1_xf2Q
+  * Even panicking in every method only brings it down to ~50MB and that still takes forever (I didn't even wait for it
+    to complete)
+* So, we have to find another way to provide the java stdlib. Options:
+  * Find a smaller stdlib impl
+    * This is a sucky option because only openjdk has all of the up-to-date classes
+  * Do like we do with the test rt and gen only certain classes
+    * This is kinda ok, except w/ the test rt we panic every method, whereas here we want the contents
+    * Maybe we have something that looks over all of the instructions and gets all types needed and makes sure we can
+      generate the method
+    * Some of the classes we're gonna have to have our own impl for anyways
+    * This is really painful due to all the in-method deps across classes
+  * Write our own stdlib
+    * UG! Not only do you have to avoid reading the openjdk source, you'll always be behind
+
+Ok, here's what we're going to do:
+
+* Use a regular JDK generator
+* But entire classes or just certain methods are replaced with our own
+  * Can be done w/ annotations
+  * E.g. my own java.lang.String maybe at whatever.String might have an annotation that is @Replaces since it replaces
+    the entire thing whereas my own java.lang.SomethingElse might just @Overrides
+* Have to complete the golang interop for this to work which I don't think will be too hard

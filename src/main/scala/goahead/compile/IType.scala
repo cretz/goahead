@@ -64,7 +64,7 @@ object IType extends Logger {
     case Opcodes.FLOAT => FloatType
     case Opcodes.DOUBLE => DoubleType
     case Opcodes.LONG => LongType
-    case Opcodes.NULL => NullType
+    case Opcodes.NULL | null => NullType
     case Opcodes.UNINITIALIZED_THIS => IType(Type.getObjectType(thisNode.name))
     case ref: String => IType(Type.getObjectType(ref))
     // TODO: investigate more... we need to come back and fix this type once we see the label

@@ -3,7 +3,7 @@ package goahead.compile
 import java.io.{PrintWriter, StringWriter}
 
 import goahead.PolymorphicSignature
-import org.objectweb.asm.{Opcodes, Type}
+import org.objectweb.asm.{Handle, Opcodes, Type}
 import org.objectweb.asm.tree._
 import org.objectweb.asm.util.{Textifier, TraceMethodVisitor}
 
@@ -30,6 +30,8 @@ sealed trait Method {
     else if (access.isAccessPackagePrivate) Some(cls.packageName)
     else None
   }
+
+  def instructionRefTypes(): Set[IType]
 }
 
 object Method {
@@ -106,5 +108,38 @@ object Method {
       import Helpers._
       cls.access.isAccessInterface && !access.isAccessStatic && !access.isAccessAbstract
     }
+
+    override def instructionRefTypes(): Set[IType] = {
+      import Helpers._
+      def descTypes(desc: String) = IType.getArgumentAndReturnTypes(desc).map(_ :+ _)
+      def handleTypes(h: Handle) = IType.getObjectType(h.getOwner) +: descTypes(h.getDesc)
+      instructions.flatMap({
+        case n: FieldInsnNode =>
+          Seq(IType.getType(n.desc), IType.getObjectType(n.owner))
+        case n: FrameNode =>
+          cls.frameLocals(n) ++ cls.frameStack(n)
+        case n: InvokeDynamicInsnNode =>
+          descTypes(n.desc) ++ handleTypes(n.bsm) ++ n.bsmArgs.toSeq.collect({
+            case t: Type => Seq(IType(t))
+            case h: Handle => handleTypes(h)
+          }).flatten
+        case n: LdcInsnNode => n.cst match {
+          case t: Type => Seq(IType(t))
+          case h: Handle => handleTypes(h)
+          case _ => Nil
+        }
+        case n: MethodInsnNode =>
+          descTypes(n.desc) :+ IType.getObjectType(n.owner)
+        case n: MultiANewArrayInsnNode =>
+          Seq(IType.getType(n.desc))
+        case n: TypeInsnNode =>
+          Seq(IType.getObjectType(n.desc))
+        case _: IincInsnNode | _: InsnNode | _: IntInsnNode | _: JumpInsnNode | _: LabelNode |
+             _: LineNumberNode | _: LookupSwitchInsnNode | _: TableSwitchInsnNode | _: VarInsnNode =>
+          Nil
+      }).toSet
+    }
+
+    override def toString = s"${cls.name}::${node.name}${node.desc}"
   }
 }
