@@ -384,7 +384,7 @@ object Compile extends Compile {
 
       override def matchReason(method: Method) = {
         if (clsMatch.matches(method.cls) && !name.exists(_ != method.name) && !desc.exists(_ != method.desc)) {
-          Some("matches name filter")
+          Some("matches name filter of " + clsMatch + " - " + name + " - " + desc)
         } else None
       }
 

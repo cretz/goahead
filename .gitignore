@@ -3,3 +3,5 @@
 /project
 /libs/java/rt/*
 !/libs/java/rt/aaa*
+/compiler/target
+/interop/target

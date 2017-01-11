@@ -19,12 +19,6 @@ class RtFileTransformer extends FileTransformer {
         _: Node.File,
         mangler.implObjectName("java/lang/StringBuilder"),
         field("Underlying", "string".toIdent)
-      ),
-      // Add message to throwable
-      addField(
-        _: Node.File,
-        mangler.implObjectName("java/lang/Throwable"),
-        field("Message", mangler.instanceInterfaceName("java/lang/String").toIdent)
       )
     )
 

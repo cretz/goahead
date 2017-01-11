@@ -25,7 +25,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   // Create this entry for the "rt" classes and close at the end
   val javaRuntimeEntry =
     if (useTestRt) {
-      ClassPath.Entry.fromZipFile(ClassPath.Entry.javaRuntimeJarPath, "github.com/cretz/goahead/src/test/go/javalib/rt")
+      ClassPath.Entry.fromZipFile(ClassPath.Entry.javaRuntimeJarPath, "github.com/cretz/goahead/compiler/src/test/go/javalib/rt")
     } else {
       require(sys.env.contains("ZULU_JDK_HOME"), "ZULU_JDK_HOME env var required")
       ClassPath.Entry.fromZipFile(
@@ -34,9 +34,9 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
       )
     }
 
-  val goFormatTimeout = 20.seconds
-  val goBuildTimeout = if (useTestRt) 20.seconds else 4.hours
-  val exeRunTimeout = 20.seconds
+  val goFormatTimeout = 40.seconds
+  val goBuildTimeout = if (useTestRt) 40.seconds else 4.hours
+  val exeRunTimeout = 40.seconds
   val checkFormatting = false
 
   override protected def afterAll() = {
@@ -86,7 +86,8 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
 
   def writeGoCode(testCase: TestCase, file: Path, code: Node.File): Unit = {
     def withLineNumbers(str: String) =
-      str.split('\n').zipWithIndex.map(si => (si._2 + 1).toString.padTo(8, ' ') + si._1).mkString("\n")
+      //str.split('\n').zipWithIndex.map(si => (si._2 + 1).toString.padTo(8, ' ') + si._1).mkString("\n")
+      str
     val codeStr = NodeWriter.fromNode(code)
     logger.debug(s"Asserting and writing the following to $file:\n${withLineNumbers(codeStr)}")
     if (checkFormatting) assertValidCode(testCase, codeStr)
