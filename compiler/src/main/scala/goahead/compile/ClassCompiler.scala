@@ -97,9 +97,10 @@ trait ClassCompiler extends Logger {
     // We call the static init in a single sync once block
     val staticVarName = ctx.mangler.staticVarName(ctx.cls.name).toIdent
     val initStmtOpt = if (!ctx.cls.hasStaticInit) None else Some {
+      val staticInitMethod = ctx.cls.methods.find(_.name == "<clinit>").get
       val syncOnceField = staticVarName.sel("init")
       syncOnceField.sel("Do").call(
-        staticVarName.sel(ctx.mangler.implMethodName("<clinit>", "()V", None)).singleSeq
+        staticVarName.sel(ctx.mangler.implMethodName(staticInitMethod)).singleSeq
       ).toStmt
     }
     ctx.staticInstTypeExpr(ctx.cls.name).map { case (ctx, staticTyp) =>
@@ -152,8 +153,12 @@ trait ClassCompiler extends Logger {
 
       // As a special case, we have to combine all static inits, so we'll do it with anon
       // functions if there is more than one
-      val staticMethodName = ctx.mangler.implMethodName("<clinit>", "()V", None)
-      val (staticInitFns, otherFns) = funcs.partition(_.name.name == staticMethodName)
+      val (staticInitFns, otherFns) = ctx.cls.methods.find(_.name == "<clinit>") match {
+        case None => Nil -> funcs
+        case Some(staticInit) =>
+          val staticInitName = ctx.mangler.implMethodName(staticInit)
+          funcs.partition(_.name.name == staticInitName)
+      }
       val staticFuncs = if (staticInitFns.length <= 1) funcs else {
         val newStaticInitFn = staticInitFns.head.copy(
           body = Some(block(
@@ -216,8 +221,8 @@ trait ClassCompiler extends Logger {
           // Take the impl struct and add a field to it for the function
           // Also remove the abstract method if present since we're gonna make our own (which
           // means any imports caused by what we're removing will be ok)
-          val ifaceMethodName = ctx.mangler.implMethodName(ifaceMethod)
-          val implStructName = ctx.mangler.implObjectName(extensionCls.name)
+          val ifaceMethodName = ctx.mangler.implMethodName(ifaceMethod).goSafeIdent
+          val implStructName = ctx.mangler.implObjectName(extensionCls.name).goSafeIdent
           val ctxAndDecls = decls.foldLeft(ctx -> Seq.empty[Node.Declaration]) {
             case ((ctx, decls), Node.GenericDeclaration(
               Node.Token.Type,
@@ -262,7 +267,7 @@ trait ClassCompiler extends Logger {
               ctx.mangler.dispatchInitMethodName(extension.name)
             ).call("v".toIdent.singleSeq).toStmt
             val constructStmt = "v".toIdent.sel(parentImplObjName).
-              sel(ctx.mangler.implMethodName("<init>", "()V", None)).call().toStmt
+              sel(ctx.mangler.implMethodName("<init>", "()V", None, isPriv = false)).call().toStmt
             val retStmt = "v".toIdent.ret
             ctx -> funcDecl(
               rec = Some("_" -> staticTyp),
@@ -314,8 +319,8 @@ trait ClassCompiler extends Logger {
           signatureCompiler.buildFieldSetterFuncType(ctx, node, includeParamNames = false).map {
             case (ctx, setterType) =>
               ctx -> (fields ++ Seq(
-                field(ctx.mangler.fieldGetterName(node.cls.name, node.name), getterType),
-                field(ctx.mangler.fieldSetterName(node.cls.name, node.name), setterType)
+                field(ctx.mangler.fieldGetterName(node), getterType),
+                field(ctx.mangler.fieldSetterName(node), setterType)
               ))
           }
         }
@@ -510,7 +515,7 @@ trait ClassCompiler extends Logger {
     fields.foldLeft(ctx -> Seq.empty[Node.Field]) { case ((ctx, prevFields), node) =>
       logger.debug(s"Compiling field ${ctx.cls.name}.${node.name}")
       ctx.typeToGoType(IType.getType(node.desc)).map { case (ctx, typ) =>
-        ctx -> (prevFields :+ field(ctx.mangler.fieldName(ctx.cls.name, node.name), typ))
+        ctx -> (prevFields :+ field(ctx.mangler.fieldName(node), typ))
       }
     }
   }
@@ -525,15 +530,15 @@ trait ClassCompiler extends Logger {
             case (ctx, setterType) => ctx -> (decls ++ Seq(
               funcDecl(
                 rec = Some(field("this", thisType)),
-                name = ctx.mangler.fieldGetterName(node.cls.name, node.name),
+                name = ctx.mangler.fieldGetterName(node),
                 funcType = getterType,
-                stmts = "this".toIdent.sel(ctx.mangler.fieldName(ctx.cls.name, node.name)).ret.singleSeq
+                stmts = "this".toIdent.sel(ctx.mangler.fieldName(node)).ret.singleSeq
               ),
               funcDecl(
                 rec = Some(field("this", thisType)),
-                name = ctx.mangler.fieldSetterName(node.cls.name, node.name),
+                name = ctx.mangler.fieldSetterName(node),
                 funcType = setterType,
-                stmts = "this".toIdent.sel(ctx.mangler.fieldName(ctx.cls.name, node.name)).
+                stmts = "this".toIdent.sel(ctx.mangler.fieldName(node)).
                   assignExisting("v".toIdent).singleSeq
               )
             ))

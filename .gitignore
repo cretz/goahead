@@ -1,7 +1,9 @@
 /target
 /.idea
 /project
-/libs/java/rt/*
-!/libs/java/rt/aaa*
 /compiler/target
 /interop/target
+/libs/java/rt/*
+!/libs/java/rt/aaa*
+/libs/java-full/rt/*
+!/libs/java-full/rt/aaa*

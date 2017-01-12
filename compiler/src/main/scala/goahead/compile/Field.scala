@@ -7,6 +7,13 @@ sealed trait Field {
   def name: String
   def desc: String
   def access: Int
+
+  def privateTo = {
+    import Helpers._
+    if (access.isAccessPrivate) Some(cls.name)
+    else if (access.isAccessPackagePrivate) Some(cls.packageName)
+    else None
+  }
 }
 
 object Field {

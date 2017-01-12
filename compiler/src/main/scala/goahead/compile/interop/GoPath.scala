@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.{Path, Paths}
 
 import com.google.common.io.Resources
+import com.squareup.javapoet.ClassName
 import goahead.interop.{GoPackage, GoType}
 
 class GoPath(
@@ -25,6 +26,8 @@ class GoPath(
       pkg
     })
   }
+
+  def builtInPackage = getPackage("")
 
   def getPackage(pkgName: String): GoPath.JavaPackage = {
     // TODO: cleanup path code
@@ -73,10 +76,10 @@ object GoPath {
   case class JavaPackage(javaPkg: String, goPkg: GoPackage) {
     // Keyed by go name, value is FQCN
     private[this] lazy val typeNameMap = {
-      goPkg.types().flatMap(c => Option(c.getAnnotation(classOf[GoType])).map(_.value() -> c.getName)).toMap
+      goPkg.types().flatMap(c => Option(c.getAnnotation(classOf[GoType])).map(_.value() -> c.getSimpleName)).toMap
     }
 
-    def javaTypeName(goTypeName: String) =
-      typeNameMap.getOrElse(goTypeName, sys.error(s"Unable to find Go type $goTypeName"))
+    def javaClassName(goTypeName: String) =
+      ClassName.get(javaPkg, typeNameMap.getOrElse(goTypeName, sys.error(s"Unable to find Go type $goTypeName")))
   }
 }

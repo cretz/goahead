@@ -40,9 +40,13 @@ trait Compile extends Command with Logger {
     onlyFieldsReferencingClasses: Boolean = false,
     excludePrivateMethods: Boolean = false,
     excludePrivateFields: Boolean = false,
-    showExclusions: Boolean = false
+    showExclusions: Boolean = false,
+    packagePrivateExported: Boolean = false
   ) {
-    lazy val manglerInst = mangler.map(Class.forName(_).newInstance().asInstanceOf[Mangler]).getOrElse(Mangler.Simple)
+    lazy val manglerInst = mangler.map(Class.forName(_).newInstance().asInstanceOf[Mangler]).getOrElse {
+      //Mangler.Simple
+      new Mangler.Compact(packagePrivateUnexported = !packagePrivateExported)
+    }
   }
 
   object Conf {
@@ -189,7 +193,7 @@ trait Compile extends Command with Logger {
     if (conf.excludePrivateFields)
       classRules = classRules.copy(excludeFields = classRules.excludeFields + MethodOrFieldMatch.PrivateMatch)
     val fileTransformers = conf.fileTransformers.map(c => Class.forName(c).newInstance().asInstanceOf[FileTransformer])
-    val compiler = new Compile.FilteringCompiler(classRules, fileTransformers, conf.showExclusions)
+    val compiler = new Compile.FilteringCompiler(classRules, fileTransformers, conf.showExclusions, conf.manglerInst)
 
     // Compile
     // TODO: Maybe something like monix would be better so I can do gatherUnordered?
@@ -272,7 +276,8 @@ object Compile extends Compile {
   class FilteringCompiler(
     classRules: ClassRules,
     fileTransfomers: Seq[FileTransformer],
-    showExclusions: Boolean
+    showExclusions: Boolean,
+    mangler: Mangler
   ) extends GoAheadCompiler {
 
     override protected def compileClasses(conf: Config, classes: Seq[Cls], classPath: ClassPath, mangler: Mangler) =
@@ -282,17 +287,19 @@ object Compile extends Compile {
 
     override val classCompiler = new ClassCompiler {
 
+      def methodStr(m: Method) = s"$m (impl name ${mangler.implMethodName(m)})"
+
       override protected val methodSetManager = new MethodSetManager.Filtered() {
         override def filter(method: Method, forImpl: Boolean) = {
           val excludeReasons = classRules.excludeMethods.matchReasons(method)
           if (excludeReasons.nonEmpty) {
             if (showExclusions)
-              excludeReasons.foreach(r => logger.info(s"Excluding method $method because it $r"))
+              excludeReasons.foreach(r => logger.info(s"Excluding method ${methodStr(method)} because it $r"))
             false
           } else if (forImpl) {
             val overrideReasons = classRules.overrideMethods.matchReasons(method)
             if (showExclusions)
-              overrideReasons.foreach(r => logger.info(s"Exclude method $method impl for override because it $r"))
+              overrideReasons.foreach(r => logger.info(s"Exclude method ${methodStr(method)} impl for override because it $r"))
             overrideReasons.isEmpty
           } else true
         }
@@ -317,11 +324,10 @@ object Compile extends Compile {
             super.compile(conf, cls, method, mports, mangler)
           } else {
             if (showExclusions)
-              excludeReasons.foreach(r => logger.info(s"Skipping body of method $method because it $r"))
+              excludeReasons.foreach(r => logger.info(s"Skipping body of method ${methodStr(method)} because it $r"))
             import AstDsl._
             val stmts = if (method.name == "<clinit>") Nil else {
-              val methodStr = s"${method.cls.name}.${method.name}${method.desc}"
-              Seq("panic".toIdent.call(Seq(s"Method not implemented - $methodStr".toLit)).toStmt)
+              Seq("panic".toIdent.call(Seq(s"Method not implemented - $method".toLit)).toStmt)
             }
             buildFuncDecl(ctx = initContext(conf, cls, method, mports, mangler, Nil), stmts = stmts).map {
               case (ctx, funcDecl) => ctx.imports -> funcDecl
@@ -384,7 +390,7 @@ object Compile extends Compile {
 
       override def matchReason(method: Method) = {
         if (clsMatch.matches(method.cls) && !name.exists(_ != method.name) && !desc.exists(_ != method.desc)) {
-          Some("matches name filter of " + clsMatch + " - " + name + " - " + desc)
+          Some(s"matches name filter of " + clsMatch + " - " + name + " - " + desc)
         } else None
       }
 

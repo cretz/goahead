@@ -346,7 +346,7 @@ object Helpers extends Logger {
       ctx.staticInstRefExpr("java/lang/Class").map { case (ctx, staticInstExpr) =>
         ctx.newString(typ.className).map { case (ctx, className) =>
           ctx -> staticInstExpr.sel(
-            ctx.mangler.implMethodName("forName", "(Ljava/lang/String;)Ljava/lang/Class;", None)
+            ctx.mangler.implMethodName("forName", "(Ljava/lang/String;)Ljava/lang/Class;", None, isPriv = false)
           ).call(Seq(className))
         }
       }

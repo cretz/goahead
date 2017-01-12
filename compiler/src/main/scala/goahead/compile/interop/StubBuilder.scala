@@ -3,30 +3,32 @@ package goahead.compile.interop
 import javax.lang.model.element.Modifier
 
 import com.squareup.javapoet._
-import goahead.interop.{GoField, GoFunction}
+import goahead.interop._
 
 class StubBuilder {
   import StubBuilder._
 
   def build(importPath: String, targetPackageName: String, goPath: GoPath): Seq[JavaFile.Builder] = {
-    val pkg = goParser.loadPackage(importPath, goPath)
-    // TODO: this
-    ???
+    val ctx = Context(
+      pkg = goParser.loadPackage(importPath, goPath),
+      goPath = goPath,
+      targetPackageName = targetPackageName
+    )
+    build(ctx).map { case (_, files) => files }
   }
 
   protected def build(ctx: Context): (Context, Seq[JavaFile.Builder]) = {
-    ???
+    buildTopLevel(ctx).map { case (ctx, topLevel) =>
+      ???
+    }
   }
 
-  protected def buildPackageIface(origCtx: Context, pkg: Package): (Context, TypeSpec.Builder) = {
+  protected def buildTopLevel(ctx: Context): (Context, TypeSpec.Builder) = {
     // All consts, vars, and funcs at a package level are in a Pkg class
-    val bld = TypeSpec.classBuilder(origCtx.targetPackageName + ".Pkg").
-      addModifiers(Modifier.PUBLIC)
+    val bld = TypeSpec.classBuilder(ctx.targetPackageName + ".Pkg").
+      addModifiers(Modifier.PUBLIC, Modifier.FINAL)
 
-    // Must have a private do nothing constructor to avoid instantiation
-    bld.addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build())
-
-    pkg.decls.foldLeft(origCtx -> bld) { case ((ctx, bld), decl) =>
+    ctx.pkg.decls.foldLeft(ctx -> bld) { case ((ctx, bld), decl) =>
       decl match {
         // Consts are static final whereas vars are just static
         case d: Package.ConstDecl =>
@@ -43,6 +45,16 @@ class StubBuilder {
             ctx -> bld.addMethod(method.build())
           }
         case _ => ctx -> bld
+      }
+    }
+  }
+
+  protected def buildTypeDecls(ctx: Context): (Context, Seq[TypeSpec.Builder]) = {
+    ctx.pkg.decls.foldLeft(ctx -> Seq.empty[TypeSpec.Builder]) { case ((ctx, blds), decl) =>
+      decl match {
+        case _: Package.StructDecl =>
+          ???
+        case _ => ctx -> blds
       }
     }
   }
@@ -79,7 +91,8 @@ class StubBuilder {
               case Some(name) => ctx.safeMemberName(s"$parent.${v.name}", name)
             }
             ctxAndName.map { case (ctx, name) =>
-              ctx -> method.addParameter(typRef, name)
+              val param = ParameterSpec.builder(typRef, name)
+              ctx -> method.addParameter(param.build())
             }
           }
         }
@@ -105,7 +118,7 @@ object StubBuilder {
     //localNames: Map[String, String] = Map.empty,
     // Key is go name, value is java name
     localDeclNames: Map[String, String] = Map.empty,
-    mangler: Mangler
+    mangler: Mangler = Mangler.Default
   )
 
   implicit class RichContext(val ctx: Context) extends AnyVal {
@@ -123,7 +136,14 @@ object StubBuilder {
     def map[U](f: Context => U): U = f(ctx)
 
     def returnTypeRef(typ: Seq[Package.NamedType]): (Context, TypeName) = {
-      ???
+      typ match {
+        // If there's only one, who cares what the name is, we just use a normal type
+        case Seq(Package.NamedType(_, typ)) =>
+          typeRef(typ)
+        case tuple =>
+          // TODO: live-decl tuple
+          sys.error("Tuples not yet supported in return types")
+      }
     }
 
     def typeRef(typ: Package.Type): (Context, TypeName) = {
@@ -132,13 +152,47 @@ object StubBuilder {
           val localName = ctx.localDeclNames.getOrElse(name, sys.error(s"Unable to find type $name"))
           ctx -> ClassName.get(ctx.targetPackageName, localName)
         case Package.QualifiedType(Some(otherPkg), name) =>
-          ctx -> ctx.goPath.getPackage(otherPkg).javaTypeName(name)
+          ctx -> ctx.goPath.getPackage(otherPkg).javaClassName(name)
         case _: Package.FuncType =>
+          // TODO: live-decl functional interface
           sys.error("Function types not yet supported")
-        case _ =>
-          ???
+        case t: Package.BasicType =>
+          ctx -> ctx.goPath.builtInPackage.javaClassName(t.name)
+        case Package.ArrayType(size, elemType) =>
+          typeRef(elemType).map { case (ctx, elemTypeRef) =>
+            val sizeAnn = AnnotationSpec.builder(classOf[ArraySize]).
+              addMember("value", "$L", java.lang.Long.valueOf(size)).build()
+            ctx -> ParameterizedTypeName.get(ClassName.get(classOf[builtin.Array[_]]), elemTypeRef.annotated(sizeAnn))
+          }
+        case Package.SliceType(elemType) =>
+          typeRef(elemType).map { case (ctx, elemTypeRef) =>
+            ctx -> ParameterizedTypeName.get(ClassName.get(classOf[builtin.Slice[_]]), elemTypeRef)
+          }
+        case _: Package.StructType =>
+          // TODO: live-decl anon struct
+          sys.error("Anonymous struct types not yet supported")
+        case Package.PointerType(elemType) =>
+          typeRef(elemType).map { case (ctx, elemTypeRef) =>
+            ctx -> ParameterizedTypeName.get(ClassName.get(classOf[builtin.Pointer[_]]), elemTypeRef)
+          }
+        case _: Package.IfaceType =>
+          // TODO: live-decl anon iface
+          sys.error("Anonymous interface types not yet supported")
+        case Package.MapType(keyType, valType) =>
+          typeRef(keyType).map { case (ctx, keyTypeRef) =>
+            typeRef(valType).map { case (ctx, valTypeRef) =>
+              ctx -> ParameterizedTypeName.get(ClassName.get(classOf[builtin.Map[_, _]]), keyTypeRef, valTypeRef)
+            }
+          }
+        case Package.ChanType(elemType, send, receive) =>
+          typeRef(elemType).map { case (ctx, elemTypeRef) =>
+            var dirs = Array.empty[ChanDir.Dir]
+            if (send) dirs :+= ChanDir.Dir.SEND
+            if (receive) dirs :+= ChanDir.Dir.RECEIVE
+            val dirAnn = AnnotationSpec.builder(classOf[ChanDir]).addMember("value", "$L", dirs).build()
+            ctx -> ParameterizedTypeName.get(ClassName.get(classOf[builtin.Channel[_]]), elemTypeRef.annotated(dirAnn))
+          }
       }
-      ???
     }
   }
 

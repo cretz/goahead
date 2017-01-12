@@ -23,7 +23,8 @@ trait MainCompiler {
     val mainName = mangler.implMethodName(
       "main",
       Type.getMethodDescriptor(Type.VOID_TYPE, Type.getType(classOf[Array[String]])),
-      None
+      None,
+      isPriv = false
     )
     val mainRef = javaPkgAlias.sel(mangler.staticAccessorName(internalClassName)).call().sel(mainName)
     val mainCall = mainRef.call(Seq(rtAlias.sel("OSArgs").call()))

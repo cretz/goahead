@@ -12,7 +12,7 @@ trait GoAheadCompiler extends Logger {
     importPath: String,
     internalClassName: String,
     classPath: ClassPath,
-    mangler: Mangler = Mangler.Simple
+    mangler: Mangler = new Mangler.Compact(packagePrivateUnexported = true) //Mangler.Simple
   ): Node.File =
     mainCompiler.compile(conf, importPath, internalClassName, classPath, mangler)
 
@@ -21,7 +21,7 @@ trait GoAheadCompiler extends Logger {
     conf: Config,
     internalClassNames: Seq[String],
     classPath: ClassPath,
-    mangler: Mangler = Mangler.Simple
+    mangler: Mangler = new Mangler.Compact(packagePrivateUnexported = true) //Mangler.Simple
   ): Node.File = compileClasses(
     conf,
     internalClassNames.map(n => classPath.getFirstClass(n).cls),

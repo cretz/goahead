@@ -1,21 +1,46 @@
 package goahead.compile
 
+import java.nio.ByteBuffer
+import java.util.Base64
+
 import org.objectweb.asm.Type
 
 trait Mangler {
-  def fieldName(owner: String, name: String): String
-  def fieldGetterName(owner: String, name: String): String
-  def fieldSetterName(owner: String, name: String): String
+  def fieldName(field: Field): String = {
+    import Helpers._
+    fieldName(
+      field.cls.name,
+      field.name,
+      field.privateTo,
+      isPriv = field.access.isAccessPrivate,
+      static = field.access.isAccessStatic
+    )
+  }
+  def fieldName(owner: String, name: String, privateTo: Option[String], isPriv: Boolean, static: Boolean): String
+  def fieldGetterName(field: Field): String = {
+    import Helpers._
+    fieldGetterName(field.cls.name, field.name, field.privateTo, isPriv = field.access.isAccessPrivate)
+  }
+  def fieldGetterName(owner: String, name: String, privateTo: Option[String], isPriv: Boolean): String
+  def fieldSetterName(field: Field): String = {
+    import Helpers._
+    fieldSetterName(field.cls.name, field.name, field.privateTo, isPriv = field.access.isAccessPrivate)
+  }
+  def fieldSetterName(owner: String, name: String, privateTo: Option[String], isPriv: Boolean): String
   def implObjectName(internalName: String): String
-  def implMethodName(method: Method): String =
-    implMethodName(method.name, method.desc, method.privateTo)
-  def implMethodName(name: String, desc: String, privateTo: Option[String]): String
+  def implMethodName(method: Method): String = {
+    import Helpers._
+    implMethodName(method.name, method.desc, method.privateTo, isPriv = method.access.isAccessPrivate)
+  }
+  def implMethodName(name: String, desc: String, privateTo: Option[String], isPriv: Boolean): String
   def dispatchInterfaceName(internalName: String): String
   def instanceInterfaceName(internalName: String): String
   def instanceRawPointerMethodName(internalName: String): String
-  def forwardMethodName(method: Method): String =
-    forwardMethodName(method.name, method.desc, method.privateTo)
-  def forwardMethodName(name: String, desc: String, privateTo: Option[String]): String
+  def forwardMethodName(method: Method): String = {
+    import Helpers._
+    forwardMethodName(method.name, method.desc, method.privateTo, isPriv = method.access.isAccessPrivate)
+  }
+  def forwardMethodName(name: String, desc: String, privateTo: Option[String], isPriv: Boolean): String
   def interfaceDefaultMethodName(owner: String, name: String, desc: String): String
   def dispatchInitMethodName(classInternalName: String): String
   def staticAccessorName(internalName: String): String
@@ -33,6 +58,10 @@ trait Mangler {
 
 object Mangler {
 
+  /**
+    * @deprecated See https://github.com/golang/go/issues/18602
+    */
+  @Deprecated
   object Simple extends Simple
   trait Simple extends Mangler {
 
@@ -47,7 +76,7 @@ object Mangler {
     override def instanceRawPointerMethodName(internalName: String): String =
       "RawPtr__" + objectNamePrefix(internalName)
 
-    override def forwardMethodName(name: String, desc: String, privateTo: Option[String]): String =
+    override def forwardMethodName(name: String, desc: String, privateTo: Option[String], isPriv: Boolean): String =
       methodName(name, desc, privateTo)
 
     override def interfaceDefaultMethodName(owner: String, name: String, desc: String): String =
@@ -56,17 +85,18 @@ object Mangler {
     override def dispatchInitMethodName(classInternalName: String): String =
       objectNamePrefix(classInternalName) + "__InitDispatch"
 
-    override def fieldName(owner: String, name: String) = name.capitalize
+    override def fieldName(owner: String, name: String, privateTo: Option[String], isPriv: Boolean, static: Boolean) =
+      name.capitalize
 
-    override def fieldGetterName(owner: String, name: String) =
-      "FieldGet__" + objectNamePrefix(owner) + "__" + fieldName(owner, name)
+    override def fieldGetterName(owner: String, name: String, privateTo: Option[String], isPriv: Boolean) =
+      "FieldGet__" + objectNamePrefix(owner) + "__" + fieldName(owner, name, privateTo, isPriv, static = false)
 
-    override def fieldSetterName(owner: String, name: String) =
-      "FieldSet__" + objectNamePrefix(owner) + "__" + fieldName(owner, name)
+    override def fieldSetterName(owner: String, name: String, privateTo: Option[String], isPriv: Boolean) =
+      "FieldSet__" + objectNamePrefix(owner) + "__" + fieldName(owner, name, privateTo, isPriv, static = false)
 
     override def implObjectName(internalName: String) = objectNamePrefix(internalName) + "__Impl"
 
-    override def implMethodName(name: String, desc: String, privateTo: Option[String]): String =
+    override def implMethodName(name: String, desc: String, privateTo: Option[String], isPriv: Boolean): String =
       "Impl__" + methodName(name, desc, privateTo)
 
     private[this] def methodName(name: String, desc: String, privateTo: Option[String]): String =
@@ -148,5 +178,148 @@ object Mangler {
 
     override def fileName(packageOrClassNameWithSlashesOrDots: String): String =
       packageOrClassNameWithSlashesOrDots.replace('.', '_').replace('/', '_')
+  }
+
+  class Compact(val packagePrivateUnexported: Boolean) extends Mangler {
+    import AstDsl._
+
+    // Essentially what we do here is use the short version of names followed
+    // by base 64'd string hashes and pray there are no collisions, heh
+    val encoder = Base64.getEncoder.withoutPadding()
+    val implSuffix = "_Í"
+    val dispatchSuffix = "_Ð"
+    val instanceSuffix = "_Ñ"
+    val defaultMethodSuffix = "_Ď"
+    val staticObjectSuffix = "_Ś"
+    val staticVarSuffix = "_Ʋ"
+    val invokeDynamicSyncVarSuffix = "_Ú"
+    val invokeDynamicCallSiteVarSuffix = "_Ş"
+    val dynamicProxySuffix = "_Ƥ"
+
+    private[this] def stringHash(str: String): String = {
+      // Base 64 has '+' and '/' as non-ident chars, so we have to replace them
+      encoder.encodeToString(ByteBuffer.allocate(4).putInt(str.hashCode).array()).
+        replace('+', 'Þ').replace('/', 'Ø')
+    }
+
+    private[this] def fixNameExport(name: String, privateTo: Option[String], isPriv: Boolean): String = {
+      // If it's private or package private and we unexport those, the uncapitalize, otherwise capitalize
+      if (isPriv || (privateTo.isDefined && packagePrivateUnexported)) name.head.toLower + name.tail
+      else name.capitalize
+    }
+
+    private[this] def fieldName(owner: String, name: String, privateTo: Option[String]) = {
+      // Name has to be prefixed with c_ if it was capitalized to prevent clash
+      val uniqueName = if (name.head.isUpper) s"c_$name" else name
+      // If it's not private to anything, we need no hash
+      val hash = stringHash(s"${owner}_${name}_$privateTo")
+      s"${uniqueName}_$hash"
+    }
+
+    override def fieldName(owner: String, name: String, privateTo: Option[String], isPriv: Boolean, static: Boolean) = {
+      // We consider non-static private here too since there are accessors for it
+      fixNameExport(fieldName(owner, name, privateTo), privateTo, isPriv || !static).goSafeIdent
+    }
+
+    override def fieldGetterName(owner: String, name: String, privateTo: Option[String], isPriv: Boolean) = {
+      fixNameExport("Get" + fieldName(owner, name, privateTo).capitalize, privateTo, isPriv).goSafeIdent
+    }
+
+    override def fieldSetterName(owner: String, name: String, privateTo: Option[String], isPriv: Boolean) = {
+      fixNameExport("Set" + fieldName(owner, name, privateTo).capitalize, privateTo, isPriv).goSafeIdent
+    }
+
+    private[this] def objectName(internalName: String): String = {
+      require(!internalName.headOption.contains('['), "Arrays not supported")
+      val simpleName = internalName.substring(internalName.lastIndexOf('/') + 1)
+      simpleName + "_" + stringHash(internalName)
+    }
+
+    override def implObjectName(internalName: String) = {
+      // TODO: fix this to not export if private
+      (objectName(internalName).capitalize + implSuffix).goSafeIdent
+    }
+
+    override def dispatchInterfaceName(internalName: String) = {
+      // TODO: fix this to not export if private
+      (objectName(internalName).capitalize + dispatchSuffix).goSafeIdent
+    }
+
+    override def instanceInterfaceName(internalName: String) = {
+      // TODO: fix this to not export if private
+      (objectName(internalName).capitalize + instanceSuffix).goSafeIdent
+    }
+
+    private[this] def methodName(
+      name: String,
+      desc: String,
+      privateTo: Option[String],
+      isPriv: Boolean,
+      ownerSpecific: Option[String] = None
+    ) = {
+      // Name has to be prefixed with c_ if it was capitalized to prevent clash
+      val uniqueName = name match {
+        case "<init>" => "init"
+        case "<clinit>" => "clinit"
+        case n if n.head.isUpper => s"c_$name"
+        case _ => name
+      }
+      val strToHash = s"$name${desc}_${privateTo.getOrElse("pub")}_${ownerSpecific.getOrElse("noowner")}"
+      fixNameExport(uniqueName + "_" + stringHash(strToHash), privateTo, isPriv)
+    }
+
+    override def implMethodName(name: String, desc: String, privateTo: Option[String], isPriv: Boolean) = {
+      (methodName(name, desc, privateTo, isPriv) + implSuffix).goSafeIdent
+    }
+
+    override def instanceRawPointerMethodName(internalName: String) = {
+      ("Raw_" + stringHash(internalName)).goSafeIdent
+    }
+
+    override def forwardMethodName(name: String, desc: String, privateTo: Option[String], isPriv: Boolean) = {
+      methodName(name, desc, privateTo, isPriv).goSafeIdent
+    }
+
+    override def interfaceDefaultMethodName(owner: String, name: String, desc: String) = {
+      (methodName(name, desc, None, isPriv = false, Some(owner)) + defaultMethodSuffix).goSafeIdent
+    }
+
+    override def dispatchInitMethodName(internalName: String) = {
+      (dispatchInterfaceName(internalName) + "_Init").goSafeIdent
+    }
+
+    override def staticAccessorName(internalName: String) = {
+      objectName(internalName).goSafeIdent
+    }
+
+    override def staticObjectName(internalName: String) = {
+      (objectName(internalName) + staticObjectSuffix).goSafeIdent
+    }
+
+    override def staticVarName(internalName: String) = {
+      (objectName(internalName) + staticVarSuffix).goSafeIdent
+    }
+
+    override def invokeDynamicSyncVarName(owner: String, name: String, desc: String, insnIndex: Int) = {
+      s"_${insnIndex}_${methodName(name, desc, None, isPriv = false, Some(owner))}$invokeDynamicSyncVarSuffix".
+        goSafeIdent
+    }
+
+    override def invokeDynamicCallSiteVarName(owner: String, name: String, desc: String, insnIndex: Int) = {
+      s"_${insnIndex}_${methodName(name, desc, None, isPriv = false, Some(owner))}$invokeDynamicCallSiteVarSuffix".
+        goSafeIdent
+    }
+
+    override def funcInterfaceProxySuffix(internalName: String) = dynamicProxySuffix
+
+    override def funcInterfaceProxyCreateMethodName(internalName: String) = ("Create" + dynamicProxySuffix).goSafeIdent
+
+    override def implSelfMethodName() = ("Self" + implSuffix).goSafeIdent
+
+    override def forwardSelfMethodName() = "Self".goSafeIdent
+
+    override def fileName(packageOrClassNameWithSlashesOrDots: String) = {
+      packageOrClassNameWithSlashesOrDots.replace('.', '_').replace('/', '_')
+    }
   }
 }

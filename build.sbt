@@ -66,5 +66,6 @@ lazy val goaheadCompiler = (project in file("compiler")).
     //  "-Dcom.sun.management.jmxremote.ssl=false",
     //  "-Dcom.sun.management.jmxremote.authenticate=false"
     //),
-    fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "libs/java/rt-compile.conf")
+    //fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "libs/java/rt-compile.conf")
+    fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "../libs/java-full/rt-compile.conf")
   ).dependsOn(goaheadInterop)

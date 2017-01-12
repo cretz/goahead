@@ -278,9 +278,9 @@ trait InvokeDynamicInsnCompiler extends Logger { self: MethodInsnCompiler with F
         ctx.stackPopped(argTyps.size, { case (ctx, args) =>
           ctx.typeToGoType(retTyp).map { case (ctx, retTypExpr) =>
             val call = callSite.expr.sel(
-              ctx.mangler.forwardMethodName("dynamicInvoker", "()Ljava/lang/invoke/MethodHandle;", None)
+              ctx.mangler.forwardMethodName("dynamicInvoker", "()Ljava/lang/invoke/MethodHandle;", None, isPriv = false)
             ).call().sel(
-              ctx.mangler.forwardMethodName("invoke", "([Ljava/lang/Object;)Ljava/lang/Object;", None)
+              ctx.mangler.forwardMethodName("invoke", "([Ljava/lang/Object;)Ljava/lang/Object;", None, isPriv = false)
             ).call(args.map(_.expr)).typeAssert(retTypExpr)
             ctx.stackPushed(TypedExpression(
               expr = call,

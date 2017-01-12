@@ -232,12 +232,25 @@ object AstDsl extends Logger {
     def labeled(label: String) = LabeledStatement(label.toIdent, stmt)
   }
 
+  val reservedWords = Set(
+    "break", "default", "func", "interface", "select",
+    "case", "defer", "go", "map", "struct",
+    "chan", "else", "goto", "package", "switch",
+    "const", "fallthrough", "if", "range", "type",
+    "continue", "for", "import", "return", "var"
+  )
+
   implicit class RichString(val str: String) extends AnyVal {
     def dot(right: String) = sel(str.toIdent, right)
 
     def goSafeIdent: String = {
-      // Only dollar sign so far is off
-      str.replace("$", "__dollar__")
+      // Can't be a reserved word
+      if (reservedWords.contains(str)) {
+        str + "_"
+      } else {
+        // Only dollar sign so far is off
+        str.replace("$", "ŧ")
+      }
     }
 
     def toIdent = Identifier(str.goSafeIdent)
