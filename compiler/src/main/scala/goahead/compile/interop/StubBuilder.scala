@@ -1,5 +1,6 @@
 package goahead.compile.interop
 
+import javax.lang.model.SourceVersion
 import javax.lang.model.element.Modifier
 
 import com.squareup.javapoet._
@@ -33,16 +34,16 @@ class StubBuilder {
         // Consts are static final whereas vars are just static
         case d: Package.ConstDecl =>
           buildField(ctx, "", d).map { case (ctx, field) =>
-            ctx -> bld.addField(field.build())
+            ctx -> bld.addField(field.addModifiers(Modifier.STATIC, Modifier.FINAL).build())
           }
         case d: Package.VarDecl =>
           buildField(ctx, "", d).map { case (ctx, field) =>
-            ctx -> bld.addField(field.build())
+            ctx -> bld.addField(field.addModifiers(Modifier.STATIC).build())
           }
-        // Functions are just static
+        // Functions are just static native
         case d: Package.FuncDecl =>
-          buildMethod(ctx, "", d, static = true).map { case (ctx, method) =>
-            ctx -> bld.addMethod(method.build())
+          buildMethod(ctx, "", d).map { case (ctx, method) =>
+            ctx -> bld.addMethod(method.addModifiers(Modifier.STATIC, Modifier.NATIVE).build())
           }
         case _ => ctx -> bld
       }
@@ -59,10 +60,54 @@ class StubBuilder {
     }
   }
 
+  protected def buildStructDecl(ctx: Context, struct: Package.StructDecl): (Context, TypeSpec.Builder) = {
+    // Structs have embeds as fields, fields as fields, and methods as methods
+    ctx.safeClassName("", struct.name).map { case (ctx, structName) =>
+      val bld = TypeSpec.classBuilder(s"${ctx.targetPackageName}.$structName")
+      val ctxAndBld = struct.fields.foldLeft(ctx -> bld) { case ((ctx, bld), field) =>
+        // Create var decl from field
+        val decl = Package.VarDecl(
+          name = field.name.getOrElse {
+            field.typ match {
+              case Package.QualifiedType(_, name) => name
+              case _ => sys.error(s"In ${struct.name} expected qualified embedded type, got: ${field.typ}")
+            }
+          },
+          typ = field.typ
+        )
+        buildField(ctx, struct.name, decl).map { case (ctx, fieldBld) =>
+          ctx -> bld.addField(fieldBld.build())
+        }
+      }
+      struct.methods.foldLeft(ctxAndBld) { case ((ctx, bld), method) =>
+        buildMethod(ctx, struct.name, method).map { case (ctx, methodBld) =>
+          ctx -> bld.addMethod(methodBld.addModifiers(Modifier.NATIVE).build())
+        }
+      }
+    }
+  }
+
+  protected def buildInterfaceDecl(ctx: Context, iface: Package.IfaceDecl): (Context, TypeSpec.Builder) = {
+    // Interfaces simply extend embeds and add methods they contain
+    ctx.safeClassName("", iface.name).map { case (ctx, ifaceName) =>
+      val bld = TypeSpec.interfaceBuilder(s"${ctx.targetPackageName}.$ifaceName")
+      val ctxAndBld = iface.embedded.foldLeft(ctx -> bld) { case ((ctx, bld), embedded) =>
+        ctx.typeRef(embedded).map { case (ctx, embeddedRef) =>
+          ctx -> bld.addSuperinterface(embeddedRef)
+        }
+      }
+      iface.methods.foldLeft(ctxAndBld) { case ((ctx, bld), method) =>
+        buildMethod(ctx, iface.name, method).map { case (ctx, methodBld) =>
+          ctx -> bld.addMethod(methodBld.build())
+        }
+      }
+    }
+  }
+
   protected def buildField(ctx: Context, parent: String, v: Package.VarMember): (Context, FieldSpec.Builder) = {
     ctx.safeMemberName(parent, v.name).map { case (ctx, safeName) =>
       ctx.typeRef(v.typ).map { case (ctx, typeRef) =>
-        val field = FieldSpec.builder(typeRef, safeName, Modifier.PUBLIC, Modifier.STATIC)
+        val field = FieldSpec.builder(typeRef, safeName, Modifier.PUBLIC)
         if (v.const) field.addModifiers(Modifier.FINAL)
         field.addAnnotation(AnnotationSpec.builder(classOf[GoField]).addMember("value", "$S", v.name).build())
         ctx -> field
@@ -70,20 +115,14 @@ class StubBuilder {
     }
   }
 
-  protected def buildMethod(
-    ctx: Context,
-    parent: String,
-    v: Package.FuncMember,
-    static: Boolean
-  ): (Context, MethodSpec.Builder) = {
+  protected def buildMethod(ctx: Context, parent: String, v: Package.FuncMember): (Context, MethodSpec.Builder) = {
     ctx.safeMemberName(parent, v.name).map { case (ctx, safeName) =>
       ctx.returnTypeRef(v.results).map { case (ctx, returnRef) =>
         val method = MethodSpec.methodBuilder(safeName).
-          addModifiers(Modifier.PUBLIC, Modifier.NATIVE).
+          addModifiers(Modifier.PUBLIC).
           addAnnotation(AnnotationSpec.builder(classOf[GoFunction]).addMember("value", "$S", v.name).build()).
           varargs(v.variadic).
           returns(returnRef)
-        if (static) method.addModifiers(Modifier.STATIC)
         v.params.zipWithIndex.foldLeft(ctx -> method) { case ((ctx, method), (Package.NamedType(nameOpt, typ), idx)) =>
           ctx.typeRef(typ).map { case (ctx, typRef) =>
             val ctxAndName = nameOpt match {
@@ -104,9 +143,6 @@ class StubBuilder {
 }
 
 object StubBuilder {
-  val keywordFixMap = Map(
-
-  )
 
   case class Context(
     pkg: Package,
@@ -122,14 +158,23 @@ object StubBuilder {
   )
 
   implicit class RichContext(val ctx: Context) extends AnyVal {
-    def safeMemberName(parent: String, name: String): (Context, String) = {
+
+    def safeName(parent: String, name: String, mangle: String => String): (Context, String) = {
       val myUsedNames = ctx.usedNames.getOrElse(parent, Set.empty)
       val ret = Iterator.from(1).
-        map(i => ctx.mangler.javaMemberName(name + (if (i == 1) i.toString else ""))).
-        find(s => !myUsedNames.contains(s)).get
+        map(i => mangle(name + (if (i == 1) i.toString else ""))).
+        find(s => !myUsedNames.contains(s) && !SourceVersion.isKeyword(s)).get
       ctx.copy(
         usedNames = ctx.usedNames + (parent -> (myUsedNames + ret))
       ) -> ret
+    }
+
+    def safeClassName(parent: String, name: String): (Context, String) = {
+      safeName(parent, name, ctx.mangler.javaClassName)
+    }
+
+    def safeMemberName(parent: String, name: String): (Context, String) = {
+      safeName(parent, name, ctx.mangler.javaMemberName)
     }
 
     @inline

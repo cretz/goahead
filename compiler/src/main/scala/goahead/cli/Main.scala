@@ -7,6 +7,7 @@ import scala.util.{Failure, Success}
 object Main extends Logger {
   val commands = Seq[Command](
     Compile,
+    Compile2,
     FindOpcode
   )
 

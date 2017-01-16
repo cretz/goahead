@@ -19,10 +19,10 @@ type monitor struct {
 	owner uint64
 }
 
-func MonitorEnter(obj Java__lang__Object__Instance) {
+func MonitorEnter(obj Object_fAFaMw_Ñ) {
 	if obj == nil {
-		ret := Java__lang__NullPointerException().New()
-		ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString("Null monitor"))
+		ret := NullPointerException_fnXÞLQ().New()
+		ret.Init_M13Ø3g_Í(NewString("Null monitor"))
 		panic(ret)
 	}
 	ptr := uintptr(reflect.ValueOf(obj).Pointer())
@@ -46,10 +46,10 @@ func MonitorEnter(obj Java__lang__Object__Instance) {
 	}
 }
 
-func MonitorExit(obj Java__lang__Object__Instance) {
+func MonitorExit(obj Object_fAFaMw_Ñ) {
 	if obj == nil {
-		ret := Java__lang__NullPointerException().New()
-		ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString("Null monitor"))
+		ret := NullPointerException_fnXÞLQ().New()
+		ret.Init_M13Ø3g_Í(NewString("Null monitor"))
 		panic(ret)
 	}
 	ptr := uintptr(reflect.ValueOf(obj).Pointer())
@@ -60,8 +60,8 @@ func MonitorExit(obj Java__lang__Object__Instance) {
 	if mon == nil || mon.owner != owner || mon.counter == 0 {
 		// TODO: Is this usually unnecessary assertion (including obtaining the goroutine ID) worth it?
 		if obj == nil {
-			ret := Java__lang__IllegalMonitorStateException().New()
-			ret.Instance_Init__desc____ret__V()
+			ret := IllegalMonitorStateException_j9dM1g().New()
+			ret.Init_611f1A_Í()
 			panic(ret)
 		}
 	}

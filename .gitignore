@@ -3,6 +3,8 @@
 /project
 /compiler/target
 /interop/target
+/compiler/src/test/go/javalib/rt/*
+!/compiler/src/test/go/javalib/aaa*
 /libs/java/rt/*
 !/libs/java/rt/aaa*
 /libs/java-full/rt/*

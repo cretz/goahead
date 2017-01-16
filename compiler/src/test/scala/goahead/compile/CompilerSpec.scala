@@ -31,13 +31,13 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
       require(sys.env.contains("ZULU_JDK_HOME"), "ZULU_JDK_HOME env var required")
       ClassPath.Entry.fromZipFile(
         Paths.get(sys.env("ZULU_JDK_HOME"), "/jmods/java.base.jmod"),
-        "github.com/cretz/goahead/libs/java-full/rt"
+        "github.com/cretz/goahead/libs/java/rt"
       )
     }
 
   val goFormatTimeout = 40.seconds
   val goBuildTimeout = if (useTestRt) 40.seconds else 4.hours
-  val exeRunTimeout = 40.seconds
+  val exeRunTimeout = if (useTestRt) 40.seconds else 1.hour
   val checkFormatting = false
 
   override protected def afterAll() = {
@@ -78,7 +78,10 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     writeGoCode(t, tempFolder.resolve("main.go"), mainCode)
 
     // Compile go code
-    val compiledExe = compileDir(tempFolder)
+    val startMs = System.currentTimeMillis()
+    val compiledExe =
+      try compileDir(tempFolder)
+      finally logger.info(s"Compilation time: ${(System.currentTimeMillis() - startMs) / 1000} seconds")
     logger.info("Exe size: " + Files.size(compiledExe))
 
     // Run it and check output
@@ -134,7 +137,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   def compileDir(dir: Path): Path = {
     val builder = new ProcessBuilder("go", "build", "-o", "test").directory(dir.toFile)
     // TODO: add the test workspace
-    val goPaths = Seq(dir.toAbsolutePath.toString, sys.env.getOrElse("GOPATH", sys.error("Can't find GOPATH env")))
+    val goPaths = Seq(sys.env.getOrElse("GOPATH", sys.error("Can't find GOPATH env")), dir.toAbsolutePath.toString)
     val goPath = goPaths.mkString(File.pathSeparator)
     logger.debug(s"Setting GOPATH to $goPath")
     builder.environment().put("GOPATH", goPath)
@@ -296,7 +299,7 @@ object CompilerSpec extends Logger {
     }
 
     def getAllClasses(topClasses: Seq[Class[_]]): Seq[Class[_]] = {
-      import scala.collection.JavaConversions._
+      import scala.collection.JavaConverters._
       val classes = topClasses.flatMap(getSelfAndAllInnerClasses).toSet
 
       def isYetUnseenSubclass(name: String): Boolean = {
@@ -308,7 +311,7 @@ object CompilerSpec extends Logger {
       }
 
       // We have to get all classes who's enclosing class is one of the classes
-      val additionalClasses = allClassesInClassLoader.collect {
+      val additionalClasses = allClassesInClassLoader.asScala.collect {
         case c if isYetUnseenSubclass(c.getName) => c.load()
       }
 

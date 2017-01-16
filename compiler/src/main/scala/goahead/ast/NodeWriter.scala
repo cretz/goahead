@@ -12,6 +12,12 @@ object NodeWriter {
   def fromNode(node: Node, appendable: Appendable): Unit =
     new NodeWriter(new BufferedBuilder(appendable)).appendNode(node).builder.flushAll()
 
+  private[ast] def sortableFieldTuple(f: Field) = f match {
+    case Field(Nil, typ, _) => 1 -> fromNode(typ)
+    case Field(ids, _: FunctionType, _) => 3 -> ids.head.name
+    case Field(ids, _, _) => 2 -> ids.head.name
+  }
+
   // We hold two newlines at a time
   private[ast] class BufferedBuilder(val appendable: Appendable) {
     val builder = new StringBuilder
@@ -375,7 +381,9 @@ class NodeWriter(val builder: NodeWriter.BufferedBuilder) {
     if (expr.methods.isEmpty) append("interface{}")
     else {
       append("interface {").indent()
-      expr.methods.foreach(f => newline().appendField(f, interfaceField = true))
+      // We want to sort the fields
+      val methods = expr.methods.sortBy(NodeWriter.sortableFieldTuple)
+      methods.foreach(f => newline().appendField(f, interfaceField = true))
       dedent().newline().append('}')
     }
   }
@@ -482,7 +490,8 @@ class NodeWriter(val builder: NodeWriter.BufferedBuilder) {
     else {
       append("struct {").indent()
       paddedSections(expr.fields).foreach { section =>
-        section.nodes.foreach { f => newline().appendField(f, section.leftMax) }
+        val sortedNodes = section.nodes.sortBy(NodeWriter.sortableFieldTuple)
+        sortedNodes.foreach { f => newline().appendField(f, section.leftMax) }
       }
       dedent().newline().append('}')
     }

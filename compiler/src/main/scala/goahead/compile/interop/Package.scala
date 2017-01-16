@@ -111,7 +111,7 @@ object Package {
   case class IfaceDecl(
     name: String,
     embedded: Seq[Type],
-    methods: Seq[FuncType]
+    methods: Seq[Method]
   ) extends Decl
 
   case class AliasDecl(

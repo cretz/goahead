@@ -17,14 +17,14 @@ lazy val goaheadCompiler = (project in file("compiler")).
   settings(
     name := "goahead-compiler",
     version := commonVersion,
-    scalaVersion := "2.11.8",
+    scalaVersion := "2.12.1",
     libraryDependencies ++= Seq(
       "com.squareup" % "javapoet" % "1.8.0",
       "org.ow2.asm" % "asm-all" % "6.0_ALPHA",
       "io.circe" %% "circe-core" % "0.6.1",
       "io.circe" %% "circe-generic" % "0.6.1",
       "io.circe" %% "circe-parser" % "0.6.1",
-      "com.github.melrief" %% "pureconfig" % "0.3.3",
+      "com.github.melrief" %% "pureconfig" % "0.5.0",
       "com.google.guava" % "guava" % "19.0",
       "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
       "ch.qos.logback" % "logback-classic" % "1.1.7",
@@ -60,12 +60,13 @@ lazy val goaheadCompiler = (project in file("compiler")).
     //),
     fullRunTask(buildTestRt, Test, "goahead.cli.Main", "compile", "-v", "-c", "compiler/src/test/resources/test-rt-compile.conf"),
     fork in buildRt := true,
+    baseDirectory in buildRt := (baseDirectory in LocalRootProject).value,
     javaOptions in buildRt += "-Xmx4G",
     //javaOptions in buildRt ++= Seq(
     //  "-Dcom.sun.management.jmxremote.port=3333",
     //  "-Dcom.sun.management.jmxremote.ssl=false",
     //  "-Dcom.sun.management.jmxremote.authenticate=false"
     //),
-    //fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "libs/java/rt-compile.conf")
-    fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "../libs/java-full/rt-compile.conf")
+    fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile2", "-v", "-c", "libs/java/rt-compile.conf")
+    //fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "../libs/java-full/rt-compile.conf")
   ).dependsOn(goaheadInterop)

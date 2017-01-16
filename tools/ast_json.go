@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"go/ast"
 	"go/importer"
@@ -10,6 +9,7 @@ import (
 	"go/token"
 	"go/types"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -18,23 +18,34 @@ import (
 )
 
 func main() {
-	if err := run(); err != nil {
-		panic(err)
+	if len(os.Args) != 2 {
+		log.Fatal("Expected single arg for package")
+	}
+	byts, err := run(os.Args[1])
+	if err == nil {
+		_, err = os.Stdout.Write(byts)
+	}
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
-func run() error {
-	if len(os.Args) != 2 {
-		return errors.New("Expected single arg for package")
+func run(pkgName string) ([]byte, error) {
+	pkg, err := loadPackage(pkgName)
+	if err != nil {
+		return nil, err
 	}
-	pkgName := os.Args[1]
+	return json.MarshalIndent(pkg, "", "  ")
+}
+
+func loadPackage(pkgName string) (*Package, error) {
 	dir, err := findPkgDir(pkgName)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	files, err := ioutil.ReadDir(dir)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	fset := token.NewFileSet()
 	var astFiles = []*ast.File{}
@@ -42,7 +53,7 @@ func run() error {
 		if strings.HasSuffix(file.Name(), ".go") {
 			f, err := parser.ParseFile(fset, filepath.Join(dir, file.Name()), nil, 0)
 			if err != nil {
-				return fmt.Errorf("Unable to parse %v: %v", file.Name(), err)
+				return nil, fmt.Errorf("Unable to parse %v: %v", file.Name(), err)
 			}
 			astFiles = append(astFiles, f)
 		}
@@ -55,15 +66,9 @@ func run() error {
 	}
 	checkedPkg, err := conf.Check(pkgName, fset, astFiles, nil)
 	if err != nil {
-		return fmt.Errorf("Type check failed: %v", err)
+		return nil, fmt.Errorf("Type check failed: %v", err)
 	}
-
-	byts, err := json.MarshalIndent(toPackage(checkedPkg), "", "  ")
-	if err != nil {
-		return err
-	}
-	os.Stdout.Write(byts)
-	return nil
+	return toPackage(checkedPkg), nil
 }
 
 func findPkgDir(pkg string) (string, error) {
@@ -144,7 +149,7 @@ func toDecl(obj types.Object) Decl {
 				Kind:     "iface",
 				Name:     obj.Name(),
 				Embedded: toEmbedded(typ),
-				Methods:  toFuncTypes(typ),
+				Methods:  toInterfaceMethods(typ),
 			}
 		default:
 			return &AliasDecl{
@@ -200,14 +205,15 @@ func toMethods(typ types.Type) []*Method {
 	return ret
 }
 
-func toFuncTypes(typ *types.Interface) []*FuncType {
-	ret := []*FuncType{}
+func toInterfaceMethods(typ *types.Interface) []*Method {
+	ret := []*Method{}
 	set := types.NewMethodSet(typ)
 	for i := 0; i < set.Len(); i++ {
 		if m := set.At(i); m.Obj().Exported() {
 			sig := m.Type().(*types.Signature)
-			ret = append(ret, &FuncType{
-				Kind:     "func",
+			ret = append(ret, &Method{
+				Name:     m.Obj().Name(),
+				Pointer:  false,
 				Params:   toNamedTypes(sig.Params()),
 				Results:  toNamedTypes(sig.Results()),
 				Variadic: sig.Variadic(),
@@ -297,7 +303,7 @@ func toType(typ types.Type) Type {
 		return &IfaceType{
 			Kind:     "iface",
 			Embedded: toEmbedded(typ),
-			Methods:  toFuncTypes(typ),
+			Methods:  toInterfaceMethods(typ),
 		}
 	case *types.Map:
 		return &MapType{
@@ -375,7 +381,7 @@ type IfaceDecl struct {
 	Kind     string
 	Name     string
 	Embedded []Type
-	Methods  []*FuncType
+	Methods  []*Method
 }
 
 func (*IfaceDecl) decl() {}
@@ -464,7 +470,7 @@ func (*PointerType) typ() {}
 type IfaceType struct {
 	Kind     string
 	Embedded []Type
-	Methods  []*FuncType
+	Methods  []*Method
 }
 
 func (*IfaceType) typ() {}
@@ -485,3 +491,7 @@ type ChanType struct {
 }
 
 func (*ChanType) typ() {}
+
+type TestIFace interface {
+	SomeMethod() error
+}

@@ -17,9 +17,9 @@ func OSArgs() ObjectArray__Instance {
 	return ret
 }
 
-func NewString(str string) Java__lang__String__Instance {
-	v := Java__lang__String().New()
-	v.Underlying = str
+func NewString(str string) String_g9YXBQ_Ñ {
+	v := String_g9YXBQ().New()
+	v.Underlying = JString(str)
 	return v
 }
 
@@ -79,50 +79,57 @@ func CompareLong(left, right int64) int {
 	}
 }
 
-func PanicToThrowable(v interface{}) Java__lang__Throwable__Instance {
+func PanicToThrowable(v interface{}) Throwable_r1HNzA_Ñ {
 	// TODO: stack traces
 	switch v := v.(type) {
 	case nil:
-		ret := Java__lang__Exception().New()
-		ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString("Unknown error"))
+		ret := Exception_UnpE2w().New()
+		ret.Init_M13Ø3g_Í(NewString("Unknown error"))
 		return ret
-	case Java__lang__Throwable__Instance:
+	case Throwable_r1HNzA_Ñ:
 		return v
 	case runtime.Error:
 		errStr := v.Error()
 		isNpe := strings.HasSuffix(errStr, "invalid memory address or nil pointer dereference") ||
 			(strings.HasPrefix(errStr, "interface conversion: ") && strings.Contains(errStr, " is nil, not "))
 		if isNpe {
-			ret := Java__lang__NullPointerException().New()
-			ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(v.Error()))
+			ret := NullPointerException_fnXÞLQ().New()
+			ret.Init_M13Ø3g(NewString(errStr))
 			return ret
 		}
 		if strings.HasSuffix(errStr, "makeslice: len out of range") {
-			ret := Java__lang__NegativeArraySizeException().New()
-			ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(v.Error()))
+			ret := NegativeArraySizeException_LQJRfg().New()
+			ret.Init_M13Ø3g(NewString(errStr))
 			return ret
 		}
-		ret := Java__lang__VirtualMachineError().New()
-		ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(errStr))
+		isOutOfBounds := strings.HasSuffix(errStr, "index out of range") ||
+			strings.HasSuffix(errStr, "slice bounds out of range")
+		if isOutOfBounds {
+			ret := IndexOutOfBoundsException_YnUJEw().New()
+			ret.Init_M13Ø3g(NewString(errStr))
+			return ret
+		}
+		ret := VirtualMachineError_JV2iOA().New()
+		ret.Init_M13Ø3g_Í(NewString(errStr))
 		return ret
 	case error:
-		ret := Java__lang__Exception().New()
-		ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(v.Error()))
+		ret := Exception_UnpE2w().New()
+		ret.Init_M13Ø3g_Í(NewString(v.Error()))
 		return ret
 	default:
-		ret := Java__lang__Exception().New()
-		ret.Instance_Init__desc____obj__Java__lang__String__ret__V(NewString(fmt.Sprintf("%v", v)))
+		ret := Exception_UnpE2w().New()
+		ret.Init_M13Ø3g_Í(NewString(fmt.Sprintf("%v", v)))
 		return ret
 	}
 }
 
-func NewClassCastEx() Java__lang__ClassCastException__Instance {
-	ret := Java__lang__ClassCastException().New()
-	ret.Instance_Init__desc____ret__V()
+func NewClassCastEx() ClassCastException_x20ÞLA_Ñ {
+	ret := ClassCastException_x20ÞLA().New()
+	ret.Init_611f1A_Í()
 	return ret
 }
 
-func SameIdentity(val1, val2 Java__lang__Object__Instance) bool {
+func SameIdentity(val1, val2 Object_fAFaMw_Ñ) bool {
 	return (val1 == nil && val2 == nil) ||
 		(val1 != nil && val2 != nil && reflect.ValueOf(val1).Pointer() == reflect.ValueOf(val2).Pointer())
 }

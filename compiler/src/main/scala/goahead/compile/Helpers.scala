@@ -399,7 +399,7 @@ object Helpers extends Logger {
       case IType.BooleanType => "false".toIdent
       case IType.ByteType => "int8".toIdent.call(Seq(0.toLit))
       case IType.CharType => "rune".toIdent.call(Seq(0.toLit))
-      case _ => sys.error(s"Unrecognized type to get zero val for: $typ")
+      case _ => NilExpr
     }
 
     def arrayNewFn[T <: Contextual[T]](ctx: T) = typ match {

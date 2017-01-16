@@ -150,7 +150,7 @@ trait Compile extends Command with Logger {
 
   override def confLoader = {
     import pureconfig._
-    implicit val fileGroupingConvert = ConfigConvert.fromString(Conf.FileGrouping.apply)
+    implicit val fileGroupingConvert = ConfigConvert.fromString(s => Try(Conf.FileGrouping.apply(s)))
     implicit def conv[T] = ConfigFieldMapping.apply[T](CamelCase, KebabCase)
     pureconfig.loadConfig[Conf]
   }
