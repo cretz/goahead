@@ -8,6 +8,8 @@ import goahead.compile.insn.InsnCompiler
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree._
 
+import scala.util.control.NonFatal
+
 trait MethodCompiler extends Logger {
   import MethodCompiler._
 
@@ -21,12 +23,14 @@ trait MethodCompiler extends Logger {
     logger.debug(s"Compiling method: ${cls.name}.${method.name}${method.desc}")
     logger.trace("ASM:\n    " + method.asmString.replace("\n", "\n    "))
     // Compile the sets
-    val ctx = initContext(conf, cls, method, imports, mangler, getLabelSets(method))
-    buildStmts(ctx).map { case (ctx, stmts) =>
-      buildFuncDecl(ctx, stmts).map { case (ctx, funcDecl) =>
-        ctx.imports -> funcDecl
+    try {
+      val ctx = initContext(conf, cls, method, imports, mangler, getLabelSets(method))
+      buildStmts(ctx).map { case (ctx, stmts) =>
+        buildFuncDecl(ctx, stmts).map { case (ctx, funcDecl) =>
+          ctx.imports -> funcDecl
+        }
       }
-    }
+    } catch { case NonFatal(e) => throw new Exception(s"Unable to compile method $method", e) }
   }
 
   protected def initContext(

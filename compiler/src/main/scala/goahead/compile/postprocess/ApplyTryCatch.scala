@@ -51,9 +51,17 @@ trait ApplyTryCatch extends PostProcessor {
         rhs = NilExpr,
         body = Seq("currentEx".toIdent.assignExisting(panicToThrowable.call(Seq("r".toIdent))))
       )
+      // We make sure current label is present because if it's not, it's unhandled
+      val currentLabelStmt = iff(
+        init = None,
+        lhs = "currentLabel".toIdent,
+        op = Node.Token.Neq,
+        rhs = "".toLit,
+        body = Seq(recoverStmt)
+      )
       ctx -> funcType(Nil, None).toFuncLit(Seq(
         "currentEx".toIdent.assignExisting(NilExpr),
-        recoverStmt
+        currentLabelStmt
       )).call().defer
     }
   }
@@ -110,9 +118,12 @@ trait ApplyTryCatch extends PostProcessor {
         }
     }
 
-    // Now combine the if statements w/ a panic on the last else
+    // Now combine the if statements w/ a panic on the last else after removing the label
     ctxAndIfStmts.map { case (ctx, ifStmts) =>
-      val panicStmt: Node.Statement = block("panic".toIdent.call(Seq("currentEx".toIdent)).toStmt.singleSeq)
+      val panicStmt: Node.Statement = block(Seq(
+        "currentLabel".toIdent.assignExisting("".toLit),
+        "panic".toIdent.call(Seq("currentEx".toIdent)).toStmt
+      ))
       ctx -> ifStmts.foldRight(panicStmt) { case (ifStmt, prevStmt) => ifStmt.copy(elseStatement = Some(prevStmt)) }
     }
   }

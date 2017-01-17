@@ -75,17 +75,18 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileStaticStruct(ctx: Context): (Context, Node.GenericDeclaration) = {
-    compileFields(ctx, clsFields(ctx, forImpl = false).filter(_.access.isAccessStatic)).map { case (ctx, fields) =>
-      // Need a sync once
-      val ctxAndStaticFieldOpt = if (!ctx.cls.hasStaticInit) ctx -> None else {
-        ctx.withImportAlias("sync").map { case (ctx, syncAlias) =>
-          ctx -> Some(field("init", syncAlias.toIdent.sel("Once")))
+    compileFields(ctx, clsFields(ctx, forImpl = false).filter(_.access.isAccessStatic), static = true).map {
+      case (ctx, fields) =>
+        // Need a sync once
+        val ctxAndStaticFieldOpt = if (!ctx.cls.hasStaticInit) ctx -> None else {
+          ctx.withImportAlias("sync").map { case (ctx, syncAlias) =>
+            ctx -> Some(field("init", syncAlias.toIdent.sel("Once")))
+          }
         }
-      }
 
-      ctxAndStaticFieldOpt.map { case (ctx, staticFieldOpt) =>
-        ctx -> struct(ctx.mangler.staticObjectName(ctx.cls.name), fields ++ staticFieldOpt)
-      }
+        ctxAndStaticFieldOpt.map { case (ctx, staticFieldOpt) =>
+          ctx -> struct(ctx.mangler.staticObjectName(ctx.cls.name), fields ++ staticFieldOpt)
+        }
     }
   }
 
@@ -369,10 +370,11 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileImplStruct(ctx: Context): (Context, Node.Declaration) = {
-    compileFields(ctx, clsFields(ctx, forImpl = false).filterNot(_.access.isAccessStatic)).map { case (ctx, fields) =>
-      compileStructSuperFields(ctx).map { case (ctx, superFields) =>
-        ctx -> struct(ctx.mangler.implObjectName(ctx.cls.name), superFields ++ fields)
-      }
+    compileFields(ctx, clsFields(ctx, forImpl = false).filterNot(_.access.isAccessStatic), static = false).map {
+      case (ctx, fields) =>
+        compileStructSuperFields(ctx).map { case (ctx, superFields) =>
+          ctx -> struct(ctx.mangler.implObjectName(ctx.cls.name), superFields ++ fields)
+        }
     }
   }
 
@@ -511,7 +513,7 @@ trait ClassCompiler extends Logger {
     }
   }
 
-  protected def compileFields(ctx: Context, fields: Seq[Field]): (Context, Seq[Node.Field]) = {
+  protected def compileFields(ctx: Context, fields: Seq[Field], static: Boolean): (Context, Seq[Node.Field]) = {
     fields.foldLeft(ctx -> Seq.empty[Node.Field]) { case ((ctx, prevFields), node) =>
       logger.debug(s"Compiling field ${ctx.cls.name}.${node.name}")
       ctx.typeToGoType(IType.getType(node.desc)).map { case (ctx, typ) =>

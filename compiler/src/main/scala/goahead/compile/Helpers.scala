@@ -67,42 +67,15 @@ object Helpers extends Logger {
     }
 
     def typeToGoType(typ: IType): (T, Node.Expression) = {
-      typ match {
-        case IType.Simple(typ) => asmTypeToGoType(typ)
-        case _ => ctx -> emptyInterface
-      }
-    }
-
-    private[this] def asmTypeToGoType(typ: org.objectweb.asm.Type): (T, Node.Expression) = {
       import org.objectweb.asm.Type
-      typ.getSort match {
-        case Type.VOID => ctx -> emptyStruct.star
-        case Type.BOOLEAN => ctx -> "bool".toIdent
-        case Type.CHAR => ctx -> "rune".toIdent
-        case Type.BYTE => ctx -> "int8".toIdent
-        case Type.SHORT => ctx -> "int16".toIdent
-        case Type.INT => ctx -> "int".toIdent
-        case Type.LONG => ctx -> "int64".toIdent
-        case Type.FLOAT => ctx -> "float32".toIdent
-        case Type.DOUBLE => ctx -> "float64".toIdent
-        case Type.ARRAY =>
-          if (typ.getDimensions > 1) ctx.importRuntimeQualifiedName("ObjectArray__Instance") else {
-            typ.getElementType.getSort match {
-              case Type.BOOLEAN => ctx.importRuntimeQualifiedName("BoolArray__Instance")
-              case Type.CHAR => ctx.importRuntimeQualifiedName("CharArray__Instance")
-              case Type.BYTE => ctx.importRuntimeQualifiedName("ByteArray__Instance")
-              case Type.SHORT => ctx.importRuntimeQualifiedName("ShortArray__Instance")
-              case Type.INT => ctx.importRuntimeQualifiedName("IntArray__Instance")
-              case Type.LONG => ctx.importRuntimeQualifiedName("LongArray__Instance")
-              case Type.FLOAT => ctx.importRuntimeQualifiedName("FloatArray__Instance")
-              case Type.DOUBLE => ctx.importRuntimeQualifiedName("DoubleArray__Instance")
-              case Type.ARRAY | Type.OBJECT => ctx.importRuntimeQualifiedName("ObjectArray__Instance")
-              case sort => sys.error(s"Unrecognized array type $sort")
-            }
-          }
-        case Type.OBJECT =>
-          importQualifiedName(typ.getInternalName, ctx.mangler.instanceInterfaceName(typ.getInternalName))
-        case sort => sys.error(s"Unrecognized type $sort")
+      typ match {
+        case IType.Simple(asmTyp) => asmTyp.getSort match {
+          case Type.VOID => ctx -> emptyStruct.star
+          case Type.ARRAY => importRuntimeQualifiedName(typ.goTypeName(ctx.mangler))
+          case Type.OBJECT => importQualifiedName(asmTyp.getInternalName, typ.goTypeName(ctx.mangler))
+          case _ => ctx -> typ.goTypeName(ctx.mangler).toIdent
+        }
+        case _ => ctx -> emptyInterface
       }
     }
 
@@ -418,6 +391,40 @@ object Helpers extends Logger {
         }
         ctx.importRuntimeQualifiedName(fnName)
       case _ => sys.error(s"Expected array type, got: $typ")
+    }
+
+    def goTypeName(mangler: Mangler): String = {
+      import org.objectweb.asm.Type
+      require(typ.isInstanceOf[IType.Simple])
+      val asmTyp = typ.asInstanceOf[IType.Simple].typ
+      asmTyp.getSort match {
+        case Type.VOID => sys.error("Cannot get name from void type")
+        case Type.BOOLEAN => "bool"
+        case Type.CHAR => "rune"
+        case Type.BYTE => "int8"
+        case Type.SHORT => "int16"
+        case Type.INT => "int"
+        case Type.LONG => "int64"
+        case Type.FLOAT => "float32"
+        case Type.DOUBLE => "float64"
+        case Type.ARRAY =>
+          if (asmTyp.getDimensions > 1) "ObjectArray__Instance" else {
+            asmTyp.getElementType.getSort match {
+              case Type.BOOLEAN => "BoolArray__Instance"
+              case Type.CHAR => "CharArray__Instance"
+              case Type.BYTE => "ByteArray__Instance"
+              case Type.SHORT => "ShortArray__Instance"
+              case Type.INT => "IntArray__Instance"
+              case Type.LONG => "LongArray__Instance"
+              case Type.FLOAT => "FloatArray__Instance"
+              case Type.DOUBLE => "DoubleArray__Instance"
+              case Type.ARRAY | Type.OBJECT => "ObjectArray__Instance"
+              case sort => sys.error(s"Unrecognized array type $sort")
+            }
+          }
+        case Type.OBJECT => mangler.instanceInterfaceName(asmTyp.getInternalName)
+        case sort => sys.error(s"Unrecognized type $sort")
+      }
     }
 
     def internalName = typ match {
