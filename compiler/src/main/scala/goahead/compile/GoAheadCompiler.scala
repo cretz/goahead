@@ -37,18 +37,44 @@ trait GoAheadCompiler extends Logger {
     mangler: Mangler
   ): Node.File = {
     // TODO: parallelize at some point?
-    val (imports, decls) = classes.foldLeft(Imports(classPath) -> Seq.empty[Node.Declaration]) {
+    val importsAndDecls = classes.foldLeft(Imports(classPath) -> Seq.empty[Node.Declaration]) {
       case ((imports, prevDecls), cls) =>
         classCompiler.compile(conf, cls, imports, mangler).map { case (imports, decls) =>
           imports -> (prevDecls ++ decls)
         }
     }
 
-    file("", compileImports(imports).toSeq ++ decls)
+    importsAndDecls.map { case (mports, decls) =>
+      compileInit(conf, mports, classes, mangler).map { case (mports, initDeclOpt) =>
+        file("", compileImports(mports).toSeq ++ (decls ++ initDeclOpt))
+      }
+    }
   }
 
   protected def compileImports(mports: Imports): Option[Node.Declaration] =
     if (mports.aliases.isEmpty) None else Some(imports(mports.aliases.toSeq))
+
+  protected def compileInit(
+    conf: Config,
+    mports: Imports,
+    classes: Seq[Cls],
+    mangler: Mangler
+  ): (Imports, Option[Node.Declaration]) = {
+    if (!conf.reflectionSupport) mports -> None else {
+      // We need to create a bunch of ClassInfo structures for reflection purposes
+      mports.withRuntimeImportAlias.map { case (mports, rtAlias) =>
+        val fn = if (rtAlias.isEmpty) "AddStaticRefs".toIdent else rtAlias.toIdent.sel("AddStaticRefs")
+        val valTyp = if (rtAlias.isEmpty) "ClassInfoProvider".toIdent else rtAlias.toIdent.sel("ClassInfoProvider")
+        val classNameMap = classes.map(c => c.runtimeClassName.toLit -> mangler.staticVarName(c.name).toIdent.addressOf)
+        val javaImplMap = classes.map(c => mangler.implObjectName(c.name).toStringLit -> c.runtimeClassName.toLit)
+        val call = fn.call(Seq(
+          mapLit("string".toIdent, valTyp, classNameMap),
+          mapLit("string".toIdent, "string".toIdent, javaImplMap)
+        ))
+        mports -> Some(funcDecl(None, "init", funcType(Nil), Seq(call.toStmt)))
+      }
+    }
+  }
 
   protected def classCompiler: ClassCompiler = ClassCompiler
 

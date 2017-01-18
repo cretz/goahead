@@ -16,6 +16,7 @@ trait ReduceCodeSize extends PostProcessor with Logger {
       case l @ LabeledStatement(_, s: BlockStatement) => maybeReduceBlock(ctx, s) match {
         case Some(Seq(stmt)) => Seq(l.copy(statement = stmt))
         case Some(Seq(comment: CommentStatement, stmt)) => Seq(comment, l.copy(statement = stmt))
+        case Some(stmts) if stmts.size > 1 => l.copy(statement = stmts.head) +: stmts.tail
         case _ => Seq(l)
       }
       case b: BlockStatement => maybeReduceBlock(ctx, b).getOrElse(Seq(b))

@@ -21,11 +21,13 @@ trait ApplyTryCatch extends PostProcessor {
 
   protected def addCurrentLabelAssign(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {
     // Add the current label setter to each label section
-    ctx -> stmts.map {
+    ctx -> stmts.flatMap {
       case Node.LabeledStatement(Node.Identifier(label), Node.BlockStatement(stmts)) =>
-        labeled(label, "currentLabel".toIdent.assignExisting(label.toLit) +: stmts)
+        Seq(labeled(label, "currentLabel".toIdent.assignExisting(label.toLit) +: stmts))
+      case Node.LabeledStatement(Node.Identifier(label), stmt) =>
+        Seq("currentLabel".toIdent.assignExisting(label.toLit).labeled(label), stmt)
       case stmt =>
-        stmt
+        Seq(stmt)
     }
   }
 

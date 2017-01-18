@@ -64,9 +64,11 @@ trait ClassCompiler extends Logger {
     compileStaticStruct(ctx).map { case (ctx, staticStruct) =>
       compileStaticVar(ctx).map { case (ctx, staticVar) =>
         compileStaticAccessor(ctx).map { case (ctx, staticAccessor) =>
-          compileStaticNew(ctx).map { case (ctx, staticNew) =>
-            compileStaticMethods(ctx).map { case (ctx, staticMethods) =>
-              ctx -> (Seq(staticStruct, staticVar, staticAccessor) ++ staticNew ++ staticMethods)
+          compileStaticClassInfo(ctx).map { case (ctx, staticClassInfo) =>
+            compileStaticNew(ctx).map { case (ctx, staticNew) =>
+              compileStaticMethods(ctx).map { case (ctx, staticMethods) =>
+                ctx -> (Seq(staticStruct, staticVar, staticAccessor) ++ staticClassInfo ++ staticNew ++ staticMethods)
+              }
             }
           }
         }
@@ -78,7 +80,7 @@ trait ClassCompiler extends Logger {
     compileFields(ctx, clsFields(ctx, forImpl = false).filter(_.access.isAccessStatic), static = true).map {
       case (ctx, fields) =>
         // Need a sync once
-        val ctxAndStaticFieldOpt = if (!ctx.cls.hasStaticInit) ctx -> None else {
+        val ctxAndStaticFieldOpt = if (!needsStaticSyncOnceField(ctx)) ctx -> None else {
           ctx.withImportAlias("sync").map { case (ctx, syncAlias) =>
             ctx -> Some(field("init", syncAlias.toIdent.sel("Once")))
           }
@@ -90,28 +92,54 @@ trait ClassCompiler extends Logger {
     }
   }
 
+  protected def needsStaticSyncOnceField(ctx: Context) = ctx.cls.hasStaticInit
+
   protected def compileStaticVar(ctx: Context): (Context, Node.GenericDeclaration) = {
     ctx -> varDecl(ctx.mangler.staticVarName(ctx.cls.name), ctx.mangler.staticObjectName(ctx.cls.name).toIdent)
   }
 
   protected def compileStaticAccessor(ctx: Context): (Context, Node.FunctionDeclaration) = {
     // We call the static init in a single sync once block
-    val staticVarName = ctx.mangler.staticVarName(ctx.cls.name).toIdent
-    val initStmtOpt = if (!ctx.cls.hasStaticInit) None else Some {
-      val staticInitMethod = ctx.cls.methods.find(_.name == "<clinit>").get
-      val syncOnceField = staticVarName.sel("init")
-      syncOnceField.sel("Do").call(
-        staticVarName.sel(ctx.mangler.implMethodName(staticInitMethod)).singleSeq
-      ).toStmt
+    compileStaticInitOnceFunc(ctx).map { case (ctx, funcOpt) =>
+      val staticVarName = ctx.mangler.staticVarName(ctx.cls.name).toIdent
+      val initStmtOpt = funcOpt.map(func => staticVarName.sel("init").sel("Do").call(Seq(func)).toStmt)
+      ctx.staticInstTypeExpr(ctx.cls.name).map { case (ctx, staticTyp) =>
+        ctx -> funcDecl(
+          rec = None,
+          name = ctx.mangler.staticAccessorName(ctx.cls.name),
+          params = Nil,
+          results = Some(staticTyp),
+          stmts = initStmtOpt.toSeq ++ staticVarName.unary(Node.Token.And).ret.singleSeq
+        )
+      }
     }
-    ctx.staticInstTypeExpr(ctx.cls.name).map { case (ctx, staticTyp) =>
-      ctx -> funcDecl(
-        rec = None,
-        name = ctx.mangler.staticAccessorName(ctx.cls.name),
-        params = Nil,
-        results = Some(staticTyp),
-        stmts = initStmtOpt.toSeq ++ staticVarName.unary(Node.Token.And).ret.singleSeq
-      )
+  }
+
+  protected def compileStaticClassInfo(ctx: Context): (Context, Option[Node.FunctionDeclaration]) = {
+    if (!ctx.conf.reflectionSupport) ctx -> None
+    else ctx.staticInstTypeExpr(ctx.cls.name).map { case (ctx, staticTyp) =>
+      ctx.importRuntimeQualifiedName("ClassInfo").map { case (ctx, classInfoTyp) =>
+        ctx -> Some(funcDecl(
+          rec = Some("this" -> staticTyp),
+          name = "GetClassInfo",
+          params = Nil,
+          results = Some(classInfoTyp.star),
+          stmts = Seq(
+            literal(
+              typ = Some(classInfoTyp),
+              elems = "Name".toIdent.withValue(ctx.cls.runtimeClassName.toLit)
+            ).addressOf.ret
+          )
+        ))
+      }
+    }
+  }
+
+  protected def compileStaticInitOnceFunc(ctx: Context): (Context, Option[Node.Expression]) = {
+    val staticVarName = ctx.mangler.staticVarName(ctx.cls.name).toIdent
+    if (!ctx.cls.hasStaticInit) ctx -> None else ctx -> Some {
+      val staticInitMethod = ctx.cls.methods.find(_.name == "<clinit>").get
+      staticVarName.sel(ctx.mangler.implMethodName(staticInitMethod))
     }
   }
 

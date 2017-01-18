@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"reflect"
 	"runtime"
 	"strings"
-	"reflect"
 )
 
 func OSArgs() ObjectArray__Instance {
@@ -19,7 +19,7 @@ func OSArgs() ObjectArray__Instance {
 
 func NewString(str string) String_g9YXBQ_Ñ {
 	v := String_g9YXBQ().New()
-	v.Underlying = JString(str)
+	v.Fwd_.str = str
 	return v
 }
 

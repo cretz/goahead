@@ -2,7 +2,6 @@ package rt
 
 import (
 	"io"
-	"log"
 )
 
 type WriterOutputStream struct {
@@ -20,7 +19,6 @@ func WriterToOutputStream(w io.Writer) OutputStream_AjI4XQ_Ñ {
 }
 
 func (this *WriterOutputStream) Write_3grrng(var0 int) {
-	log.Printf("Writing: %v\n", var0)
 	_, err := this.w.Write([]byte{byte(var0)})
 	if err != nil {
 		ex := IOException_6bTB7Q().New()

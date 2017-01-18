@@ -400,7 +400,9 @@ class NodeWriter(val builder: NodeWriter.BufferedBuilder) {
     appendIdentifier(stmt.label).append(':').newline().appendStatement(stmt.statement)
   }
 
-  def appendMapType(expr: MapType): this.type = __TODO__
+  def appendMapType(expr: MapType): this.type = {
+    append("map[").appendExpression(expr.key).append(']').appendExpression(expr.value)
+  }
 
   def appendNode(node: Node): this.type = node match {
     case c: Comment => appendComment(c)

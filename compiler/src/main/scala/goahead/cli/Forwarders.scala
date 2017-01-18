@@ -12,7 +12,9 @@ case class Forwarders(
   goStruct: String,
   hasImplField: Boolean = false,
   methods: Set[Forwarders.ForwarderMethod] = Set.empty
-)
+) {
+  def forwardFieldName = if (goStruct.head.isUpper) "Fwd_" else "fwd_"
+}
 
 object Forwarders {
   import Helpers._
@@ -34,7 +36,8 @@ object Forwarders {
             val sig = FunctionSig(line)
             // Try to find methods
             val methods = forwarder.cls.methods.filter { m =>
-              (methodName.isEmpty || methodName.get.compareToIgnoreCase(m.name) == 0) &&
+              m.access.isAccessStatic != forwarder.instance &&
+                (methodName.isEmpty || methodName.get.compareToIgnoreCase(m.name) == 0) &&
                 (methodDesc.isEmpty || methodDesc.get == m.desc) &&
                 sig.matchesMethod(mangler, m)
             }
@@ -65,13 +68,13 @@ object Forwarders {
             case "}" if inStructFor.isDefined =>
               inStructFor = None
             // Check for the impl field
-            case line if line.startsWith("\timpl ") && inStructFor.isDefined =>
+            case line if line.startsWith("\timpl *") && inStructFor.isDefined =>
               // The impl field
               val structName = inStructFor.get
               val forwarder = runningForwarders(structName)
               val expectedLine =
-                if (forwarder.instance) "\timpl " + mangler.implObjectName(forwarder.cls.name)
-                else "\timpl " + mangler.staticObjectName(forwarder.cls.name)
+                if (forwarder.instance) "\timpl *" + mangler.implObjectName(forwarder.cls.name)
+                else "\timpl *" + mangler.staticObjectName(forwarder.cls.name)
               require(line == expectedLine, s"Expected line `$expectedLine` but got `$line`")
               runningForwarders += structName -> forwarder.copy(hasImplField = true)
             // Handle function just to see if it's a forwarder
@@ -86,11 +89,11 @@ object Forwarders {
             prevForwardComment = None
             // Has to be a struct
             require(
-              line.startsWith("type ") && line.endsWith(" struct {"),
-              s"Expected line of `type SOMETHING struct {` but got `$line`"
+              line.startsWith("type ") && line.drop(6).contains(" struct"),
+              s"Expected line of `type SOMETHING struct` but got `$line`"
             )
-            val structName = line.drop(5).dropRight(9).trim()
-            inStructFor = Some(structName)
+            val structName = line.substring(5, line.lastIndexOf(" struct")).trim()
+            inStructFor = if (line.contains('}')) None else Some(structName)
             require(!runningForwarders.contains(structName), s"Multiple goahead markers for struct $structName")
             runningForwarders += structName -> Forwarders(cls, inst, structName)
           // Pre-method comment

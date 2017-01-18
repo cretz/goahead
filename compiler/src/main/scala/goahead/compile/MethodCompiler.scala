@@ -24,6 +24,7 @@ trait MethodCompiler extends Logger {
     logger.trace("ASM:\n    " + method.asmString.replace("\n", "\n    "))
     // Compile the sets
     try {
+      require(!method.access.isAccessNative, "Unable to build native method")
       val ctx = initContext(conf, cls, method, imports, mangler, getLabelSets(method))
       buildStmts(ctx).map { case (ctx, stmts) =>
         buildFuncDecl(ctx, stmts).map { case (ctx, funcDecl) =>
@@ -188,10 +189,10 @@ trait MethodCompiler extends Logger {
   }
 
   protected def statementPostProcessors: Seq[PostProcessor] = Seq(
+    postprocess.ReduceCodeSize,
     postprocess.ApplyTryCatch,
     postprocess.AddFunctionVars,
-    postprocess.RemoveUnusedLabels,
-    postprocess.ReduceCodeSize
+    postprocess.RemoveUnusedLabels
   )
 
   protected def postProcessStatements(ctx: Context, stmts: Seq[Node.Statement]): (Context, Seq[Node.Statement]) = {

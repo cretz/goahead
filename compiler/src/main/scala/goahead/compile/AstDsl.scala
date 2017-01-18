@@ -110,6 +110,12 @@ object AstDsl extends Logger {
 
   def literal(typ: Option[Expression], elems: Expression*) = CompositeLiteral(typ, elems)
 
+  def mapLit(keyTyp: Expression, valTyp: Expression, m: Seq[(Expression, Expression)]) =
+    literal(
+      typ = Some(MapType(keyTyp, valTyp)),
+      elems = m.map({ case (k, v) => k.withValue(v) }):_*
+    )
+
   def sel(left: Expression, right: String) = left.sel(right)
 
   def struct(name: String, fields: Seq[Node.Field]) = GenericDeclaration(

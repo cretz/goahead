@@ -20,8 +20,6 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   import AstDsl._
   import CompilerSpec._
 
-  val useTestRt = true
-
   // Create this entry for the "rt" classes and close at the end
   val javaRuntimeEntry =
     if (useTestRt) {
@@ -101,9 +99,9 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
 
   def assertValidCode(testCase: TestCase, code: String): Unit = {
     val process = new ProcessBuilder("gofmt").start()
-    val outReader = new BufferedReader(new InputStreamReader(process.getInputStream))
-    val errReader = new BufferedReader(new InputStreamReader(process.getErrorStream))
-    val writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream))
+    val outReader = new BufferedReader(new InputStreamReader(process.getInputStream, StandardCharsets.UTF_8))
+    val errReader = new BufferedReader(new InputStreamReader(process.getErrorStream, StandardCharsets.UTF_8))
+    val writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream, StandardCharsets.UTF_8))
     try { writer.write(code); writer.flush() } finally { writer.close() }
     processWaitSuccess(process, goFormatTimeout)
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
@@ -181,6 +179,8 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
 }
 
 object CompilerSpec extends Logger {
+  val useTestRt = true
+
   val testCases = {
     // TODO: maybe just read all classes out of the package dynamically?
     import goahead.testclasses._
@@ -291,7 +291,7 @@ object CompilerSpec extends Logger {
       }
 
       TestCase(
-        conf = Config(),
+        conf = Config(reflectionSupport = !useTestRt),
         classes = allClasses,
         expectedOutput = Some(expectedOutput),
         warnOnFormatError = topClasses.exists(_.isAnnotationPresent(classOf[WarnOnFormatError]))

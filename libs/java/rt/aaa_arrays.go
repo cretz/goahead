@@ -60,13 +60,13 @@ func (a BoolArray__Impl) NotifyAll_9o437g()    { panic("Not implemented") }
 func (a BoolArray__Impl) ToString_aÞ4cSA() String_g9YXBQ_Ñ {
 	panic("Not implemented")
 }
-func (a BoolArray__Impl) Wait_KgmKcQ()               { panic("Not implemented") }
-func (a BoolArray__Impl) Wait_vVGjdQ(int64)         { panic("Not implemented") }
-func (a BoolArray__Impl) Wait_OTFAsA(int64, int) { panic("Not implemented") }
-func (a BoolArray__Impl) Get(i int) bool                      { return a[i] }
-func (a BoolArray__Impl) Set(i int, v bool)                   { a[i] = v }
-func (a BoolArray__Impl) Len() int                            { return len(a) }
-func (a BoolArray__Impl) Raw() []bool                         { return a }
+func (a BoolArray__Impl) Wait_KgmKcQ()                 { panic("Not implemented") }
+func (a BoolArray__Impl) Wait_vVGjdQ(int64)            { panic("Not implemented") }
+func (a BoolArray__Impl) Wait_OTFAsA(int64, int)       { panic("Not implemented") }
+func (a BoolArray__Impl) Get(i int) bool               { return a[i] }
+func (a BoolArray__Impl) Set(i int, v bool)            { a[i] = v }
+func (a BoolArray__Impl) Len() int                     { return len(a) }
+func (a BoolArray__Impl) Raw() []bool                  { return a }
 func (a BoolArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í { panic("Cannot get raw pointer of array") }
 
 type CharArray__Instance interface {
@@ -97,13 +97,13 @@ func (a CharArray__Impl) NotifyAll_9o437g()    { panic("Not implemented") }
 func (a CharArray__Impl) ToString_aÞ4cSA() String_g9YXBQ_Ñ {
 	panic("Not implemented")
 }
-func (a CharArray__Impl) Wait_KgmKcQ()               { panic("Not implemented") }
-func (a CharArray__Impl) Wait_vVGjdQ(int64)         { panic("Not implemented") }
-func (a CharArray__Impl) Wait_OTFAsA(int64, int) { panic("Not implemented") }
-func (a CharArray__Impl) Get(i int) rune                      { return a[i] }
-func (a CharArray__Impl) Set(i int, v rune)                   { a[i] = v }
-func (a CharArray__Impl) Len() int                            { return len(a) }
-func (a CharArray__Impl) Raw() []rune                         { return a }
+func (a CharArray__Impl) Wait_KgmKcQ()                 { panic("Not implemented") }
+func (a CharArray__Impl) Wait_vVGjdQ(int64)            { panic("Not implemented") }
+func (a CharArray__Impl) Wait_OTFAsA(int64, int)       { panic("Not implemented") }
+func (a CharArray__Impl) Get(i int) rune               { return a[i] }
+func (a CharArray__Impl) Set(i int, v rune)            { a[i] = v }
+func (a CharArray__Impl) Len() int                     { return len(a) }
+func (a CharArray__Impl) Raw() []rune                  { return a }
 func (a CharArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í { panic("Cannot get raw pointer of array") }
 
 type FloatArray__Instance interface {
@@ -134,13 +134,13 @@ func (a FloatArray__Impl) NotifyAll_9o437g()    { panic("Not implemented") }
 func (a FloatArray__Impl) ToString_aÞ4cSA() String_g9YXBQ_Ñ {
 	panic("Not implemented")
 }
-func (a FloatArray__Impl) Wait_KgmKcQ()               { panic("Not implemented") }
-func (a FloatArray__Impl) Wait_vVGjdQ(int64)         { panic("Not implemented") }
-func (a FloatArray__Impl) Wait_OTFAsA(int64, int) { panic("Not implemented") }
-func (a FloatArray__Impl) Get(i int) float32                   { return a[i] }
-func (a FloatArray__Impl) Set(i int, v float32)                { a[i] = v }
-func (a FloatArray__Impl) Len() int                            { return len(a) }
-func (a FloatArray__Impl) Raw() []float32                      { return a }
+func (a FloatArray__Impl) Wait_KgmKcQ()                 { panic("Not implemented") }
+func (a FloatArray__Impl) Wait_vVGjdQ(int64)            { panic("Not implemented") }
+func (a FloatArray__Impl) Wait_OTFAsA(int64, int)       { panic("Not implemented") }
+func (a FloatArray__Impl) Get(i int) float32            { return a[i] }
+func (a FloatArray__Impl) Set(i int, v float32)         { a[i] = v }
+func (a FloatArray__Impl) Len() int                     { return len(a) }
+func (a FloatArray__Impl) Raw() []float32               { return a }
 func (a FloatArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í { panic("Cannot get raw pointer of array") }
 
 type DoubleArray__Instance interface {
@@ -171,13 +171,13 @@ func (a DoubleArray__Impl) NotifyAll_9o437g()    { panic("Not implemented") }
 func (a DoubleArray__Impl) ToString_aÞ4cSA() String_g9YXBQ_Ñ {
 	panic("Not implemented")
 }
-func (a DoubleArray__Impl) Wait_KgmKcQ()               { panic("Not implemented") }
-func (a DoubleArray__Impl) Wait_vVGjdQ(int64)         { panic("Not implemented") }
-func (a DoubleArray__Impl) Wait_OTFAsA(int64, int) { panic("Not implemented") }
-func (a DoubleArray__Impl) Get(i int) float64                   { return a[i] }
-func (a DoubleArray__Impl) Set(i int, v float64)                { a[i] = v }
-func (a DoubleArray__Impl) Len() int                            { return len(a) }
-func (a DoubleArray__Impl) Raw() []float64                      { return a }
+func (a DoubleArray__Impl) Wait_KgmKcQ()                 { panic("Not implemented") }
+func (a DoubleArray__Impl) Wait_vVGjdQ(int64)            { panic("Not implemented") }
+func (a DoubleArray__Impl) Wait_OTFAsA(int64, int)       { panic("Not implemented") }
+func (a DoubleArray__Impl) Get(i int) float64            { return a[i] }
+func (a DoubleArray__Impl) Set(i int, v float64)         { a[i] = v }
+func (a DoubleArray__Impl) Len() int                     { return len(a) }
+func (a DoubleArray__Impl) Raw() []float64               { return a }
 func (a DoubleArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í { panic("Cannot get raw pointer of array") }
 
 type ByteArray__Instance interface {
@@ -208,13 +208,13 @@ func (a ByteArray__Impl) NotifyAll_9o437g()    { panic("Not implemented") }
 func (a ByteArray__Impl) ToString_aÞ4cSA() String_g9YXBQ_Ñ {
 	panic("Not implemented")
 }
-func (a ByteArray__Impl) Wait_KgmKcQ()               { panic("Not implemented") }
-func (a ByteArray__Impl) Wait_vVGjdQ(int64)         { panic("Not implemented") }
-func (a ByteArray__Impl) Wait_OTFAsA(int64, int) { panic("Not implemented") }
-func (a ByteArray__Impl) Get(i int) int8                      { return a[i] }
-func (a ByteArray__Impl) Set(i int, v int8)                   { a[i] = v }
-func (a ByteArray__Impl) Len() int                            { return len(a) }
-func (a ByteArray__Impl) Raw() []int8                         { return a }
+func (a ByteArray__Impl) Wait_KgmKcQ()                 { panic("Not implemented") }
+func (a ByteArray__Impl) Wait_vVGjdQ(int64)            { panic("Not implemented") }
+func (a ByteArray__Impl) Wait_OTFAsA(int64, int)       { panic("Not implemented") }
+func (a ByteArray__Impl) Get(i int) int8               { return a[i] }
+func (a ByteArray__Impl) Set(i int, v int8)            { a[i] = v }
+func (a ByteArray__Impl) Len() int                     { return len(a) }
+func (a ByteArray__Impl) Raw() []int8                  { return a }
 func (a ByteArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í { panic("Cannot get raw pointer of array") }
 
 type ShortArray__Instance interface {
@@ -245,13 +245,13 @@ func (a ShortArray__Impl) NotifyAll_9o437g()    { panic("Not implemented") }
 func (a ShortArray__Impl) ToString_aÞ4cSA() String_g9YXBQ_Ñ {
 	panic("Not implemented")
 }
-func (a ShortArray__Impl) Wait_KgmKcQ()               { panic("Not implemented") }
-func (a ShortArray__Impl) Wait_vVGjdQ(int64)         { panic("Not implemented") }
-func (a ShortArray__Impl) Wait_OTFAsA(int64, int) { panic("Not implemented") }
-func (a ShortArray__Impl) Get(i int) int16                     { return a[i] }
-func (a ShortArray__Impl) Set(i int, v int16)                  { a[i] = v }
-func (a ShortArray__Impl) Len() int                            { return len(a) }
-func (a ShortArray__Impl) Raw() []int16                        { return a }
+func (a ShortArray__Impl) Wait_KgmKcQ()                 { panic("Not implemented") }
+func (a ShortArray__Impl) Wait_vVGjdQ(int64)            { panic("Not implemented") }
+func (a ShortArray__Impl) Wait_OTFAsA(int64, int)       { panic("Not implemented") }
+func (a ShortArray__Impl) Get(i int) int16              { return a[i] }
+func (a ShortArray__Impl) Set(i int, v int16)           { a[i] = v }
+func (a ShortArray__Impl) Len() int                     { return len(a) }
+func (a ShortArray__Impl) Raw() []int16                 { return a }
 func (a ShortArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í { panic("Cannot get raw pointer of array") }
 
 type IntArray__Instance interface {
@@ -281,13 +281,13 @@ func (a IntArray__Impl) NotifyAll_9o437g()    { panic("Not implemented") }
 func (a IntArray__Impl) ToString_aÞ4cSA() String_g9YXBQ_Ñ {
 	panic("Not implemented")
 }
-func (a IntArray__Impl) Wait_KgmKcQ()               { panic("Not implemented") }
-func (a IntArray__Impl) Wait_vVGjdQ(int64)         { panic("Not implemented") }
-func (a IntArray__Impl) Wait_OTFAsA(int64, int) { panic("Not implemented") }
-func (a IntArray__Impl) Get(i int) int                       { return a[i] }
-func (a IntArray__Impl) Set(i int, v int)                    { a[i] = v }
-func (a IntArray__Impl) Len() int                            { return len(a) }
-func (a IntArray__Impl) Raw() []int                          { return a }
+func (a IntArray__Impl) Wait_KgmKcQ()                 { panic("Not implemented") }
+func (a IntArray__Impl) Wait_vVGjdQ(int64)            { panic("Not implemented") }
+func (a IntArray__Impl) Wait_OTFAsA(int64, int)       { panic("Not implemented") }
+func (a IntArray__Impl) Get(i int) int                { return a[i] }
+func (a IntArray__Impl) Set(i int, v int)             { a[i] = v }
+func (a IntArray__Impl) Len() int                     { return len(a) }
+func (a IntArray__Impl) Raw() []int                   { return a }
 func (a IntArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í { panic("Cannot get raw pointer of array") }
 
 type LongArray__Instance interface {
@@ -318,13 +318,13 @@ func (a LongArray__Impl) NotifyAll_9o437g()    { panic("Not implemented") }
 func (a LongArray__Impl) ToString_aÞ4cSA() String_g9YXBQ_Ñ {
 	panic("Not implemented")
 }
-func (a LongArray__Impl) Wait_KgmKcQ()               { panic("Not implemented") }
-func (a LongArray__Impl) Wait_vVGjdQ(int64)         { panic("Not implemented") }
-func (a LongArray__Impl) Wait_OTFAsA(int64, int) { panic("Not implemented") }
-func (a LongArray__Impl) Get(i int) int64                     { return a[i] }
-func (a LongArray__Impl) Set(i int, v int64)                  { a[i] = v }
-func (a LongArray__Impl) Len() int                            { return len(a) }
-func (a LongArray__Impl) Raw() []int64                        { return a }
+func (a LongArray__Impl) Wait_KgmKcQ()                 { panic("Not implemented") }
+func (a LongArray__Impl) Wait_vVGjdQ(int64)            { panic("Not implemented") }
+func (a LongArray__Impl) Wait_OTFAsA(int64, int)       { panic("Not implemented") }
+func (a LongArray__Impl) Get(i int) int64              { return a[i] }
+func (a LongArray__Impl) Set(i int, v int64)           { a[i] = v }
+func (a LongArray__Impl) Len() int                     { return len(a) }
+func (a LongArray__Impl) Raw() []int64                 { return a }
 func (a LongArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í { panic("Cannot get raw pointer of array") }
 
 type ObjectArray__Instance interface {
@@ -355,11 +355,11 @@ func (a ObjectArray__Impl) NotifyAll_9o437g()    { panic("Not implemented") }
 func (a ObjectArray__Impl) ToString_aÞ4cSA() String_g9YXBQ_Ñ {
 	panic("Not implemented")
 }
-func (a ObjectArray__Impl) Wait_KgmKcQ()                     { panic("Not implemented") }
-func (a ObjectArray__Impl) Wait_vVGjdQ(int64)               { panic("Not implemented") }
+func (a ObjectArray__Impl) Wait_KgmKcQ()                 { panic("Not implemented") }
+func (a ObjectArray__Impl) Wait_vVGjdQ(int64)            { panic("Not implemented") }
 func (a ObjectArray__Impl) Wait_OTFAsA(int64, int)       { panic("Not implemented") }
 func (a ObjectArray__Impl) Get(i int) Object_fAFaMw_Ñ    { return a[i] }
 func (a ObjectArray__Impl) Set(i int, v Object_fAFaMw_Ñ) { a[i] = v }
-func (a ObjectArray__Impl) Len() int                                  { return len(a) }
+func (a ObjectArray__Impl) Len() int                     { return len(a) }
 func (a ObjectArray__Impl) Raw() []Object_fAFaMw_Ñ       { return a }
 func (a ObjectArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í { panic("Cannot get raw pointer of array") }

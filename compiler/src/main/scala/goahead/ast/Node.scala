@@ -255,7 +255,8 @@ object Node {
   ) extends Statement {
     def walk(w: NodeWalker) = copy(
       label = w.applyGet(label),
-      statement = w.applyGet(statement)
+      // Special case where we need an empty block if the statement is removed
+      statement = w.apply(statement).getOrElse(BlockStatement(Nil))
     )
   }
 

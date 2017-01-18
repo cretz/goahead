@@ -14,6 +14,9 @@ sealed trait Cls {
   def interfaces: Seq[String]
   def parent: Option[String]
   def innerClasses: Seq[String]
+
+  // Same as Class::getName
+  def runtimeClassName: String
 }
 
 object Cls {
@@ -53,5 +56,7 @@ object Cls {
       import scala.collection.JavaConverters._
       node.innerClasses.asScala.asInstanceOf[Seq[InnerClassNode]].map(_.name)
     }
+
+    override def runtimeClassName = node.name.replace('/', '.')
   }
 }

@@ -1,5 +1,6 @@
 package goahead.cli
 
+import goahead.compile.ClassCompiler.Context
 import goahead.compile._
 import goahead.compile.ClassPath.ClassDetails
 
@@ -15,6 +16,48 @@ class FilteringCompiler(
   override val classCompiler = new ClassCompiler {
 
     def methodStr(m: Method) = s"$m (impl name ${conf.manglerInst.implMethodName(m)})"
+
+    override protected def needsStaticSyncOnceField(ctx: Context) =
+      // Also needs a sync once field if there is a forwarder impl field
+      super.needsStaticSyncOnceField(ctx) ||
+        forwarders.get(ctx.cls.name).exists(_.exists(v => !v.instance && v.hasImplField))
+
+    override protected def compileStaticInitOnceFunc(ctx: Context) = {
+      // Inject the impl assignment
+      forwarders.get(ctx.cls.name).flatMap(_.find(v => !v.instance && v.hasImplField)) match {
+        case None =>
+          super.compileStaticInitOnceFunc(ctx)
+        case Some(fwd) =>
+          super.compileStaticInitOnceFunc(ctx).map { case (ctx, funcOpt) =>
+            // We need a func lit to add the impl field set
+            val staticVar = ctx.mangler.staticVarName(ctx.cls.name).toIdent
+            ctx -> Some(funcType(Nil).toFuncLit(
+              Seq(staticVar.sel(fwd.forwardFieldName).sel("impl").assignExisting(staticVar.addressOf)) ++
+                funcOpt.map(_.call().toStmt)
+            ))
+          }
+      }
+    }
+
+    override protected def compileStaticNew(ctx: Context) = {
+      // Inject the impl assignment
+      forwarders.get(ctx.cls.name).flatMap(_.find(v => v.instance && v.hasImplField)) match {
+        case None =>
+          super.compileStaticNew(ctx)
+        case Some(fwd) =>
+          // Inject the field set as the second-to-last statement
+          super.compileStaticNew(ctx).map { case (ctx, funcDeclOpt) =>
+            ctx -> funcDeclOpt.map { funcDecl =>
+              funcDecl.copy(body = funcDecl.body.map { block =>
+                block.copy(statements = block.statements.init ++ Seq(
+                  "v".toIdent.sel(fwd.forwardFieldName).sel("impl").assignExisting("v".toIdent),
+                  block.statements.last
+                ))
+              })
+            }
+          }
+      }
+    }
 
     override protected def clsFields(
       ctx: ClassCompiler.Context,
@@ -38,8 +81,11 @@ class FilteringCompiler(
           case ((ctx, prevFields), (name, (None, goType))) =>
             ctx -> (prevFields :+ field(name, goType.toIdent))
         }
-        forwarders.get(ctx.cls.name).flatMap(_.filter(_.instance == !static)).foldLeft(ctxAndFields) {
-          case ((ctx, fields), fwd) => ctx -> (fields :+ field("Fwd_", fwd.goStruct.toIdent))
+        forwarders.get(ctx.cls.name).flatMap(_.find(_.instance == !static)) match {
+          case None => ctxAndFields
+          case Some(fwd) => ctxAndFields.map { case (ctx, fields) =>
+            ctx -> (fields :+ field(fwd.forwardFieldName, fwd.goStruct.toIdent))
+          }
         }
       }
     }

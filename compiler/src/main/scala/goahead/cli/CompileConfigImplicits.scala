@@ -98,7 +98,7 @@ object CompileConfigImplicits {
         })
       }
     }
-    ClassManips(manips.toSeq.sortWith(_.priority >= _.priority))
+    ClassManips(manips.toSeq.sortWith(_.priority > _.priority))
   }
 }
 

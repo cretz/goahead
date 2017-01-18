@@ -358,7 +358,7 @@ object CompileConfig {
         cmp.forwarders.get(method.cls.name).flatMap { fwds =>
           fwds.find(_.instance == !method.access.isAccessStatic).flatMap { fwd =>
             fwd.methods.find(_.from == method).map { fwdMethod =>
-              val call = "this".toIdent.sel("Fwd_").sel(fwdMethod.targetName).
+              val call = "this".toIdent.sel(fwd.forwardFieldName).sel(fwdMethod.targetName).
                 call(ctx.method.argTypes.indices.map(i => s"var$i".toIdent))
               method.returnType match {
                 case IType.VoidType => ctx -> Seq(call.toStmt)
