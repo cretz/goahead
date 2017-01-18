@@ -1,6 +1,9 @@
 package rt
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 //goahead:forward-static java.lang.Object
 type Object_Static struct{}
@@ -14,8 +17,14 @@ type Object struct {
 
 func (this *Object) Init() {}
 
+func (t *Object) getImplName() string {
+	// Need to remove everything after the last dot or star if present
+	typ := fmt.Sprintf("%T", t.impl.Self())
+	return typ[strings.LastIndexAny(typ, "*.")+1:]
+}
+
 func (this *Object) GetClass() Class_dvhEBA_Ñ {
-	implName := fmt.Sprintf("%T", this.impl.Self())
+	implName := this.getImplName()
 	className := GetClassNameFromJavaImplName(implName)
 	if className == "" {
 		ex := ClassNotFoundException_LCk4ØA().New()
@@ -26,9 +35,31 @@ func (this *Object) GetClass() Class_dvhEBA_Ñ {
 }
 
 func (this *Object) HashCode() int {
-	return System_hB0pIw().IdentityHashCode_lcJyvA_Í(this.impl)
+	return objectHashCode(this.impl)
+}
+
+func objectHashCode(obj Object_fAFaMw_Ñ) int {
+	return System_hB0pIw().IdentityHashCode_lcJyvA_Í(obj)
 }
 
 func (this *Object) ToString() String_g9YXBQ_Ñ {
-	return NewString(fmt.Sprintf("%v@%x", this.impl.GetClass_9pp3sQ().GetName_uasY3Q(), this.impl.HashCode_Gyq6fg()))
+	return objectToString(this.impl)
+}
+
+func objectToString(obj Object_fAFaMw_Ñ) String_g9YXBQ_Ñ {
+	return NewString(fmt.Sprintf("%v@%x", obj.GetClass_9pp3sQ().GetName_uasY3Q(), obj.HashCode_Gyq6fg()))
+}
+
+func (this *Object_fAFaMw_Í) String() string {
+	if this == nil {
+		return "null"
+	}
+	return this.ToString_aÞ4cSA().Raw_g9YXBQ().Fwd_.str
+}
+
+func objectString(obj Object_fAFaMw_Ñ) string {
+	if obj == nil {
+		return "null"
+	}
+	return obj.ToString_aÞ4cSA().Raw_g9YXBQ().Fwd_.str
 }

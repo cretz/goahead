@@ -375,22 +375,33 @@ object Helpers extends Logger {
       case _ => NilExpr
     }
 
-    def arrayNewFn[T <: Contextual[T]](ctx: T) = typ match {
-      case typ: IType.Simple if typ.isArray =>
-        val fnName = typ.elementType match {
-          case eTyp: IType.Simple if eTyp.isObject || eTyp.isArray => "NewObjectArray"
-          case IType.BooleanType => "NewBoolArray"
-          case IType.CharType => "NewCharArray"
-          case IType.FloatType => "NewFloatArray"
-          case IType.DoubleType => "NewDoubleArray"
-          case IType.ByteType => "NewByteArray"
-          case IType.ShortType => "NewShortArray"
-          case IType.IntType => "NewIntArray"
-          case IType.LongType => "NewLongArray"
-          case eTyp => sys.error(s"Unrecognized element type: $eTyp")
+    def arrayNewFnCall[T <: Contextual[T]](ctx: T, size: TypedExpression): (T, Node.Expression) = {
+      val (simpleType, fnName) = typ match {
+        case typ: IType.Simple if typ.isArray =>
+          typ -> (typ.elementType match {
+            case eTyp: IType.Simple if eTyp.isObject || eTyp.isArray => "NewObjectArray"
+            case IType.BooleanType => "NewBoolArray"
+            case IType.CharType => "NewCharArray"
+            case IType.FloatType => "NewFloatArray"
+            case IType.DoubleType => "NewDoubleArray"
+            case IType.ByteType => "NewByteArray"
+            case IType.ShortType => "NewShortArray"
+            case IType.IntType => "NewIntArray"
+            case IType.LongType => "NewLongArray"
+            case eTyp => sys.error(s"Unrecognized element type: $eTyp")
+          })
+        case _ => sys.error(s"Expected array type, got: $typ")
+      }
+      ctx.importRuntimeQualifiedName(fnName).map { case (ctx, arrayNewFn) =>
+        size.toExprNode(ctx, IType.IntType).map { case (ctx, sizeExpr) =>
+          // We have to give the class name if it's an object array
+          val componentNameOpt =
+            if (fnName != "NewObjectArray") None
+            else if (typ.elementType.asInstanceOf[IType.Simple].isArray) Some(simpleType.elementType.className.toLit)
+            else Some(s"L${simpleType.elementType.className};".toLit)
+          ctx -> arrayNewFn.call(sizeExpr +: componentNameOpt.toSeq)
         }
-        ctx.importRuntimeQualifiedName(fnName)
-      case _ => sys.error(s"Expected array type, got: $typ")
+      }
     }
 
     def goTypeName(mangler: Mangler): String = {

@@ -140,9 +140,10 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     logger.debug(s"Setting GOPATH to $goPath")
     builder.environment().put("GOPATH", goPath)
     val process = builder.start()
-    val outReader = new BufferedReader(
-      new InputStreamReader(new SequenceInputStream(process.getInputStream, process.getErrorStream))
-    )
+    val outReader = new BufferedReader(new InputStreamReader(
+      new SequenceInputStream(process.getInputStream, process.getErrorStream),
+      StandardCharsets.UTF_8
+    ))
     processWaitSuccess(process, goBuildTimeout)
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
     Try({
@@ -157,9 +158,10 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
 
   def assertExpectedOutput(exe: Path, expected: String): Unit = {
     val process = new ProcessBuilder(exe.toAbsolutePath.toString).start()
-    val outReader = new BufferedReader(
-      new InputStreamReader(new SequenceInputStream(process.getInputStream, process.getErrorStream))
-    )
+    val outReader = new BufferedReader(new InputStreamReader(
+      new SequenceInputStream(process.getInputStream, process.getErrorStream),
+      StandardCharsets.UTF_8
+    ))
     processWaitSuccess(process, exeRunTimeout)
     val out = try { CharStreams.toString(outReader) } finally { outReader.close() }
     Try(assert(out == expected)).recover({ case e =>

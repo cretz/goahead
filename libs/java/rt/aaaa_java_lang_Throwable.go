@@ -4,7 +4,7 @@ package rt
 
 func (this *Throwable_r1HNzA_Í) Error() string {
 	detailMessage := ""
-	if (this.Fwd_.detailMessage != nil) {
+	if this.Fwd_.detailMessage != nil {
 		detailMessage = this.Fwd_.detailMessage.Raw_g9YXBQ().Fwd_.str
 	}
 	return this.GetClass_9pp3sQ().GetName_uasY3Q().Raw_g9YXBQ().Fwd_.str + ": " + detailMessage
@@ -18,17 +18,20 @@ func (this *Throwable_Static) Init() {
 
 //goahead:forward-instance java.lang.Throwable
 type Throwable struct {
-	impl *Throwable_r1HNzA_Í
+	impl          *Throwable_r1HNzA_Í
 	detailMessage String_g9YXBQ_Ñ
 	cause         Throwable_r1HNzA_Ñ
 }
 
 func (this *Throwable) Init_1() {
+	//fmt.Printf("Created new %T\nSTACK: %v",
+	//	this.impl,
+	//	string(debug.Stack()))
 }
 
 func (this *Throwable) Init_2(str String_g9YXBQ_Ñ) {
 	this.detailMessage = str
-	//fmt.Printf("Created new %v with message %v\nSTACK: %v",
+	//fmt.Printf("Created new %T with message %v\nSTACK: %v",
 	//	this.impl,
 	//	str.Raw_g9YXBQ().Fwd_.str,
 	//	string(debug.Stack()))

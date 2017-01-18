@@ -14,17 +14,9 @@ trait TypeInsnCompiler {
     insn.byOpcode {
       case Opcodes.ANEWARRAY =>
         ctx.stackPopped { case (ctx, sizeTypeExpr) =>
-          sizeTypeExpr.toExprNode(ctx, IType.IntType).map { case (ctx, sizeExpr) =>
-            val jvmType = IType.getObjectType("java/lang/Object").asArray
-            jvmType.arrayNewFn(ctx).map { case (ctx, arrayNewFn) =>
-              ctx.stackPushed {
-                TypedExpression(
-                  arrayNewFn.call(Seq(sizeExpr)),
-                  jvmType,
-                  cheapRef = false
-                )
-              } -> Nil
-            }
+          val jvmType = IType.getObjectType("java/lang/Object").asArray
+          jvmType.arrayNewFnCall(ctx, sizeTypeExpr).map { case (ctx, arrayNewFn) =>
+            ctx.stackPushed(TypedExpression(arrayNewFn, jvmType, cheapRef = false)) -> Nil
           }
         }
       case Opcodes.CHECKCAST =>

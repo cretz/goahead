@@ -10,7 +10,7 @@ import (
 )
 
 func OSArgs() ObjectArray__Instance {
-	ret := NewObjectArray(len(os.Args) - 1)
+	ret := NewObjectArray(len(os.Args)-1, "java.lang.String")
 	for i, v := range os.Args[1:] {
 		ret.Set(i, NewString(v))
 	}

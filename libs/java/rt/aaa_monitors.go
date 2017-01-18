@@ -3,11 +3,11 @@ package rt
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"reflect"
 	"runtime"
 	"strconv"
 	"sync"
-	"fmt"
 )
 
 var monitors = make(map[uintptr]*monitor)

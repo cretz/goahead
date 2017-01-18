@@ -19,7 +19,7 @@ func WriterToOutputStream(w io.Writer) OutputStream_AjI4XQ_Ñ {
 }
 
 func (this *WriterOutputStream) Write_3grrng(var0 int) {
-	_, err := this.w.Write([]byte{byte(var0)})
+	_, err := this.w.Write([]byte(string(rune(var0))))
 	if err != nil {
 		ex := IOException_6bTB7Q().New()
 		ex.Init_M13Ø3g(NewString(err.Error()))

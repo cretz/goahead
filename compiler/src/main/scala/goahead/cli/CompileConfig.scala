@@ -295,7 +295,9 @@ object CompileConfig {
     }
 
     def shouldTransform(method: Method, cmp: FilteringCompiler) = {
-      values.view.collect({ case (mtch, manip) if mtch.matches(method) => manip.shouldTransform }).flatten.headOption
+      values.view.collect({
+        case (mtch, manip) if mtch.matches(method) => manip.shouldTransform(method, cmp)
+      }).flatten.headOption
     }
 
     def transform(
@@ -311,7 +313,7 @@ object CompileConfig {
   }
 
   sealed trait MethodManip {
-    def shouldTransform: Option[Boolean] = None
+    def shouldTransform(method: Method, cmp: FilteringCompiler): Option[Boolean] = None
     def transform(
       cmp: FilteringCompiler,
       method: Method,
@@ -321,7 +323,7 @@ object CompileConfig {
 
   object MethodManip {
     case object Empty extends MethodManip {
-      override def shouldTransform = Some(true)
+      override def shouldTransform(method: Method, cmp: FilteringCompiler) = Some(true)
       override def transform(cmp: FilteringCompiler, method: Method, ctx: => MethodCompiler.Context) = Some {
         ctx.method.returnType match {
           case IType.VoidType => ctx -> Nil
@@ -333,19 +335,19 @@ object CompileConfig {
     case class Exclude(exclude: Boolean) extends MethodManip
 
     case object Panic extends MethodManip {
-      override def shouldTransform = Some(true)
+      override def shouldTransform(method: Method, cmp: FilteringCompiler) = Some(true)
       override def transform(cmp: FilteringCompiler, method: Method, ctx: => MethodCompiler.Context) = Some {
         ctx -> Seq("panic".toIdent.call(Seq(s"Method not implemented - $method".toLit)).toStmt)
       }
     }
 
     case object AsIs extends MethodManip {
-      override def shouldTransform = Some(false)
+      override def shouldTransform(method: Method, cmp: FilteringCompiler) = Some(false)
     }
 
     case class GoForward(go: String) extends MethodManip {
       override def transform(cmp: FilteringCompiler, method: Method, ctx: => MethodCompiler.Context) = Some {
-        val call = go.toIdent.call("this".toIdent +: ctx.method.argTypes.indices.map(i => s"var$i".toIdent))
+        val call = go.toIdent.call("thsyis".toIdent +: ctx.method.argTypes.indices.map(i => s"var$i".toIdent))
         ctx.method.returnType match {
           case IType.VoidType => ctx -> Seq(call.toStmt)
           case _ => ctx -> Seq(call.ret)
@@ -354,17 +356,26 @@ object CompileConfig {
     }
 
     object GoForwardFromOutFolder extends MethodManip {
-      override def transform(cmp: FilteringCompiler, method: Method, ctx: => Context) = {
+
+      def forwarder(method: Method, cmp: FilteringCompiler) = {
         cmp.forwarders.get(method.cls.name).flatMap { fwds =>
-          fwds.find(_.instance == !method.access.isAccessStatic).flatMap { fwd =>
-            fwd.methods.find(_.from == method).map { fwdMethod =>
-              val call = "this".toIdent.sel(fwd.forwardFieldName).sel(fwdMethod.targetName).
-                call(ctx.method.argTypes.indices.map(i => s"var$i".toIdent))
-              method.returnType match {
-                case IType.VoidType => ctx -> Seq(call.toStmt)
-                case _ => ctx -> Seq(call.ret)
-              }
-            }
+          fwds.find(_.instance == !method.access.isAccessStatic).flatMap(v =>
+            v.methods.find(_.from == method).map(v -> _)
+          )
+        }
+      }
+
+      override def shouldTransform(method: Method, cmp: FilteringCompiler) = {
+        forwarder(method, cmp).map(_ => true)
+      }
+
+      override def transform(cmp: FilteringCompiler, method: Method, ctx: => Context) = {
+        forwarder(method, cmp).map { case (fwd, fwdMethod) =>
+          val call = "this".toIdent.sel(fwd.forwardFieldName).sel(fwdMethod.targetName).
+            call(ctx.method.argTypes.indices.map(i => s"var$i".toIdent))
+          method.returnType match {
+            case IType.VoidType => ctx -> Seq(call.toStmt)
+            case _ => ctx -> Seq(call.ret)
           }
         }
       }
