@@ -21,6 +21,14 @@ type String struct {
 func (this *String) Init() {
 }
 
+func (this *String) GetBytes() ByteArray__Instance {
+	ret := NewByteArray(len(this.str))
+	for i := 0; i < len(this.str); i++ {
+		ret.Set(i, int8(this.str[i]))
+	}
+	return ret
+}
+
 func (this *String) GetChars(srcBegin int, srcEnd int, dst CharArray__Instance, dstBegin int) {
 	if srcBegin < 0 {
 		ex := StringIndexOutOfBoundsException_SWP1Ag().New()

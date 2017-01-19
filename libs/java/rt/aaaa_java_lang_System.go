@@ -1,7 +1,6 @@
 package rt
 
 import (
-	"log"
 	"os"
 	"reflect"
 	"runtime"
@@ -24,8 +23,6 @@ func (this *System_Static) Init() {
 	} else {
 		this.impl.lineSeparator_d8DonA = NewString("\n")
 	}
-
-	log.Printf("Sys initialized\n")
 }
 
 func (this *System_Static) InitializeSystemClass() {}

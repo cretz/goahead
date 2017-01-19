@@ -1,7 +1,6 @@
 package rt
 
 // Have throwable implement errors.Error
-
 func (this *Throwable_r1HNzA_Í) Error() string {
 	detailMessage := ""
 	if this.Fwd_.detailMessage != nil {

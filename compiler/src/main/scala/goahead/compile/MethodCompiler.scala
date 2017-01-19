@@ -50,9 +50,26 @@ trait MethodCompiler extends Logger {
 
   protected def buildStmts(ctx: Context): (Context, Seq[Node.Statement]) = {
     // Abstract methods just need a panic
-    if (ctx.method.access.isAccessAbstract) ctx -> "panic".toIdent.call(Seq("Abstract".toLit)).toStmt.singleSeq else {
+    if (ctx.method.access.isAccessAbstract) buildAbstractStmts(ctx) else {
       compileLabelSets(ctx).map { case (ctx, compiledStmts) =>
         postProcessStatements(ctx, compiledStmts)
+      }
+    }
+  }
+
+  protected def buildAbstractStmts(ctx: Context): (Context, Seq[Node.Statement]) = {
+    // throw an UnsupportedOperationException
+    val exName = "java/lang/UnsupportedOperationException"
+    ctx.staticNewExpr(exName).map { case (ctx, newEx) =>
+      ctx.newString(s"Method ${ctx.method} is abstract").map { case (ctx, str) =>
+        val method = ctx.classPath.getFirstClass(exName).cls.methods.find(m =>
+          m.name == "<init>" && m.desc == "(Ljava/lang/String;)V"
+        ).get
+        ctx -> Seq(
+          "ex".toIdent.assignDefine(newEx),
+          "ex".toIdent.sel(ctx.mangler.implMethodName(method)).call(Seq(str)).toStmt,
+          "panic".toIdent.call(Seq("ex".toIdent)).toStmt
+        )
       }
     }
   }

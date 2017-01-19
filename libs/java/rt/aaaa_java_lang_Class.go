@@ -23,7 +23,7 @@ func (this *Class_Static) ForName(str String_g9YXBQ_Ñ) Class_dvhEBA_Ñ {
 		cls = this.loadClass(str.Raw_g9YXBQ().Fwd_.str)
 	}
 	if cls == nil {
-		ex := NullPointerException_fnXÞLQ().New()
+		ex := ClassNotFoundException_LCk4ØA().New()
 		ex.Init_M13Ø3g(NewString(fmt.Sprintf("Cannot find class %v", str.Raw_g9YXBQ().Fwd_.str)))
 		panic(ex)
 	}
@@ -44,8 +44,8 @@ func (c *Class_Static) readClass(str string) *Class_dvhEBA_Í {
 func (c *Class_Static) loadClass(str string) *Class_dvhEBA_Í {
 	cls := Class_dvhEBA().New()
 	cls.Init_611f1A()
-	if str[0] == '[' {
-		// Since we got here, we know it's an object array (or array of arrays)
+	if str[0] == '[' && len(str) > 2 && (str[1] == 'L' || str[1] == '[') {
+		// Either an array of arrays or an array of objects
 		componentName := str[1:]
 		if componentName[0] == 'L' && componentName[len(componentName)-1] == ';' {
 			componentName = componentName[1 : len(componentName)-1]
@@ -77,4 +77,9 @@ func (this *Class) Init() {}
 
 func (this *Class) GetName() String_g9YXBQ_Ñ {
 	return NewString(this.info.Name)
+}
+
+func (this *Class) ToString() String_g9YXBQ_Ñ {
+	// TODO: do this proper
+	return this.GetName()
 }

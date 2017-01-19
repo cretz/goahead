@@ -76,14 +76,16 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
     writeGoCode(t, tempFolder.resolve("main.go"), mainCode)
 
     // Compile go code
-    val startMs = System.currentTimeMillis()
+    var startMs = System.currentTimeMillis()
     val compiledExe =
       try compileDir(tempFolder)
       finally logger.info(s"Compilation time: ${(System.currentTimeMillis() - startMs) / 1000} seconds")
     logger.info("Exe size: " + Files.size(compiledExe))
 
     // Run it and check output
-    assertExpectedOutput(compiledExe, t.expectedOutput.get)
+    startMs = System.currentTimeMillis()
+    try assertExpectedOutput(compiledExe, t.expectedOutput.get)
+    finally logger.debug(s"Run (and check) time: ${(System.currentTimeMillis() - startMs) / 1000} seconds")
   }
 
   def writeGoCode(testCase: TestCase, file: Path, code: Node.File): Unit = {
