@@ -127,7 +127,7 @@ trait ClassCompiler extends Logger {
           stmts = Seq(
             literal(
               typ = Some(classInfoTyp),
-              elems = "Name".toIdent.withValue(ctx.cls.runtimeClassName.toLit)
+              elems = "Name".toIdent.withValue(ctx.cls.runtimeClassName.toStringLit)
             ).addressOf.ret
           )
         ))

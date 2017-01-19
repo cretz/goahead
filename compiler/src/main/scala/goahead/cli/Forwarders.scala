@@ -2,6 +2,7 @@ package goahead.cli
 
 import java.nio.file.Paths
 
+import goahead.Logger
 import goahead.compile._
 
 import scala.io.Source
@@ -16,7 +17,7 @@ case class Forwarders(
   def forwardFieldName = if (goStruct.head.isUpper) "Fwd_" else "fwd_"
 }
 
-object Forwarders {
+object Forwarders extends Logger {
   import Helpers._
 
   def loadForwarders(mangler: Mangler, classPath: ClassPath, path: String): Map[String, Seq[Forwarders]] = {
@@ -82,6 +83,12 @@ object Forwarders {
               val methods = addForwarderMethod(line, None, None)
               // We only care about ambig, not empty
               require(methods.size < 2, s"Found multiple methods (${methods.mkString(", ")}) for line `$line`")
+              // We will warn on empty when we're a known struct name
+              if (methods.isEmpty && line.contains(')')) {
+                val structName = line.substring(12, line.indexOf(')'))
+                if (runningForwarders.contains(structName))
+                  logger.warn(s"Unable to find any methods matching line: $line")
+              }
             case _ =>
           }
           // Pre-struct comment

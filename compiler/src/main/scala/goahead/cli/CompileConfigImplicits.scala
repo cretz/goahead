@@ -25,6 +25,29 @@ object CompileConfigImplicits {
 
   implicit def conv[T] = ConfigFieldMapping.apply[T](CamelCase, KebabCase)
 
+  implicit val confClsConv: ConfigConvert[Seq[ConfCls]] = new ConfigConvert[Seq[ConfCls]] {
+    override def from(config: ConfigValue): Try[Seq[ConfCls]] = {
+      import scala.collection.JavaConverters._
+      Try(config match {
+        case list: ConfigList =>
+          list.asScala.flatMap(v => from(v).get)
+        case v if v.valueType() == ConfigValueType.STRING =>
+          Seq(ConfCls(v.unwrapped().toString))
+        case obj: ConfigObject =>
+          obj.asScala.toSeq.collect { case (k, v: ConfigObject) =>
+            ConfCls(
+              pattern = k,
+              anyModifiers =
+                if (v.containsKey("any-modifiers")) v.get("any-modifiers").to[Set[String]].get
+                else Set.empty
+            )
+          }
+      })
+    }
+
+    override def to(t: Seq[ConfCls]) = ConfigValueFactory.fromAnyRef(t)
+  }
+
   implicit val fileGroupingConv: ConfigConvert[FileGrouping] =
     ConfigConvert.fromString(s => Try(FileGrouping.apply(s)))
 

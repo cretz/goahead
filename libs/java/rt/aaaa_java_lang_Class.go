@@ -73,8 +73,6 @@ type Class struct {
 	info *ClassInfo
 }
 
-func (this *Class) Init() {}
-
 func (this *Class) GetName() String_g9YXBQ_Ñ {
 	return NewString(this.info.Name)
 }

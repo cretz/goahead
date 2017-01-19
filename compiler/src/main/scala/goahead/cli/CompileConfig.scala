@@ -10,7 +10,7 @@ import goahead.compile._
 case class CompileConfig(
   excludeRunningRuntimeJar: Boolean = false,
   classPath: Seq[String] = Nil,
-  classes: Seq[String] = Seq("*"),
+  classes: Seq[CompileConfig.ConfCls] = Seq(CompileConfig.ConfCls("*")),
   anyClassModifiers: Set[String] = Set.empty,
   outDir: String,
   parallel: Boolean = false,
@@ -33,6 +33,33 @@ case class CompileConfig(
 object CompileConfig {
   import AstDsl._
   import Helpers._
+
+  case class ConfCls(
+    pattern: String,
+    anyModifiers: Set[String] = Set.empty
+  ) {
+    def classes(classPath: ClassPath): Seq[ClassPath.ClassDetails] = {
+      val internalClassNames = pattern.replace('.', '/') match {
+        case str if str.endsWith("?") =>
+          val prefix = str.dropRight(1)
+          classPath.allClassNames().filter { str => str.lastIndexOf('/') < prefix.length && str.startsWith(prefix) }
+        case str if str.endsWith("*") =>
+          val prefix = str.dropRight(1)
+          classPath.allClassNames().filter(_.startsWith(prefix))
+        case str => Seq(str)
+      }
+      internalClassNames.flatMap({ className =>
+        val clsDet = classPath.getFirstClass(className)
+        if (anyModifiers.isEmpty) Some(clsDet) else {
+          import Helpers._
+          val modStr = Modifier.toString(clsDet.cls.access)
+          val matchesMod = anyModifiers.exists(modStr.contains) ||
+            (clsDet.cls.access.isAccessPackagePrivate && anyModifiers.contains("package-private"))
+          if (matchesMod) Some(clsDet) else None
+        }
+      }).toSeq
+    }
+  }
 
   sealed trait FileGrouping {
     def groupClassBy(det: ClassDetails): String

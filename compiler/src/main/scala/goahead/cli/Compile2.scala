@@ -76,7 +76,7 @@ trait Compile2 extends Command with Logger {
           "checks for all classes that start with the value sans asterisk. If it ends in a question mark, it is the " +
           "same as an asterisk but won't include anything in a deeper package (i.e. having another dot). If not " +
           "present, it is the same as providing a single asterisk (i.e. all classes)"
-      ).get
+      ).map(_.map(CompileConfig.ConfCls(_)))
     )
   }
 
@@ -154,16 +154,7 @@ trait Compile2 extends Command with Logger {
     classPath: ClassPath,
     mangler: Mangler
   ): Seq[(String, Seq[ClassDetails])] = {
-    val classInternalNames = conf.classes.map(_.replace('.', '/')).flatMap({
-      case str if str.endsWith("?") =>
-        val prefix = str.dropRight(1)
-        classPath.allClassNames().filter { str => str.lastIndexOf('/') < prefix.length && str.startsWith(prefix) }
-      case str if str.endsWith("*") =>
-        val prefix = str.dropRight(1)
-        classPath.allClassNames().filter(_.startsWith(prefix))
-      case str => Some(str)
-    })
-    var classEntries = classInternalNames.map(classPath.getFirstClass)
+    var classEntries = conf.classes.flatMap(_.classes(classPath))
     if (!conf.excludeInnerClasses)
       classEntries ++= classEntries.flatMap(_.cls.innerClasses.map(classPath.getFirstClass))
     if (!conf.excludeSuperClassesOfSameEntry)

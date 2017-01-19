@@ -35,10 +35,9 @@ type Array__Instance interface {
 }
 
 type BoolArray__Instance interface {
-	Object_fAFaMw_Ñ
+	Array__Instance
 	Get(int) bool
 	Set(int, bool)
-	Len() int
 	Raw() []bool
 }
 
@@ -71,10 +70,9 @@ func (a BoolArray__Impl) Raw() []bool                      { return a }
 func (a BoolArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í     { panic("Cannot get raw pointer of array") }
 
 type CharArray__Instance interface {
-	Object_fAFaMw_Ñ
+	Array__Instance
 	Get(int) rune
 	Set(int, rune)
-	Len() int
 	Raw() []rune
 }
 
@@ -107,10 +105,9 @@ func (a CharArray__Impl) Raw() []rune                      { return a }
 func (a CharArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í     { panic("Cannot get raw pointer of array") }
 
 type FloatArray__Instance interface {
-	Object_fAFaMw_Ñ
+	Array__Instance
 	Get(int) float32
 	Set(int, float32)
-	Len() int
 	Raw() []float32
 }
 
@@ -143,10 +140,9 @@ func (a FloatArray__Impl) Raw() []float32                   { return a }
 func (a FloatArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í     { panic("Cannot get raw pointer of array") }
 
 type DoubleArray__Instance interface {
-	Object_fAFaMw_Ñ
+	Array__Instance
 	Get(int) float64
 	Set(int, float64)
-	Len() int
 	Raw() []float64
 }
 
@@ -179,10 +175,9 @@ func (a DoubleArray__Impl) Raw() []float64                   { return a }
 func (a DoubleArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í     { panic("Cannot get raw pointer of array") }
 
 type ByteArray__Instance interface {
-	Object_fAFaMw_Ñ
+	Array__Instance
 	Get(int) int8
 	Set(int, int8)
-	Len() int
 	Raw() []int8
 }
 
@@ -215,10 +210,9 @@ func (a ByteArray__Impl) Raw() []int8                      { return a }
 func (a ByteArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í     { panic("Cannot get raw pointer of array") }
 
 type ShortArray__Instance interface {
-	Object_fAFaMw_Ñ
+	Array__Instance
 	Get(int) int16
 	Set(int, int16)
-	Len() int
 	Raw() []int16
 }
 
@@ -251,10 +245,10 @@ func (a ShortArray__Impl) Raw() []int16                     { return a }
 func (a ShortArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í     { panic("Cannot get raw pointer of array") }
 
 type IntArray__Instance interface {
-	Object_fAFaMw_Ñ
+	Array__Instance
 	Get(int) int
 	Set(int, int)
-	Len() int
+	Raw() []int
 }
 
 type IntArray__Impl []int
@@ -286,10 +280,9 @@ func (a IntArray__Impl) Raw() []int                       { return a }
 func (a IntArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í     { panic("Cannot get raw pointer of array") }
 
 type LongArray__Instance interface {
-	Object_fAFaMw_Ñ
+	Array__Instance
 	Get(int) int64
 	Set(int, int64)
-	Len() int
 	Raw() []int64
 }
 
@@ -322,10 +315,9 @@ func (a LongArray__Impl) Raw() []int64                     { return a }
 func (a LongArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í     { panic("Cannot get raw pointer of array") }
 
 type ObjectArray__Instance interface {
-	Object_fAFaMw_Ñ
+	Array__Instance
 	Get(int) Object_fAFaMw_Ñ
 	Set(int, Object_fAFaMw_Ñ)
-	Len() int
 	Raw() []Object_fAFaMw_Ñ
 }
 

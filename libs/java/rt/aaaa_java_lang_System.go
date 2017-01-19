@@ -25,8 +25,6 @@ func (this *System_Static) Init() {
 	}
 }
 
-func (this *System_Static) InitializeSystemClass() {}
-
 const maxUint = uint64(^uint(0))
 const maxInt = maxUint >> 1
 
