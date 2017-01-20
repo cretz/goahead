@@ -38,7 +38,7 @@ Once a test RT is present, make sure that `GOPATH` is set and this repository is
 
 ## Licenses
 
-All code including subdirectories, with the exception of the `java/libs` subdirectory, uses the MIT license (see
-[LICENSE](LICENSE)). Since some of the work in `java/libs` is derivative of OpenJDK, it is licensed under the same
+All code including subdirectories, with the exception of the `libs/java` subdirectory, uses the MIT license (see
+[LICENSE](LICENSE)). Since some of the work in `libs/java` is derivative of OpenJDK, it is licensed under the same
 license as OpenJDK: GPL with the classpath exception. See [libs/java/LICENSE](libs/java/LICENSE) and
 [libs/java/README.md](libs/java/README.md)
