@@ -10,6 +10,8 @@ import scala.util.Try
 
 object CompileConfigImplicits {
 
+  implicit def conv[T] = ConfigFieldMapping.apply[T](CamelCase, KebabCase)
+
   def fromObject[T](fn: ConfigObject => T): ConfigConvert[T] = new ConfigConvert[T] {
     override def from(config: ConfigValue): Try[T] = Try(config match {
       case obj: ConfigObject => fn(obj)
@@ -23,12 +25,12 @@ object CompileConfigImplicits {
   case class ConfException(str: String, origin: ConfigOrigin)
     extends Exception(s"${origin.filename}:${origin.lineNumber} - $str")
 
-  implicit def conv[T] = ConfigFieldMapping.apply[T](CamelCase, KebabCase)
-
   implicit val confClsConv: ConfigConvert[Seq[ConfCls]] = new ConfigConvert[Seq[ConfCls]] {
     override def from(config: ConfigValue): Try[Seq[ConfCls]] = {
       import scala.collection.JavaConverters._
       Try(config match {
+        case null =>
+          throw CannotConvertNullException
         case list: ConfigList =>
           list.asScala.flatMap(v => from(v).get)
         case v if v.valueType() == ConfigValueType.STRING =>
@@ -125,5 +127,8 @@ object CompileConfigImplicits {
     }
     ClassManips(manips.toSeq.sortWith(_.priority > _.priority))
   }
+
+  implicit val reflectionConv: ConfigConvert[goahead.compile.Config.Reflection] =
+    ConfigConvert.fromString(s => Try(goahead.compile.Config.Reflection.apply(s)))
 }
 

@@ -116,21 +116,28 @@ trait ClassCompiler extends Logger {
   }
 
   protected def compileStaticClassInfo(ctx: Context): (Context, Option[Node.FunctionDeclaration]) = {
-    if (!ctx.conf.reflectionSupport) ctx -> None
-    else ctx.staticInstTypeExpr(ctx.cls.name).map { case (ctx, staticTyp) =>
-      ctx.importRuntimeQualifiedName("ClassInfo").map { case (ctx, classInfoTyp) =>
-        ctx -> Some(funcDecl(
-          rec = Some("this" -> staticTyp),
-          name = "GetClassInfo",
-          params = Nil,
-          results = Some(classInfoTyp.star),
-          stmts = Seq(
-            literal(
-              typ = Some(classInfoTyp),
-              elems = "Name".toIdent.withValue(ctx.cls.runtimeClassName.toStringLit)
-            ).addressOf.ret
-          )
-        ))
+    val ctxAndClassInfoFields = ctx.conf.reflection match {
+      case Config.Reflection.None =>
+        ctx -> Nil
+      case Config.Reflection.ClassName =>
+        ctx -> Seq("Name".toIdent.withValue(ctx.cls.runtimeClassName.toStringLit))
+      case Config.Reflection.All =>
+        // TODO: add the rest of the reflection info
+        ctx -> Seq("Name".toIdent.withValue(ctx.cls.runtimeClassName.toStringLit))
+    }
+    ctxAndClassInfoFields.map { case (ctx, classInfoFields) =>
+      if (classInfoFields.isEmpty) ctx -> None else {
+        ctx.staticInstTypeExpr(ctx.cls.name).map { case (ctx, staticTyp) =>
+          ctx.importRuntimeQualifiedName("ClassInfo").map { case (ctx, classInfoTyp) =>
+            ctx -> Some(funcDecl(
+              rec = Some("this" -> staticTyp),
+              name = "GetClassInfo",
+              params = Nil,
+              results = Some(classInfoTyp.star),
+              stmts = Seq(literal(typ = Some(classInfoTyp), classInfoFields:_*).addressOf.ret)
+            ))
+          }
+        }
       }
     }
   }

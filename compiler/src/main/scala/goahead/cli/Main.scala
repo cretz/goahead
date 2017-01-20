@@ -17,15 +17,27 @@ object Main extends Logger {
     |  COMMAND options...
     |Commands:
     |  ${commands.map(_.name).mkString("\n  ")}
+    |
+    |For detailed command info, use:
+    |  help COMMAND
   """.stripMargin.trim
 
   def run(origArgs: Seq[String]): Unit = {
     val args = configureLogging(origArgs)
     logger.trace(s"Args: $args")
     if (args.isEmpty) println(usage) else commands.find(_.name == args.head) match {
-      case None =>
-        println("Error: Unrecognized command: " + args.head)
-        println(usage)
+      case None => args match {
+        case Seq("help", cmdName) => commands.find(_.name == cmdName) match {
+          case None =>
+            println("Error: Unrecognized command: " + args.head)
+            println(usage)
+          case Some(command) =>
+            println(command.usage)
+        }
+        case _ =>
+          println("Error: Unrecognized command: " + args.head)
+          println(usage)
+      }
       case Some(command) => command.run(args.tail) match {
         case Failure(f: Args.Failure) =>
           if (f.errs.nonEmpty) {

@@ -24,7 +24,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   val javaRuntimeEntry =
     if (useTestRt) {
       ClassPath.Entry.fromZipFile(ClassPath.Entry.javaRuntimeJarPath,
-        "github.com/cretz/goahead/compiler/src/test/go/javalib/rt")
+        "github.com/cretz/goahead/libs/java/testrt")
     } else {
       require(sys.env.contains("ZULU_JDK_HOME"), "ZULU_JDK_HOME env var required")
       ClassPath.Entry.fromZipFile(
@@ -295,7 +295,7 @@ object CompilerSpec extends Logger {
       }
 
       TestCase(
-        conf = Config(reflectionSupport = !useTestRt),
+        conf = Config(reflection = if (useTestRt) Config.Reflection.None else Config.Reflection.All),
         classes = allClasses,
         expectedOutput = Some(expectedOutput),
         warnOnFormatError = topClasses.exists(_.isAnnotationPresent(classOf[WarnOnFormatError]))

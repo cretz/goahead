@@ -36,4 +36,6 @@ trait Command {
 
   def argParser: Args.Builder => Conf
   def confLoader: Path => Try[Conf]
+
+  def usage: String = s"Usage:\n  $name " + Args.usageStartingWithArgs(argParser).replace("\n", "\n  ")
 }

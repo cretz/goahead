@@ -23,6 +23,12 @@ object Args {
     }
   }
 
+  def usageStartingWithArgs(f: (Builder) => Any): String = {
+    val builder = new Builder(Nil)
+    f(builder)
+    builder.usageStartingWithArgs()
+  }
+
   case class Failure(errs: Seq[String], usageStartingWithArgs: String) extends Exception("Argument failure")
 
   case class ArgError(arg: String, err: String, cause: Throwable = null) extends Exception(s"$arg: $err", cause)

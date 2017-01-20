@@ -23,7 +23,7 @@ case class CompileConfig(
   includeOldVersionClasses: Boolean = false,
   packagePrivateExported: Boolean = false,
   classManips: CompileConfig.ClassManips = CompileConfig.ClassManips.empty,
-  noReflection: Boolean = false
+  reflection: Config.Reflection = Config.Reflection.ClassName
 ) {
   lazy val manglerInst = mangler.map(Class.forName(_).newInstance().asInstanceOf[Mangler]).getOrElse {
     //Mangler.Simple
@@ -43,10 +43,12 @@ object CompileConfig {
       val internalClassNames = pattern.replace('.', '/') match {
         case str if str.endsWith("?") =>
           val prefix = str.dropRight(1)
-          classPath.allClassNames().filter { str => str.lastIndexOf('/') < prefix.length && str.startsWith(prefix) }
+          classPath.classNamesWithoutCompiledDir().filter { str =>
+            str.lastIndexOf('/') < prefix.length && str.startsWith(prefix)
+          }
         case str if str.endsWith("*") =>
           val prefix = str.dropRight(1)
-          classPath.allClassNames().filter(_.startsWith(prefix))
+          classPath.classNamesWithoutCompiledDir().filter(_.startsWith(prefix))
         case str => Seq(str)
       }
       internalClassNames.flatMap({ className =>

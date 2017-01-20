@@ -60,9 +60,10 @@ trait GoAheadCompiler extends Logger {
     classes: Seq[Cls],
     mangler: Mangler
   ): (Imports, Option[Node.Declaration]) = {
-    if (!conf.reflectionSupport) mports -> None else {
-      // We need to create a bunch of ClassInfo structures for reflection purposes
-      mports.withRuntimeImportAlias.map { case (mports, rtAlias) =>
+    // We need to create a bunch of ClassInfo structures for reflection purposes
+    conf.reflection match {
+      case Config.Reflection.None => mports -> None
+      case _ => mports.withRuntimeImportAlias.map { case (mports, rtAlias) =>
         val fn = if (rtAlias.isEmpty) "AddStaticRefs".toIdent else rtAlias.toIdent.sel("AddStaticRefs")
         val valTyp = if (rtAlias.isEmpty) "ClassInfoProvider".toIdent else rtAlias.toIdent.sel("ClassInfoProvider")
         val classNameMap = classes.map(c => c.runtimeClassName.toLit -> mangler.staticVarName(c.name).toIdent.addressOf)

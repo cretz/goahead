@@ -88,6 +88,7 @@ case class ClassPath(entries: Seq[ClassPath.Entry]) {
   }
 
   def allClassNames(): Iterable[String] = entries.flatMap(_.allClassNames())
+  def classNamesWithoutCompiledDir(): Iterable[String] = entries.flatMap(_.classNamesWithoutCompiledDir())
 
   def close(): Unit = entries.foreach(e => swallowException(e.close()))
 }
@@ -117,6 +118,7 @@ object ClassPath {
   sealed trait Entry {
     def findClass(internalClassName: String): Option[ClassDetails]
     def allClassNames(): Iterable[String]
+    def classNamesWithoutCompiledDir(): Iterable[String]
     def close(): Unit
   }
 
@@ -125,11 +127,13 @@ object ClassPath {
     // Note, lots of this follows http://docs.oracle.com/javase/8/docs/technotes/tools/windows/classpath.html
 
     lazy val javaRuntimeJarPath = {
-      val jdkPossible = Paths.get(System.getProperty("java.home"), "jre", "lib", "rt.jar")
-      val jrePossible = Paths.get(System.getProperty("java.home"), "lib", "rt.jar")
-      if (Files.exists(jdkPossible)) jdkPossible
-      else if (Files.exists(jrePossible)) jrePossible
-      else sys.error("Unable to find rt.jar")
+      val jdk8Possible = Paths.get(System.getProperty("java.home"), "jre", "lib", "rt.jar")
+      val jre8Possible = Paths.get(System.getProperty("java.home"), "lib", "rt.jar")
+      val jdk9Possible = Paths.get(System.getProperty("java.home"), "jmods", "java.base.jmod")
+      if (Files.exists(jdk8Possible)) jdk8Possible
+      else if (Files.exists(jre8Possible)) jre8Possible
+      else if (Files.exists(jdk9Possible)) jdk9Possible
+      else sys.error("Unable to find rt.jar or java.base.jmod")
     }
 
     def fromMap(entryToRelativeCompiledDir: Map[String, String]) = entryToRelativeCompiledDir.map((fromString _).tupled)
@@ -196,6 +200,8 @@ object ClassPath {
 
       override def allClassNames(): Iterable[String] = entries.flatMap(_.allClassNames())
 
+      override def classNamesWithoutCompiledDir() = entries.flatMap(_.classNamesWithoutCompiledDir())
+
       override def close(): Unit = entries.foreach(_.close())
     }
 
@@ -218,12 +224,16 @@ object ClassPath {
       override def allClassNames(): Iterable[String] = {
         import scala.collection.JavaConverters._
         val onlyClassPred = new BiPredicate[Path, BasicFileAttributes] {
-          override def test(t: Path, u: BasicFileAttributes) = t.endsWith(".class")
+          override def test(t: Path, u: BasicFileAttributes) = t.toString.endsWith(".class")
         }
 
-        Files.find(dir, Int.MaxValue, onlyClassPred).iterator().asScala.toIterable.
-          map(_.toString.dropRight(6).replace(FileSystems.getDefault.getSeparator, "/"))
+        Files.find(dir, Int.MaxValue, onlyClassPred).iterator().asScala.toIterable.map { path =>
+          path.subpath(dir.getNameCount, path.getNameCount).toString.
+            dropRight(6).replace(FileSystems.getDefault.getSeparator, "/")
+        }
       }
+
+      override def classNamesWithoutCompiledDir() = if (relativeCompiledDir == "") allClassNames() else Iterable.empty
 
       override def close() = ()
     }
@@ -249,6 +259,8 @@ object ClassPath {
           detailsOpt
         })
       }
+
+      override def classNamesWithoutCompiledDir() = if (relativeCompiledDir == "") allClassNames() else Iterable.empty
 
       override def close() = synchronized(swallowException(file.close()))
     }
@@ -285,6 +297,8 @@ object ClassPath {
         if (cls.name == internalClassName) Some(this) else None
 
       override def allClassNames(): Iterable[String] = Iterable(cls.name)
+
+      override def classNamesWithoutCompiledDir() = if (relativeCompiledDir == "") allClassNames() else Iterable.empty
 
       override def close() = ()
     }

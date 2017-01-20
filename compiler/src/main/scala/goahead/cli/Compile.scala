@@ -1,6 +1,6 @@
 package goahead.cli
 
-import java.io.{BufferedWriter, FileOutputStream, OutputStreamWriter}
+import java.io.{BufferedWriter, File, FileOutputStream, OutputStreamWriter}
 import java.lang.reflect.Modifier
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths}
@@ -66,9 +66,14 @@ trait Compile extends Command with Logger {
         desc = "Either 'class' or 'package' or 'class-sans-inner' file grouping"
       ).map(CompileConfig.FileGrouping.apply),
       prependToFile = builder.opt(
-        name = "prependToFile",
+        name = "prepend-to-file",
         desc = "String to prepend to each resulting file"
       ).map(v => if (v == "") None else Some(v)),
+      reflection = builder.opt(
+        name = "reflection",
+        default = "class-name",
+        desc = "What kind of reflection to use. Options: 'class-name' (default), 'all', or 'none'"
+      ).map(Config.Reflection.apply),
       classes = builder.trailingOpts(
         name = "classes",
         default = Seq("*"),
@@ -89,16 +94,23 @@ trait Compile extends Command with Logger {
 
   override def run(conf: Conf): Unit = {
     // Build class path
-    val classPathStrings =
-      if (conf.excludeRunningRuntimeJar) conf.classPath
-      else conf.classPath :+ s"${Entry.javaRuntimeJarPath}=rt"
-    logger.debug(s"Setting class path to $classPathStrings")
+    val classPathStrings = if (conf.excludeRunningRuntimeJar) conf.classPath else {
+      // We need rt.jar/jce.jar or java.base.jmod
+      val paths = {
+        val path = Entry.javaRuntimeJarPath
+        if (path.endsWith("java.base.jmod")) Seq(path.toString)
+        else Seq(path.toString, path.getParent.resolve("jce.jar").toString)
+      }
+      conf.classPath ++ paths.map(_ + "=github.com/cretz/goahead/libs/java/rt")
+    }
+    logger.debug(s"Setting class path to ${classPathStrings.mkString(File.pathSeparator)}")
     val classPath = ClassPath.fromStrings(classPathStrings)
     val outDir = Paths.get(conf.outDir).toAbsolutePath
     val goPackageName = outDir.getFileName.toString
 
     // Build up the class list which might include super classes
     var classEntries = getClassEntriesByFileName(conf, classPath, conf.manglerInst)
+    require(classEntries.nonEmpty, "Unable to find any classes to compile")
     val includedClasses = classEntries.flatMap(_._2)
     if (conf.excludeAlreadyWrittenFiles)
       classEntries = classEntries.filter({ case (fileName, _) => !Files.exists(outDir.resolve(fileName)) })
@@ -119,9 +131,7 @@ trait Compile extends Command with Logger {
       import goahead.compile.AstDsl._
       futFn {
         val code = compiler.compile(
-          conf = Config(
-            reflectionSupport = !conf.noReflection
-          ),
+          conf = Config(reflection = conf.reflection),
           internalClassNames = classes.map(_.cls.name),
           classPath = classPath,
           mangler = conf.manglerInst
@@ -159,8 +169,13 @@ trait Compile extends Command with Logger {
     var classEntries = conf.classes.flatMap(_.classes(classPath))
     if (!conf.excludeInnerClasses)
       classEntries ++= classEntries.flatMap(_.cls.innerClasses.map(classPath.getFirstClass))
-    if (!conf.excludeSuperClassesOfSameEntry)
-      classEntries ++= classEntries.flatMap(e => classPath.allSuperAndImplementingTypes(e.cls.name))
+    if (!conf.excludeSuperClassesOfSameEntry) {
+      classEntries ++= classEntries.flatMap { c =>
+        val (entry, _) = classPath.getFirstClassWithEntry(c.cls.name)
+        classPath.allSuperAndImplementingTypes(c.cls.name).
+          filter(d => classPath.getFirstClassWithEntry(d.cls.name)._1 == entry)
+      }
+    }
     if (!conf.includeOldVersionClasses)
       classEntries = classEntries.filter(_.cls.majorVersion >= ClassCompiler.MinSupportedMajorVersion)
     if (conf.anyClassModifiers.nonEmpty)
