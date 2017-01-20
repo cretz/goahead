@@ -68,6 +68,8 @@ object CompileConfigImplicits {
       MethodManip.Empty
     } else if (obj.containsKey("exclude")) {
       obj.to[MethodManip.Exclude].get
+    } else if (obj.containsKey("exclude-impl")) {
+      obj.to[MethodManip.ExcludeImpl].get
     } else if (obj.containsKey("panic")) {
       require(obj.get("panic").unwrapped() == java.lang.Boolean.TRUE, "Must have 'true' for 'panic'")
       MethodManip.Panic

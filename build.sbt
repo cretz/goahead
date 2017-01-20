@@ -58,7 +58,7 @@ lazy val goaheadCompiler = (project in file("compiler")).
     //  "-Dcom.sun.management.jmxremote.ssl=false",
     //  "-Dcom.sun.management.jmxremote.authenticate=false"
     //),
-    fullRunTask(buildTestRt, Test, "goahead.cli.Main", "compile", "-v", "-c", "compiler/src/test/resources/test-rt-compile.conf"),
+    fullRunTask(buildTestRt, Test, "goahead.cli.Main", "compile", "-v", "-c", "compiler/src/test/resources/test-rt-compile2.conf"),
     fork in buildRt := true,
     baseDirectory in buildRt := (baseDirectory in LocalRootProject).value,
     javaOptions in buildRt += "-Xmx4G",
@@ -67,6 +67,5 @@ lazy val goaheadCompiler = (project in file("compiler")).
     //  "-Dcom.sun.management.jmxremote.ssl=false",
     //  "-Dcom.sun.management.jmxremote.authenticate=false"
     //),
-    fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile2", "-v", "-c", "libs/java/rt-compile.conf")
-    //fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "../libs/java-full/rt-compile.conf")
+    fullRunTask(buildRt, Runtime, "goahead.cli.Main", "compile", "-v", "-c", "libs/java/rt-compile.conf")
   ).dependsOn(goaheadInterop)

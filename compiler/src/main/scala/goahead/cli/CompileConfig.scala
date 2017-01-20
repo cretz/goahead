@@ -22,7 +22,8 @@ case class CompileConfig(
   excludeInnerClasses: Boolean = false,
   includeOldVersionClasses: Boolean = false,
   packagePrivateExported: Boolean = false,
-  classManips: CompileConfig.ClassManips = CompileConfig.ClassManips.empty
+  classManips: CompileConfig.ClassManips = CompileConfig.ClassManips.empty,
+  noReflection: Boolean = false
 ) {
   lazy val manglerInst = mangler.map(Class.forName(_).newInstance().asInstanceOf[Mangler]).getOrElse {
     //Mangler.Simple
@@ -129,34 +130,44 @@ object CompileConfig {
   }
 
   sealed trait MemberPatternMatch {
+    def matches(cls: Cls): Boolean
     def matches(method: Method): Boolean
     def matches(field: Field): Boolean
   }
 
   object MemberPatternMatch {
-    def apply(str: String): MemberPatternMatch = {
+    def apply(fullStr: String): MemberPatternMatch = {
+      val (cls, str) = fullStr.indexOf("::") match {
+        case -1 => None -> fullStr
+        case colonIndex => Some(ClassPatternMatch(fullStr.take(colonIndex))) -> fullStr.drop(colonIndex + 2)
+      }
       if (str == "*") SimpleName.all else str.indexOf('(') match {
         case -1 =>
-          SimpleName(Some(str), None)
+          SimpleName(cls, Some(str), None)
         case parenIndex =>
-          SimpleName(Some(str.substring(0, parenIndex)), Some(str.substring(parenIndex)))
+          SimpleName(cls, Some(str.substring(0, parenIndex)), Some(str.substring(parenIndex)))
       }
     }
 
     case class SimpleName(
+      cls: Option[ClassPatternMatch],
       name: Option[String],
       desc: Option[String]
     ) extends MemberPatternMatch {
 
+      override def matches(c: Cls) = cls.forall(_.matches(c))
+
       override def matches(method: Method) =
+        matches(method.cls) &&
         name.getOrElse(method.name) == method.name && desc.getOrElse(method.desc) == method.desc
 
       override def matches(field: Field) =
+        matches(field.cls) &&
         name.getOrElse(field.name) == field.name && desc.isEmpty
     }
 
     object SimpleName {
-      val all = SimpleName(None, None)
+      val all = SimpleName(None, None, None)
     }
   }
 
@@ -165,8 +176,8 @@ object CompileConfig {
     // TODO: might we want later ones to uninclude, e.g. check for first boolean?
     def isExcluded(field: Field, cmp: FilteringCompiler) =
       prioritized.view.flatMap(_.isExcluded(field, cmp)).headOption.contains(true)
-    def isExcluded(method: Method, cmp: FilteringCompiler) =
-      prioritized.view.flatMap(_.isExcluded(method, cmp)).headOption.contains(true)
+    def isExcluded(method: Method, cmp: FilteringCompiler, forImpl: Boolean) =
+      prioritized.view.flatMap(_.isExcluded(method, cmp, forImpl)).headOption.contains(true)
     def shouldTransform(method: Method, cmp: FilteringCompiler) =
       prioritized.view.flatMap(_.shouldTransform(method, cmp)).headOption.contains(true)
 
@@ -178,7 +189,10 @@ object CompileConfig {
       if (shouldTransform(method, cmp)) prioritized.view.flatMap(_.transform(cmp, method, ctx)).headOption else None
     }
 
-    def goFields(cls: Cls) = prioritized.flatMap(_.goFields(cls))
+    def goFields(ctx: ClassCompiler.Context) = prioritized.foldLeft(ctx -> Seq.empty[Node.Field]) {
+      case ((ctx, prevFields), classManip) =>
+        classManip.goFields(ctx).map { case (ctx, fields) => ctx -> (prevFields ++ fields) }
+    }
   }
 
   object ClassManips {
@@ -205,9 +219,9 @@ object CompileConfig {
       else fields.isExcluded(field, cmp)
     }
 
-    def isExcluded(method: Method, cmp: FilteringCompiler) = {
+    def isExcluded(method: Method, cmp: FilteringCompiler, forImpl: Boolean) = {
       if (!matchesClass(method.cls) || !matchesFilter(method, cmp)) None
-      else methods.isExcluded(method, cmp)
+      else methods.isExcluded(method, cmp, forImpl)
     }
 
     def shouldTransform(method: Method, cmp: FilteringCompiler) = {
@@ -223,7 +237,7 @@ object CompileConfig {
       if (!matchesClass(method.cls) || !matchesFilter(method, cmp)) None else methods.transform(cmp, method, ctx)
     }
 
-    def goFields(cls: Cls) = if (!matchesClass(cls)) Nil else fields.goFields
+    def goFields(ctx: ClassCompiler.Context) = if (!matchesClass(ctx.cls)) ctx -> Nil else fields.goFields(ctx)
   }
 
   sealed trait MemberFilter {
@@ -297,28 +311,42 @@ object CompileConfig {
     }
 
     // First string is field name, second is optional go package then string go type name
-    def goFields: Seq[(String, (Option[String], String))] = values.collect {
-      case (MemberPatternMatch.SimpleName(Some(name), _), g: FieldManip.GoType) =>
-        name -> g.withPackage
-      case (_, FieldManip.GoType(n)) =>
-        sys.error(s"Cannot make go field of $n without specific field name, instead had no name")
+    def goFields(ctx: ClassCompiler.Context): (ClassCompiler.Context, Seq[Node.Field]) = {
+      val namesAndManips = values.collect {
+        case (mtch @ MemberPatternMatch.SimpleName(_, Some(name), None), g: FieldManip.GoType)
+          if mtch.matches(ctx.cls) => name -> g
+        case (mtch, FieldManip.GoType(n, _)) if mtch.matches(ctx.cls) =>
+          sys.error(s"Cannot make go field of $n without specific field name, instead had no name")
+      }
+      namesAndManips.foldLeft(ctx -> Seq.empty[Node.Field]) { case ((ctx, prevFields), (name, manip)) =>
+        manip.asFieldType(ctx).map { case (ctx, fieldType) => ctx -> (prevFields :+ field(name, fieldType)) }
+      }
     }
   }
 
   sealed trait FieldManip
   object FieldManip {
     case class Exclude(exclude: Boolean) extends FieldManip
-    case class GoType(go: String) extends FieldManip {
-      def withPackage = go.lastIndexOf('.') match {
-        case -1 => None -> go
-        case index => Some(go.take(index)) -> go.drop(index + 1)
+    case class GoType(go: String, instanceIface: Boolean = false) extends FieldManip {
+      def asFieldType(ctx: ClassCompiler.Context): (ClassCompiler.Context, Node.Expression) = {
+        if (instanceIface) {
+          ctx.typeToGoType(IType.getObjectType(go.replace('.', '/')))
+        } else go.lastIndexOf('.') match {
+          case -1 => ctx -> go.toIdent
+          case index => ctx.withImportAlias(go.take(index)).map { case (ctx, alias) =>
+            ctx -> alias.toIdent.sel(go.drop(index + 1))
+          }
+        }
       }
     }
   }
 
   case class MethodManips(values: Seq[(MemberPatternMatch, MethodManip)]) {
-    def isExcluded(method: Method, cmp: FilteringCompiler) = {
-      values.collectFirst { case (mtch, MethodManip.Exclude(ex)) if mtch.matches(method) => ex }
+    def isExcluded(method: Method, cmp: FilteringCompiler, forImpl: Boolean) = {
+      values.collectFirst {
+        case (mtch, MethodManip.Exclude(ex)) if mtch.matches(method) => ex
+        case (mtch, MethodManip.ExcludeImpl(ex)) if forImpl && mtch.matches(method) => ex
+      }
     }
 
     def shouldTransform(method: Method, cmp: FilteringCompiler) = {
@@ -360,6 +388,8 @@ object CompileConfig {
     }
 
     case class Exclude(exclude: Boolean) extends MethodManip
+
+    case class ExcludeImpl(excludeImpl: Boolean) extends MethodManip
 
     case object Panic extends MethodManip {
       override def shouldTransform(method: Method, cmp: FilteringCompiler) = Some(true)

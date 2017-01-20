@@ -7,5 +7,3 @@
 !/compiler/src/test/go/javalib/aaa*
 /libs/java/rt/*
 !/libs/java/rt/aaa*
-/libs/java-full/rt/*
-!/libs/java-full/rt/aaa*

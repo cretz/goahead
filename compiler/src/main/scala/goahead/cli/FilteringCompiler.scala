@@ -73,26 +73,18 @@ class FilteringCompiler(
 
     override protected def compileFields(ctx: ClassCompiler.Context, fields: Seq[Field], static: Boolean) = {
       super.compileFields(ctx, fields, static).map { case (ctx, fields) =>
-        val ctxAndFields = conf.classManips.goFields(ctx.cls).foldLeft(ctx -> fields) {
-          case ((ctx, prevFields), (name, (Some(pkg), goType))) =>
-            ctx.withImportAlias(pkg).map { case (ctx, alias) =>
-              ctx -> (prevFields :+ field(name, alias.toIdent.sel(goType)))
-            }
-          case ((ctx, prevFields), (name, (None, goType))) =>
-            ctx -> (prevFields :+ field(name, goType.toIdent))
-        }
-        forwarders.get(ctx.cls.name).flatMap(_.find(_.instance == !static)) match {
-          case None => ctxAndFields
-          case Some(fwd) => ctxAndFields.map { case (ctx, fields) =>
-            ctx -> (fields :+ field(fwd.forwardFieldName, fwd.goStruct.toIdent))
+        conf.classManips.goFields(ctx).map { case (ctx, goFields) =>
+          val forwarderFieldOpt = forwarders.get(ctx.cls.name).flatMap(_.find(_.instance == !static)).map { fwd =>
+            field(fwd.forwardFieldName, fwd.goStruct.toIdent)
           }
+          ctx -> (fields ++ goFields ++ forwarderFieldOpt)
         }
       }
     }
 
     override protected val methodSetManager = new MethodSetManager.Filtered() {
       override def filter(method: Method, forImpl: Boolean) = {
-        if (conf.classManips.isExcluded(method, FilteringCompiler.this)) {
+        if (conf.classManips.isExcluded(method, FilteringCompiler.this, forImpl)) {
           logger.debug(s"Excluding method $method by rule")
           false
         } else true
