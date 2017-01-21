@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"reflect"
 	"runtime"
 	"strings"
-	"reflect"
 )
 
 func OSArgs() ObjectArray__Instance {
-	ret := NewObjectArray(len(os.Args) - 1, "java.lang.String")
+	ret := NewObjectArray(int32(len(os.Args)-1), "java.lang.String")
 	for i, v := range os.Args[1:] {
-		ret.Set(i, NewString(v))
+		ret.Set(int32(i), NewString(v))
 	}
 	return ret
 }
@@ -23,7 +23,7 @@ func NewString(str string) String_g9YXBQ_Ñ {
 	return v
 }
 
-func BoolToInt(b bool) int {
+func BoolToInt(b bool) int32 {
 	if b {
 		return 1
 	} else {
@@ -31,7 +31,7 @@ func BoolToInt(b bool) int {
 	}
 }
 
-func CompareDouble(left, right float64, nanMeansOne bool) int {
+func CompareDouble(left, right float64, nanMeansOne bool) int32 {
 	if left > right {
 		return 1
 	} else if left == right {
@@ -49,7 +49,7 @@ func CompareDouble(left, right float64, nanMeansOne bool) int {
 	}
 }
 
-func CompareFloat(left, right float32, nanMeansOne bool) int {
+func CompareFloat(left, right float32, nanMeansOne bool) int32 {
 	if left > right {
 		return 1
 	} else if left == right {
@@ -67,7 +67,7 @@ func CompareFloat(left, right float32, nanMeansOne bool) int {
 	}
 }
 
-func CompareLong(left, right int64) int {
+func CompareLong(left, right int64) int32 {
 	if left > right {
 		return 1
 	} else if left == right {

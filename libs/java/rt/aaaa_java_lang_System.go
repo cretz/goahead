@@ -28,8 +28,7 @@ func (this *System_Static) Init() {
 const maxUint = uint64(^uint(0))
 const maxInt = maxUint >> 1
 
-// func (this *System_hB0pIw_Ś) Arraycopy_fsFLrQ_Í(var0 Object_fAFaMw_Ñ, var1 int, var2 Object_fAFaMw_Ñ, var3 int, var4 int) {
-func (this *System_Static) ArrayCopy(src Object_fAFaMw_Ñ, srcPos int, dest Object_fAFaMw_Ñ, destPos int, length int) {
+func (this *System_Static) ArrayCopy(src Object_fAFaMw_Ñ, srcPos int32, dest Object_fAFaMw_Ñ, destPos int32, length int32) {
 	Objects_dkj2tA().RequireNonNull_MJGwVw_Í(src, NewString("Source array is null"))
 	Objects_dkj2tA().RequireNonNull_MJGwVw_Í(dest, NewString("Dest array is null"))
 	srcArr, ok := src.(Array__Instance)
@@ -101,7 +100,7 @@ func (this *System_Static) CurrentTimeMillis() int64 {
 	return time.Now().UnixNano() / 1000000
 }
 
-func (this *System_Static) IdentityHashCode(var0 Object_fAFaMw_Ñ) int {
+func (this *System_Static) IdentityHashCode(var0 Object_fAFaMw_Ñ) int32 {
 	if var0 == nil {
 		return 0
 	}
@@ -111,9 +110,9 @@ func (this *System_Static) IdentityHashCode(var0 Object_fAFaMw_Ñ) int {
 	if ptr == 0 {
 		return 1
 	} else if ptr > maxInt {
-		return int(-(ptr - maxInt))
+		return int32(-(ptr - maxInt))
 	} else {
-		return int(ptr)
+		return int32(ptr)
 	}
 }
 

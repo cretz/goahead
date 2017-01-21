@@ -27,7 +27,7 @@ The resulting code will be written to `libs/java/rt` alongside the existing code
 ## Testing
 
 There is a light weight testing runtime that has to be built. To build it, perform the same sets as
-"[Building the Runtime]" above except run this instead:
+"Building the Runtime" above except run this instead:
 
     sbt buildTestRt
 

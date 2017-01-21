@@ -4,19 +4,19 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"reflect"
 	"runtime"
 	"strconv"
 	"sync"
-	"reflect"
 )
 
 var monitors = make(map[uintptr]*monitor)
 var monitorLock sync.Mutex
 
 type monitor struct {
-	wg sync.WaitGroup
+	wg      sync.WaitGroup
 	counter int
-	owner uint64
+	owner   uint64
 }
 
 func MonitorEnter(obj Object_fAFaMw_Ñ) {
@@ -32,7 +32,7 @@ func MonitorEnter(obj Object_fAFaMw_Ñ) {
 		monitorLock.Lock()
 		mon := monitors[ptr]
 		if mon == nil {
-			mon = &monitor { owner: owner }
+			mon = &monitor{owner: owner}
 			monitors[ptr] = mon
 		}
 		if mon.owner == owner {

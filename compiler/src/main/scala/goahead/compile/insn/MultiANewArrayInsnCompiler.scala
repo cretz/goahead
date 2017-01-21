@@ -43,8 +43,8 @@ trait MultiANewArrayInsnCompiler {
       parentType.elementType.arrayNewFnCall(ctx, size).map { case (ctx, arrayNewFn) =>
         val lhsAsserted = lhsPreIndex.typeAssert(arrType)
         val indexVar = s"i$depth".toIdent
-        val indexedVar = lhsAsserted.sel("Get").call(Seq(indexVar))
-        val newStmt = lhsAsserted.sel("Set").call(Seq(indexVar, arrayNewFn)).toStmt
+        val indexedVar = lhsAsserted.sel("Get").call(Seq("int32".toIdent.call(Seq(indexVar))))
+        val newStmt = lhsAsserted.sel("Set").call(Seq("int32".toIdent.call(Seq(indexVar)), arrayNewFn)).toStmt
         // More?
         val ctxAndInnerStmts = if (nextSizes.size == 1) ctx -> Seq(newStmt) else {
           createInnerSlice(ctx, indexedVar, nextSizes.tail, depth + 1, parentType.elementType).map {

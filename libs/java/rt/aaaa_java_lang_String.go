@@ -13,7 +13,7 @@ func (this *String_Static) CopyValueOf_1(data CharArray__Instance) String_g9YXBQ
 	return this.ValueOf_8(data)
 }
 
-func (this *String_Static) CopyValueOf_2(data CharArray__Instance, offset int, count int) String_g9YXBQ_Ñ {
+func (this *String_Static) CopyValueOf_2(data CharArray__Instance, offset int32, count int32) String_g9YXBQ_Ñ {
 	return this.ValueOf_9(data, offset, count)
 }
 
@@ -59,7 +59,7 @@ func (this *String_Static) ValueOf_3(f float32) String_g9YXBQ_Ñ {
 	return Float_dyK86A().ToString_FtwBOg_Í(f)
 }
 
-func (this *String_Static) ValueOf_4(i int) String_g9YXBQ_Ñ {
+func (this *String_Static) ValueOf_4(i int32) String_g9YXBQ_Ñ {
 	return Integer_28uoyg().ToString_r2zA1w_Í(i)
 }
 
@@ -87,7 +87,7 @@ func (this *String_Static) ValueOf_8(data CharArray__Instance) String_g9YXBQ_Ñ 
 	return s
 }
 
-func (this *String_Static) ValueOf_9(data CharArray__Instance, offset int, count int) String_g9YXBQ_Ñ {
+func (this *String_Static) ValueOf_9(data CharArray__Instance, offset int32, count int32) String_g9YXBQ_Ñ {
 	s := String_g9YXBQ().New()
 	s.Init_BDvBPA(data, offset, count)
 	return s
@@ -97,7 +97,7 @@ func (this *String_Static) ValueOf_9(data CharArray__Instance, offset int, count
 type String struct {
 	impl *String_g9YXBQ_Í
 	str  string
-	hash int
+	hash int32
 }
 
 func (this *String) Init_1() {
@@ -112,28 +112,28 @@ func (this *String) Init_3(value CharArray__Instance) {
 	this.str = string(value.Raw())
 }
 
-func (this *String) Init_4(value CharArray__Instance, offset int, count int) {
+func (this *String) Init_4(value CharArray__Instance, offset int32, count int32) {
 	this.checkBounds(value, offset, count)
 	this.str = string(value.Raw()[offset : offset+count])
 }
 
-func (this *String) Init_5(value IntArray__Instance, offset int, count int) {
+func (this *String) Init_5(value IntArray__Instance, offset int32, count int32) {
 	// TODO: test invalid code point
 	this.checkBounds(value, offset, count)
 	// Just copy it to a char array and call the other init
 	chars := NewCharArray(count)
 	for i := offset; i < offset+count; i++ {
-		chars.Set(i, rune(value.Get(i)))
+		chars.Set(int32(i), rune(value.Get(i)))
 	}
 	this.Init_3(chars)
 }
 
-func (this *String) Init_6(byts ByteArray__Instance, offset int, length int, charsetName String_g9YXBQ_Ñ) {
+func (this *String) Init_6(byts ByteArray__Instance, offset int32, length int32, charsetName String_g9YXBQ_Ñ) {
 	Objects_dkj2tA().RequireNonNull_MJGwVw_Í(charsetName, NewString("Source array is null"))
 	this.Init_7(byts, offset, length, Charset_iUTqAQ().ForName_0CnJCg_Í(charsetName))
 }
 
-func (this *String) Init_7(byts ByteArray__Instance, offset int, length int, charset Charset_iUTqAQ_Ñ) {
+func (this *String) Init_7(byts ByteArray__Instance, offset int32, length int32, charset Charset_iUTqAQ_Ñ) {
 	this.checkBounds(byts, offset, length)
 	this.Init_3(charset.Decode_KXQoLg(ByteBuffer_ziC58A().Wrap_irLNJA_Í(byts, offset, length)).Array_6H9vcw())
 }
@@ -146,7 +146,7 @@ func (this *String) Init_9(byts ByteArray__Instance, charset Charset_iUTqAQ_Ñ) 
 	this.Init_7(byts, 0, byts.Len(), charset)
 }
 
-func (this *String) Init_10(byts ByteArray__Instance, offset int, length int) {
+func (this *String) Init_10(byts ByteArray__Instance, offset int32, length int32) {
 	this.Init_7(byts, offset, length, Charset_iUTqAQ().DefaultCharset_sNz8Kw_Í())
 }
 
@@ -162,33 +162,33 @@ func (this *String) Init_13(builder StringBuilder_UtRw1g_Ñ) {
 	this.Init_2(builder.ToString_aÞ4cSA())
 }
 
-func (this *String) CharAt(index int) rune {
+func (this *String) CharAt(index int32) rune {
 	return rune(this.str[index])
 }
 
-func (this *String) CodePointAt(index int) int {
+func (this *String) CodePointAt(index int32) int32 {
 	return Character_V2YvtQ().CodePointAt_et0zRA_Í(this.impl, index)
 }
 
-func (this *String) CodePointBefore(index int) int {
+func (this *String) CodePointBefore(index int32) int32 {
 	return Character_V2YvtQ().CodePointBefore_KD1xEA_Í(this.impl, index)
 }
 
-func (this *String) CodePointCount(beginIndex int, endIndex int) int {
+func (this *String) CodePointCount(beginIndex int32, endIndex int32) int32 {
 	return Character_V2YvtQ().CodePointCount_wuNEEQ_Í(this.impl, beginIndex, endIndex)
 }
 
-func (this *String) CompareTo_1(other Object_fAFaMw_Ñ) int {
+func (this *String) CompareTo_1(other Object_fAFaMw_Ñ) int32 {
 	return this.CompareTo_2(other.(String_g9YXBQ_Ñ))
 }
 
-func (this *String) CompareTo_2(other String_g9YXBQ_Ñ) int {
-	return strings.Compare(this.str, other.Raw_g9YXBQ().Fwd_.str)
+func (this *String) CompareTo_2(other String_g9YXBQ_Ñ) int32 {
+	return int32(strings.Compare(this.str, other.Raw_g9YXBQ().Fwd_.str))
 }
 
-func (this *String) CompareToIgnoreCase(other String_g9YXBQ_Ñ) int {
+func (this *String) CompareToIgnoreCase(other String_g9YXBQ_Ñ) int32 {
 	// TODO: this surely can be made faster
-	return strings.Compare(strings.ToLower(this.str), strings.ToLower(other.Raw_g9YXBQ().Fwd_.str))
+	return int32(strings.Compare(strings.ToLower(this.str), strings.ToLower(other.Raw_g9YXBQ().Fwd_.str)))
 }
 
 func (this *String) Concat(s String_g9YXBQ_Ñ) String_g9YXBQ_Ñ {
@@ -222,14 +222,14 @@ func (this *String) EqualsIgnoreCase(s String_g9YXBQ_Ñ) bool {
 
 func (this *String) GetBytes_1() ByteArray__Instance {
 	// TODO: switch to GetBytes_4 when charsets are in place
-	ret := NewByteArray(len(this.str))
+	ret := NewByteArray(this.Length())
 	for i := 0; i < len(this.str); i++ {
-		ret.Set(i, int8(this.str[i]))
+		ret.Set(int32(i), int8(this.str[i]))
 	}
 	return ret
 }
 
-func (this *String) GetBytes_2(srcBegin int, srcEnd int, dst ByteArray__Instance, dstBegin int) {
+func (this *String) GetBytes_2(srcBegin int32, srcEnd int32, dst ByteArray__Instance, dstBegin int32) {
 	for i := srcBegin; i < srcEnd; i++ {
 		dst.Set(dstBegin+i, int8(this.str[i]))
 	}
@@ -243,13 +243,13 @@ func (this *String) GetBytes_4(charset Charset_iUTqAQ_Ñ) ByteArray__Instance {
 	return charset.Encode_dCQtÞw(this.impl).Array_Þfxo8g()
 }
 
-func (this *String) GetChars(srcBegin int, srcEnd int, dst CharArray__Instance, dstBegin int) {
+func (this *String) GetChars(srcBegin int32, srcEnd int32, dst CharArray__Instance, dstBegin int32) {
 	if srcBegin < 0 {
 		ex := StringIndexOutOfBoundsException_SWP1Ag().New()
 		ex.Init_zJ0QMQ(srcBegin)
 		panic(ex)
 	}
-	if srcEnd > len(this.str) {
+	if srcEnd > this.Length() {
 		ex := StringIndexOutOfBoundsException_SWP1Ag().New()
 		ex.Init_zJ0QMQ(srcEnd)
 		panic(ex)
@@ -261,37 +261,37 @@ func (this *String) GetChars(srcBegin int, srcEnd int, dst CharArray__Instance, 
 	System_hB0pIw().Arraycopy_fsFLrQ_Í(CharArray__Impl([]rune(this.str)), srcBegin, dst, dstBegin, srcEnd-srcBegin)
 }
 
-func (this *String) HashCode() int {
+func (this *String) HashCode() int32 {
 	h := this.hash
 	if h == 0 && len(this.str) > 0 {
 		for i := 0; i < len(this.str); i++ {
-			h = 31*h + int(this.str[i])
+			h = 31*h + int32(this.str[i])
 		}
 		this.hash = h
 	}
 	return h
 }
 
-func (this *String) IndexOf_1(ch int) int {
-	return strings.IndexRune(this.str, rune(ch))
+func (this *String) IndexOf_1(ch int32) int32 {
+	return int32(strings.IndexRune(this.str, rune(ch)))
 }
 
-func (this *String) IndexOf_2(ch int, fromIndex int) int {
+func (this *String) IndexOf_2(ch int32, fromIndex int32) int32 {
 	if fromIndex <= 0 {
 		return this.IndexOf_1(ch)
 	}
-	return strings.IndexRune(this.str[fromIndex:], rune(ch))
+	return int32(strings.IndexRune(this.str[fromIndex:], rune(ch)))
 }
 
-func (this *String) IndexOf_3(str String_g9YXBQ_Ñ) int {
-	return strings.Index(this.str, str.Raw_g9YXBQ().Fwd_.str)
+func (this *String) IndexOf_3(str String_g9YXBQ_Ñ) int32 {
+	return int32(strings.Index(this.str, str.Raw_g9YXBQ().Fwd_.str))
 }
 
-func (this *String) IndexOf_4(str String_g9YXBQ_Ñ, fromIndex int) int {
+func (this *String) IndexOf_4(str String_g9YXBQ_Ñ, fromIndex int32) int32 {
 	if fromIndex <= 0 {
 		return this.IndexOf_3(str)
 	}
-	return strings.Index(this.str[fromIndex:], str.Raw_g9YXBQ().Fwd_.str)
+	return int32(strings.Index(this.str[fromIndex:], str.Raw_g9YXBQ().Fwd_.str))
 }
 
 func (this *String) Intern() String_g9YXBQ_Ñ {
@@ -307,30 +307,30 @@ func (this *String) IsEmpty() bool {
 	return this.str == ""
 }
 
-func (this *String) LastIndexOf_1(ch int) int {
-	return strings.LastIndex(this.str, string(ch))
+func (this *String) LastIndexOf_1(ch int32) int32 {
+	return int32(strings.LastIndex(this.str, string(ch)))
 }
 
-func (this *String) LastIndexOf_2(ch int, fromIndex int) int {
-	if fromIndex+1 >= len(this.str) {
+func (this *String) LastIndexOf_2(ch int32, fromIndex int32) int32 {
+	if fromIndex+1 >= this.Length() {
 		return this.LastIndexOf_1(ch)
 	}
-	return strings.LastIndex(this.str[:fromIndex+1], string(ch))
+	return int32(strings.LastIndex(this.str[:fromIndex+1], string(ch)))
 }
 
-func (this *String) LastIndexOf_3(str String_g9YXBQ_Ñ) int {
-	return strings.LastIndex(this.str, str.Raw_g9YXBQ().Fwd_.str)
+func (this *String) LastIndexOf_3(str String_g9YXBQ_Ñ) int32 {
+	return int32(strings.LastIndex(this.str, str.Raw_g9YXBQ().Fwd_.str))
 }
 
-func (this *String) LastIndexOf_4(str String_g9YXBQ_Ñ, fromIndex int) int {
-	if fromIndex+1 >= len(this.str) {
+func (this *String) LastIndexOf_4(str String_g9YXBQ_Ñ, fromIndex int32) int32 {
+	if fromIndex+1 >= this.Length() {
 		return this.LastIndexOf_3(str)
 	}
-	return strings.LastIndex(this.str[:fromIndex+1], str.Raw_g9YXBQ().Fwd_.str)
+	return int32(strings.LastIndex(this.str[:fromIndex+1], str.Raw_g9YXBQ().Fwd_.str))
 }
 
-func (this *String) Length() int {
-	return len(this.str)
+func (this *String) Length() int32 {
+	return int32(len(this.str))
 }
 
 func (this *String) Matches(var0 String_g9YXBQ_Ñ) bool {
@@ -338,17 +338,17 @@ func (this *String) Matches(var0 String_g9YXBQ_Ñ) bool {
 	panic("Method not implemented - java/lang/String::matches(Ljava/lang/String;)Z")
 }
 
-func (this *String) OffsetByCodePoints(index int, codePointOffset int) int {
+func (this *String) OffsetByCodePoints(index int32, codePointOffset int32) int32 {
 	return Character_V2YvtQ().OffsetByCodePoints_oEpl4w_Í(this.impl, index, codePointOffset)
 }
 
-func (this *String) RegionMatches_1(toffset int, other String_g9YXBQ_Ñ, ooffset int, length int) bool {
-	return toffset > 0 && ooffset > 0 && toffset+length <= len(this.str) && ooffset+length <= len(this.str) &&
+func (this *String) RegionMatches_1(toffset int32, other String_g9YXBQ_Ñ, ooffset int32, length int32) bool {
+	return toffset > 0 && ooffset > 0 && toffset+length <= this.Length() && ooffset+length <= this.Length() &&
 		this.str[toffset:toffset+length] == other.Raw_g9YXBQ().Fwd_.str[ooffset:ooffset+length]
 }
 
-func (this *String) RegionMatches_2(ignoreCase bool, toffset int, other String_g9YXBQ_Ñ, ooffset int, length int) bool {
-	if toffset > 0 && ooffset > 0 && toffset+length <= len(this.str) && ooffset+length <= len(this.str) {
+func (this *String) RegionMatches_2(ignoreCase bool, toffset int32, other String_g9YXBQ_Ñ, ooffset int32, length int32) bool {
+	if toffset > 0 && ooffset > 0 && toffset+length <= this.Length() && ooffset+length <= this.Length() {
 		return false
 	}
 	if ignoreCase {
@@ -381,7 +381,7 @@ func (this *String) Split_1(regex String_g9YXBQ_Ñ) ObjectArray__Instance {
 	panic("Method not implemented - java/lang/String::split(Ljava/lang/String;)[Ljava/lang/String;")
 }
 
-func (this *String) Split_2(regex String_g9YXBQ_Ñ, limit int) ObjectArray__Instance {
+func (this *String) Split_2(regex String_g9YXBQ_Ñ, limit int32) ObjectArray__Instance {
 	// TODO
 	panic("Method not implemented - java/lang/String::split(Ljava/lang/String;I)[Ljava/lang/String;")
 }
@@ -390,22 +390,22 @@ func (this *String) StartsWith_1(prefix String_g9YXBQ_Ñ) bool {
 	return strings.HasPrefix(this.str, prefix.Raw_g9YXBQ().Fwd_.str)
 }
 
-func (this *String) StartsWith_2(prefix String_g9YXBQ_Ñ, toffset int) bool {
-	if toffset < 0 || toffset > len(this.str) {
+func (this *String) StartsWith_2(prefix String_g9YXBQ_Ñ, toffset int32) bool {
+	if toffset < 0 || toffset > this.Length() {
 		return false
 	}
 	return strings.HasPrefix(this.str[toffset:], prefix.Raw_g9YXBQ().Fwd_.str)
 }
 
-func (this *String) SubSequence(beginIndex int, endIndex int) CharSequence_c8RpKw_Ñ {
+func (this *String) SubSequence(beginIndex int32, endIndex int32) CharSequence_c8RpKw_Ñ {
 	return this.Substring_2(beginIndex, endIndex)
 }
 
-func (this *String) Substring_1(beginIndex int) String_g9YXBQ_Ñ {
-	return this.Substring_2(beginIndex, len(this.str))
+func (this *String) Substring_1(beginIndex int32) String_g9YXBQ_Ñ {
+	return this.Substring_2(beginIndex, this.Length())
 }
 
-func (this *String) Substring_2(beginIndex int, endIndex int) String_g9YXBQ_Ñ {
+func (this *String) Substring_2(beginIndex int32, endIndex int32) String_g9YXBQ_Ñ {
 	return NewString(this.str[beginIndex:endIndex])
 }
 
@@ -442,7 +442,7 @@ func (this *String) Trim() String_g9YXBQ_Ñ {
 
 // Helpers
 
-func (t *String) checkBounds(arr Array__Instance, offset int, count int) {
+func (t *String) checkBounds(arr Array__Instance, offset int32, count int32) {
 	if offset < 0 {
 		ex := StringIndexOutOfBoundsException_SWP1Ag().New()
 		ex.Init_zJ0QMQ(offset)

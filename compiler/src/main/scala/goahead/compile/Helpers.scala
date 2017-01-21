@@ -414,7 +414,7 @@ object Helpers extends Logger {
         case Type.CHAR => "rune"
         case Type.BYTE => "int8"
         case Type.SHORT => "int16"
-        case Type.INT => "int"
+        case Type.INT => "int32"
         case Type.LONG => "int64"
         case Type.FLOAT => "float32"
         case Type.DOUBLE => "float64"
@@ -470,7 +470,7 @@ object Helpers extends Logger {
         case (o, IType.FloatType) if o.isNumeric =>
           ctx -> "float32".toIdent.call(Seq(expr.expr))
         case (o, IType.IntType) if o.isNumeric =>
-          ctx -> "int".toIdent.call(Seq(expr.expr))
+          ctx -> "int32".toIdent.call(Seq(expr.expr))
         case (IType.BooleanType, o) if o.isNumeric =>
           ctx.importRuntimeQualifiedName("BoolToInt").map { case (ctx, boolToInt) =>
             TypedExpression(boolToInt.call(Seq(expr.expr)), IType.IntType, cheapRef = false).toExprNode(ctx, o)

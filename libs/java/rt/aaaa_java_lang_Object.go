@@ -34,11 +34,11 @@ func (this *Object) GetClass() Class_dvhEBA_Ñ {
 	return Class_dvhEBA().ForName_xpGqyQ_Í(NewString(className))
 }
 
-func (this *Object) HashCode() int {
+func (this *Object) HashCode() int32 {
 	return objectHashCode(this.impl)
 }
 
-func objectHashCode(obj Object_fAFaMw_Ñ) int {
+func objectHashCode(obj Object_fAFaMw_Ñ) int32 {
 	return System_hB0pIw().IdentityHashCode_lcJyvA_Í(obj)
 }
 

@@ -1,8 +1,8 @@
 package testrt
 
 import (
-	"runtime"
 	"fmt"
+	"runtime"
 	"strings"
 )
 
@@ -36,8 +36,8 @@ func (this *PrintStream_kZ4QkQ_Í) Println_stkpaQ_Í(var0 float64) {
 	// Trim off trailing zeros after the first one
 	str := fmt.Sprintf("%f", var0)
 	decimal := strings.LastIndex(str, ".")
-	if len(str) > decimal + 2 {
-		str = str[:decimal + 2] + strings.TrimRight(str[decimal + 2:], "0")
+	if len(str) > decimal+2 {
+		str = str[:decimal+2] + strings.TrimRight(str[decimal+2:], "0")
 	}
 	print(str)
 	newline()
@@ -47,7 +47,7 @@ func (this *PrintStream_kZ4QkQ_Í) Println_ZoØ96w_Í(var0 float32) {
 	this.Println_stkpaQ_Í(float64(var0))
 }
 
-func (this *PrintStream_kZ4QkQ_Í) Println_dCI8rg_Í(var0 int) {
+func (this *PrintStream_kZ4QkQ_Í) Println_dCI8rg_Í(var0 int32) {
 	print(var0)
 	newline()
 }

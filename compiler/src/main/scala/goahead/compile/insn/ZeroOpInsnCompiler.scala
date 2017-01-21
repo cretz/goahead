@@ -450,7 +450,7 @@ trait ZeroOpInsnCompiler {
 
   protected def sh(ctx: Context, opcode: Int): (Context, Seq[Node.Statement]) = {
     val ((typ, unsignedTo), unsignedFrom) = opcode match {
-      case Opcodes.ISHL | Opcodes.ISHR | Opcodes.IUSHR => IType.IntType -> "uint32" -> "int"
+      case Opcodes.ISHL | Opcodes.ISHR | Opcodes.IUSHR => IType.IntType -> "uint32" -> "int32"
       case Opcodes.LSHL | Opcodes.LSHR | Opcodes.LUSHR => IType.LongType -> "uint64" -> "int64"
     }
     def applyFn(ctx: Context, lhs: Node.Expression, rhs: Node.Expression) = opcode match {

@@ -15,8 +15,8 @@ func (this *StringBuilder) Append_1(str String_g9YXBQ_Ñ) StringBuilder_UtRw1g_�
 	return this.impl
 }
 
-func (this *StringBuilder) Append_2(v int) StringBuilder_UtRw1g_Ñ {
-	this.str += strconv.Itoa(v)
+func (this *StringBuilder) Append_2(v int32) StringBuilder_UtRw1g_Ñ {
+	this.str += strconv.Itoa(int(v))
 	return this.impl
 }
 

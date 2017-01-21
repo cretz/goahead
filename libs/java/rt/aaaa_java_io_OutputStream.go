@@ -18,7 +18,7 @@ func WriterToOutputStream(w io.Writer) OutputStream_AjI4XQ_Ñ {
 	return ret
 }
 
-func (this *WriterOutputStream) Write_3grrng_Í(var0 int) {
+func (this *WriterOutputStream) Write_3grrng_Í(var0 int32) {
 	_, err := this.w.Write([]byte(string(var0)))
 	if err != nil {
 		ex := IOException_6bTB7Q().New()

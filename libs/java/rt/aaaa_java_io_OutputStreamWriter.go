@@ -39,14 +39,14 @@ func (this *OutputStreamWriter) flushBuffer() {
 	}
 }
 
-func (this *OutputStreamWriter) Write_1(var0 int) {
+func (this *OutputStreamWriter) Write_1(var0 int32) {
 	this.buf += string(var0)
 }
 
-func (this *OutputStreamWriter) Write_2(var0 String_g9YXBQ_Ñ, var1 int, var2 int) {
+func (this *OutputStreamWriter) Write_2(var0 String_g9YXBQ_Ñ, var1 int32, var2 int32) {
 	this.buf += var0.Raw_g9YXBQ().Fwd_.str[var1 : var1+var2]
 }
 
-func (this *OutputStreamWriter) Write_3(var0 CharArray__Instance, var1 int, var2 int) {
+func (this *OutputStreamWriter) Write_3(var0 CharArray__Instance, var1 int32, var2 int32) {
 	this.buf += string(var0.Raw()[var1 : var1+var2])
 }
