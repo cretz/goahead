@@ -28,10 +28,47 @@ type ClassInfo struct {
 	Name           string
 	ComponentClass Class_dvhEBA_Ñ
 	Primitive      bool
+	Init           func() interface{}
+	// When false, nothing below is available
+	Full bool
+
+	Interface bool
+	// Keyed by class name
+	Annotations        map[string]Annotation_3r3c2w_Ñ
+	EnclosingMethod    *EnclosingMethodInfo
+	DeclaredClassNames []string
+	// Can be empty
+	DeclaringClassName string
+	GenericSuperClass  TypeInfo
+	GenericInterfaces  []TypeInfo
+	InterfaceNames     []string
+	Modifiers          int32
+	SuperClassName     string
+	TypeParams         []TypeVariableInfo
+}
+
+type EnclosingMethodInfo struct {
+	ClassName string
+	Name      string
+	Desc      string
+}
+
+type TypeInfo interface {
+	ToType() Type_T82HQA_Ñ
+}
+
+type TypeVariableInfo interface {
+	ToTypeVariable() TypeVariable_E9F93A_Ñ
+}
+
+type PackageInfo struct {
+	Name string
+	Full bool
 }
 
 var classNameToStaticRef = map[string]ClassInfoProvider{}
 var javaImplNameToClassName = map[string]string{}
+var packages = map[string]*PackageInfo{}
 var reflectionLock = sync.RWMutex{}
 
 func AddStaticRefs(classNameMap map[string]ClassInfoProvider, javaImplNameMap map[string]string) {
@@ -56,6 +93,22 @@ func GetClassNameFromJavaImplName(javaImplName string) string {
 	reflectionLock.RLock()
 	reflectionLock.RUnlock()
 	return javaImplNameToClassName[javaImplName]
+}
+
+func AddPackageInfo(packageName string, info *PackageInfo) {
+	reflectionLock.Lock()
+	defer reflectionLock.Unlock()
+	if packages[packageName] != nil {
+		// TODO: fix this be properly supporting class loaders
+		panic("Package " + packageName + " was added a second time")
+	}
+	packages[packageName] = info
+}
+
+func GetPackageInfo(packageName string) *PackageInfo {
+	reflectionLock.RLock()
+	reflectionLock.RUnlock()
+	return packages[packageName]
 }
 
 func init() {

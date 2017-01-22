@@ -120,14 +120,14 @@ func (this *System_Static) InitProperties(var0 Properties_fgd3kw_Ñ) Properties_
 	panic("Init properties not yet impld")
 }
 
-func (this *System_Static) MapLibraryName(libname String_g9YXBQ_Ñ) String_g9YXBQ_Ñ {
+func (this *System_Static) MapLibraryName(libname string) string {
 	switch runtime.GOOS {
 	case "windows":
-		return NewString(libname.Raw_g9YXBQ().Fwd_.str + ".dll")
+		return libname + ".dll"
 	case "darwin":
-		return NewString("lib" + libname.Raw_g9YXBQ().Fwd_.str + ".dylib")
+		return "lib" + libname + ".dylib"
 	default:
-		return NewString("lib" + libname.Raw_g9YXBQ().Fwd_.str + ".so")
+		return "lib" + libname + ".so"
 	}
 }
 

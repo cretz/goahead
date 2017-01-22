@@ -429,14 +429,7 @@ object CompileConfig {
       }
 
       override def transform(cmp: FilteringCompiler, method: Method, ctx: => Context) = {
-        forwarder(method, cmp).map { case (fwd, fwdMethod) =>
-          val call = "this".toIdent.sel(fwd.forwardFieldName).sel(fwdMethod.targetName).
-            call(ctx.method.argTypes.indices.map(i => s"var$i".toIdent))
-          method.returnType match {
-            case IType.VoidType => ctx -> Seq(call.toStmt)
-            case _ => ctx -> Seq(call.ret)
-          }
-        }
+        forwarder(method, cmp).map { case (fwd, fwdMethod) => fwdMethod.compileFor(fwd, cmp, ctx) }
       }
     }
   }

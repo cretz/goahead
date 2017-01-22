@@ -3,6 +3,7 @@ package goahead.cli
 import java.nio.file.Paths
 
 import goahead.Logger
+import goahead.ast.Node
 import goahead.compile._
 
 import scala.io.Source
@@ -19,6 +20,7 @@ case class Forwarders(
 
 object Forwarders extends Logger {
   import Helpers._
+  import AstDsl._
 
   def loadForwarders(mangler: Mangler, classPath: ClassPath, path: String): Map[String, Seq[Forwarders]] = {
     // The running list is keyed by struct name
@@ -44,7 +46,7 @@ object Forwarders extends Logger {
             }
             if (methods.size == 1) {
               runningForwarders += forwarder.goStruct ->
-                forwarder.copy(methods = forwarder.methods + ForwarderMethod(methods.head, sig.name))
+                forwarder.copy(methods = forwarder.methods + ForwarderMethod(methods.head, sig))
             }
             methods
         }
@@ -117,7 +119,42 @@ object Forwarders extends Logger {
     runningForwarders.values.groupBy(_.cls.name).mapValues(_.toSeq)
   }
 
-  case class ForwarderMethod(from: Method, targetName: String)
+  case class ForwarderMethod(from: Method, targetSig: FunctionSig) {
+    def compileFor(
+      fwd: Forwarders,
+      cmp: FilteringCompiler,
+      ctx: MethodCompiler.Context
+    ): (MethodCompiler.Context, Seq[Node.Statement]) = {
+
+      // Convert the args
+      val argTypesWithIndexAndTypes = ctx.method.argTypes.zipWithIndex.zip(targetSig.paramTypeNames)
+      val argsAndCtx = argTypesWithIndexAndTypes.foldLeft(ctx -> Seq.empty[Node.Expression]) {
+        case ((ctx, prevArgs), ((arg, i), typName)) =>
+          val name = s"var$i".toIdent
+          typName match {
+            case "string" => ctx.importRuntimeQualifiedName("GetString").map { case (ctx, getString) =>
+              ctx -> (prevArgs :+ getString.call(Seq(name)))
+            }
+            case "int" => ctx -> (prevArgs :+ "int".toIdent.call(Seq(name)))
+            case _ => ctx -> (prevArgs :+ name)
+          }
+      }
+
+      argsAndCtx.map { case (ctx, args) =>
+        val call = "this".toIdent.sel(fwd.forwardFieldName).sel(targetSig.name).call(args)
+        ctx.method.returnType match {
+          case IType.VoidType => ctx -> Seq(call.toStmt)
+          case _ => targetSig.retTypeName match {
+            case Some("string") => ctx.importRuntimeQualifiedName("NewString").map { case (ctx, newString) =>
+              ctx -> Seq(newString.call(Seq(call)).ret)
+            }
+            case Some("int") => ctx -> Seq("int32".toIdent.call(Seq(call)).ret)
+            case _ => ctx -> Seq(call.ret)
+          }
+        }
+      }
+    }
+  }
 
   case class FunctionSig(
     name: String,
@@ -125,22 +162,30 @@ object Forwarders extends Logger {
     paramTypeNames: Seq[String],
     retTypeName: Option[String]
   ) {
-    def matchesMethod(mangler: Mangler, m: Method): Boolean = {
-      if (!matchesMethodName(m.name)) false
-      else if (paramTypeNames.size != m.argTypes.size) false
-      else if (m.returnType == IType.VoidType && retTypeName.nonEmpty) false
-      else if (m.returnType != IType.VoidType && retTypeName.isEmpty) false
-      else if (m.argTypes.map(_.goTypeName(mangler)) != paramTypeNames) false
-      else if (m.returnType != IType.VoidType &&
-        !retTypeName.contains(m.returnType.goTypeName(mangler))) false
-      else true
+    def matchesMethod(mangler: Mangler, m: Method): Boolean =
+      matchesMethodName(m) && matchesArgTypes(mangler, m) && matchesReturnType(mangler, m)
+
+    def matchesArgTypes(mangler: Mangler, m: Method): Boolean =
+      paramTypeNames.size == m.argTypes.size &&
+        paramTypeNames.zip(m.argTypes).forall(Function.tupled(matchesType(mangler, _, _)))
+
+    def matchesReturnType(mangler: Mangler, m: Method): Boolean = retTypeName match {
+      case None => m.returnType == IType.VoidType
+      case Some(t) => matchesType(mangler, t, m.returnType)
     }
 
-    def matchesMethodName(methodName: String): Boolean = {
-      methodName.compareToIgnoreCase(ambigName) == 0 ||
-        (methodName == "<init>" && ambigName.compareToIgnoreCase("init") == 0) ||
-        (methodName == "<clinit>" && ambigName.compareToIgnoreCase("init") == 0)
+    def matchesType(mangler: Mangler, typName: String, mTyp: IType): Boolean = {
+      mTyp.goTypeName(mangler) == (typName match {
+        case "string" => IType.getObjectType("java/lang/String").goTypeName(mangler)
+        case "int" => IType.IntType.goTypeName(mangler)
+        case other => other
+      })
     }
+
+    def matchesMethodName(m: Method): Boolean =
+      m.name.compareToIgnoreCase(ambigName) == 0 ||
+        (m.name == "<init>" && ambigName.compareToIgnoreCase("init") == 0) ||
+        (m.name == "<clinit>" && ambigName.compareToIgnoreCase("init") == 0)
   }
 
   object FunctionSig {

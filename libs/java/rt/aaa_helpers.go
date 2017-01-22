@@ -23,6 +23,10 @@ func NewString(str string) String_g9YXBQ_Ñ {
 	return v
 }
 
+func GetString(str String_g9YXBQ_Ñ) string {
+	return str.Raw_g9YXBQ().Fwd_.str
+}
+
 func BoolToInt(b bool) int32 {
 	if b {
 		return 1

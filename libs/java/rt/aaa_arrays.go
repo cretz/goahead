@@ -319,6 +319,7 @@ type ObjectArray__Instance interface {
 	Get(int32) Object_fAFaMw_Ñ
 	Set(int32, Object_fAFaMw_Ñ)
 	Raw() []Object_fAFaMw_Ñ
+	SetRaw(arr []Object_fAFaMw_Ñ)
 }
 
 type ObjectArray__Impl struct {
@@ -327,10 +328,11 @@ type ObjectArray__Impl struct {
 }
 
 func NewObjectArray(size int32, componentName string) ObjectArray__Instance {
-	return &ObjectArray__Impl{
-		arr:           make([]Object_fAFaMw_Ñ, size),
-		componentName: componentName,
-	}
+	return NewObjectArrayFromSlice(make([]Object_fAFaMw_Ñ, size), componentName)
+}
+
+func NewObjectArrayFromSlice(arr []Object_fAFaMw_Ñ, componentName string) ObjectArray__Instance {
+	return &ObjectArray__Impl{arr, componentName}
 }
 
 func (a *ObjectArray__Impl) Clone_KkF6yw() Object_fAFaMw_Ñ {
@@ -355,4 +357,5 @@ func (a *ObjectArray__Impl) Get(i int32) Object_fAFaMw_Ñ      { return a.arr[i]
 func (a *ObjectArray__Impl) Set(i int32, v Object_fAFaMw_Ñ)   { a.arr[i] = v }
 func (a *ObjectArray__Impl) Len() int32                       { return int32(len(a.arr)) }
 func (a *ObjectArray__Impl) Raw() []Object_fAFaMw_Ñ           { return a.arr }
+func (a *ObjectArray__Impl) SetRaw(arr []Object_fAFaMw_Ñ)     { a.arr = arr }
 func (a *ObjectArray__Impl) Raw_fAFaMw() *Object_fAFaMw_Í     { panic("Cannot get raw pointer of array") }

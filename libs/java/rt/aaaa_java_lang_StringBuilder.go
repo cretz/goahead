@@ -10,8 +10,8 @@ type StringBuilder struct {
 
 func (this *StringBuilder) Init() {}
 
-func (this *StringBuilder) Append_1(str String_g9YXBQ_Ñ) StringBuilder_UtRw1g_Ñ {
-	this.str += str.Raw_g9YXBQ().Fwd_.str
+func (this *StringBuilder) Append_1(str string) StringBuilder_UtRw1g_Ñ {
+	this.str += str
 	return this.impl
 }
 
@@ -20,6 +20,6 @@ func (this *StringBuilder) Append_2(v int32) StringBuilder_UtRw1g_Ñ {
 	return this.impl
 }
 
-func (this *StringBuilder) ToString() String_g9YXBQ_Ñ {
-	return NewString(this.str)
+func (this *StringBuilder) ToString() string {
+	return this.str
 }

@@ -54,12 +54,12 @@ func (this *Object_fAFaMw_Í) String() string {
 	if this == nil {
 		return "null"
 	}
-	return this.ToString_aÞ4cSA().Raw_g9YXBQ().Fwd_.str
+	return GetString(this.ToString_aÞ4cSA())
 }
 
 func objectString(obj Object_fAFaMw_Ñ) string {
 	if obj == nil {
 		return "null"
 	}
-	return obj.ToString_aÞ4cSA().Raw_g9YXBQ().Fwd_.str
+	return GetString(obj.ToString_aÞ4cSA())
 }

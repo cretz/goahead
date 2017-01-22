@@ -4,9 +4,9 @@ package rt
 func (this *Throwable_r1HNzA_Í) Error() string {
 	detailMessage := ""
 	if this.Fwd_.detailMessage != nil {
-		detailMessage = this.Fwd_.detailMessage.Raw_g9YXBQ().Fwd_.str
+		detailMessage = GetString(this.Fwd_.detailMessage)
 	}
-	return this.GetClass_9pp3sQ().GetName_uasY3Q().Raw_g9YXBQ().Fwd_.str + ": " + detailMessage
+	return GetString(this.GetClass_9pp3sQ().GetName_uasY3Q()) + ": " + detailMessage
 }
 
 //goahead:forward-static java.lang.Throwable
