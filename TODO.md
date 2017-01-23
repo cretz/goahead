@@ -1,5 +1,4 @@
 
-* Check if discriminator is needed on interfaces to prevent ambiguity or if the raw accessor is enough
 * Use external testing libs to validate work. There are many out there, but the OpenJDK ones are good start
 * Reduce exports for package private things and types
   * Maybe also hide all impl methods?

@@ -231,22 +231,7 @@ func (this *Class) GetDeclaredAnnotations() ObjectArray__Instance {
 
 func (this *Class) GetDeclaredAnnotationsByType(cls Class_dvhEBA_Ñ) ObjectArray__Instance {
 	this.assertFullInfo()
-	// The best way, based on the spec, is to get all declared annotations and pick off
-	// the one given and maybe its repeated form
-	retArr := []Object_fAFaMw_Ñ{}
-	var repeatable Repeatable_gJFvIQ_Ñ
-	if r := cls.GetAnnotation_QS851A(Class_dvhEBA().ForName_xpGqyQ_Í(NewString("java.lang.annotation.Repeatable"))); r != nil {
-		repeatable = r.(Repeatable_gJFvIQ_Ñ)
-	}
-	for _, v := range this.GetDeclaredAnnotations().Raw() {
-		ann := v.(Annotation_3r3c2w_Ñ)
-		if ann.AnnotationType_yjDfig().Equals_g011Rw(cls) {
-			retArr = append(retArr, ann)
-		} else if repeatable != nil && ann.AnnotationType_yjDfig().Equals_g011Rw(repeatable.Value_sETAIg()) {
-			retArr = append(retArr, getRepeatableValueFromAnn(ann)...)
-		}
-	}
-	return NewObjectArrayFromSlice(retArr, cls.GetName_uasY3Q().Raw_g9YXBQ().Fwd_.str)
+	return getAnnotationsByTypeFromDeclared(this.impl, cls)
 }
 
 func (this *Class) GetDeclaredClasses() ObjectArray__Instance {
@@ -619,14 +604,6 @@ func (c *Class) init() interface{} {
 type annWithObjectArrayValue interface {
 	AnnotationType_yjDfig() Class_dvhEBA_Ñ
 	Value_OÞhXRA() ObjectArray__Instance
-}
-
-// Result can be nil
-func getRepeatableValueFromAnn(ann Annotation_3r3c2w_Ñ) []Object_fAFaMw_Ñ {
-	if v, ok := ann.(annWithObjectArrayValue); ok {
-		return v.Value_OÞhXRA().Raw()
-	}
-	return nil
 }
 
 type staticInstWithEnumConsts interface {
