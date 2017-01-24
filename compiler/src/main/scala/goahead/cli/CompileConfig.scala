@@ -23,12 +23,15 @@ case class CompileConfig(
   includeOldVersionClasses: Boolean = false,
   packagePrivateExported: Boolean = false,
   classManips: CompileConfig.ClassManips = CompileConfig.ClassManips.empty,
-  reflection: Config.Reflection = Config.Reflection.ClassName
+  reflection: Config.Reflection = Config.Reflection.ClassName,
+  maven: Option[CompileConfig.Maven] = None
 ) {
   lazy val manglerInst = mangler.map(Class.forName(_).newInstance().asInstanceOf[Mangler]).getOrElse {
     //Mangler.Simple
     new Mangler.Compact(packagePrivateUnexported = !packagePrivateExported)
   }
+
+  lazy val mavenSupport = maven.map(MavenSupport.apply).getOrElse(MavenSupport.empty)
 }
 
 object CompileConfig {
@@ -39,28 +42,28 @@ object CompileConfig {
     pattern: String,
     anyModifiers: Set[String] = Set.empty
   ) {
+    val patternMatch = ClassPatternMatch(pattern)
+
     def classes(classPath: ClassPath): Seq[ClassPath.ClassDetails] = {
-      val internalClassNames = pattern.replace('.', '/') match {
-        case str if str.endsWith("?") =>
-          val prefix = str.dropRight(1)
-          classPath.classNamesWithoutCompiledDir().filter { str =>
-            str.lastIndexOf('/') < prefix.length && str.startsWith(prefix)
-          }
-        case str if str.endsWith("*") =>
-          val prefix = str.dropRight(1)
-          classPath.classNamesWithoutCompiledDir().filter(_.startsWith(prefix))
-        case str => Seq(str)
+      val internalClassNames = patternMatch match {
+        case ClassPatternMatch.Exact(str) => Seq(str.replace('.', '/'))
+        case other => classPath.classNamesWithoutCompiledDir().filter(s => other.matches(s.replace('/', '.')))
       }
       internalClassNames.flatMap({ className =>
         val clsDet = classPath.getFirstClass(className)
-        if (anyModifiers.isEmpty) Some(clsDet) else {
-          import Helpers._
-          val modStr = Modifier.toString(clsDet.cls.access)
-          val matchesMod = anyModifiers.exists(modStr.contains) ||
-            (clsDet.cls.access.isAccessPackagePrivate && anyModifiers.contains("package-private"))
-          if (matchesMod) Some(clsDet) else None
-        }
+        if (classMatches(clsDet.cls)) Some(clsDet) else None
       }).toSeq
+    }
+
+    def classMatches(cls: Cls) = classNameMatches(cls.name) && classModifiersMatch(cls)
+
+    def classNameMatches(internalName: String) = patternMatch.matches(internalName.replace('/', '.'))
+
+    def classModifiersMatch(cls: Cls) = anyModifiers.isEmpty || {
+      import Helpers._
+      val modStr = Modifier.toString(cls.access)
+      anyModifiers.exists(modStr.contains) ||
+        (cls.access.isAccessPackagePrivate && anyModifiers.contains("package-private"))
     }
   }
 
@@ -433,4 +436,13 @@ object CompileConfig {
       }
     }
   }
+
+  case class Maven(
+    localRepo: String,
+    outDirBase: String,
+    importDirBase: String,
+    artifacts: Seq[String],
+    dependencyScopes: Seq[String] = Seq("compile"),
+    compileDependencies: Boolean = false
+  )
 }

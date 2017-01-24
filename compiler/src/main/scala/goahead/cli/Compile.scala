@@ -93,6 +93,61 @@ trait Compile extends Command with Logger {
   }
 
   override def run(conf: Conf): Unit = {
+    withClassPath(conf) { classPath =>
+
+      val outDir = Paths.get(conf.outDir).toAbsolutePath
+      val goPackageName = outDir.getFileName.toString
+
+      // Build up the class list which might include super classes
+      var classEntries = getClassEntriesByFilePath(conf, classPath)
+      require(classEntries.nonEmpty, "Unable to find any classes to compile")
+      val includedClasses = classEntries.flatMap(_._2)
+      if (conf.excludeAlreadyWrittenFiles)
+        classEntries = classEntries.filter({ case (fileName, _) => !Files.exists(fileName) })
+      logger.trace(s"Class entries: " + classEntries.map(_._2.map(_.cls.name)))
+
+      // Build the compiler
+      val compiler = new FilteringCompiler(
+        conf,
+        classPath,
+        includedClasses,
+        Forwarders.loadForwarders(conf.manglerInst, classPath, conf.outDir)
+      )
+
+      // Compile
+      // TODO: Maybe something like monix would be better so I can do gatherUnordered?
+      def futFn: (=> Path) => Future[Path] = if (conf.parallel) Future.apply[Path] else p => Future.successful(p)
+
+      val futures = classEntries.map { case (filePath, classes) =>
+        import goahead.compile.AstDsl._
+        futFn {
+          val code = compiler.compile(
+            conf = Config(reflection = conf.reflection),
+            internalClassNames = classes.map(_.cls.name),
+            classPath = classPath,
+            mangler = conf.manglerInst
+          ).copy(packageName = goPackageName.toIdent)
+          logger.info(s"Writing to $filePath")
+          val writer = new BufferedWriter(new OutputStreamWriter(
+            new FileOutputStream(filePath.toFile), StandardCharsets.UTF_8
+          ))
+          try {
+            conf.prependToFile.foreach(s => writer.write(s + "\n"))
+            NodeWriter.fromNode(code, writer)
+          } finally {
+            Try(writer.close()); ()
+          }
+          filePath
+        }
+      }
+
+      // Just wait for all futures, ignore the response...
+      Await.result(Future.sequence(futures), Duration.Inf)
+      ()
+    }
+  }
+
+  protected def withClassPath[T](conf: Conf)(f: ClassPath => T): T = {
     // Build class path
     val classPathStrings = if (conf.excludeRunningRuntimeJar) conf.classPath else {
       // We need rt.jar/jce.jar or java.base.jmod
@@ -104,54 +159,8 @@ trait Compile extends Command with Logger {
       conf.classPath ++ paths.map(_ + "=github.com/cretz/goahead/libs/java/rt")
     }
     logger.debug(s"Setting class path to ${classPathStrings.mkString(File.pathSeparator)}")
-    val classPath = ClassPath.fromStrings(classPathStrings)
-    val outDir = Paths.get(conf.outDir).toAbsolutePath
-    val goPackageName = outDir.getFileName.toString
-
-    // Build up the class list which might include super classes
-    var classEntries = getClassEntriesByFileName(conf, classPath, conf.manglerInst)
-    require(classEntries.nonEmpty, "Unable to find any classes to compile")
-    val includedClasses = classEntries.flatMap(_._2)
-    if (conf.excludeAlreadyWrittenFiles)
-      classEntries = classEntries.filter({ case (fileName, _) => !Files.exists(outDir.resolve(fileName)) })
-    logger.trace(s"Class entries: " + classEntries.map(_._2.map(_.cls.name)))
-
-    // Build the compiler
-    val compiler = new FilteringCompiler(
-      conf,
-      classPath,
-      includedClasses,
-      Forwarders.loadForwarders(conf.manglerInst, classPath, conf.outDir)
-    )
-
-    // Compile
-    // TODO: Maybe something like monix would be better so I can do gatherUnordered?
-    def futFn: (=> Path) => Future[Path] = if (conf.parallel) Future.apply[Path] else p => Future.successful(p)
-    val futures = classEntries.map { case (fileName, classes) =>
-      import goahead.compile.AstDsl._
-      futFn {
-        val code = compiler.compile(
-          conf = Config(reflection = conf.reflection),
-          internalClassNames = classes.map(_.cls.name),
-          classPath = classPath,
-          mangler = conf.manglerInst
-        ).copy(packageName = goPackageName.toIdent)
-        logger.info(s"Writing to $fileName")
-        val resolvedFile = outDir.resolve(fileName)
-        val writer = new BufferedWriter(new OutputStreamWriter(
-          new FileOutputStream(resolvedFile.toFile), StandardCharsets.UTF_8
-        ))
-        try {
-          conf.prependToFile.foreach(s => writer.write(s + "\n"))
-          NodeWriter.fromNode(code, writer)
-        } finally { Try(writer.close()); () }
-        resolvedFile
-      }
-    }
-
-    // Just wait for all futures, ignore the response...
-    Await.result(Future.sequence(futures), Duration.Inf)
-    ()
+    val classPath = ClassPath.fromStrings(classPathStrings) ++ conf.mavenSupport.classPathEntries()
+    try f(classPath) finally { Try(classPath.close()); () }
   }
 
   protected def nodeToCode(conf: Conf, file: Node.File): String = {
@@ -161,12 +170,40 @@ trait Compile extends Command with Logger {
     }
   }
 
-  protected def getClassEntriesByFileName(
-    conf: Conf,
-    classPath: ClassPath,
-    mangler: Mangler
-  ): Seq[(String, Seq[ClassDetails])] = {
-    var classEntries = conf.classes.flatMap(_.classes(classPath))
+  protected def getClassEntriesByFilePath(conf: Conf, classPath: ClassPath): Seq[(Path, Seq[ClassDetails])] = {
+    val outDir = Paths.get(conf.outDir).toAbsolutePath
+
+    var seenNames = Set.empty[String]
+    def byFileName(dir: Path, entries: Seq[ClassDetails]): Map[Path, Seq[ClassDetails]] = {
+      filterClassEntriesByConf(entries, conf, classPath).distinct.groupBy(conf.fileGrouping.groupClassBy).map({
+        case (k, v) =>
+          v.foreach { det =>
+            if (seenNames.contains(det.cls.name))
+              sys.error(s"Class name ${det.cls.name.replace('/', '.')} present in multiple class paths")
+            seenNames += det.cls.name
+          }
+          dir.resolve(conf.manglerInst.fileName(k) + ".go") -> v.sortBy(_.cls.name)
+      })
+    }
+
+    // Manual first, then maven
+    var classNames = byFileName(outDir, conf.classes.flatMap(_.classes(classPath)))
+
+    conf.mavenSupport.classEntriesByCompileToDir(conf.classes, classPath).foreach { case (dir, entries) =>
+      byFileName(dir, entries).foreach { case (path, entries) =>
+        classNames.get(path) match {
+          case None => classNames += path -> entries
+          case Some(other) => classNames += path -> (other ++ entries)
+        }
+      }
+    }
+
+    // Sort em
+    classNames.toSeq.sortBy(_._1)
+  }
+
+  protected def filterClassEntriesByConf(entries: Seq[ClassDetails], conf: Conf, classPath: ClassPath) = {
+    var classEntries = entries
     if (!conf.excludeInnerClasses)
       classEntries ++= classEntries.flatMap(_.cls.innerClasses.map(classPath.getFirstClass))
     if (!conf.excludeSuperClassesOfSameEntry) {
@@ -185,13 +222,7 @@ trait Compile extends Command with Logger {
         conf.anyClassModifiers.exists(modStr.contains) ||
           (c.cls.access.isAccessPackagePrivate && conf.anyClassModifiers.contains("package-private"))
       }
-
-    // De-dupe, filter again, then map into file names
-    classEntries.
-      distinct.
-      groupBy(conf.fileGrouping.groupClassBy).map({
-        case (k, v) => (mangler.fileName(k) + ".go") -> v.sortBy(_.cls.name)
-      }).toSeq.sortBy(_._1)
+    classEntries
   }
 }
 

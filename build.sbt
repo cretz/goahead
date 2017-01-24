@@ -15,10 +15,9 @@ lazy val goaheadInterop = (project in file("interop")).
   )
 
 lazy val goaheadCompiler = (project in file("compiler")).
+  settings(commonScalaSettings:_*).
   settings(
     name := "goahead-compiler",
-    version := commonVersion,
-    scalaVersion := "2.12.1",
     libraryDependencies ++= Seq(
       "com.squareup" % "javapoet" % "1.8.0",
       "org.ow2.asm" % "asm-all" % "6.0_ALPHA",
@@ -29,27 +28,15 @@ lazy val goaheadCompiler = (project in file("compiler")).
       "com.google.guava" % "guava" % "19.0",
       "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
       "ch.qos.logback" % "logback-classic" % "1.1.7",
+      aetherLib("aether-api"),
+      aetherLib("aether-util"),
+      aetherLib("aether-impl"),
+      aetherLib("aether-connector-basic"),
+      aetherLib("aether-transport-http"),
+      aetherLib("aether-transport-file"),
+      "org.apache.maven" % "maven-aether-provider" % "3.3.9",
       "org.scalactic" %% "scalactic" % "3.0.0" % "test",
       "org.scalatest" %% "scalatest" % "3.0.0" % "test"
-    ),
-    // TODO: test with this also to check debug vars and what not
-    // javacOptions += "-g",
-    scalacOptions ++= Seq(
-      "-deprecation",
-      "-encoding", "UTF-8",
-      "-feature",
-      "-language:existentials",
-      "-language:higherKinds",
-      "-language:implicitConversions",
-      "-unchecked",
-      "-Xfatal-warnings",
-      "-Xlint",
-      "-Yno-adapted-args",
-      "-Ywarn-dead-code",
-      "-Ywarn-numeric-widen",
-      "-Ywarn-value-discard",
-      "-Xfuture",
-      "-Ywarn-unused-import"
     ),
     logBuffered in Test := false,
     testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"),
@@ -80,3 +67,27 @@ lazy val goaheadCompiler = (project in file("compiler")).
     javaOptions in goahead += "-Xmx4G",
     fullRunInputTask(goahead, Runtime, "goahead.cli.Main")
   ).dependsOn(goaheadInterop)
+
+def aetherLib(id: String) = "org.eclipse.aether" % id % "1.1.0"
+
+def commonScalaSettings = Seq(
+  version := commonVersion,
+  scalaVersion := "2.12.1",
+  scalacOptions ++= Seq(
+    "-deprecation",
+    "-encoding", "UTF-8",
+    "-feature",
+    "-language:existentials",
+    "-language:higherKinds",
+    "-language:implicitConversions",
+    "-unchecked",
+    "-Xfatal-warnings",
+    "-Xlint",
+    "-Yno-adapted-args",
+    "-Ywarn-dead-code",
+    "-Ywarn-numeric-widen",
+    "-Ywarn-value-discard",
+    "-Xfuture",
+    "-Ywarn-unused-import"
+  )
+)

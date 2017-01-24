@@ -16,6 +16,8 @@ import scala.util.Try
 // Guaranteed thread safe
 case class ClassPath(entries: Seq[ClassPath.Entry]) {
 
+  def `++`(other: Seq[ClassPath.Entry]) = copy(entries = entries ++ other)
+
   def findClassRelativeCompiledDir(classInternalName: String): Option[String] = {
     findFirstClass(classInternalName).map(_.relativeCompiledDir)
   }
