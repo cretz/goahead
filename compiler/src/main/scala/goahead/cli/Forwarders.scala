@@ -54,7 +54,7 @@ object Forwarders extends Logger {
     }
 
     // Read all files out of the target, looking for "//goahead-forwarder"
-    Paths.get(path).toFile.listFiles().foreach { f =>
+    Paths.get(path).toFile.listFiles().filter(_.getName.endsWith(".go")).foreach { f =>
       // Keyed by Go type
       var prevForwardComment = Option.empty[ForwardComment]
       var inStructFor = Option.empty[String]

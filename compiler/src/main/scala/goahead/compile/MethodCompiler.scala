@@ -81,7 +81,7 @@ trait MethodCompiler extends Logger {
       val insns = node.instructions
       require(insns.headOption.exists(_.isInstanceOf[LabelNode]), "Expected label to be first insn")
       val initial = LabelSet(insns.head.asInstanceOf[LabelNode])
-      insns.tail.foldLeft(Seq(initial)) { case (labelSets, insn) =>
+      val labelSets = insns.tail.foldLeft(Seq(initial)) { case (labelSets, insn) =>
         insn match {
           case n: FrameNode =>
             require(labelSets.last.newFrame.isEmpty, "Expected label to not have two frames")
@@ -100,6 +100,14 @@ trait MethodCompiler extends Logger {
             labelSets.init :+ labelSets.last.copy(insns = labelSets.last.insns :+ n)
         }
       }
+      // dropRightWhile the label sets have no jump instruction as the last instruction
+      labelSets.reverse.dropWhile({ set =>
+        set.insns.lastOption match {
+          case Some(insn) if insn.isUnconditionalJump => false
+          case Some(insn) => sys.error("Unexpected, last instruction not an unconditional jump")
+          case None => true
+        }
+      }).reverse
     }
   }
 

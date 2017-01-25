@@ -1,6 +1,10 @@
 package goahead.testclasses;
 
 public class Inheritance {
+    public static void main(String[] args) {
+        simpleInheritance();
+        abstractVisibilityCovariantOverrides();
+    }
 
     static class Parent {
         String id = "parent-id";
@@ -38,9 +42,27 @@ public class Inheritance {
         System.out.println(parent.getMyName());
     }
 
-    public static void main(String[] args) {
+    public static void simpleInheritance() {
         print(new Parent());
         print(new Child());
         System.out.println(new GrandChild().parentName());
+    }
+
+    abstract static class Foo {
+        String field = "foo";
+        abstract Foo doSomething();
+    }
+
+    static class Bar extends Foo {
+        @Override
+        protected Bar doSomething() {
+            this.field = "bar";
+            return this;
+        }
+    }
+
+    public static void abstractVisibilityCovariantOverrides() {
+        Foo foo = new Bar();
+        System.out.println(foo.doSomething().field);
     }
 }

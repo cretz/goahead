@@ -128,10 +128,10 @@ object ClassPath {
 
     // Note, lots of this follows http://docs.oracle.com/javase/8/docs/technotes/tools/windows/classpath.html
 
-    lazy val javaRuntimeJarPath = {
-      val jdk8Possible = Paths.get(System.getProperty("java.home"), "jre", "lib", "rt.jar")
-      val jre8Possible = Paths.get(System.getProperty("java.home"), "lib", "rt.jar")
-      val jdk9Possible = Paths.get(System.getProperty("java.home"), "jmods", "java.base.jmod")
+    def javaRuntimeLibPath(baseDir: String = System.getProperty("java.home")) = {
+      val jdk8Possible = Paths.get(baseDir, "jre", "lib", "rt.jar")
+      val jre8Possible = Paths.get(baseDir, "lib", "rt.jar")
+      val jdk9Possible = Paths.get(baseDir, "jmods", "java.base.jmod")
       if (Files.exists(jdk8Possible)) jdk8Possible
       else if (Files.exists(jre8Possible)) jre8Possible
       else if (Files.exists(jdk9Possible)) jdk9Possible
@@ -157,7 +157,7 @@ object ClassPath {
       // Only .jar and .JAR files
       val fileStream = Files.newDirectoryStream(dir, "*.{jar,JAR,jmod,JMOD}")
       new CompositeEntry(
-        try { fileStream.iterator().asScala.toSeq.map(fromZipFile(_, relativeCompiledDir)) }
+        try { fileStream.asScala.map(fromZipFile(_, relativeCompiledDir)).toSeq }
         finally { fileStream.close() }
       )
     }
@@ -268,7 +268,6 @@ object ClassPath {
     }
 
     class SingleDirJarEntry(val file: ZipFile, val relativeCompiledDir: String) extends BaseZipEntry {
-
       protected def internalClassNameToEntryPath(internalName: String) = Some(s"$internalName.class")
 
       override def allClassNames(): Iterable[String] = {

@@ -13,7 +13,7 @@ sealed trait Cls {
   def methods: Seq[Method]
   def interfaces: Seq[String]
   def parent: Option[String]
-  def innerClasses: Seq[String]
+  def memberInnerClasses: Seq[String]
 
   // Same as Class::getName
   def runtimeClassName: String
@@ -52,9 +52,11 @@ object Cls {
 
     override lazy val parent = Option(node.superName)
 
-    override def innerClasses = {
+    override def memberInnerClasses = {
       import scala.collection.JavaConverters._
-      node.innerClasses.asScala.asInstanceOf[Seq[InnerClassNode]].map(_.name)
+      node.innerClasses.asScala.asInstanceOf[Seq[InnerClassNode]].collect {
+        case n if n.outerName == name => n.name
+      }
     }
 
     override def runtimeClassName = node.name.replace('/', '.')

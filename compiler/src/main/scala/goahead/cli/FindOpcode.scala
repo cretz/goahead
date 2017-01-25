@@ -17,7 +17,7 @@ class FindOpcode extends Command with Logger {
     max: Int = 1,
     staticOnly: Boolean = false,
     packageStart: String = "",
-    jar: String = ClassPath.Entry.javaRuntimeJarPath.toString,
+    jar: String = ClassPath.Entry.javaRuntimeLibPath().toString,
     opcodes: Seq[String]
   )
 
@@ -41,8 +41,8 @@ class FindOpcode extends Command with Logger {
       jar = builder.opt(
         name = "jar",
         aliases = Seq("j"),
-        desc = "What JAR to use, defaults to the rt.jar on the classpath",
-        default = ClassPath.Entry.javaRuntimeJarPath.toString
+        desc = "What JAR to use, defaults to the rt.jar or java.base.jmod on the classpath",
+        default = ClassPath.Entry.javaRuntimeLibPath().toString
       ).get,
       opcodes = builder.trailingOpts(
         name = "opcode",

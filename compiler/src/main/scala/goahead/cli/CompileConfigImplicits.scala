@@ -41,7 +41,8 @@ object CompileConfigImplicits {
               pattern = k,
               anyModifiers =
                 if (v.containsKey("any-modifiers")) v.get("any-modifiers").to[Set[String]].get
-                else Set.empty
+                else Set.empty,
+              butNot = if (v.containsKey("but-not")) from(v.get("but-not")).get else Nil
             )
           }
       })

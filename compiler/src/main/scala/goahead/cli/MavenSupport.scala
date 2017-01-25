@@ -70,7 +70,9 @@ object MavenSupport {
       }).asJava).asScala.map(_.getArtifact).distinct
       // Make sure there are no ambiguities
       arts.groupBy(a => a.getGroupId -> a.getArtifactId).mapValues {
-        case Seq(singleArt) => singleArt
+        case Seq(singleArt) =>
+          logger.debug(s"Resolved artifact: $singleArt")
+          singleArt
         case multi => sys.error(s"Conflicting artifacts found: ${multi.mkString(", ")}")
       }
     }
@@ -84,6 +86,7 @@ object MavenSupport {
         ).
         setFilter(DependencyFilterUtils.classpathFilter(conf.dependencyScopes:_*))
       val deps = repoSys.resolveDependencies(sess, req).getArtifactResults.asScala.map(_.getArtifact).distinct
+      logger.debug("Resolved dependencies:\n  " + deps.sortBy(a => a.getGroupId -> a.getArtifactId).mkString("\n  "))
       // We need to exclude any ones in the main list and get the highest version of remaining
       val versScheme = new GenericVersionScheme
       deps.groupBy(a => a.getGroupId -> a.getArtifactId).flatMap({ case (key, arts) =>
@@ -138,6 +141,8 @@ object MavenSupport {
         if (classes.isEmpty) None else Some {
           val path = basePath.resolve(importName(ent.artifact.getGroupId)).
             resolve(importName(ent.artifact.getArtifactId))
+          logger.info(s"Compiling some classes from maven artifact ${ent.artifact} " +
+            s"at ${ent.artifact.getFile} to path $path")
           path -> classes.toSeq
         }
       }

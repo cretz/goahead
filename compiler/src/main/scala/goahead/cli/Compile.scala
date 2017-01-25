@@ -16,7 +16,6 @@ import scala.concurrent.{Await, Future}
 import scala.util.Try
 
 trait Compile extends Command with Logger {
-
   override val name = "compile"
 
   type Conf = CompileConfig
@@ -39,7 +38,7 @@ trait Compile extends Command with Logger {
         name = "parallel",
         desc = "If set, run each file in parallel"
       ).get,
-      excludeRunningRuntimeJar = builder.flag(
+      excludeJavaRuntimeLibs = builder.flag(
         name = "exclude-running-runtime-jar",
         aliases = Seq("nort"),
         desc = "If set, the running rt.jar will not be auto-included on the classpath in the 'rt' package"
@@ -95,16 +94,13 @@ trait Compile extends Command with Logger {
   override def run(conf: Conf): Unit = {
     withClassPath(conf) { classPath =>
 
-      val outDir = Paths.get(conf.outDir).toAbsolutePath
-      val goPackageName = outDir.getFileName.toString
-
       // Build up the class list which might include super classes
       var classEntries = getClassEntriesByFilePath(conf, classPath)
       require(classEntries.nonEmpty, "Unable to find any classes to compile")
       val includedClasses = classEntries.flatMap(_._2)
       if (conf.excludeAlreadyWrittenFiles)
         classEntries = classEntries.filter({ case (fileName, _) => !Files.exists(fileName) })
-      logger.trace(s"Class entries: " + classEntries.map(_._2.map(_.cls.name)))
+      logger.trace("Class entries:\n  " + classEntries.flatMap(_._2.map(_.cls.name)).mkString("\n  "))
 
       // Build the compiler
       val compiler = new FilteringCompiler(
@@ -119,6 +115,7 @@ trait Compile extends Command with Logger {
       def futFn: (=> Path) => Future[Path] = if (conf.parallel) Future.apply[Path] else p => Future.successful(p)
 
       val futures = classEntries.map { case (filePath, classes) =>
+        val goPackageName = filePath.getParent.getFileName.toString
         import goahead.compile.AstDsl._
         futFn {
           val code = compiler.compile(
@@ -128,6 +125,8 @@ trait Compile extends Command with Logger {
             mangler = conf.manglerInst
           ).copy(packageName = goPackageName.toIdent)
           logger.info(s"Writing to $filePath")
+          // Create the dir if not present first
+          Files.createDirectories(filePath.getParent)
           val writer = new BufferedWriter(new OutputStreamWriter(
             new FileOutputStream(filePath.toFile), StandardCharsets.UTF_8
           ))
@@ -149,14 +148,11 @@ trait Compile extends Command with Logger {
 
   protected def withClassPath[T](conf: Conf)(f: ClassPath => T): T = {
     // Build class path
-    val classPathStrings = if (conf.excludeRunningRuntimeJar) conf.classPath else {
-      // We need rt.jar/jce.jar or java.base.jmod
-      val paths = {
-        val path = Entry.javaRuntimeJarPath
-        if (path.endsWith("java.base.jmod")) Seq(path.toString)
-        else Seq(path.toString, path.getParent.resolve("jce.jar").toString)
-      }
-      conf.classPath ++ paths.map(_ + "=github.com/cretz/goahead/libs/java/rt")
+    val classPathStrings = if (conf.excludeJavaRuntimeLibs) conf.classPath else {
+      // We just use the parent path w/ a star for all libs
+      val path = conf.overrideJavaRuntimeDir.map(Entry.javaRuntimeLibPath).
+        getOrElse(Entry.javaRuntimeLibPath()).resolveSibling("*")
+      conf.classPath :+ s"$path=github.com/cretz/goahead/libs/java/rt"
     }
     logger.debug(s"Setting class path to ${classPathStrings.mkString(File.pathSeparator)}")
     val classPath = ClassPath.fromStrings(classPathStrings) ++ conf.mavenSupport.classPathEntries()
@@ -205,7 +201,7 @@ trait Compile extends Command with Logger {
   protected def filterClassEntriesByConf(entries: Seq[ClassDetails], conf: Conf, classPath: ClassPath) = {
     var classEntries = entries
     if (!conf.excludeInnerClasses)
-      classEntries ++= classEntries.flatMap(_.cls.innerClasses.map(classPath.getFirstClass))
+      classEntries ++= classEntries.flatMap(_.cls.memberInnerClasses.map(classPath.getFirstClass))
     if (!conf.excludeSuperClassesOfSameEntry) {
       classEntries ++= classEntries.flatMap { c =>
         val (entry, _) = classPath.getFirstClassWithEntry(c.cls.name)

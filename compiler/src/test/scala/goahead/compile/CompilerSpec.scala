@@ -23,7 +23,7 @@ class CompilerSpec extends BaseSpec with BeforeAndAfterAll {
   // Create this entry for the "rt" classes and close at the end
   val javaRuntimeEntry =
     if (useTestRt) {
-      ClassPath.Entry.fromZipFile(ClassPath.Entry.javaRuntimeJarPath,
+      ClassPath.Entry.fromZipFile(ClassPath.Entry.javaRuntimeLibPath(),
         "github.com/cretz/goahead/libs/java/testrt")
     } else {
       require(sys.env.contains("ZULU_JDK_HOME"), "ZULU_JDK_HOME env var required")

@@ -28,7 +28,7 @@ func (this *OutputStreamWriter) Close() {
 }
 
 func (this *OutputStreamWriter) Flush() {
-	this.impl.flushBuffer_uCcd2A()
+	this.impl.FlushBuffer_uCcd2A()
 	this.os.Flush_jWSxAg()
 }
 

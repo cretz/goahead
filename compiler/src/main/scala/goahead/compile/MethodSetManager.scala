@@ -49,7 +49,12 @@ object MethodSetManager {
         m.access.isAccessStatic || m.access.isAccessPrivate ||
           (m.access.isAccessPackagePrivate && m.cls.packageName != cls.packageName)
       }
-      val allMyPackagePrivateVisibilityIncreases = allMyMethods.myPackagePrivateVisibilityIncreases(cls).map(_._1)
+      // Have to include covariant return dupes of my increases
+      val allMyPackagePrivateVisibilityIncreases = allMyMethods.myPackagePrivateVisibilityIncreases(cls).flatMap {
+        case (increased, _) => increased +: allMyMethods.map.get(increased.name -> increased.argTypes).toSeq.flatMap {
+          set => set.covariantReturnTypes
+        }
+      }
       // All methods not in parent classes
       val parentDispatchInterfaces = classPath.allSuperTypes(cls.name).foldLeft(MethodSet(classPath, Nil)) {
         case (set, clsDet) => set ++ dispatchMethods(classPath, clsDet.cls)
@@ -75,8 +80,11 @@ object MethodSetManager {
 
     override def instInterfaceMethods(classPath: ClassPath, cls: Cls): MethodSet = {
       // Non-private, non-init, non-static including parents
-      allMethods(classPath, cls).
-        filterNot(m => m.access.isAccessPrivate || m.name == "<init>" || m.access.isAccessStatic)
+      // We have to include other package private because technically they are virtual too
+      // even though it may not be private to us
+      allMethods(classPath, cls).filterNot { m =>
+        m.access.isAccessPrivate || m.name == "<init>" || m.access.isAccessStatic
+      }
     }
 
     override def instInterfaceDefaultMethods(classPath: ClassPath, cls: Cls): MethodSet = {
@@ -95,8 +103,9 @@ object MethodSetManager {
     protected def defaultForwarderMethods(classPath: ClassPath, cls: Cls): MethodSet = {
       // All interface defaults that neither I nor my parent doesn't implement in any way
       val allInterfaces = classPath.allSuperAndImplementingTypes(cls.name).filter(_.cls.access.isAccessInterface)
+      // Yes we also check for private here...some synthetic defaults are private
       val allInterfaceDefaults = MethodSet(classPath, allInterfaces.flatMap(_.cls.methods).
-        filterNot(m => m.access.isAccessStatic || m.access.isAccessAbstract))
+        filterNot(m => m.access.isAccessStatic || m.access.isAccessAbstract || m.access.isAccessPrivate))
       allInterfaceDefaults -- (allMyMethods(classPath, cls) ++ allParentMethods(classPath, cls))
     }
 
@@ -236,8 +245,6 @@ object MethodSetManager {
     covariantReturnTypes: Seq[Method],
     regularDupes: Seq[Method]
   ) {
-
-
     def myPackagePrivateVisibilityIncreases(cls: Cls): Option[(Method, Method)] = {
       packagePrivateVisibilityIncreases.filter(_._1.cls.name == cls.name)
     }

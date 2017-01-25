@@ -7,3 +7,4 @@
 !/libs/java/rt/aaa*
 /libs/java/testrt/*
 !/libs/java/testrt/aaa*
+/example/*/vendor

@@ -138,7 +138,7 @@ func init() {
 			primRefs[arrayName] = NewLazyClassInfoProvider(func() *ClassInfo {
 				return &ClassInfo{
 					Name:           arrayName,
-					ComponentClass: Class_dvhEBA().getPrimitiveClass_iMEklA_Í(NewString(primName)),
+					ComponentClass: Class_dvhEBA().GetPrimitiveClass_iMEklA_Í(NewString(primName)),
 				}
 			})
 		}

@@ -50,6 +50,9 @@ object Helpers extends Logger {
           sys.error(s"Class not found: $internalClassName")
         case Some("") =>
           ctx -> ident.toIdent
+        case v if v == ctx.imports.classPath.findClassRelativeCompiledDir(ctx.cls.name) =>
+          // Same dir as me, no import
+          ctx -> ident.toIdent
         case Some(dir) =>
           val (ctx, alias) = withImportAlias(dir)
           ctx -> alias.dot(ident)

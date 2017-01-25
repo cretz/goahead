@@ -8,11 +8,11 @@ import goahead.compile.MethodCompiler.Context
 import goahead.compile._
 
 case class CompileConfig(
-  excludeRunningRuntimeJar: Boolean = false,
+  excludeJavaRuntimeLibs: Boolean = false,
   classPath: Seq[String] = Nil,
   classes: Seq[CompileConfig.ConfCls] = Seq(CompileConfig.ConfCls("*")),
   anyClassModifiers: Set[String] = Set.empty,
-  outDir: String,
+  outDir: String = ".",
   parallel: Boolean = false,
   excludeSuperClassesOfSameEntry: Boolean = false,
   mangler: Option[String] = None,
@@ -21,14 +21,15 @@ case class CompileConfig(
   excludeAlreadyWrittenFiles: Boolean = false,
   excludeInnerClasses: Boolean = false,
   includeOldVersionClasses: Boolean = false,
-  packagePrivateExported: Boolean = false,
+  packagePrivateUnexported: Boolean = false,
+  overrideJavaRuntimeDir: Option[String] = None,
   classManips: CompileConfig.ClassManips = CompileConfig.ClassManips.empty,
   reflection: Config.Reflection = Config.Reflection.ClassName,
   maven: Option[CompileConfig.Maven] = None
 ) {
   lazy val manglerInst = mangler.map(Class.forName(_).newInstance().asInstanceOf[Mangler]).getOrElse {
     //Mangler.Simple
-    new Mangler.Compact(packagePrivateUnexported = !packagePrivateExported)
+    new Mangler.Compact(packagePrivateUnexported = packagePrivateUnexported)
   }
 
   lazy val mavenSupport = maven.map(MavenSupport.apply).getOrElse(MavenSupport.empty)
@@ -40,7 +41,8 @@ object CompileConfig {
 
   case class ConfCls(
     pattern: String,
-    anyModifiers: Set[String] = Set.empty
+    anyModifiers: Set[String] = Set.empty,
+    butNot: Seq[ConfCls] = Nil
   ) {
     val patternMatch = ClassPatternMatch(pattern)
 
@@ -55,7 +57,8 @@ object CompileConfig {
       }).toSeq
     }
 
-    def classMatches(cls: Cls) = classNameMatches(cls.name) && classModifiersMatch(cls)
+    def classMatches(cls: Cls): Boolean = classNameMatches(cls.name) && classModifiersMatch(cls) &&
+      !butNot.exists(_.classMatches(cls))
 
     def classNameMatches(internalName: String) = patternMatch.matches(internalName.replace('/', '.'))
 

@@ -173,11 +173,11 @@ func (this *Field) HashCode() int32 {
 }
 
 func (this *Field) IsEnumConstant() bool {
-	return this.GetModifiers()&Modifier_FvÞH3Q().c_ENUM_aq8PWA != 0
+	return this.GetModifiers()&Modifier_FvÞH3Q().C_ENUM_aq8PWA != 0
 }
 
 func (this *Field) IsSynthetic() bool {
-	return Modifier_FvÞH3Q().isSynthetic_yOFd6g_Í(this.GetModifiers())
+	return Modifier_FvÞH3Q().IsSynthetic_yOFd6g_Í(this.GetModifiers())
 }
 
 func (this *Field) Set(obj Object_fAFaMw_Ñ, value Object_fAFaMw_Ñ) {
